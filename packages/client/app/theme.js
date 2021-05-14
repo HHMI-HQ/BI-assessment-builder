@@ -1,5 +1,7 @@
 module.exports = {
-  // colorPrimary: 'lime',
+  colorBackground: 'white',
+  colorBody: 'grey',
+  colorPrimary: 'cornflowerblue',
   colorSecondary: 'gainsboro',
 
   colorSuccess: 'green',

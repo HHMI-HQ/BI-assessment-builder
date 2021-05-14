@@ -7,14 +7,17 @@ export { default as Collapse } from './Collapse'
 export { default as Form } from './Form'
 export { default as Input } from './Input'
 export { default as Radio } from './Radio'
+export { default as Result } from './Result'
 export { default as Ribbon } from './Ribbon'
 export { default as Search } from './Search'
 export { default as Select } from './Select'
+export { default as Spin } from './Spin'
 export { default as Switch } from './Switch'
 export { default as Tabs } from './Tabs'
 export { default as TextArea } from './TextArea'
 
 export * from './Headings'
+export * from './Typography'
 
 // Do not use directly. Only exported for storybook purposes. Use Form instead.
 export { ModifiedForm } from './Form'

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled from 'styled-components'
-// import { lorem } from 'faker'
+import { lorem } from 'faker'
 
 import { AuthenticationForm } from 'ui'
 
@@ -21,20 +21,33 @@ const Filler = () => (
   </Body>
 )
 
-export const Base = args => {
+const Template = args => {
   return (
-    <AuthenticationForm
-      // alternativeActionLabel="Do you want to do something else?"
-      {...args}
-    >
+    <AuthenticationForm {...args}>
       <Filler />
     </AuthenticationForm>
   )
 }
 
-Base.args = {
-  title: 'The title',
+const commonArgs = {
   alternativeActionLabel: 'Do you want to do something else?',
+  alternativeActionLink: '/',
+  onSubmit: () => {},
+  errorMessage: lorem.sentence(),
+  hasError: false,
+}
+
+export const Base = Template.bind({})
+
+Base.args = {
+  ...commonArgs,
+}
+
+export const Loading = Template.bind({})
+
+Loading.args = {
+  ...commonArgs,
+  loading: true,
 }
 
 export default {

@@ -1,11 +1,42 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
+import React, { useState } from 'react'
 // import { lorem } from 'faker'
 
 import { Login } from 'ui'
+import { Background } from './_helpers'
 
-export const Base = args => <Login {...args} />
+export const Base = args => (
+  <Background>
+    <Login {...args} />
+  </Background>
+)
+
+export const FailingLogin = () => {
+  const [hasError, setHasError] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = () => {
+    setHasError(false)
+    setLoading(true)
+
+    setTimeout(() => {
+      setLoading(false)
+      setHasError(true)
+    }, 2000)
+  }
+
+  return (
+    <Background>
+      <Login
+        errorMessage="This is not a valid user / password combination"
+        hasError={hasError}
+        loading={loading}
+        onSubmit={handleSubmit}
+      />
+    </Background>
+  )
+}
 
 export default {
   component: Login,

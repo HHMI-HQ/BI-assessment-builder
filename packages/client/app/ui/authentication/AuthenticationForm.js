@@ -4,16 +4,9 @@ import styled from 'styled-components'
 
 import { grid } from '@coko/client'
 
-import { Form, H1, Button } from '../common'
+import { Form, Button } from '../common'
 
-const Wrapper = styled.div`
-  /* border: 1px solid black; */
-  padding: ${grid(12)};
-`
-
-const Title = styled(H1)`
-  text-align: center;
-`
+const Wrapper = styled.div``
 
 const SubmitButton = styled(Button)`
   width: 100%;
@@ -46,28 +39,31 @@ const AuthenticationForm = props => {
     alternativeActionLink,
     className,
     children,
+    errorMessage,
     forgotPasswordUrl,
+    hasError,
+    loading,
     onSubmit,
     showForgotPassword,
     submitButtonLabel,
-    title,
   } = props
 
   return (
     <Wrapper className={className}>
-      <Title>
-        {/* <H1> */}
-        {title}
-        {/* </H1> */}
-      </Title>
-
-      <Form layout="vertical" onFinish={onSubmit}>
+      <Form
+        layout="vertical"
+        onFinish={onSubmit}
+        ribbonMessage={errorMessage}
+        submissionStatus={hasError ? 'error' : null}
+      >
         {children}
 
-        <SubmitButton htmlType="submit" type="primary">
+        <SubmitButton htmlType="submit" loading={loading} type="primary">
           {submitButtonLabel}
         </SubmitButton>
+      </Form>
 
+      {!!alternativeActionLabel && (
         <Footer showForgotPassword={showForgotPassword}>
           {showForgotPassword && (
             <ForgotPassword>
@@ -79,30 +75,40 @@ const AuthenticationForm = props => {
             <a href={alternativeActionLink}>{alternativeActionLabel}</a>
           </AlternativeAction>
         </Footer>
-      </Form>
+      )}
     </Wrapper>
   )
 }
 
 AuthenticationForm.propTypes = {
-  /** Text displayed at bottom right */
-  alternativeActionLabel: PropTypes.string.isRequired,
-  /** Link to redirect to when clicking on alternative action */
-  alternativeActionLink: PropTypes.string.isRequired,
-  /** Link to redirect to when clicking on "forgot password" */
-  forgotPasswordUrl: PropTypes.string,
   /** Function to run on form submit */
   onSubmit: PropTypes.func.isRequired,
+
+  /** Text displayed at bottom right */
+  alternativeActionLabel: PropTypes.string,
+  /** Link to redirect to when clicking on alternative action */
+  alternativeActionLink: PropTypes.string,
+  /** Error message to display when `hasError` is true */
+  errorMessage: PropTypes.string,
+  /** Link to redirect to when clicking on "forgot password" */
+  forgotPasswordUrl: PropTypes.string,
+  /** Controls whether there is an incoming error from __outside__ the form. (eg. from a failed server response) */
+  hasError: PropTypes.bool,
+  /** Control waiting for response status */
+  loading: PropTypes.bool,
   /** Show / hide "forgot password" */
   showForgotPassword: PropTypes.bool,
   /** Text displayed inside submit button */
   submitButtonLabel: PropTypes.string,
-  /** Title above the form */
-  title: PropTypes.string.isRequired,
 }
 
 AuthenticationForm.defaultProps = {
+  alternativeActionLabel: null,
+  alternativeActionLink: null,
+  errorMessage: null,
   forgotPasswordUrl: '/password-reset',
+  hasError: false,
+  loading: false,
   showForgotPassword: false,
   submitButtonLabel: 'Submit',
 }
