@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  storybook:
+    build:
+      context: ./packages/client
+      dockerfile: Dockerfile-development
+    ports:
+      - ${STORYBOOK_PORT:-5000}:${STORYBOOK_PORT:-5000}
+    command: ['node_modules/.bin/coko-storybook']
+    environment:
+      - STORYBOOK_PORT=${STORYBOOK_PORT:-5000}
+    volumes:
+      - ./packages/client/stories:/home/node/app/stories
+      - ./packages/client/app/ui:/home/node/app/app/ui
