@@ -1,9 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { lorem } from 'faker'
 
-import { Button, Checkbox, CheckboxGroup, Form, Input, ModifiedForm } from 'ui'
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Form,
+  Input,
+  Ribbon,
+  Paragraph,
+} from 'ui'
 
 export const Base = args => (
   <Form layout="vertical" {...args}>
@@ -111,7 +119,47 @@ export const Succeeded = () => (
   </Form>
 )
 
+export const Autosave = () => {
+  // const [form] = Form.useForm()
+
+  const [saved, setSaved] = useState(false)
+
+  const handleAutoSave = vals => {
+    // eslint-disable-next-line no-console
+    console.log('autosaving...', vals)
+
+    /**
+     * The demo can be a little flaky if you type while the ribbon is already in
+     * saved state. That's because of the demo (the timeout being completely
+     * arbitrary). The Form component seems to be working fine. Comment out the
+     * next two lines and check the console for a more realistic demo.
+     */
+    setSaved(true)
+    setTimeout(() => setSaved(false), 1000)
+  }
+
+  return (
+    <>
+      <Ribbon status={saved ? 'success' : null}>
+        {saved ? 'Autosaved!' : 'Idle'}
+      </Ribbon>
+
+      <Paragraph>Ribbon for demo purposes only</Paragraph>
+
+      <Form
+        autoSave
+        // form={form}
+        onAutoSave={handleAutoSave}
+      >
+        <Form.Item label="Field" name="field">
+          <Input placeholder="Say something" />
+        </Form.Item>
+      </Form>
+    </>
+  )
+}
+
 export default {
-  component: ModifiedForm,
+  component: Form,
   title: 'Common/Form',
 }

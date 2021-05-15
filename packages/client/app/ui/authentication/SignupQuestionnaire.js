@@ -53,11 +53,7 @@ const yesOrNoOptions = [
 // QUESTION what is the overlap between this and the user profile?
 
 const SignupQuestionnaire = props => {
-  const {
-    className,
-    // onAutoSave,
-    onSubmit,
-  } = props
+  const { className, onAutoSave, onSubmit } = props
 
   const [showErrorRibbon, setShowErrorRibbon] = useState(false)
   // const [form] = Form.useForm()
@@ -80,8 +76,10 @@ const SignupQuestionnaire = props => {
       <AuthorizationHeader>Sign up</AuthorizationHeader>
 
       <Form
+        autoSave
         // form={form}
         layout="vertical"
+        onAutoSave={onAutoSave}
         onFinish={handleFinish}
         onFinishFailed={handleFinishFailed}
         onValuesChange={handleValuesChange}
@@ -295,18 +293,16 @@ const SignupQuestionnaire = props => {
           </Button>
         </ButtonGroup>
 
-        {showErrorRibbon && (
-          <Ribbon status="error">
-            There are errors in the form. Please fix them and submit again.
-          </Ribbon>
-        )}
+        <Ribbon hide={!showErrorRibbon} status="error">
+          There are errors in the form. Please fix them and submit again.
+        </Ribbon>
       </Form>
     </Wrapper>
   )
 }
 
 SignupQuestionnaire.propTypes = {
-  // onAutoSave: PropTypes.func.isRequired,
+  onAutoSave: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 }
 
