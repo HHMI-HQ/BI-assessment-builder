@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { internet, lorem } from 'faker'
 
 import { Signup } from 'ui'
-import { Background } from './_helpers'
+import { Background } from '../_helpers'
 
 export const Base = args => (
   <Background>

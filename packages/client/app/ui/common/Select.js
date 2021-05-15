@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { Select as AntSelect } from 'antd'
 
 import { uuid } from '@coko/client'
@@ -26,7 +27,8 @@ const Select = props => {
     <Wrapper className={className}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <AntSelect {...rest}>
-        {isOptionGroups(options) &&
+        {!isEmpty(options) &&
+          isOptionGroups(options) &&
           options.map(group => (
             <AntSelect.OptGroup key={group.id || uuid()} label={group.label}>
               {group.options.map(option => (
@@ -40,7 +42,8 @@ const Select = props => {
             </AntSelect.OptGroup>
           ))}
 
-        {!isOptionGroups(options) &&
+        {!isEmpty(options) &&
+          !isOptionGroups(options) &&
           options.map(option => (
             <AntSelect.Option key={option.id || uuid()} value={option.value}>
               {option.label}

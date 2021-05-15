@@ -4,7 +4,7 @@ import React from 'react'
 // import { lorem } from 'faker'
 
 import { ResetPassword } from 'ui'
-import { Background } from './_helpers'
+import { Background } from '../_helpers'
 
 const Template = args => (
   <Background>

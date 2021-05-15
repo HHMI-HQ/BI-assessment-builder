@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { grid } from '@coko/client'
 
@@ -23,24 +23,32 @@ const Wrapper = styled.div`
 
   padding: ${grid(0.5)} ${grid(2)};
   text-align: center;
-  width: 100%;
+
+  /* stylelint-disable-next-line order/properties-alphabetical-order */
+  ${props =>
+    props.hide &&
+    css`
+      visibility: hidden;
+    `}
 `
 
 const Ribbon = props => {
-  const { className, children, status } = props
+  const { className, children, hide, status } = props
 
   return (
-    <Wrapper className={className} status={status}>
+    <Wrapper className={className} hide={hide} status={status}>
       {children}
     </Wrapper>
   )
 }
 
 Ribbon.propTypes = {
+  hide: PropTypes.bool,
   status: PropTypes.oneOf(['success', 'error', 'danger']),
 }
 
 Ribbon.defaultProps = {
+  hide: false,
   status: null,
 }
 

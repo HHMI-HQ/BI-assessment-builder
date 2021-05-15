@@ -2,7 +2,7 @@ import React from 'react'
 import { lorem } from 'faker'
 
 import { AuthenticationWrapper, Paragraph } from 'ui'
-import { Background } from './_helpers'
+import { Background } from '../_helpers'
 
 export const Base = () => (
   <Background>

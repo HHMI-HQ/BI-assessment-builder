@@ -42,12 +42,13 @@ const Radio = props => {
 
 Radio.propTypes = {
   /** Handle change. First argument is the incoming `value`. */
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   /** Arrange items vertically instead of inline. */
   vertical: PropTypes.bool,
 }
 
 Radio.defaultProps = {
+  onChange: null,
   vertical: false,
 }
 
