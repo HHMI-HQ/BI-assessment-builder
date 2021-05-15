@@ -17,20 +17,20 @@ import {
   Select,
 } from '../common'
 
-const Wrapper = styled.div``
-
 // Align other elements with FormSection (which has padding of the same size)
 const sideMargins = css`
   margin-left: ${grid(4)};
   margin-right: ${grid(4)};
 `
 
+const Wrapper = styled.div``
+
 const ButtonGroup = styled(UIButtonGroup)`
   ${sideMargins}
 `
 
 const Ribbon = styled(UIRibbon)`
-  margin-top: ${grid(4)};
+  margin-top: ${grid(2)};
   ${sideMargins}
 `
 
@@ -67,7 +67,6 @@ const SignupQuestionnaire = props => {
   }
 
   const handleValuesChange = () => {
-    // if (showErrorRibbon) setShowErrorRibbon(false)
     setShowErrorRibbon(false)
   }
 
@@ -77,12 +76,16 @@ const SignupQuestionnaire = props => {
 
       <Form
         autoSave
+        feedBackComponent={Ribbon}
         // form={form}
         layout="vertical"
         onAutoSave={onAutoSave}
         onFinish={handleFinish}
         onFinishFailed={handleFinishFailed}
         onValuesChange={handleValuesChange}
+        ribbonMessage="There are errors in the form. Please fix them and submit again."
+        ribbonPosition="bottom"
+        submissionStatus={showErrorRibbon ? 'error' : null}
       >
         {/* QUESTION we've already added this info while signing up */}
         <FormSection label="Contact Information">
@@ -292,10 +295,6 @@ const SignupQuestionnaire = props => {
             Submit
           </Button>
         </ButtonGroup>
-
-        <Ribbon hide={!showErrorRibbon} status="error">
-          There are errors in the form. Please fix them and submit again.
-        </Ribbon>
       </Form>
     </Wrapper>
   )

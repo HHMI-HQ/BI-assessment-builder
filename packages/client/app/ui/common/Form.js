@@ -8,12 +8,12 @@ import { debounce } from 'lodash'
 import { Form as AntForm } from 'antd'
 import { grid } from '@coko/client'
 
-import BasicRibbon from './Ribbon'
+import UIRibbon from './Ribbon'
 
 const FormWrapper = styled.div``
 
-const Ribbon = styled(BasicRibbon)`
-  margin-bottom: ${grid(2)};
+const Ribbon = styled(UIRibbon)`
+  margin: ${grid(2)} 0;
 `
 
 const FormItem = props => {
@@ -55,13 +55,15 @@ export const Form = props => {
     autoSave,
     autoSaveDebounceDelay,
     children,
+    feedbackComponent: FeedbackComponent,
     // eslint-disable-next-line react/prop-types
     form: propsForm,
     onAutoSave,
     // eslint-disable-next-line react/prop-types
     onValuesChange,
-    submissionStatus,
     ribbonMessage,
+    ribbonPosition,
+    submissionStatus,
     ...rest
   } = props
 
@@ -77,13 +79,27 @@ export const Form = props => {
     onValuesChange && onValuesChange()
   }
 
+  const FeedbackElement = showRibbon && (
+    <FeedbackComponent status={submissionStatus}>
+      {ribbonMessage}
+    </FeedbackComponent>
+  )
+
+  // const FeedbackElement = (
+  //   <FeedbackComponent hide={!showRibbon} status={submissionStatus}>
+  //     {ribbonMessage}
+  //   </FeedbackComponent>
+  // )
+
   return (
     <FormWrapper>
-      {showRibbon && <Ribbon status={submissionStatus}>{ribbonMessage}</Ribbon>}
+      {ribbonPosition === 'top' && FeedbackElement}
 
       <AntForm form={form} onValuesChange={handleValuesChange} {...rest}>
         {children}
       </AntForm>
+
+      {ribbonPosition === 'bottom' && FeedbackElement}
     </FormWrapper>
   )
 }
@@ -91,16 +107,20 @@ export const Form = props => {
 Form.propTypes = {
   autoSave: PropTypes.bool,
   autoSaveDebounceDelay: PropTypes.number,
+  feedbackComponent: PropTypes.elementType,
   onAutoSave: PropTypes.func,
   ribbonMessage: PropTypes.string,
+  ribbonPosition: PropTypes.oneOf(['top', 'bottom']),
   submissionStatus: PropTypes.oneOf(['success', 'error', 'danger']),
 }
 
 Form.defaultProps = {
   autoSave: false,
   autoSaveDebounceDelay: 500,
+  feedbackComponent: Ribbon,
   onAutoSave: null,
   ribbonMessage: null,
+  ribbonPosition: 'top',
   submissionStatus: null,
 }
 

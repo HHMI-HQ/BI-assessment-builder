@@ -119,6 +119,28 @@ export const Succeeded = () => (
   </Form>
 )
 
+export const FailedRibbonAtTheBottom = () => (
+  <Form
+    layout="vertical"
+    ribbonMessage={lorem.sentence()}
+    ribbonPosition="bottom"
+    submissionStatus="error"
+  >
+    <Form.Item
+      hasFeedback
+      label="Name"
+      name="name"
+      rules={[{ required: true, message: 'Cannot submit without a name' }]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Button htmlType="submit" type="primary">
+      Submit
+    </Button>
+  </Form>
+)
+
 export const Autosave = () => {
   // const [form] = Form.useForm()
 
@@ -162,4 +184,11 @@ export const Autosave = () => {
 export default {
   component: Form,
   title: 'Common/Form',
+  argTypes: {
+    feedbackComponent: {
+      control: {
+        disable: true,
+      },
+    },
+  },
 }
