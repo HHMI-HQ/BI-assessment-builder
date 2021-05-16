@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { lorem } from 'faker'
+import { range } from 'lodash'
 
 export const Background = styled.div`
   background: ${props => props.theme.colorBody};
@@ -32,3 +33,8 @@ export const Filler = () => {
     </StyledFiller>
   )
 }
+
+export const randomPick = array =>
+  array[Math.floor(Math.random() * array.length)]
+
+export const createData = (n, callback) => range(n).map(callback)

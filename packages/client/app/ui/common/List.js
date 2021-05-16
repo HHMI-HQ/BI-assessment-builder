@@ -97,7 +97,6 @@ const List = props => {
       )}
 
       <Spin spinning={loading}>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <AntList pagination={passedPagination} {...rest} />
       </Spin>
     </Wrapper>

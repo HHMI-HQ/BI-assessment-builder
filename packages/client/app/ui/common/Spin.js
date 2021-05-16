@@ -7,7 +7,7 @@ import React from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import { Spin as AntSpin } from 'antd'
 
-const StyledSpin = styled(AntSpin)`
+const StyledSpin = styled(({ isNested, ...rest }) => <AntSpin {...rest} />)`
   ${props =>
     props.isNested &&
     css`
