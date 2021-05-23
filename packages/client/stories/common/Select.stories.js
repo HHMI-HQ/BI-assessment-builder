@@ -1,21 +1,14 @@
-import React from 'react'
-import styled from 'styled-components'
-import { lorem, name } from 'faker'
+import React, { useState } from 'react'
+import { datatype, lorem, name } from 'faker'
 import { range } from 'lodash'
 
 import { Select } from 'ui'
 
-const Wrapper = styled.div`
-  width: 300px;
-`
-
 const makeOptions = n =>
   range(n).map(i => {
-    const v = name.findName()
-
     return {
-      label: v,
-      value: v,
+      label: name.findName(),
+      value: datatype.uuid(),
     }
   })
 
@@ -32,23 +25,45 @@ const groupedOptions = [
   },
 ]
 
-export const Base = () => (
-  <Wrapper>
-    <Select options={options} placeholder={lorem.words(4)} />
-  </Wrapper>
-)
+export const Base = () => {
+  return <Select options={options} placeholder={lorem.words(4)} />
+}
 
 export const WithGroups = () => (
-  <Wrapper>
-    <Select options={groupedOptions} placeholder={lorem.words(4)} />
-  </Wrapper>
+  <Select options={groupedOptions} placeholder={lorem.words(4)} />
 )
 
-export const Multi = () => (
-  <Wrapper>
+export const Multi = () => {
+  return (
     <Select mode="multiple" options={options} placeholder={lorem.words(4)} />
-  </Wrapper>
-)
+  )
+}
+
+export const Async = () => {
+  const [loading, setLoading] = useState(false)
+  const [optionsData, setOptionsData] = useState([])
+
+  const handleSearch = searchValue => {
+    setLoading(true)
+
+    setTimeout(() => {
+      setOptionsData(makeOptions(5))
+      setLoading(false)
+    }, 500)
+  }
+
+  return (
+    <Select
+      async
+      loading={loading}
+      mode="multiple"
+      onSearch={handleSearch}
+      options={optionsData}
+      placeholder={lorem.words(4)}
+      // showSearch
+    />
+  )
+}
 
 export default {
   component: Select,

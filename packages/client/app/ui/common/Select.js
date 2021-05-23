@@ -1,84 +1,62 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { isEmpty } from 'lodash'
+import { debounce as lodashDebounceFunc } from 'lodash'
+
 import { Select as AntSelect } from 'antd'
 
-import { uuid } from '@coko/client'
-
-const Wrapper = styled.div`
-  .ant-select {
-    width: 100%;
-  }
+const StyledSelect = styled(AntSelect)`
+  width: 100%;
 `
 
-const isOptionGroups = data => {
-  return (
-    Array.isArray(data) &&
-    data.every(item => Object.prototype.hasOwnProperty.call(item, 'label')) &&
-    data.every(item => Object.prototype.hasOwnProperty.call(item, 'options'))
-  )
-}
-
 const Select = props => {
-  const { className, options, ...rest } = props
+  const {
+    async,
+    className,
+    // debounce,
+    debounceTimeout,
+
+    // disable rule for props handled by ant
+    /* eslint-disable react/prop-types */
+    filterOption,
+    notFoundContent,
+    onSearch,
+    /* eslint-enable react/prop-types */
+
+    ...rest
+  } = props
+
+  const handleSearch = searchValue => {
+    onSearch(searchValue)
+  }
+
+  // const useDebounce = async ? true : debounce
+
+  const searchFunc = async
+    ? lodashDebounceFunc(handleSearch, debounceTimeout)
+    : handleSearch
 
   return (
-    <Wrapper className={className}>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <AntSelect {...rest}>
-        {!isEmpty(options) &&
-          isOptionGroups(options) &&
-          options.map(group => (
-            <AntSelect.OptGroup key={group.id || uuid()} label={group.label}>
-              {group.options.map(option => (
-                <AntSelect.Option
-                  key={option.id || uuid()}
-                  value={option.value}
-                >
-                  {option.label}
-                </AntSelect.Option>
-              ))}
-            </AntSelect.OptGroup>
-          ))}
-
-        {!isEmpty(options) &&
-          !isOptionGroups(options) &&
-          options.map(option => (
-            <AntSelect.Option key={option.id || uuid()} value={option.value}>
-              {option.label}
-            </AntSelect.Option>
-          ))}
-      </AntSelect>
-    </Wrapper>
+    <StyledSelect
+      className={className}
+      filterOption={async && !filterOption ? false : filterOption}
+      notFoundContent={!notFoundContent && async ? null : notFoundContent}
+      onSearch={searchFunc}
+      {...rest}
+    />
   )
 }
 
 Select.propTypes = {
-  /** Options data. Can either be an array of options or an array of option groups. */
-  options: PropTypes.oneOfType([
-    PropTypes.arrayOf(
-      PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        id: PropTypes.string,
-        value: PropTypes.string,
-      }),
-    ),
-    PropTypes.arrayOf(
-      PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        options: PropTypes.arrayOf(
-          PropTypes.shape({
-            label: PropTypes.string.isRequired,
-            id: PropTypes.string,
-            value: PropTypes.string,
-          }),
-        ),
-      }),
-    ),
-  ]).isRequired,
+  async: PropTypes.bool,
+  // debounce: PropTypes.bool,
+  debounceTimeout: PropTypes.number,
 }
 
-Select.defaultProps = {}
+Select.defaultProps = {
+  async: false,
+  // debounce: false,
+  debounceTimeout: 500,
+}
 
 export default Select
