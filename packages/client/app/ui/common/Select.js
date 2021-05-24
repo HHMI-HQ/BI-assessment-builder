@@ -21,6 +21,7 @@ const Select = props => {
     filterOption,
     notFoundContent,
     onSearch,
+    showSearch,
     /* eslint-enable react/prop-types */
 
     ...rest
@@ -42,6 +43,7 @@ const Select = props => {
       filterOption={async && !filterOption ? false : filterOption}
       notFoundContent={!notFoundContent && async ? null : notFoundContent}
       onSearch={searchFunc}
+      showSearch={showSearch || !!searchFunc}
       {...rest}
     />
   )
