@@ -12,9 +12,9 @@ install root dependencies:
       - node_modules/
   script:
     - yarn install
-  only:
-    changes:
-      - yarn.lock
+  # only:
+  #   changes:
+  #     - yarn.lock
 
 lint js:
   image: node:12-alpine
