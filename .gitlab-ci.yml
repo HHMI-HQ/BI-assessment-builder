@@ -4,6 +4,7 @@ stages:
   - deploy-storybook
 
 install root dependencies:
+  image: node:12-alpine
   stage: install
   cache: 
     key: $CI_COMMIT_REF_SLUG-root-dependencies
@@ -18,6 +19,11 @@ install root dependencies:
 lint js:
   image: node:12-alpine
   stage: lint
+  cache:
+    key: $CI_COMMIT_REF_SLUG-root-dependencies
+    paths:
+      - node_modules/
+    policy: pull
   script:
     - yarn eslint .
 
