@@ -1,5 +1,13 @@
 stages:
+  - lint
   - deploy-storybook
+
+lint js:
+  image: node:12-alpine
+  stage: lint
+  script:
+    - yarn install
+    - eslint .
 
 deploy storybook static:
   image: debian:stable-slim
