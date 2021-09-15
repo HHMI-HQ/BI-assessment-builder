@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { grid } from '@coko/client'
 
 import { Button, Form, Input, Select } from '../common'
-import metadataOptions from './metadata'
+import metadataOptions from './metadataValues'
 
 const Wrapper = styled.div``
 
