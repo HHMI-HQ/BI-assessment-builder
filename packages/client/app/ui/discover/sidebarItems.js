@@ -71,6 +71,11 @@ const sidebarItems = [
       { label: 'learning objective B', value: 'learning_objective_B' },
     ],
   },
+  {
+    title: 'Learning Objectives',
+    actionType: 'LEARNING_OBJECTIVES',
+    placeholder: 'Search for learning objectives',
+  },
 ]
 
 export default sidebarItems
