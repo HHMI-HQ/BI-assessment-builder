@@ -76,7 +76,7 @@ export const Form = props => {
 
   const handleValuesChange = (changedValues, allValues) => {
     if (autoSave && onAutoSave) runAutoSave()
-    onValuesChange && onValuesChange()
+    onValuesChange && onValuesChange(changedValues, allValues)
   }
 
   const FeedbackElement = showRibbon && (
