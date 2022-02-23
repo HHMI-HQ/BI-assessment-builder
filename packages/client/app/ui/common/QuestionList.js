@@ -68,6 +68,7 @@ const QuestionList = props => {
     showSearch,
     showSort,
     showTotalCount,
+    totalCount,
   } = props
 
   const history = useHistory()
@@ -78,11 +79,12 @@ const QuestionList = props => {
         <List
           dataSource={questions}
           loading={loading}
-          onSearch={onSearch}
+          onSearch={query => onSearch({ query })}
           onSortOptionChange={onSortOptionChange}
           pagination={
             questionsPerPage && {
               pageSize: questionsPerPage,
+              onChange: page => onSearch({ page }),
             }
           }
           renderItem={item => (
@@ -108,7 +110,7 @@ const QuestionList = props => {
           showSort={showSort}
           showTotalCount={showTotalCount}
           sortOptions={sortOptions}
-          totalCount={questions.length}
+          totalCount={totalCount}
         />
       )}
     </Wrapper>
@@ -146,6 +148,7 @@ QuestionList.propTypes = {
   showSearch: PropTypes.bool,
   showSort: PropTypes.bool,
   showTotalCount: PropTypes.bool,
+  totalCount: PropTypes.number,
 }
 
 QuestionList.defaultProps = {
@@ -158,6 +161,7 @@ QuestionList.defaultProps = {
   showSearch: true,
   showSort: true,
   showTotalCount: true,
+  totalCount: 0,
 }
 
 export default QuestionList
