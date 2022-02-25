@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { lorem } from 'faker'
 import { uuid } from '@coko/client'
-import { Dashboard, Button } from 'ui'
+import { Dashboard } from 'ui'
 import styled from 'styled-components'
 import { createData, noop } from '../_helpers'
 
@@ -37,19 +37,17 @@ const makeData = n =>
     ],
   }))
 
-const allData = makeData(33)
-
 const searchFunction = async (params = {}) => {
   const { query = '', page = 1 } = params
   // eslint-disable-next-line no-console
   console.log(query)
   // eslint-disable-next-line no-console
   console.log(page)
-  // const numResults = 33
+  const numResults = 33
   // dummy api just to simulate wating for response
-  await fetch('https://dummyapi.io/data/v1/')
-  // data = makeData(numResults)
-  return allData.slice(10 * (page - 1), 10 * page)
+  let data = await fetch('https://dummyapi.io/data/v1/')
+  data = makeData(numResults)
+  return data.slice(10 * (page - 1), 10 * page)
 }
 
 const Wraper = styled.div`
@@ -57,12 +55,38 @@ const Wraper = styled.div`
   background: linear-gradient(97.37deg, #058d96 -34.57%, #8ac341 93.86%);
 `
 
+export const Base = () => (
+  <Wraper>
+    <Dashboard
+      authorItems={makeData(5)}
+      editorItems={makeData(5)}
+      onClickCreateQuestion={noop}
+      reviewerItems={makeData(5)}
+    />
+  </Wraper>
+)
+
 export const AuthorDashboard = () => {
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const handleSearch = async params => {
+  useEffect(async () => {
     setLoading(true)
+    setSearchResults(await searchFunction())
+    setLoading(false)
+  }, [])
+
+  const handleSearch = async (query, page) => {
+    setLoading(true)
+    const params = { query, page }
+    const data = await searchFunction(params)
+    setSearchResults(data)
+    setLoading(false)
+  }
+
+  const handleSortOptionChange = async newValue => {
+    setLoading(true)
+    const params = { sortBy: newValue }
     const data = await searchFunction(params)
     setSearchResults(data)
     setLoading(false)
@@ -74,6 +98,7 @@ export const AuthorDashboard = () => {
         loading={loading}
         onClickCreateQuestion={noop}
         onSearch={handleSearch}
+        onSortOptionChange={handleSortOptionChange}
         questions={searchResults}
         totalCount={33}
         userRole="author"
@@ -85,30 +110,37 @@ export const AuthorDashboard = () => {
 export const EditorDashboard = () => {
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
-  const [selectedQuestions, setSelectedQuestions] = useState([])
 
-  const handleSearch = async params => {
+  useEffect(async () => {
     setLoading(true)
+    setSearchResults(await searchFunction())
+    setLoading(false)
+  }, [])
+
+  const handleSearch = async (query, page) => {
+    setLoading(true)
+    const params = { query, page }
     const data = await searchFunction(params)
     setSearchResults(data)
     setLoading(false)
   }
 
-  const BulkAction = () => (
-    <Button disabled={selectedQuestions.length === 0} type="primary">
-      Assign handling editor
-    </Button>
-  )
+  const handleSortOptionChange = async newValue => {
+    setLoading(true)
+    const params = { sortBy: newValue }
+    const data = await searchFunction(params)
+    setSearchResults(data)
+    setLoading(false)
+  }
 
   return (
     <Wraper>
       <Dashboard
         activePage="/editor"
-        bulkAction={BulkAction}
         loading={loading}
         onClickCreateQuestion={noop}
-        onQuestionSelected={setSelectedQuestions}
         onSearch={handleSearch}
+        onSortOptionChange={handleSortOptionChange}
         questions={searchResults}
         totalCount={33}
         userRole="editor"
