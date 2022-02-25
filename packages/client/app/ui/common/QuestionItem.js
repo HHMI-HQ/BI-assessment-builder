@@ -29,6 +29,7 @@ const Status = styled.span`
         return th('colorBackground')
     }
   }};
+  font-weight: 700;
   border-radius: 20px;
   position: absolute;
   right: 10px;

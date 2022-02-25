@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid } from '@coko/client'
-import { Button, Collapse, QuestionList } from '../common'
+import { QuestionList } from '../common'
+import DashboardNav from './DashboardNav'
 
 const Wrapper = styled.div`
+  height: 100%;
   > div.ant-collapse > div.ant-collapse-item > .ant-collapse-header {
     align-items: center;
     display: flex;
@@ -21,14 +23,23 @@ const Wrapper = styled.div`
   }
 `
 
+const ListWrapper = styled.div`
+  max-width: 1170px;
+  height: calc(100% - 50px);
+  margin: auto;
+`
+
 // QUESTION how to handle search, filter and pagination with multiple sections
 const Dashboard = props => {
   const {
-    className,
-    authorItems,
-    editorItems,
-    reviewerItems,
+    loading,
+    questions,
+    totalCount,
     onClickCreateQuestion,
+    onSearch,
+    onSortOptionChange,
+    userRole,
+    activePage,
   } = props
 
   const handleClickCreate = e => {
@@ -36,70 +47,70 @@ const Dashboard = props => {
     onClickCreateQuestion()
   }
 
+  const bulkAction = ids => {
+    // eslint-disable-next-line no-console
+    console.log(`assign questions: ${ids}`)
+  }
+
   return (
-    <Wrapper className={className}>
-      <Collapse defaultActiveKey="author">
-        <Collapse.Panel
-          extra={
-            <Button onClick={handleClickCreate} type="primary">
-              Create question
-            </Button>
-          }
-          header="Author items"
-          key="author"
-        >
-          <QuestionList
-            questions={authorItems}
-            showSearch={false}
-            showSort={false}
-          />
-        </Collapse.Panel>
-
-        <Collapse.Panel header="Reviewer items" key="reviewer">
-          <QuestionList
-            questions={reviewerItems}
-            showSearch={false}
-            showSort={false}
-            showTotalCount={false}
-          />
-        </Collapse.Panel>
-
-        <Collapse.Panel header="Editor items" key="editor">
-          <QuestionList
-            questions={editorItems}
-            showSearch={false}
-            showSort={false}
-            showTotalCount={false}
-          />
-        </Collapse.Panel>
-      </Collapse>
+    <Wrapper>
+      <DashboardNav
+        activePage={activePage}
+        onClickCreate={handleClickCreate}
+        userRole={userRole}
+      />
+      <ListWrapper>
+        <QuestionList
+          bulkAction={bulkAction}
+          loading={loading}
+          onSearch={onSearch}
+          onSortOptionChange={onSortOptionChange}
+          questions={questions}
+          // questionSelection={userRole === 'editor'}
+          questionSelection
+          questionsPerPage={20}
+          test={userRole === 'editor'}
+          totalCount={totalCount}
+        />
+      </ListWrapper>
     </Wrapper>
   )
 }
 
-const itemProps = PropTypes.arrayOf(
-  PropTypes.shape({
-    metadata: PropTypes.arrayOf(
-      PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        value: PropTypes.string,
-      }),
-    ).isRequired,
-    title: PropTypes.string.isRequired,
-  }),
-)
-
 Dashboard.propTypes = {
-  authorItems: itemProps,
-  editorItems: itemProps,
-  reviewerItems: itemProps,
+  activePage: PropTypes.string,
+  /** Loading results. */
+  loading: PropTypes.bool,
   onClickCreateQuestion: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  onSortOptionChange: PropTypes.func.isRequired,
+  questions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      meta: PropTypes.arrayOf(
+        PropTypes.shape({
+          unit: PropTypes.string,
+          section: PropTypes.string,
+          topic: PropTypes.string,
+          category: PropTypes.string,
+          published: PropTypes.string,
+        }),
+      ),
+      status: PropTypes.string,
+    }),
+  ),
+  totalCount: PropTypes.number,
+  userRole: PropTypes.string,
 }
 
 Dashboard.defaultProps = {
-  authorItems: [],
-  editorItems: [],
-  reviewerItems: [],
+  activePage: '/authored',
+  loading: false,
+  questions: [],
+  totalCount: 0,
+  userRole: 'author',
 }
 
 export default Dashboard
