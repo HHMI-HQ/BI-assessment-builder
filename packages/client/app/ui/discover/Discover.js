@@ -99,6 +99,7 @@ export const Discover = props => {
         onSortOptionChange={setSortOption}
         questions={questions}
         questionsPerPage={10}
+        sortOptions={sortOptions}
         totalCount={totalCount}
       />
     </Wrapper>
