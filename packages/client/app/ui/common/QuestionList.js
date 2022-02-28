@@ -94,6 +94,8 @@ const QuestionList = props => {
       return originalElement
     }
 
+    paginationConfig.current = currentPage
+
     return paginationConfig
   }
 
