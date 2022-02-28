@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 `
 
 const Status = styled.span`
-  background-color: ${({ status }) => {
+  color: ${({ status }) => {
     switch (status) {
       case 'Published':
         return th('colorSuccess')
@@ -29,7 +29,6 @@ const Status = styled.span`
         return th('colorBackground')
     }
   }};
-  color: ${th('colorText')};
   border-radius: 20px;
   position: absolute;
   right: 10px;

@@ -90,7 +90,7 @@ const QuestionList = props => {
     questions,
     onSearch,
     onPageChange,
-    questionSelection,
+    showRowCheckboxes,
     onSortOptionChange,
     sortOptions,
     questionsPerPage,
@@ -105,7 +105,7 @@ const QuestionList = props => {
 
   const BulkAction = bulkAction
 
-  const itemSelection = questionSelection
+  const itemSelection = showRowCheckboxes
     ? {
         onChange: id => setSelectedQuestions(id),
       }
@@ -137,7 +137,7 @@ const QuestionList = props => {
         <>
           <List
             dataSource={questions}
-            footer={questionSelection && <BulkAction />}
+            footer={showRowCheckboxes && <BulkAction />}
             itemSelection={itemSelection}
             loading={loading}
             onSearch={onSearch}
@@ -194,7 +194,6 @@ QuestionList.propTypes = {
   currentPage: PropTypes.number,
   onPageChange: PropTypes.func,
   onSearch: PropTypes.func,
-  questionSelection: PropTypes.bool,
   onSortOptionChange: PropTypes.func,
   questionsPerPage: PropTypes.number,
   sortOptions: PropTypes.arrayOf(
@@ -205,6 +204,7 @@ QuestionList.propTypes = {
     }),
   ),
   setSelectedQuestions: PropTypes.func,
+  showRowCheckboxes: PropTypes.bool,
   showSearch: PropTypes.bool,
   showSort: PropTypes.bool,
   showTotalCount: PropTypes.bool,
@@ -217,12 +217,12 @@ QuestionList.defaultProps = {
   currentPage: 1,
   onPageChange: () => {},
   onSearch: () => {},
-  questionSelection: false,
   onSortOptionChange: () => {},
   questions: [],
   questionsPerPage: 10,
   sortOptions: [],
   setSelectedQuestions: () => {},
+  showRowCheckboxes: false,
   showSearch: true,
   showSort: true,
   showTotalCount: true,

@@ -65,44 +65,23 @@ const Wrapper = styled.div`
   height: 70vh;
 `
 
-export const Base = () => {
-  return <QuestionList questions={makeData(7)} sortOptions={sortOptions} />
-}
-
-export const WithPagination = () => {
+export const Base = args => {
   const [currentPage, setCurrentPage] = useState(1)
-  return (
-    <Wrapper>
-      <QuestionList
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        questions={makeData(13)}
-        questionsPerPage={5}
-        sortOptions={sortOptions}
-        totalCount={15}
-      />
-    </Wrapper>
-  )
-}
+  const [data, setData] = useState(makeData(5))
 
-export const NoSearch = () => {
+  const handlePageChange = p => {
+    setData(makeData(5))
+    setCurrentPage(p)
+  }
+
   return (
     <QuestionList
-      questions={makeData(13)}
+      {...args}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
+      questions={data}
       questionsPerPage={5}
-      showSearch={false}
       sortOptions={sortOptions}
-    />
-  )
-}
-
-export const JustTheList = () => {
-  return (
-    <QuestionList
-      questions={makeData(5)}
-      showSearch={false}
-      showSort={false}
-      showTotalCount={false}
     />
   )
 }
@@ -125,11 +104,11 @@ export const SelectableRows = () => {
         bulkAction={BulkAction}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
-        questions={makeData(9)}
+        questions={makeData(11)}
         questionSelection
         questionsPerPage={5}
         sortOptions={sortOptions}
-        totalCount={11}
+        totalCount={13}
       />
     </Wrapper>
   )
