@@ -120,8 +120,8 @@ export const SelectableRows = () => {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         questions={makeData(11)}
-        questionSelection
         questionsPerPage={5}
+        showRowCheckboxes
         sortOptions={sortOptions}
         totalCount={13}
       />
