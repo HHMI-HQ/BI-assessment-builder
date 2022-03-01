@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, memo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { without } from 'lodash'
@@ -87,7 +87,12 @@ const CheckBox = styled(UICheckBox)`
   padding: ${grid(2)};
 `
 
-const SelectableItem = props => {
+const compareItem = (preProps, nextProps) => {
+  if (preProps.selected === nextProps.selected) return true
+  return false
+}
+
+const SelectableItem = memo(props => {
   const {
     id,
     renderItem: RenderItem,
@@ -111,7 +116,7 @@ const SelectableItem = props => {
       <RenderItem id={id} {...rest} />
     </SelectableWrapper>
   )
-}
+}, compareItem)
 
 SelectableItem.propTypes = {
   id: PropTypes.string.isRequired,
@@ -124,6 +129,24 @@ SelectableItem.propTypes = {
 // const EmptyList = () => {
 //   return 'no data'
 // }
+// memoized SelectableItem would use old value of selectedItems when handleSelect and handleDeselect are passed as they are
+// when you wrap them with the below function, they always refer to the List's selectedItems
+function useFunction(callback) {
+  const ref = React.useRef()
+  ref.current = callback
+
+  function callbackFunction(...args) {
+    const cb = ref.current
+
+    if (typeof callback === 'function') {
+      return cb.apply(this, args)
+    }
+
+    return false
+  }
+
+  return useCallback(callbackFunction, [])
+}
 
 const List = props => {
   const {
@@ -159,8 +182,13 @@ const List = props => {
       itemSelection.onChange(selectedItems)
   }, [selectedItems])
 
-  const handleSelect = id => setSelectedItems([...selectedItems, id])
-  const handleDeselect = id => setSelectedItems(without(selectedItems, id))
+  const handleSelect = useFunction(id => {
+    setSelectedItems([...selectedItems, id])
+  })
+
+  const handleDeselect = useFunction(id => {
+    setSelectedItems(without(selectedItems, id))
+  })
 
   const listItemToRender = itemSelection
     ? itemProps => (
