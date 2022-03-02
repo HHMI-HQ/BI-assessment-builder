@@ -67,6 +67,22 @@ export const DiscoverPage = () => {
   )
 }
 
+const DiscoveryCustom = args => {
+  return (
+    <Wrapper>
+      <Discover {...args} />
+    </Wrapper>
+  )
+}
+
+export const CustomControls = DiscoveryCustom.bind({})
+CustomControls.args = {
+  questions: makeData(10),
+  onSearch: () => {},
+  totalCount: 10,
+  sidebarText,
+}
+
 export default {
   component: Discover,
   title: 'Discover/Discover',
