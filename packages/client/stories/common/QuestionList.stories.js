@@ -62,7 +62,8 @@ const sortOptions = [
 ]
 
 const Wrapper = styled.div`
-  height: 70vh;
+  height: 80vh;
+  display: flex;
 `
 
 export const Base = args => {
@@ -74,19 +75,6 @@ export const Base = args => {
     setCurrentPage(p)
   }
 
-  return (
-    <QuestionList
-      {...args}
-      currentPage={currentPage}
-      onPageChange={handlePageChange}
-      questions={data}
-      questionsPerPage={5}
-      sortOptions={sortOptions}
-    />
-  )
-}
-
-export const SelectableRows = () => {
   const BulkAction = () => {
     return (
       // eslint-disable-next-line no-console
@@ -96,19 +84,16 @@ export const SelectableRows = () => {
     )
   }
 
-  const [currentPage, setCurrentPage] = useState(1)
-
   return (
     <Wrapper>
       <QuestionList
+        {...args}
         bulkAction={BulkAction}
         currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        questions={makeData(11)}
+        onPageChange={handlePageChange}
+        questions={data}
         questionsPerPage={5}
-        showRowCheckboxes
         sortOptions={sortOptions}
-        totalCount={13}
       />
     </Wrapper>
   )

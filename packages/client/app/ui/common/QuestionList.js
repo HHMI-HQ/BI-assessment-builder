@@ -14,52 +14,63 @@ const ButtonWithoutStyles = styled.button`
 
 const Wrapper = styled.main`
   overflow: hidden;
-  position: relative;
-  height: 100%;
   background-color: white;
   > div {
     height: 100%;
-  }
-  .ant-spin-nested-loading {
-    height: calc(100% - 70px);
-    padding-top: 15px;
-  }
-  .ant-spin-container,
-  .ant-list {
-    overflow: auto;
-    height: 100%;
-    .ant-list-item {
-      border-bottom: none;
-      padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    > .ant-spin-nested-loading {
+      flex: 1 1 auto;
+      overflow: auto;
+      .ant-spin-container {
+        height: 100%;
+        .ant-list {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          .ant-spin-nested-loading {
+            flex-grow: 1;
+            overflow: scroll;
+            .ant-list-item {
+              border-bottom: none;
+              padding: 0 15px;
+              .divider {
+                border-bottom: 1px solid ${th('colorSecondary')};
+                padding: 15px;
+              }
+            }
+          }
+          .ant-list-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            background-color: ${th('colorBackground')};
+            border-top: 1px solid ${th('colorSecondary')};
+            border-bottom: 1px solid ${th('colorSecondary')};
+            > * {
+              z-index: 3;
+            }
+          }
+          .ant-list-pagination {
+            flex-shrink: 0;
+            margin-top: 0;
+            color: ${th('colorText')};
+            background-color: ${th('colorBackground')};
+            border-top: 1px solid ${th('colorSecondary')};
+            border-bottom: 1px solid ${th('colorSecondary')};
+            display: flex;
+            align-items: center;
+            justify-content: right;
+            height: 50px;
+            z-index: 2;
+          }
+        }
+      }
     }
-  }
-  .ant-list-pagination {
-    position: sticky;
-    bottom: 0;
-    margin-top: 0;
-    color: ${th('colorText')};
-    background-color: ${th('colorBackground')};
-    border-top: 1px solid ${th('colorSecondary')};
-    border-bottom: 1px solid ${th('colorSecondary')};
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    height: 50px;
-  }
-
-  .divider {
-    border-bottom: 1px solid ${th('colorSecondary')};
-    padding: 15px;
-  }
-
-  .ant-list-footer {
-    position: absolute;
-    width: 50%;
-    height: 48px;
-    z-index: 2;
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
   }
 `
 
@@ -94,7 +105,7 @@ const QuestionList = props => {
     ? {
         onChange: id => onQuestionSelected(id),
       }
-    : false
+    : null
 
   const shouldShowPagination =
     totalCount > questions.length || questions.length > questionsPerPage
@@ -113,7 +124,7 @@ const QuestionList = props => {
 
     paginationConfig.current = currentPage
 
-    paginationConfig.itemRender = (page, type, originalElement) => {
+    paginationConfig.itemRender = (_page, type, originalElement) => {
       if (type === 'prev') {
         return <ButtonWithoutStyles>Previous</ButtonWithoutStyles>
       }
