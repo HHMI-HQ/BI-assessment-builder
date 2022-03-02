@@ -144,6 +144,12 @@ const List = props => {
   const showInternalHeaderRow = showSort || showTotalCount
   const defaultSortOption = sortOptions && sortOptions.find(o => o.isDefault)
 
+  // remove `isDefault` prop from sortOptions bcs it's unrecognized when spread onto an html <option>
+  const sanitizedSortOptions = sortOptions.map(({ label, value }) => ({
+    label,
+    value,
+  }))
+
   return (
     <Wrapper className={className}>
       {showSearch && (
@@ -168,7 +174,7 @@ const List = props => {
               <Select
                 defaultValue={defaultSortOption && defaultSortOption.value}
                 onChange={onSortOptionChange}
-                options={sortOptions}
+                options={sanitizedSortOptions}
               />
             </SortWrapper>
           )}
