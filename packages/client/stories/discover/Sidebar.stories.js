@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Sidebar } from 'ui'
 import { lorem } from 'faker'
@@ -11,20 +11,14 @@ const Wrapper = styled.section`
 const sidebarText = lorem.sentences(7)
 
 export const Base = () => {
-  const [filters, setFilters] = useState({})
-
-  const applyFilters = () => {
+  const applyFilters = filters => {
     // eslint-disable-next-line no-console
     console.log(filters)
   }
 
   return (
     <Wrapper>
-      <Sidebar
-        applyFilters={applyFilters}
-        setFilters={setFilters}
-        text={sidebarText}
-      />
+      <Sidebar setFilters={applyFilters} text={sidebarText} />
     </Wrapper>
   )
 }
