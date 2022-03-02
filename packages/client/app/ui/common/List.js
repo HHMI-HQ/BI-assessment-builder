@@ -93,6 +93,7 @@ const compareItem = (preProps, nextProps) => {
   return false
 }
 
+// memoize Selectable item to avoid unecessary rerendering every time an item is selected/deselected
 const SelectableItem = memo(props => {
   const {
     id,
@@ -131,7 +132,7 @@ SelectableItem.propTypes = {
 //   return 'no data'
 // }
 // memoized SelectableItem would use old value of selectedItems when handleSelect and handleDeselect are passed as they are
-// when you wrap them with the below function, they always refer to the List's selectedItems
+// when you wrap them with the below function, they always refer to the List's updated selectedItems
 function useFunction(callback) {
   const ref = React.useRef()
   ref.current = callback

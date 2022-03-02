@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid } from '@coko/client'
 import { QuestionList } from '../common'
 import DashboardNav from './DashboardNav'
 
 const Wrapper = styled.div`
   height: 100%;
-  > div.ant-collapse > div.ant-collapse-item > .ant-collapse-header {
-    align-items: center;
-    display: flex;
-    padding-left: ${grid(4)};
-
-    > .anticon.ant-collapse-arrow {
-      padding: 0 ${grid(3)} 0 0;
-      position: initial;
-    }
-
-    > .ant-collapse-extra {
-      margin-left: auto;
-    }
-  }
+  display: flex;
+  flex-direction: column;
 `
 
 const ListWrapper = styled.div`
   max-width: 1170px;
-  height: calc(100% - 50px);
+  height: 1px; // needs an arbitrary height to fit its container
+  flex-grow: 1; // stretches to the available space
+  display: flex;
   margin: auto;
 `
 
