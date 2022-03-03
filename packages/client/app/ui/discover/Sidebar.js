@@ -51,7 +51,7 @@ const filterReducer = (state, action) => {
 }
 
 const Sidebar = props => {
-  const { text, setFilters } = props
+  const { className, text, setFilters } = props
 
   const [selectedFilters, setSelectedFilters] = useReducer(filterReducer, {})
 
@@ -63,7 +63,7 @@ const Sidebar = props => {
   }
 
   return (
-    <SidebarWrapper>
+    <SidebarWrapper className={className}>
       <div>
         <p>{text}</p>
         <Collapse>
