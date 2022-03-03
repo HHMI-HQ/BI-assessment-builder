@@ -16,6 +16,10 @@ const ListWrapper = styled.div`
   flex-grow: 1; // stretches to the available space
   display: flex;
   margin: auto;
+  width: 100%;
+  .dashboard-list {
+    width: 100%;
+  }
 `
 
 const sortOptions = [
@@ -45,6 +49,7 @@ const sortOptions = [
 // QUESTION how to handle search, filter and pagination with multiple sections
 const Dashboard = props => {
   const {
+    className,
     loading,
     questions,
     totalCount,
@@ -82,7 +87,7 @@ const Dashboard = props => {
   }, [searchParams])
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <DashboardNav
         activePage={activePage}
         onClickCreate={onClickCreateQuestion}
@@ -91,6 +96,7 @@ const Dashboard = props => {
       <ListWrapper>
         <QuestionList
           bulkAction={bulkAction}
+          className="dashboard-list"
           currentPage={searchParams.page}
           loading={loading}
           onPageChange={setSearchPage}
