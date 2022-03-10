@@ -2,80 +2,94 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { th } from '@coko/client'
-import { ConfigProvider } from 'antd'
 import List from './List'
 import LinkWithoutStyles from './LinkWithoutStyles'
-import { DashboardRow } from '../dashboard'
+import QuestionItem from './QuestionItem'
 
 const ButtonWithoutStyles = styled.button`
   border: none;
   background-color: transparent;
 `
 
-const Wrapper = styled.main`
-  overflow: hidden;
-  background-color: white;
-  > div {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    > .ant-spin-nested-loading {
-      flex: 1 1 auto;
-      overflow: auto;
-      .ant-spin-container {
+const StyledList = styled(List)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  > .ant-spin-nested-loading {
+    flex: 1 1 auto;
+    overflow: auto;
+    .ant-spin-container {
+      height: 100%;
+      .ant-list {
+        display: flex;
+        flex-direction: column;
         height: 100%;
-        .ant-list {
-          display: flex;
-          flex-direction: column;
-          height: 100%;
-          .ant-spin-nested-loading {
-            flex-grow: 1;
-            overflow: scroll;
-            .ant-list-item {
-              border-bottom: none;
-              padding: 0 15px;
-              .divider {
-                border-bottom: 1px solid ${th('colorSecondary')};
-                padding: 15px;
+        .ant-spin-nested-loading {
+          flex-grow: 1;
+          overflow-y: auto;
+          .ant-list-items {
+            > div:last-child {
+              .ant-list-item {
+                border-bottom: none;
               }
             }
           }
-          .ant-list-footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 50px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            background-color: ${th('colorBackground')};
-            border-top: 1px solid ${th('colorSecondary')};
+          .ant-list-item {
             border-bottom: 1px solid ${th('colorSecondary')};
-            > * {
-              z-index: 3;
-            }
+            padding: 15px;
           }
-          .ant-list-pagination {
-            flex-shrink: 0;
-            margin-top: 0;
-            color: ${th('colorText')};
-            background-color: ${th('colorBackground')};
-            border-top: 1px solid ${th('colorSecondary')};
-            border-bottom: 1px solid ${th('colorSecondary')};
-            display: flex;
-            align-items: center;
-            justify-content: right;
-            height: 50px;
-            z-index: 2;
+        }
+        .ant-list-footer {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 50px;
+          padding: 0 20px;
+          display: flex;
+          align-items: center;
+          background-color: ${th('colorBackground')};
+          border-top: 1px solid ${th('colorSecondary')};
+          border-bottom: 1px solid ${th('colorSecondary')};
+          > * {
+            z-index: 3;
           }
+        }
+        .ant-list-pagination {
+          flex-shrink: 0;
+          margin-top: 0;
+          color: ${th('colorText')};
+          background-color: ${th('colorBackground')};
+          border-top: 1px solid ${th('colorSecondary')};
+          border-bottom: 1px solid ${th('colorSecondary')};
+          display: flex;
+          align-items: center;
+          justify-content: right;
+          height: 50px;
+          z-index: 2;
         }
       }
     }
   }
 `
 
-const EmptyList = () => {
-  return 'no data'
+const RenderItem = ({ item, onClickRow }) => {
+  return (
+    <List.Item>
+      <LinkWithoutStyles href={item.href} onClick={() => onClickRow(item)}>
+        <QuestionItem
+          content={item.description}
+          metadata={item.metadata}
+          status={item.status}
+          title={item.title}
+        />
+      </LinkWithoutStyles>
+    </List.Item>
+  )
+}
+
+RenderItem.propTypes = {
+  item: PropTypes.shape().isRequired,
+  onClickRow: PropTypes.func.isRequired,
 }
 
 const QuestionList = props => {
@@ -139,42 +153,23 @@ const QuestionList = props => {
     return paginationConfig
   }
 
-  const renderItem = item => (
-    <List.Item>
-      <LinkWithoutStyles href={item.href} onClick={() => onClickRow(item)}>
-        <DashboardRow
-          className="divider"
-          content={item.description}
-          metadata={item.metadata}
-          status={item.status}
-          title={item.title}
-        />
-      </LinkWithoutStyles>
-    </List.Item>
-  )
-
   return (
-    <Wrapper className={className}>
-      {questions && (
-        <ConfigProvider renderEmpty={EmptyList}>
-          <List
-            dataSource={questions}
-            footer={showRowCheckboxes && <BulkAction />}
-            itemSelection={itemSelection}
-            loading={loading}
-            onSearch={onSearch}
-            onSortOptionChange={onSortOptionChange}
-            pagination={pagination()}
-            renderItem={renderItem}
-            showSearch={showSearch}
-            showSort={showSort}
-            showTotalCount={showTotalCount}
-            sortOptions={sortOptions}
-            totalCount={totalCount}
-          />
-        </ConfigProvider>
-      )}
-    </Wrapper>
+    <StyledList
+      className={className}
+      dataSource={questions}
+      footer={showRowCheckboxes && <BulkAction />}
+      itemSelection={itemSelection}
+      loading={loading}
+      onSearch={onSearch}
+      onSortOptionChange={onSortOptionChange}
+      pagination={pagination()}
+      renderItem={item => <RenderItem item={item} onClickRow={onClickRow} />}
+      showSearch={showSearch}
+      showSort={showSort}
+      showTotalCount={showTotalCount}
+      sortOptions={sortOptions}
+      totalCount={totalCount}
+    />
   )
 }
 

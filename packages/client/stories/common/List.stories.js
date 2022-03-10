@@ -28,16 +28,23 @@ const makeData = n =>
 
 const data = makeData(38)
 
+const Wrapper = styled.div`
+  height: 700px;
+  border: 1px solid red;
+`
+
 export const Base = args => (
-  <List
-    dataSource={data}
-    pagination={{
-      pageSize: 10,
-    }}
-    renderItem={item => <Item>{item.value}</Item>}
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    {...args}
-  />
+  <Wrapper>
+    <List
+      dataSource={data}
+      pagination={{
+        pageSize: 10,
+      }}
+      renderItem={item => <Item>{item.value}</Item>}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...args}
+    />
+  </Wrapper>
 )
 
 Base.args = {
@@ -278,6 +285,8 @@ export const DefaultAntItem = () => {
     />
   )
 }
+
+export const EmptyList = () => <List dataSource={[]} />
 
 export default {
   component: List,

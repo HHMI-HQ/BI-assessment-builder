@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { without } from 'lodash'
 
-import { List as AntList } from 'antd'
+import { List as AntList /* ConfigProvider */ } from 'antd'
+
 import { grid, th } from '@coko/client'
 
 import UICheckBox from './Checkbox'
@@ -11,7 +12,9 @@ import Search from './Search'
 import UISelect from './Select'
 import Spin from './Spin'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  background-color: ${th('colorBackground')};
+`
 
 const InternalHeader = styled.div`
   border-bottom: 1px solid ${th('colorBorder')};
@@ -85,6 +88,10 @@ SelectableItem.propTypes = {
   onSelect: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
 }
+
+// const EmptyList = () => {
+//   return 'no data'
+// }
 
 const List = props => {
   const {
@@ -182,11 +189,13 @@ const List = props => {
       )}
 
       <Spin spinning={loading}>
+        {/* <ConfigProvider renderEmpty={EmptyList}> */}
         <AntList
           pagination={passedPagination}
           renderItem={listItemToRender}
           {...rest}
         />
+        {/* </ConfigProvider> */}
       </Spin>
     </Wrapper>
   )

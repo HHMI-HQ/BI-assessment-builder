@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { uuid, th } from '@coko/client'
 
-import { H4 } from '../common'
+import { H4 } from './Headings'
 import WaxWrapper from '../wax/Wax'
 import { DashLayout } from '../wax/layout'
 import { dashConfig } from '../wax/config'
@@ -58,7 +58,7 @@ const contentPlaceholder = `<p class="paragraph">-</p>`
 
 const MetadataValue = styled.div``
 
-const DashboardRow = props => {
+const QuestionItem = props => {
   const { className, metadata, content, title, status } = props
 
   return (
@@ -89,7 +89,7 @@ const DashboardRow = props => {
   )
 }
 
-DashboardRow.propTypes = {
+QuestionItem.propTypes = {
   metadata: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -101,6 +101,6 @@ DashboardRow.propTypes = {
   title: PropTypes.string.isRequired,
 }
 
-DashboardRow.defaultProps = { content: null, status: '' }
+QuestionItem.defaultProps = { content: null, status: '' }
 
-export default DashboardRow
+export default QuestionItem

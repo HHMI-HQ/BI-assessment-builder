@@ -63,7 +63,6 @@ const sortOptions = [
 
 const Wrapper = styled.div`
   height: 80vh;
-  display: flex;
 `
 
 export const Base = args => {
@@ -97,6 +96,11 @@ export const Base = args => {
       />
     </Wrapper>
   )
+}
+
+Base.args = {
+  totalCount: 13,
+  showRowCheckboxes: true,
 }
 
 export default {
