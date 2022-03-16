@@ -81,11 +81,13 @@ export const Base = args => {
     </Button>
   )
 
+  const { showRowCheckboxes } = args
+
   return (
     <Wrapper>
       <QuestionList
         {...args}
-        bulkAction={BulkAction}
+        {...(showRowCheckboxes ? { bulkAction: BulkAction } : {})}
         currentPage={currentPage}
         onPageChange={handlePageChange}
         questions={data}

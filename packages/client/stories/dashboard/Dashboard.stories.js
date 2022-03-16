@@ -94,7 +94,7 @@ export const EditorDashboard = () => {
     setLoading(false)
   }
 
-  const BulkAction = () => (
+  const BulkAction = (
     <Button disabled={selectedQuestions.length === 0} type="primary">
       Assign handling editor
     </Button>

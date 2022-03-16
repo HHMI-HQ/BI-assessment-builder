@@ -128,9 +128,6 @@ SelectableItem.propTypes = {
   selected: PropTypes.bool.isRequired,
 }
 
-// const EmptyList = () => {
-//   return 'no data'
-// }
 // memoized SelectableItem would use old value of selectedItems when handleSelect and handleDeselect are passed as they are
 // when you wrap them with the below function, they always refer to the List's updated selectedItems
 function useFunction(callback) {
@@ -149,6 +146,10 @@ function useFunction(callback) {
 
   return useCallback(callbackFunction, [])
 }
+
+// const EmptyList = () => {
+//   return 'no data'
+// }
 
 const List = props => {
   const {
@@ -280,6 +281,10 @@ const List = props => {
 
   const showInternalHeaderRow = showSort || showTotalCount
   const defaultSortOption = sortOptions && sortOptions.find(o => o.isDefault)
+
+  passedPagination.setPaginationCurrent = setPaginationCurrent
+  passedPagination.setPaginationSize = setPaginationSize
+  passedPagination.showPagination = shouldShowPagination
 
   // remove `isDefault` prop from sortOptions bcs it's unrecognized when spread onto an html <option>
   const sanitizedSortOptions = sortOptions.map(({ label, value }) => ({

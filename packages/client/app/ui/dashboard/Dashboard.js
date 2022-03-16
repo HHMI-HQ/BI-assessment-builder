@@ -1,24 +1,51 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { QuestionList } from '../common'
-import DashboardNav from './DashboardNav'
+import { th } from '@coko/client'
+import { QuestionList, Tabs } from '../common'
 
 const Wrapper = styled.div`
   height: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
-`
-
-const ListWrapper = styled.div`
-  max-width: 1170px;
-  height: 1px; // needs an arbitrary height to fit its container
-  flex-grow: 1; // stretches to the available space
-  display: flex;
-  margin: auto;
-  width: 100%;
-  .dashboard-list {
-    width: 100%;
+  .ant-tabs {
+    height: 100%;
+    [role='tablist'] {
+      background-color: ${th('colorSecondary')};
+      margin: 0;
+      padding: 0 10px;
+      .ant-tabs-tab {
+        padding: 12px 15px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin: 0;
+        &.ant-tabs-tab-active {
+          background-color: ${th('colorBackground')};
+          color: inherit;
+        }
+      }
+      .ant-tabs-ink-bar {
+        display: none;
+      }
+      [role='tab'] {
+        &[aria-selected='true'] {
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+      .ant-tabs-content {
+        height: 100%;
+        max-width: 1170px;
+        margin: auto;
+        [role='tabpanel'] {
+          display: flex;
+          .dashboard-list {
+            width: 100%;
+          }
+        }
+      }
+    }
   }
 `
 
@@ -46,17 +73,28 @@ const sortOptions = [
   },
 ]
 
+const defaultTabs = [
+  {
+    label: 'Authored Questions',
+    value: 'author',
+  },
+  {
+    label: 'Editor Questions',
+    value: 'editor',
+  },
+]
+
 // QUESTION how to handle search, filter and pagination with multiple sections
 const Dashboard = props => {
   const {
+    className,
     loading,
     questions,
     totalCount,
-    onClickCreateQuestion,
+    createQuestionButton,
     onQuestionSelected,
     onSearch,
     userRole,
-    activePage,
     bulkAction,
   } = props
 
@@ -64,6 +102,7 @@ const Dashboard = props => {
     query: '',
     page: 1,
     sortBy: 'date',
+    tab: 'author',
   })
 
   const setSearchPage = page => {
@@ -75,49 +114,61 @@ const Dashboard = props => {
   }
 
   const setSortOption = sortBy => {
-    sortOptions.filter(opt => opt.isDefault)[0].isDefault = false
-    sortOptions.filter(opt => opt.value === sortBy)[0].isDefault = true
-
     setSearchParams({ ...searchParams, sortBy, page: 1 })
+  }
+
+  const setActiveTab = tab => {
+    setSearchParams({ query: '', sortBy: 'date', page: 1, tab })
   }
 
   useEffect(() => {
     onSearch(searchParams)
   }, [searchParams])
 
+  const tabs =
+    userRole === 'editor'
+      ? defaultTabs
+      : defaultTabs.filter(tab => tab.value !== 'editor')
+
   return (
-    <Wrapper>
-      <DashboardNav
-        activePage={activePage}
-        onClickCreate={onClickCreateQuestion}
-        userRole={userRole}
-      />
-      <ListWrapper>
-        <QuestionList
-          bulkAction={bulkAction}
-          currentPage={searchParams.page}
-          loading={loading}
-          onPageChange={setSearchPage}
-          onQuestionSelected={onQuestionSelected}
-          onSearch={setSearchQuery}
-          onSortOptionChange={setSortOption}
-          questions={questions}
-          showRowCheckboxes={userRole === 'editor'}
-          sortOptions={sortOptions}
-          test={userRole === 'editor'}
-          totalCount={totalCount}
-        />
-      </ListWrapper>
+    <Wrapper className={className}>
+      <Tabs
+        className="dashboard"
+        onChange={setActiveTab}
+        tabBarExtraContent={createQuestionButton}
+      >
+        {tabs.map(({ value, label }) => (
+          <Tabs.TabPane key={value} tab={label}>
+            <QuestionList
+              {...(value === 'editor' ? { bulkAction } : {})}
+              className="dashboard-list"
+              currentPage={searchParams.page}
+              key={searchParams.tab}
+              loading={loading}
+              onPageChange={setSearchPage}
+              onQuestionSelected={onQuestionSelected}
+              onSearch={setSearchQuery}
+              onSortOptionChange={setSortOption}
+              questions={questions}
+              showRowCheckboxes={value === 'editor'}
+              sortOptions={sortOptions}
+              totalCount={totalCount}
+            />
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
     </Wrapper>
   )
 }
 
 Dashboard.propTypes = {
-  activePage: PropTypes.string,
-  bulkAction: PropTypes.func,
+  /** custom component for bulk actions */
+  bulkAction: PropTypes.element,
+  /** custom component for create question */
+  createQuestionButton: PropTypes.shape(),
   /** Loading results. */
   loading: PropTypes.bool,
-  onClickCreateQuestion: PropTypes.func.isRequired,
+  /** hande]le selection and deselection of questions */
   onQuestionSelected: PropTypes.func,
   onSearch: PropTypes.func.isRequired,
   questions: PropTypes.arrayOf(
@@ -127,11 +178,8 @@ Dashboard.propTypes = {
       description: PropTypes.string,
       meta: PropTypes.arrayOf(
         PropTypes.shape({
-          unit: PropTypes.string,
-          section: PropTypes.string,
-          topic: PropTypes.string,
-          category: PropTypes.string,
-          published: PropTypes.string,
+          label: PropTypes.string,
+          value: PropTypes.string,
         }),
       ),
       status: PropTypes.string,
@@ -142,8 +190,8 @@ Dashboard.propTypes = {
 }
 
 Dashboard.defaultProps = {
-  activePage: '/authored',
-  bulkAction: () => {},
+  bulkAction: <div />,
+  createQuestionButton: () => null,
   loading: false,
   onQuestionSelected: () => {},
   questions: [],
