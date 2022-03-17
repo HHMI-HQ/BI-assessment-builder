@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import { Input } from 'antd'
 
 const StyledSearch = styled(Input.Search)`
-  position: relative;
-  padding: 0 8px;
+  /* .ant-input-search-button {
+    border-left: 0;
+  } */
 `
 
 const Search = props => {
