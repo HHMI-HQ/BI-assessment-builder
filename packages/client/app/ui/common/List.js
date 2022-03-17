@@ -174,21 +174,25 @@ const List = props => {
       )
     : renderItem
 
-  // creating temporary object because it asks for prop validation if we read pagination.current
-  // same implementation as in antd List
-  const paginationObj =
-    pagination && typeof pagination === 'object' ? pagination : {}
+  const paginationObj = {
+    current: 1,
+    pageSize: 10,
+    ...pagination,
+  }
 
   const [paginationCurrent, setPaginationCurrent] = useState(
-    paginationObj.current || 1,
+    paginationObj.current,
   )
 
-  const [paginationSize, setPaginationSize] = useState(
-    paginationObj.pageSize || 10,
-  )
+  const [paginationSize, setPaginationSize] = useState(paginationObj.pageSize)
+
+  useEffect(() => {
+    setPaginationCurrent(paginationObj.current)
+    setPaginationSize(paginationObj.pageSize)
+  }, [pagination])
 
   const passedPagination = {
-    ...pagination,
+    ...paginationObj,
     current: paginationCurrent,
     pageSize: paginationSize,
   }
