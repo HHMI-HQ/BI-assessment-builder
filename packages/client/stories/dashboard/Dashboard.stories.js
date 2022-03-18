@@ -3,7 +3,7 @@ import { lorem } from 'faker'
 import { uuid } from '@coko/client'
 import { Dashboard, Button } from 'ui'
 import styled from 'styled-components'
-import { createData, noop } from '../_helpers'
+import { createData } from '../_helpers'
 
 const makeData = n =>
   createData(n, i => ({
@@ -57,32 +57,11 @@ const Wraper = styled.div`
   background: linear-gradient(97.37deg, #058d96 -34.57%, #8ac341 93.86%);
 `
 
-export const AuthorDashboard = () => {
-  const [searchResults, setSearchResults] = useState([])
-  const [loading, setLoading] = useState(false)
+const CreateQuestionsBtn = styled(Button)`
+  margin: 0 10px;
+`
 
-  const handleSearch = async params => {
-    setLoading(true)
-    const data = await searchFunction(params)
-    setSearchResults(data)
-    setLoading(false)
-  }
-
-  return (
-    <Wraper>
-      <Dashboard
-        loading={loading}
-        onClickCreateQuestion={noop}
-        onSearch={handleSearch}
-        questions={searchResults}
-        totalCount={33}
-        userRole="author"
-      />
-    </Wraper>
-  )
-}
-
-export const EditorDashboard = () => {
+export const Base = args => {
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedQuestions, setSelectedQuestions] = useState([])
@@ -94,8 +73,21 @@ export const EditorDashboard = () => {
     setLoading(false)
   }
 
-  const BulkAction = (
-    <Button disabled={selectedQuestions.length === 0} type="primary">
+  const CreateQuestion = (
+    <CreateQuestionsBtn type="primary">Create Question</CreateQuestionsBtn>
+  )
+
+  const handleBulkAction = () => {
+    // eslint-disable-next-line no-console
+    console.log(selectedQuestions)
+  }
+
+  const BulkAction = () => (
+    <Button
+      disabled={selectedQuestions.length === 0}
+      onClick={handleBulkAction}
+      type="primary"
+    >
       Assign handling editor
     </Button>
   )
@@ -103,21 +95,37 @@ export const EditorDashboard = () => {
   return (
     <Wraper>
       <Dashboard
-        activePage="/editor"
+        {...args}
         bulkAction={BulkAction}
+        createQuestionButton={CreateQuestion}
         loading={loading}
-        onClickCreateQuestion={noop}
         onQuestionSelected={setSelectedQuestions}
         onSearch={handleSearch}
         questions={searchResults}
         totalCount={33}
-        userRole="editor"
       />
     </Wraper>
   )
 }
 
+Base.args = {
+  userRole: {
+    control: {
+      type: 'select',
+      options: ['author', 'editor'],
+    },
+  },
+}
+
 export default {
   component: Dashboard,
   title: 'Dashboard/Dashboard',
+  argTypes: {
+    userRole: {
+      control: {
+        type: 'select',
+        options: ['author', 'editor'],
+      },
+    },
+  },
 }
