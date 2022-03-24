@@ -1,16 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { datatype, name } from 'faker'
-import {
-  Form,
-  Input,
-  Checkbox,
-  CheckboxGroup,
-  Select,
-  Switch,
-  Radio,
-  TextArea,
-} from 'ui'
+import { Form, Input, CheckboxGroup, Select, Switch, Radio, TextArea } from 'ui'
 import { range } from 'lodash'
 
 let renderCounter = 1
@@ -29,10 +20,10 @@ const checkboxOptions = makeOptions(3)
 const radioOptions = makeOptions(3)
 
 const GridWrapper = styled.div`
+  column-gap: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-row-gap: 20px;
-  grid-column-gap: 10px;
+  row-gap: 20px;
 `
 
 const Grid2 = styled.div`
@@ -65,6 +56,7 @@ export const AntForm = () => {
               </Grid4>
               <Grid4>
                 <h3>
+                  {/* eslint-disable-next-line no-plusplus */}
                   Counter{i + 1}: {counters[i]++}
                 </h3>
               </Grid4>
@@ -76,13 +68,12 @@ export const AntForm = () => {
                   rules={[
                     {
                       required: true,
-                      message: 'Cannot submit without a this field',
+                      message: `Cannot submit without a this field`,
                     },
                   ]}
                 >
                   <Input />
                 </Form.Item>
-                {/* eslint-disable-next-line no-plusplus */}
               </Grid2>
               <Form.Item
                 hasFeedback

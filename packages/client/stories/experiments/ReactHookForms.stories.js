@@ -2,22 +2,22 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { range } from 'lodash'
-import { datatype, lorem, name } from 'faker'
+import { datatype, name } from 'faker'
 
 let counter = 1
 
 const GridWrapper = styled.div`
+  column-gap: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-row-gap: 20px;
-  grid-column-gap: 10px;
+  row-gap: 20px;
 
   input[type='text'],
   input[type='tel'],
   input[type='email'],
   select {
-    width: 100%;
     height: 40px;
+    width: 100%;
   }
 
   .error {
@@ -54,8 +54,8 @@ export const ReactHookForm = () => {
 
   const onSubmit = data => {
     // e.preventDefault()
-    console.log('data')
-    console.log(data)
+    // console.log('data')
+    // console.log(data)
   }
 
   return (
@@ -201,9 +201,9 @@ export const ReactHookForm = () => {
                 Choose one
                 {radioOptions.map(op => (
                   <p key={op.value}>
-                    <label htmlFor={op.value}>
+                    <label htmlFor={`${op.value}-${i}`}>
                       <input
-                        id={op.value}
+                        id={`${op.value}-${i}`}
                         type="radio"
                         value={op.value}
                         {...register(`radio${i}`, { required: true })}
