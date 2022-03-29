@@ -12,4 +12,4 @@ services:
       - STORYBOOK_PORT=${STORYBOOK_PORT:-5000}
     volumes:
       - ./packages/client/stories:/home/node/app/stories
-      - ./packages/client/app/ui:/home/node/app/app/ui
+      - ./packages/client/app:/home/node/app/app

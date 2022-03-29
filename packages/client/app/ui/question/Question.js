@@ -30,6 +30,21 @@ const Wrapper = styled.div`
   .ant-col {
     height: 100%;
   }
+
+  /* stylelint-disable declaration-no-important */
+  .ant-col {
+    padding: 0 !important;
+  }
+
+  div[role='tabpanel'] > .ant-row {
+    margin: 0 !important;
+  }
+  /* stylelint-enable declaration-no-important */
+
+  .ant-tabs-nav {
+    margin: 0;
+    padding: 0 ${grid(2)};
+  }
 `
 
 const StyledBackButton = styled(Button)`
@@ -127,7 +142,6 @@ const Question = props => {
   return (
     <Wrapper>
       <Spin renderBackground={false} spinning={loading}>
-        {/* <Wrapper className={className}> */}
         <Tabs
           tabBarExtraContent={{
             left: BackButton,
@@ -155,7 +169,6 @@ const Question = props => {
             </Split>
           </Tabs.TabPane>
         </Tabs>
-        {/* </Wrapper> */}
       </Spin>
     </Wrapper>
   )

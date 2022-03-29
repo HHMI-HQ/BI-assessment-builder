@@ -1,171 +1,126 @@
-/* eslint-disable */
-/* stylelint-disable */
 import React, { useContext } from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { WaxContext, ComponentPlugin } from 'wax-prosemirror-core'
 import { grid, th } from '@coko/client'
-import { cokoTheme } from '../theme'
-import EditorElements from './EditorElements'
+
 import 'wax-prosemirror-core/dist/index.css'
+import 'wax-prosemirror-services/dist/index.css'
 
-const Wrapper = styled.div`
-  background: ${th('colorBackground')};
-  border-right: 1px solid #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  font-family: ${th('fontInterface')};
-  font-size: ${th('fontSizeBase')};
+// import EditorElements from './EditorElements'
+
+const fullScreenStyles = css`
+  background-color: ${th('colorBackground')};
   height: 100%;
-  line-height: ${grid(4)};
-
-  overflow: hidden;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
   width: 100%;
-
-  * {
-    box-sizing: border-box;
-  }
+  z-index: 99999;
 `
 
-const Main = styled.div`
+const Wrapper = styled.div`
+  /* border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')}; */
   display: flex;
-  flex-grow: 1;
-  height: calc(100% - 40px);
-  justify-content: center;
-  /* overflow-y: scroll; */
+  flex-direction: column;
+  height: 100%;
+
+  ${props => props.fullScreen && fullScreenStyles}
 `
 
 const TopMenu = styled.div`
-  background: ${th('colorBackgroundToolBar')};
+  background: ${th('colorBackground')};
   border-bottom: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
-  border-top: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   display: flex;
   flex-wrap: wrap;
   height: auto;
+  justify-content: center;
   user-select: none;
 
-  > div:not(:last-child) {
-    border-right: ${th('borderWidth')} ${th('borderStyle')}
-      ${th('colorFurniture')};
-  }
   > div[data-name='MultipleChoice'] {
     span {
       display: none;
     }
   }
-  /* > div:last-child {
-    border-left: ${th('borderWidth')} ${th('borderStyle')}
-      ${th('colorFurniture')};
-    margin-left: auto;
-    margin-right: ${grid(5)};
-  }
-
-  > div[data-name='FillTheGap'] {
-    border-right: none;
-  } */
 `
-// const TopMenu = styled.div`
-//   background: ${th('colorBackgroundToolBar')};
-//   border-bottom: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
-//   border-top: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
-//   display: flex;
-//   min-height: 40px;
-//   user-select: none;
 
-//   > div:not(:last-child) {
-//     border-right: ${th('borderWidth')} ${th('borderStyle')}
-//       ${th('colorFurniture')};
-//   }
+const EditorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+`
 
-//   > div:nth-last-of-type(-n + 2) {
-//     margin-left: auto;
-//   }
-
-//   > div:last-child {
-//     margin-left: 0;
-//     margin-right: ${grid(5)};
-//   }
-
-//   > div[data-name='Tables'] {
-//     border-right: none;
-//   }
-// `
+/* TO DO -- remove */
+/* ${EditorElements} */
 
 const EditorArea = styled.div`
-  background: white;
-  display: flex;
   flex-grow: 1;
-  height: 100%;
-  justify-content: center;
-  /* overflow-y: auto; */
-`
-
-const WaxSurfaceScroll = styled.div`
-  /* box-sizing: border-box; */
-  display: flex;
-  height: calc(100% - 66px);
-  width: 100%;
-  position: absolute;
-  /* overflow-y: auto; */ /* PM styles  for main content*/
-  ${EditorElements};
-`
-
-const EditorContainer = styled.div`
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  width: 100%;
-  overflow-y: auto;
+  max-width: 100ch;
+  position: relative;
 
   .ProseMirror {
-    /* box-shadow: 0 0 8px #ecedf1; */
-    height: fit-content;
-    padding-top: ${grid(10)};
-    padding-bottom: ${grid(10)};
-    margin-right: ${grid(14)};
-    margin-left: ${grid(14)};
-    width: 100%;
+    /* font-family: ${th('fontInterface')}; */
+    font-family: inherit;
+    /* height: 100%; */
+    padding: ${grid(5)};
+    /* position: relative; */
+
+    &:focus {
+      outline: none;
+    }
+
+    /* .wax-selection-marker {
+      background: ${th('colorPrimary')};
+    } */
   }
-`
 
-const MainMenuToolBar = ComponentPlugin('mainMenuToolBar')
-const WaxOverlays = ComponentPlugin('waxOverlays')
+  /* .ProseMirror-gapcursor {
+    display: none;
+    pointer-events: none;
+    position: relative;
+  }
 
-const HhmiLayout = ({ editor }) => {
-  const { options } = useContext(WaxContext)
+  .ProseMirror-gapcursor:after {
+    content: '';
+    display: block;
+    position: relative;
+    width: 20px;
+    border-top: 1px solid black;
+    animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
+  }
 
-  let fullScreenStyles = {}
-
-  if (options.fullScreen) {
-    fullScreenStyles = {
-      backgroundColor: '#fff',
-      height: '100%',
-      left: '0',
-      margin: '0',
-      padding: '0',
-      position: 'fixed',
-      top: '0',
-      width: '100%',
-      zIndex: '99999',
+  @keyframes ProseMirror-cursor-blink {
+    to {
+      visibility: hidden;
     }
   }
 
-  return (
-    <ThemeProvider theme={cokoTheme}>
-      <Wrapper id="wax-container" style={fullScreenStyles}>
-        <TopMenu>
-          <MainMenuToolBar />
-        </TopMenu>
+  .ProseMirror-focused .ProseMirror-gapcursor {
+    display: block;
+  } */
+`
 
-        <Main>
-          <EditorArea>
-            <WaxSurfaceScroll>
-              <EditorContainer>{editor}</EditorContainer>
-            </WaxSurfaceScroll>
-          </EditorArea>
-        </Main>
-        <WaxOverlays />
-      </Wrapper>
-    </ThemeProvider>
+const MainMenuToolBar = ComponentPlugin('mainMenuToolBar')
+// const WaxOverlays = ComponentPlugin('waxOverlays')
+
+/* eslint-disable-next-line react/prop-types */
+const HhmiLayout = ({ editor }) => {
+  const { options } = useContext(WaxContext)
+  const { fullScreen } = options
+
+  return (
+    <Wrapper fullScreen={fullScreen}>
+      <TopMenu>
+        <MainMenuToolBar />
+      </TopMenu>
+
+      <EditorWrapper>
+        <EditorArea>{editor}</EditorArea>
+      </EditorWrapper>
+
+      {/* <WaxOverlays /> */}
+    </Wrapper>
   )
 }
 

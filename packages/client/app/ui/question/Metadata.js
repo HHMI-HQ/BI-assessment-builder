@@ -11,9 +11,8 @@ import metadataOptions from './metadataValues'
 const Wrapper = styled.div`
   border-left: 1px solid #f0f0f0;
   height: 100%;
-  overflow-y: scroll;
-  padding-left: ${grid(4)};
-  padding-right: ${grid(4)};
+  overflow-y: auto;
+  padding: ${grid(4)};
 `
 
 const LabelWrapper = styled.div`
