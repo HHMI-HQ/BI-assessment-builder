@@ -3,6 +3,7 @@ module.exports = {
   colorBody: 'grey',
   colorPrimary: 'cornflowerblue',
   colorSecondary: 'gainsboro',
+  colorBorder: 'gainsboro',
 
   colorSuccess: 'green',
   colorError: 'red',
@@ -17,4 +18,6 @@ module.exports = {
   gridUnit: '4px',
 
   borderRadius: '3px',
+  borderWidth: '1px',
+  borderStyle: 'solid',
 }

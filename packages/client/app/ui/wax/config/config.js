@@ -27,7 +27,7 @@ import {
 } from 'wax-prosemirror-services'
 
 import { DefaultSchema } from 'wax-prosemirror-utilities'
-import { WaxSelectionPlugin } from 'wax-prosemirror-plugins'
+// import { WaxSelectionPlugin } from 'wax-prosemirror-plugins'
 // import invisibles, { hardBreak } from '@guardian/prosemirror-invisibles'
 
 export default {
@@ -59,7 +59,8 @@ export default {
   SchemaService: DefaultSchema,
   // RulesService: [emDash, ellipsis],
 
-  PmPlugins: [columnResizing(), tableEditing(), WaxSelectionPlugin],
+  // PmPlugins: [columnResizing(), tableEditing(), WaxSelectionPlugin],
+  PmPlugins: [columnResizing(), tableEditing()],
 
   services: [
     new MultipleChoiceQuestionService(),

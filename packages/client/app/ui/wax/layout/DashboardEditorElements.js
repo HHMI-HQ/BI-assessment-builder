@@ -5,42 +5,7 @@ import { th } from '@coko/client'
 
 /* All styles regarding ProseMirror surface and elements */
 
-const fontWriting = css`
-  color: ${th('colorText')};
-  font-family: ${th('fontInterface')};
-  font-size: ${th('fontSizeBase')};
-`
-
 export default css`
-  .ProseMirror {
-    background: white;
-    counter-reset: multiple-question;
-    line-height: 1.6;
-    ${fontWriting}
-
-    p::selection,
-    h1::selection,
-    h2::selection,
-    h3::selection,
-    code::selection,
-    span::selection,
-    p span::selection,
-    h1 span::selection,
-    h2 span::selection,
-    h3 span::selection,
-    h4 span::selection,
-    code span::selection,
-    custom-tag-block::selection,
-    custom-tag-inline::selection {
-      background-color: transparent;
-      color: #000;
-    }
-
-    &:focus {
-      outline: none;
-    }
-  }
-
   .ProseMirror .wax-selection-marker {
     background-color: ${th('colorSelection')};
     opacity: 0.8;
@@ -215,13 +180,13 @@ export default css`
   }
   /* -- Selection Plugin ---------------------------------- */
 
-  p::selection,
+  /* p::selection,
   p > *::selection {
     background-color: #c0c0c0;
   }
   .katex-html *::selection {
     background-color: none !important;
-  }
+  } */
 
   .math-node.math-select .math-render {
     background-color: #c0c0c0ff;

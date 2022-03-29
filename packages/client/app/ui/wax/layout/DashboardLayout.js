@@ -4,7 +4,7 @@ import React, { useContext } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { WaxContext, ComponentPlugin } from 'wax-prosemirror-core'
 import { grid, th } from '@coko/client'
-import { cokoTheme } from '../theme'
+// import { cokoTheme } from '../theme'
 import EditorElements from './DashboardEditorElements'
 /* Katex css */
 // import '~../../katex/dist/katex.min.css'
@@ -86,18 +86,18 @@ const DashboardLayout = ({ editor }) => {
   }
 
   return (
-    <ThemeProvider theme={cokoTheme}>
-      <Wrapper id="wax-container" style={fullScreenStyles}>
-        <Main>
-          <EditorArea>
-            <WaxSurfaceScroll>
-              <EditorContainer>{editor}</EditorContainer>
-            </WaxSurfaceScroll>
-          </EditorArea>
-        </Main>
-        <WaxOverlays />
-      </Wrapper>
-    </ThemeProvider>
+    // <ThemeProvider theme={cokoTheme}>
+    <Wrapper id="wax-container" style={fullScreenStyles}>
+      <Main>
+        <EditorArea>
+          <WaxSurfaceScroll>
+            <EditorContainer>{editor}</EditorContainer>
+          </WaxSurfaceScroll>
+        </EditorArea>
+      </Main>
+      <WaxOverlays />
+    </Wrapper>
+    // </ThemeProvider>
   )
 }
 

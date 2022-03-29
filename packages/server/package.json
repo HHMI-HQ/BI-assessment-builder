@@ -9,10 +9,15 @@
   },
   "dependencies": {
     "@coko/server": "https://gitlab.coko.foundation/cokoapps/server.git#2ddd4a2395737eb20096e3a7270d255404ac4a35",
+    "axios": "^0.26.1",
     "config": "^3.3.6",
+    "docx": "^7.3.0",
+    "image-size": "^1.0.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "faker": "^5.5.3",
+    "jest": "^27.5.1",
     "node-wait-for-it": "^0.2.0",
     "nodemon": "^2.0.13"
   }
