@@ -7,7 +7,7 @@ lint js:
   image: node:16-bullseye-slim
   stage: lint
   script:
-    - apt-get update && apt-get install git
+    - apt-get update && apt-get install -y git
     - yarn install && cd packages/client && yarn install && cd ../.. && cd packages/server && yarn install && cd ../..
     - yarn eslint .
 
