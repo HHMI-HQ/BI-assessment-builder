@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react'
 import { QuestionList, Button } from 'ui'
 import { lorem } from 'faker'
@@ -48,6 +49,7 @@ const makeData = n =>
     status: ['Published', 'Submitted', 'Under review', 'Rejected'][
       Math.floor(Math.random() * 4)
     ],
+    // checkboxLabel: 'Select item',
   }))
 
 const sortOptions = [

@@ -11,7 +11,7 @@ const ButtonWithoutStyles = styled.button`
   border: none;
 `
 
-const StyledListItem = styled(List.Item)`
+const StyledListItem = styled(LinkWithoutStyles)`
   && {
     border-bottom: 1px solid ${th('colorSecondary')};
     padding: 15px;
@@ -20,15 +20,13 @@ const StyledListItem = styled(List.Item)`
 
 const RenderItem = ({ item, onClickRow }) => {
   return (
-    <StyledListItem>
-      <LinkWithoutStyles href={item.href} onClick={() => onClickRow(item)}>
-        <QuestionItem
-          content={item.description}
-          metadata={item.metadata}
-          status={item.status}
-          title={item.title}
-        />
-      </LinkWithoutStyles>
+    <StyledListItem href={item.href} onClick={() => onClickRow(item)}>
+      <QuestionItem
+        content={item.description}
+        metadata={item.metadata}
+        status={item.status}
+        title={item.title}
+      />
     </StyledListItem>
   )
 }

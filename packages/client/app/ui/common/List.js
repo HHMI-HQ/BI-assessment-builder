@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -56,9 +57,24 @@ const Select = styled(UISelect)`
   width: 150px;
 `
 
-const SelectableWrapper = styled.div`
+const ListItemWrapper = styled.li`
   align-items: center;
+  /* border-bottom: 1px solid ${th('colorSecondary')}; */
   display: flex;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`
+
+const SelectableWrapper = styled.li`
+  align-items: center;
+  /* border-bottom: 1px solid ${th('colorSecondary')}; */
+  display: flex;
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   .ant-list-item-meta-avatar {
     align-self: center;
@@ -71,6 +87,7 @@ const SelectableWrapper = styled.div`
 
   > :last-child {
     flex-grow: 1;
+    padding: 15px;
   }
 `
 
@@ -91,6 +108,7 @@ const CheckBox = styled(UICheckBox)`
 
 const SelectableItem = props => {
   const {
+    checkboxLabel,
     id,
     renderItem: RenderItem,
     onDeselect,
@@ -109,13 +127,18 @@ const SelectableItem = props => {
 
   return (
     <SelectableWrapper key={id}>
-      <CheckBox checked={selected} onChange={handleChange} />
+      <CheckBox
+        ariaLabel={checkboxLabel}
+        checked={selected}
+        onChange={handleChange}
+      />
       <RenderItem id={id} {...rest} />
     </SelectableWrapper>
   )
 }
 
 SelectableItem.propTypes = {
+  checkboxLabel: PropTypes.string,
   id: PropTypes.string.isRequired,
   renderItem: PropTypes.func.isRequired,
   onDeselect: PropTypes.func.isRequired,
@@ -123,6 +146,23 @@ SelectableItem.propTypes = {
   selected: PropTypes.bool.isRequired,
 }
 
+SelectableItem.defaultProps = {
+  checkboxLabel: '',
+}
+
+const ListItem = props => {
+  const { renderItem: RenderItem, ...rest } = props
+
+  return (
+    <ListItemWrapper>
+      <RenderItem {...rest} />
+    </ListItemWrapper>
+  )
+}
+
+ListItem.propTypes = {
+  renderItem: PropTypes.func.isRequired,
+}
 // const EmptyList = () => {
 //   return 'no data'
 // }
@@ -164,6 +204,8 @@ const List = props => {
   const handleSelect = id => setSelectedItems([...selectedItems, id])
   const handleDeselect = id => setSelectedItems(without(selectedItems, id))
 
+  // console.log(renderItem({}))
+
   const listItemToRender = itemSelection
     ? itemProps => (
         <SelectableItem
@@ -174,7 +216,7 @@ const List = props => {
           {...itemProps}
         />
       )
-    : renderItem
+    : itemProps => <ListItem renderItem={renderItem} {...itemProps} />
 
   const paginationObj = {
     current: 1,

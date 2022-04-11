@@ -13,6 +13,7 @@ const Item = styled.div`
   background: ${props => props.theme.colorSecondary};
   margin-bottom: 8px;
   padding: 8px;
+  width: 100%;
 `
 
 // returns the position of the item in a paginated list (as a String)
