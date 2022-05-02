@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react'
-import { SignupQuestionnaire, Form, Checkbox } from 'ui'
+import { Profile, Checkbox } from 'ui'
 
 const initialValues = {
   firstName: 'Filan',
@@ -15,23 +15,39 @@ export const Base = () => {
 
   const [error, setError] = useState(false)
 
-  const [form] = Form.useForm()
+  const handleProfileSubmit = vals => {
+    console.log(vals)
+    console.log(error)
 
-  const clearFormFields = () => {
-    form.resetFields()
-  }
-
-  const handleSubmit = values => {
-    console.log(values)
     setLoading(true)
+
     setTimeout(() => {
       setLoading(false)
 
       if (!error) {
-        setMessage('Form submitted successully')
+        setMessage('Profile updated successfully')
         setSubmissionStatus('success')
       } else {
-        setMessage('There was an error submitting the form. Please try again')
+        setMessage('There was an error, please try again')
+        setSubmissionStatus('error')
+      }
+    }, 1000)
+  }
+
+  const handlePasswordSubmit = vals => {
+    console.log(vals)
+    console.log(error)
+
+    setLoading(true)
+
+    setTimeout(() => {
+      setLoading(false)
+
+      if (!error) {
+        setMessage('Password changed successfully')
+        setSubmissionStatus('success')
+      } else {
+        setMessage('There was an error, please try again')
         setSubmissionStatus('error')
       }
     }, 1000)
@@ -44,13 +60,13 @@ export const Base = () => {
           Check and submit the form to see error state
         </Checkbox>
       </p>
-      <SignupQuestionnaire
-        form={form}
+      <Profile
         initialValues={initialValues}
         loading={loading}
         message={message}
-        onSubmit={handleSubmit}
-        secondaryButtonAction={clearFormFields}
+        onAutoSave={vals => console.log('saving', vals)}
+        onPasswordUpdate={handlePasswordSubmit}
+        onProfileUpdate={handleProfileSubmit}
         submissionStatus={submissionStatus}
       />
     </>
@@ -58,6 +74,6 @@ export const Base = () => {
 }
 
 export default {
-  component: SignupQuestionnaire,
-  title: 'Authentication/Signup Questionnaire',
+  component: Profile,
+  title: 'Authentication/Profile',
 }
