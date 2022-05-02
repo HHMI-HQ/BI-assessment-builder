@@ -86,6 +86,7 @@ const Signup = props => {
           </Form.Item>
 
           <Form.Item
+            dependencies={['password']}
             label="Confirm Password"
             name="confirmPassword"
             rules={[

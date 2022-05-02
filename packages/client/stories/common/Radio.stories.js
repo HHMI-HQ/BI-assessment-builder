@@ -17,7 +17,14 @@ export const Base = () => {
   const [value, setValue] = useState(null)
   const handleChange = val => setValue(val)
 
-  return <Radio onChange={handleChange} options={options} value={value} />
+  return (
+    <Radio
+      name="radio"
+      onChange={handleChange}
+      options={options}
+      value={value}
+    />
+  )
 }
 
 export const Vertical = () => {

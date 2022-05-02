@@ -1,12 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react'
-import { SignupQuestionnaire, Form, Checkbox } from 'ui'
-
-const initialValues = {
-  firstName: 'Filan',
-  lastName: 'Fisteku',
-  email: 'filanfisteku@email.com',
-}
+import { ChangePassword, Checkbox } from 'ui'
 
 export const Base = () => {
   const [loading, setLoading] = useState(false)
@@ -15,23 +9,19 @@ export const Base = () => {
 
   const [error, setError] = useState(false)
 
-  const [form] = Form.useForm()
-
-  const clearFormFields = () => {
-    form.resetFields()
-  }
-
-  const handleSubmit = values => {
-    console.log(values)
+  const handleSubmit = vals => {
+    console.log(vals)
+    console.log(error)
     setLoading(true)
+
     setTimeout(() => {
       setLoading(false)
 
       if (!error) {
-        setMessage('Form submitted successully')
+        setMessage('Password changed successfully')
         setSubmissionStatus('success')
       } else {
-        setMessage('There was an error submitting the form. Please try again')
+        setMessage('There was an error, please try again')
         setSubmissionStatus('error')
       }
     }, 1000)
@@ -44,13 +34,10 @@ export const Base = () => {
           Check and submit the form to see error state
         </Checkbox>
       </p>
-      <SignupQuestionnaire
-        form={form}
-        initialValues={initialValues}
+      <ChangePassword
         loading={loading}
         message={message}
         onSubmit={handleSubmit}
-        secondaryButtonAction={clearFormFields}
         submissionStatus={submissionStatus}
       />
     </>
@@ -58,6 +45,6 @@ export const Base = () => {
 }
 
 export default {
-  component: SignupQuestionnaire,
-  title: 'Authentication/Signup Questionnaire',
+  component: ChangePassword,
+  title: 'Authentication/Change Password',
 }
