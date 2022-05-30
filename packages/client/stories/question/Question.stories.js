@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 `
 
 const options = {
-  topic: 'biochemistryMolecularBiology',
+  // topic: 'biochemistryMolecularBiology',
 }
 
 const content = {
@@ -117,7 +117,7 @@ export const Base = args => {
         onClickNextButton={emptyNavigationFunction}
         onClickPreviousButton={emptyNavigationFunction}
         onEditorContentAutoSave={() => console.log('editor auto save')}
-        onQuestionSubmit={console.log('submit question')}
+        onQuestionSubmit={data => console.log(data)}
         questionAgreedTc={false}
         submitting={false}
       />

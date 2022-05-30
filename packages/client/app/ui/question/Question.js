@@ -268,6 +268,7 @@ const Question = props => {
               />
 
               <Metadata
+                editorView={editorView}
                 initialValues={initialMetadataValues}
                 innerRef={formRef}
                 metadata={metadata}

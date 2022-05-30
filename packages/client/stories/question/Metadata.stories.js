@@ -11,14 +11,28 @@ import {
 } from '../../app/utilities'
 
 const initialValues = {
-  framework: 'biEnvironmentalScience',
-  unit: 'climateChangeAndEnergyProduction',
-  courseTopic: 'climateChangeCausesAndImpacts',
-  application: 'IBES-A7.2.1',
-  understanding: 'IBES-U7.2.7',
+  topic: 'genetics',
+  subtopic: 'patternsOfInheritance',
+  framework: 'apEnvironmentalScience',
+  supplementaryTopics: [
+    {
+      topic: 'genetics',
+      subtopic: 'bioinformatics',
+      unit: 'theLivingWorldEcosystems',
+      courseTopic: 'thePhosphorusCycle',
+      learningObjective: 'ERT-1.F',
+      essentialKnowledge: 'ERT-1.F.2',
+    },
+  ],
+  biointeractiveResources: ['hIVReverseTranscriptionAndAZT'],
+  cognitiveLevel: 'higher-understand',
+  unit: 'theLivingWorldBiodiversity',
+  courseTopic: 'ecosystemServices',
+  learningObjective: 'ERT-2.B',
+  essentialKnowledge: 'ERT-2.B.1',
 }
 
-export const Base = () => {
+export const Author = () => {
   const [flatMetadata, setFlatMetadata] = useState(metadata)
 
   useEffect(() => {
@@ -82,7 +96,6 @@ export const Base = () => {
 
   return (
     <Metadata
-      // initialValues={options}
       metadata={flatMetadata}
       // readOnly
       onFormFinish={console.log('on form finish')}
@@ -90,9 +103,10 @@ export const Base = () => {
   )
 }
 
-export const WithInitialData = args => {
+export const Editor = args => {
   const [editable, setEditable] = useState(false)
   const [flatMetadata, setFlatMetadata] = useState(metadata)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const frameworks = metadata.frameworks.map(framework => {
@@ -151,17 +165,24 @@ export const WithInitialData = args => {
       frameworks,
       introToBioMeta,
     })
+
+    setReady(true)
   }, [])
+
+  console.log(flatMetadata)
   return (
     <>
       <Checkbox onChange={() => setEditable(!editable)}>Editable</Checkbox>
-      <Metadata
-        {...args}
-        initialValues={initialValues}
-        metadata={flatMetadata}
-        onFormFinish={console.log('on form finish')}
-        readOnly={!editable}
-      />
+      {ready && (
+        <Metadata
+          {...args}
+          editorView
+          initialValues={initialValues}
+          metadata={flatMetadata}
+          onFormFinish={console.log('on form finish')}
+          readOnly={!editable}
+        />
+      )}
     </>
   )
 }

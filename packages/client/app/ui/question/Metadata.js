@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import { grid, uuid } from '@coko/client'
+import { Tooltip } from 'antd'
 
 import {
   Select,
@@ -32,6 +33,7 @@ const Metadata = React.forwardRef((props, ref) => {
     onFormFinish,
     readOnly,
     metadata,
+    editorView,
 
     /* eslint-disable-next-line react/prop-types */
     innerRef,
@@ -46,21 +48,36 @@ const Metadata = React.forwardRef((props, ref) => {
     getFieldsError: () => form.getFieldsError(),
   }))
 
-  const { supplementaryFields } = initialValues
+  const supplementaryTopicsKey = 'supplementaryTopics'
+  const supplementaryCurriculaKey = 'supplementaryCurricula'
+
   let sIndexes
 
-  if (supplementaryFields) {
-    sIndexes = initialValues.supplementaryFields?.map((_, index) => index)
+  if (initialValues[supplementaryTopicsKey]) {
+    sIndexes = initialValues[supplementaryTopicsKey]?.map((_, index) => index)
   }
 
   const [supplementaryFieldsIndexes, setSupplementaryFieldsIndexes] = useState(
     sIndexes || [],
   )
 
-  const renderFrameworkFields = (getFieldValue, index = -1) => {
+  // reset to use for calculating existing supplementary curricula
+  sIndexes = []
+
+  if (initialValues[supplementaryCurriculaKey]) {
+    sIndexes = initialValues[supplementaryCurriculaKey]?.map(
+      (_, index) => index,
+    )
+  }
+
+  const [supplementaryCurricula, setSupplementaryCurricula] = useState(
+    sIndexes || [],
+  )
+
+  const renderFrameworkFields = (getFieldValue, index = -1, key = '') => {
     const selectedCourse =
-      index > -1
-        ? getFieldValue(['supplementaryFields', index, 'framework'])
+      key === supplementaryCurriculaKey
+        ? getFieldValue([key, index, 'framework'])
         : getFieldValue('framework')
 
     if (
@@ -75,7 +92,7 @@ const Metadata = React.forwardRef((props, ref) => {
           isRequired
           readOnly={readOnly}
           setFieldsValue={form.setFieldsValue}
-          supplementaryKey={index > -1 ? 'supplementaryFields' : ''}
+          supplementaryKey={key}
         />
       )
     }
@@ -92,7 +109,7 @@ const Metadata = React.forwardRef((props, ref) => {
           isRequired
           readOnly={readOnly}
           setFieldsValue={form.setFieldsValue}
-          supplementaryKey={index > -1 ? 'supplementaryFields' : ''}
+          supplementaryKey={key}
         />
       )
     }
@@ -112,7 +129,7 @@ const Metadata = React.forwardRef((props, ref) => {
             isRequired
             readOnly={readOnly}
             setFieldsValue={form.setFieldsValue}
-            supplementaryKey={index > -1 ? 'supplementaryFields' : ''}
+            supplementaryKey={key}
           />
           {selectedCourse === 'introductoryBiologyForMajors' && (
             <AAMCFuturePhysiciansMetadata
@@ -124,7 +141,7 @@ const Metadata = React.forwardRef((props, ref) => {
               isRequired
               readOnly={readOnly}
               setFieldsValue={form.setFieldsValue}
-              supplementaryKey={index > -1 ? 'supplementaryFields' : ''}
+              supplementaryKey={key}
             />
           )}
         </>
@@ -134,8 +151,8 @@ const Metadata = React.forwardRef((props, ref) => {
     return null
   }
 
-  const handleSupplementaryAdd = add => {
-    setSupplementaryFieldsIndexes(supIndexes => {
+  const handleSupplementaryAdd = (add, key) => {
+    const addFunction = supIndexes => {
       const clone = [...supIndexes]
 
       if (clone.length === 0) {
@@ -145,14 +162,27 @@ const Metadata = React.forwardRef((props, ref) => {
 
       clone.push(clone.length)
       return clone
-    })
+    }
+
+    if (key === supplementaryTopicsKey) {
+      setSupplementaryFieldsIndexes(addFunction)
+    } else if (key === supplementaryCurriculaKey) {
+      setSupplementaryCurricula(addFunction)
+    }
+
     add()
   }
 
-  const handleSupplementaryRemove = remove => {
-    const last = supplementaryFieldsIndexes.length - 1
-    remove(last)
-    setSupplementaryFieldsIndexes(dropRight([...supplementaryFieldsIndexes]))
+  const handleSupplementaryRemove = (remove, key) => {
+    if (key === supplementaryTopicsKey) {
+      const last = supplementaryFieldsIndexes.length - 1
+      remove(last)
+      setSupplementaryFieldsIndexes(dropRight([...supplementaryFieldsIndexes]))
+    } else if (key === supplementaryCurriculaKey) {
+      const last = supplementaryCurricula.length - 1
+      remove(last)
+      setSupplementaryCurricula(dropRight([...supplementaryCurricula]))
+    }
   }
 
   const getResources = () => {
@@ -232,12 +262,7 @@ const Metadata = React.forwardRef((props, ref) => {
         <Form.Item dependencies={['framework']} noStyle>
           {({ getFieldValue }) => renderFrameworkFields(getFieldValue)}
         </Form.Item>
-
-        <Form.List
-          // dependencies={['framework']}
-          name="supplementaryFields"
-          noStyle
-        >
+        <Form.List name={supplementaryTopicsKey} noStyle>
           {(_, { add, remove }) => (
             <div key={uuid()}>
               {supplementaryFieldsIndexes.length ? (
@@ -246,69 +271,140 @@ const Metadata = React.forwardRef((props, ref) => {
                 <span />
               )}
               {supplementaryFieldsIndexes.map(index => (
-                <div key={`supplementaryField-${index}`}>
+                <div key={`supplementaryTopic-${index}`}>
                   <TopicAndSubtopic
                     getFieldValue={form.getFieldValue}
                     index={index}
                     isRequired
                     readOnly={readOnly}
                     setFieldsValue={form.setFieldsValue}
-                    supplementaryKey="supplementaryFields"
+                    supplementaryKey={supplementaryTopicsKey}
                     topicsMetadata={metadata.topics}
                   />
-
-                  <Form.Item
-                    label="Course"
-                    name={[index, 'framework']}
-                    rules={[{ required: true, message: 'Course is required' }]}
-                  >
-                    <Select
-                      allowClear
-                      disabled={readOnly}
-                      options={metadata.frameworks.map(i => ({
-                        label: i.label,
-                        value: i.value,
-                      }))}
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    dependencies={[['supplementaryFields', index, 'framework']]}
-                    noStyle
-                  >
+                  <Form.Item dependencies={['framework']} noStyle>
                     {({ getFieldValue }) =>
-                      renderFrameworkFields(getFieldValue, index)
+                      renderFrameworkFields(
+                        getFieldValue,
+                        index,
+                        supplementaryTopicsKey,
+                      )
                     }
                   </Form.Item>
                 </div>
               ))}
               {!readOnly && (
-                <Form.Item>
-                  <Button
-                    disabled={readOnly}
-                    onClick={() => {
-                      handleSupplementaryAdd(add)
-                    }}
-                    type="primary"
-                  >
-                    Add topic
-                  </Button>
+                <>
+                  {supplementaryFieldsIndexes.length < 1 && (
+                    <Button
+                      disabled={readOnly}
+                      onClick={() => {
+                        handleSupplementaryAdd(add, supplementaryTopicsKey)
+                      }}
+                      type="primary"
+                    >
+                      Add a second topic
+                    </Button>
+                  )}
                   {supplementaryFieldsIndexes.length > 0 && (
                     <Button
                       disabled={readOnly}
                       onClick={() => {
-                        handleSupplementaryRemove(remove)
+                        handleSupplementaryRemove(
+                          remove,
+                          supplementaryTopicsKey,
+                        )
                       }}
                       type="danger"
                     >
                       Remove topic
                     </Button>
                   )}
-                </Form.Item>
+                </>
               )}
             </div>
           )}
         </Form.List>
+
+        {editorView && (
+          <Form.List name={supplementaryCurriculaKey} noStyle>
+            {(_, { add, remove }) => (
+              <div key={uuid()}>
+                <p>Related courses</p>
+                {supplementaryCurricula.length === 0 && (
+                  <p>No related courses</p>
+                )}
+                {supplementaryCurricula.map(index => (
+                  <div key={`supplementaryCurricula-${index}`}>
+                    <Form.Item
+                      label="Course"
+                      name={[index, 'framework']}
+                      rules={[
+                        { required: true, message: 'Course is required' },
+                      ]}
+                    >
+                      <Select
+                        allowClear
+                        disabled={readOnly}
+                        options={metadata.frameworks.map(i => ({
+                          label: i.label,
+                          value: i.value,
+                        }))}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      dependencies={[
+                        [supplementaryCurriculaKey, index, 'framework'],
+                      ]}
+                      noStyle
+                    >
+                      {({ getFieldValue }) =>
+                        renderFrameworkFields(
+                          getFieldValue,
+                          index,
+                          supplementaryCurriculaKey,
+                        )
+                      }
+                    </Form.Item>
+                  </div>
+                ))}
+                {!readOnly && (
+                  <>
+                    <Tooltip
+                      title="Link this question to another course"
+                      trigger={['hover', 'focus']}
+                    >
+                      <Button
+                        disabled={readOnly}
+                        onClick={() => {
+                          handleSupplementaryAdd(add, supplementaryCurriculaKey)
+                        }}
+                        type="primary"
+                      >
+                        Link to another course
+                      </Button>
+                    </Tooltip>
+                    {supplementaryCurricula.length > 0 && (
+                      <Button
+                        disabled={readOnly}
+                        onClick={() => {
+                          handleSupplementaryRemove(
+                            remove,
+                            supplementaryCurriculaKey,
+                          )
+                        }}
+                        type="danger"
+                      >
+                        Remove last course
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </Form.List>
+        )}
+        {/* )} */}
 
         <Form.Item label="Keywords" name="keywords">
           <Select disabled={readOnly} mode="tags" open={false} />
@@ -547,13 +643,14 @@ Metadata.propTypes = {
       ]),
     ),
   }).isRequired,
-
+  editorView: PropTypes.bool,
   // TO DO - provide valid shape
   /* eslint-disable-next-line react/forbid-prop-types */
   initialValues: PropTypes.object,
 }
 
 Metadata.defaultProps = {
+  editorView: false,
   onAutoSave: null,
   initialValues: {},
 }
