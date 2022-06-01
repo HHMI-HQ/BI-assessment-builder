@@ -17,30 +17,6 @@ const StyledTabPane = styled(Tabs.TabPane)`
   max-width: 1170px;
 `
 
-const sortOptions = [
-  {
-    label: 'Date',
-    value: 'date',
-    isDefault: true,
-  },
-  {
-    label: 'Unit',
-    value: 'unit',
-  },
-  {
-    label: 'Section',
-    value: 'section',
-  },
-  {
-    label: 'Topic',
-    value: 'topic',
-  },
-  {
-    label: 'Category',
-    value: 'category',
-  },
-]
-
 // QUESTION how to handle search, filter and pagination with multiple sections
 const Dashboard = props => {
   const {
@@ -51,6 +27,8 @@ const Dashboard = props => {
     onQuestionSelected,
     onSearch,
     tabsContent,
+    showSort,
+    sortOptions,
   } = props
 
   const [searchParams, setSearchParams] = useState({
@@ -100,6 +78,7 @@ const Dashboard = props => {
               onSortOptionChange={setSortOption}
               questions={questions}
               showRowCheckboxes={!!showBulkActions}
+              showSort={showSort}
               sortOptions={sortOptions}
               totalCount={totalCount}
             />
@@ -129,6 +108,8 @@ Dashboard.propTypes = {
       showBulkActions: PropTypes.bool,
     }),
   ),
+  showSort: PropTypes.bool,
+  sortOptions: PropTypes.arrayOf(PropTypes.shape()),
 }
 
 Dashboard.defaultProps = {
@@ -137,6 +118,8 @@ Dashboard.defaultProps = {
   loading: false,
   onQuestionSelected: () => {},
   tabsContent: [],
+  showSort: false,
+  sortOptions: [],
 }
 
 export default Dashboard

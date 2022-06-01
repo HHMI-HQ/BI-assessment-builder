@@ -5,11 +5,38 @@ import { lorem } from 'faker'
 import { uuid } from '@coko/client'
 import styled from 'styled-components'
 import { createData } from '../_helpers'
+import {
+  generateMetadata,
+  getRandomLearningObjective,
+  getRandomUnderstanding,
+} from '../../app/utilities'
+
+const learningObjectivesAndUnderstandings = () => {
+  const total = Math.floor(Math.random() * 4) + 1
+  const numberOfLOs = Math.floor(Math.random() * total)
+  const numberOfUs = total - numberOfLOs
+
+  const learningObjectives = []
+  const understandings = []
+
+  for (let i = 0; i < numberOfLOs; i += 1) {
+    learningObjectives.push(getRandomLearningObjective().label)
+  }
+
+  for (let i = 0; i < numberOfUs; i += 1) {
+    understandings.push(getRandomUnderstanding().label)
+  }
+
+  return {
+    learningObjectives,
+    understandings,
+  }
+}
 
 const makeData = n =>
   createData(n, i => ({
     id: uuid(),
-    title: lorem.words(6),
+    title: getRandomUnderstanding().label,
     description: {
       type: 'doc',
       content: [
@@ -24,28 +51,8 @@ const makeData = n =>
         },
       ],
     },
-    metadata: [
-      {
-        label: 'topic',
-        value: lorem.words(2),
-      },
-      {
-        label: 'subtopic',
-        value: lorem.words(2),
-      },
-      {
-        label: 'question type',
-        value: lorem.words(2),
-      },
-      {
-        label: "boom's level",
-        value: lorem.words(2),
-      },
-      {
-        label: 'published date',
-        value: lorem.words(2),
-      },
-    ],
+    metadata: generateMetadata(),
+    additionalMetadata: learningObjectivesAndUnderstandings(),
     status: ['Published', 'Submitted', 'Under review', 'Rejected'][
       Math.floor(Math.random() * 4)
     ],

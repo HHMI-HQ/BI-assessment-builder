@@ -10,12 +10,49 @@ import {
   flatIBCourseMetadata,
   flatVisionAndChangeMetadata,
   flatAAMCMetadata,
+  generateMetadata,
+  getRandomLearningObjective,
+  getRandomUnderstanding,
 } from '../../app/utilities'
+
+const learningObjectivesAndUnderstandings = () => {
+  const total = Math.floor(Math.random() * 4) + 1
+  const numberOfLOs = Math.floor(Math.random() * total)
+  const numberOfUs = total - numberOfLOs
+
+  const learningObjectives = []
+  const understandings = []
+
+  for (let i = 0; i < numberOfLOs; i += 1) {
+    learningObjectives.push(getRandomLearningObjective().label)
+  }
+
+  for (let i = 0; i < numberOfUs; i += 1) {
+    understandings.push(getRandomUnderstanding().label)
+  }
+
+  return {
+    learningObjectives,
+    understandings,
+  }
+}
+
+const sortOptions = [
+  {
+    label: 'Date (ascending)',
+    value: 'date-asc',
+    isDefault: true,
+  },
+  {
+    label: 'Date (descending)',
+    value: 'date-des',
+    isDefault: true,
+  },
+]
 
 const makeData = n =>
   range(n).map(i => ({
     id: String(i + 1),
-    title: lorem.sentence(),
     description: {
       type: 'doc',
       content: [
@@ -30,28 +67,8 @@ const makeData = n =>
         },
       ],
     },
-    metadata: [
-      {
-        label: 'topic',
-        value: lorem.words(2),
-      },
-      {
-        label: 'subtopic',
-        value: lorem.words(2),
-      },
-      {
-        label: 'question type',
-        value: lorem.words(2),
-      },
-      {
-        label: "boom's level",
-        value: lorem.words(2),
-      },
-      {
-        label: 'published date',
-        value: lorem.words(2),
-      },
-    ],
+    metadata: generateMetadata(),
+    additionalMetadata: learningObjectivesAndUnderstandings(),
     href: `question/${uuid()}`,
   }))
 
@@ -155,8 +172,10 @@ export const DiscoverPage = () => {
         loading={loading}
         onSearch={handleSearch}
         questions={searchResults}
+        showSort
         sidebarMetadata={flatMetadata}
         sidebarText={sidebarText}
+        sortOptions={sortOptions}
         totalCount={33}
       />
     </Wrapper>
@@ -228,7 +247,11 @@ const DiscoveryCustom = args => {
 
   return (
     <Wrapper>
-      <Discover {...args} sidebarMetadata={flatMetadata} />
+      <Discover
+        {...args}
+        sidebarMetadata={flatMetadata}
+        sortOptions={sortOptions}
+      />
     </Wrapper>
   )
 }

@@ -64,6 +64,8 @@ const ListItemWrapper = styled.li`
 `
 
 const SelectableWrapper = styled(ListItemWrapper)`
+  flex-direction: row-reverse;
+
   > :last-child {
     flex-grow: 1;
   }
@@ -112,12 +114,12 @@ const SelectableItem = memo(props => {
 
   return (
     <SelectableWrapper key={id}>
+      {renderItem({ id, ...rest }, index)}
       <CheckBox
-        aria-labelledby={id}
+        aria-label="Select this question"
         checked={selected}
         onChange={handleChange}
       />
-      {renderItem({ id, ...rest }, index)}
     </SelectableWrapper>
   )
 }, compareItem)

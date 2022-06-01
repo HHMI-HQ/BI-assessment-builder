@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { th } from '@coko/client'
 import List from './List'
-import LinkWithoutStyles from './LinkWithoutStyles'
 import QuestionItem from './QuestionItem'
 
 const ButtonWithoutStyles = styled.button`
@@ -11,25 +10,18 @@ const ButtonWithoutStyles = styled.button`
   border: none;
 `
 
-const ListItemContent = styled(LinkWithoutStyles)`
-  padding: 10px 15px;
-`
-
 const RenderItem = ({ item, onClickRow }) => {
   return (
-    <ListItemContent
-      aria-label={item.title}
+    <QuestionItem
+      additionalMetadata={item.additionalMetadata}
+      content={item.description}
+      header={item.header}
       href={item.href}
       id={item.id}
-      onClick={() => onClickRow(item)}
-    >
-      <QuestionItem
-        content={item.description}
-        metadata={item.metadata}
-        status={item.status}
-        title={item.title}
-      />
-    </ListItemContent>
+      metadata={item.metadata}
+      status={item.status}
+      title={item.title}
+    />
   )
 }
 

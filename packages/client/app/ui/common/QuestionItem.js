@@ -4,14 +4,37 @@ import styled from 'styled-components'
 
 import { uuid, th } from '@coko/client'
 
-import { H4 } from './Headings'
 import WaxWrapper from '../wax/Wax'
 import { DashLayout } from '../wax/layout'
 import { dashConfig } from '../wax/config'
 
 const Wrapper = styled.div`
+  padding: 5px 0;
   position: relative;
   width: 100%;
+`
+
+const FirstRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`
+
+const WaxContainer = styled.a`
+  flex-grow: 1;
+  height: 45px;
+  overflow: hidden;
+  padding-left: 5px;
+  transition: outline ease 200ms;
+
+  &:hover,
+  &:focus {
+    outline: 1px solid ${th('colorPrimary')};
+  }
+
+  * {
+    overflow: hidden;
+  }
 `
 
 const Status = styled.span`
@@ -30,17 +53,53 @@ const Status = styled.span`
         return th('colorBackground')
     }
   }};
+  flex: 0 0 110px;
   padding: 3px 10px;
-  position: absolute;
-  right: 10px;
-  top: 0;
+  text-align: right;
 `
 
-const SubtitleRow = styled.div``
+const SecondRow = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly;
+  margin-bottom: 10px;
+  padding: 0 5px;
+
+  details {
+    flex: 1 1 0px;
+
+    summary {
+      cursor: pointer;
+
+      &:hover,
+      &:focus {
+        outline: 1px solid ${th('colorPrimary')};
+      }
+
+      > * {
+        display: inline;
+      }
+    }
+
+    ul {
+      padding: 0;
+
+      li {
+        list-style-type: none;
+
+        &::before {
+          content: '-';
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+`
 
 const BottomRow = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 0 5px;
 `
 
 const Metadata = styled.div`
@@ -54,26 +113,63 @@ const MetadataLabel = styled.div`
   text-transform: uppercase;
 `
 
-const contentPlaceholder = `<p class="paragraph">-</p>`
-
 const MetadataValue = styled.div``
 
+const contentPlaceholder = `<p class="paragraph">-</p>`
+
 const QuestionItem = props => {
-  const { className, metadata, content, title, status } = props
+  const {
+    additionalMetadata,
+    className,
+    metadata,
+    content,
+    status,
+    href,
+    id,
+  } = props
+
+  const { learningObjectives, understandings } = additionalMetadata
 
   return (
-    <Wrapper className={className}>
-      <H4>{title}</H4>
-      <Status status={status}>{status}</Status>
+    <Wrapper className={className} id={id}>
+      <FirstRow>
+        <WaxContainer href={href}>
+          <WaxWrapper
+            config={dashConfig}
+            content={content || contentPlaceholder}
+            layout={DashLayout}
+            readOnly
+          />
+        </WaxContainer>
+        {status ? <Status status={status}>{status}</Status> : null}
+      </FirstRow>
 
-      <SubtitleRow>
-        <WaxWrapper
-          config={dashConfig}
-          content={content || contentPlaceholder}
-          layout={DashLayout}
-          readOnly
-        />
-      </SubtitleRow>
+      <SecondRow>
+        {learningObjectives?.length > 0 && (
+          <details>
+            <summary>
+              <MetadataLabel>Learning Objectives</MetadataLabel>
+            </summary>
+            <ul>
+              {learningObjectives?.map(lo => (
+                <li key={uuid()}>{lo}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+        {understandings?.length > 0 && (
+          <details>
+            <summary>
+              <MetadataLabel>Understandings</MetadataLabel>
+            </summary>
+            <ul>
+              {understandings?.map(u => (
+                <li key={uuid()}>{u}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </SecondRow>
 
       <BottomRow>
         {metadata &&
@@ -96,12 +192,25 @@ QuestionItem.propTypes = {
       value: PropTypes.string,
     }),
   ).isRequired,
-  /* eslint-disable-next-line react/forbid-prop-types */
-  content: PropTypes.object,
+  additionalMetadata: PropTypes.shape({
+    learningObjectives: PropTypes.arrayOf(PropTypes.string),
+    understandings: PropTypes.arrayOf(PropTypes.string),
+  }),
+  content: PropTypes.shape(),
   status: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  href: PropTypes.string,
+  id: PropTypes.string,
 }
 
-QuestionItem.defaultProps = { content: null, status: '' }
+QuestionItem.defaultProps = {
+  additionalMetadata: {
+    learningObjectives: [],
+    understandings: [],
+  },
+  content: null,
+  status: '',
+  href: '#',
+  id: uuid(),
+}
 
 export default QuestionItem
