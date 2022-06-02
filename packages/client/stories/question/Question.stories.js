@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { lorem } from 'faker'
 
@@ -52,7 +52,7 @@ const initialValues = {
   essentialKnowledge: 'ERT-2.C.1',
 }
 
-const content = {
+const initialContent = {
   type: 'doc',
   content: [
     {
@@ -126,6 +126,27 @@ const flatMeta = {
 
 export const Base = args => {
   const [submitted, setSubmitted] = useState(false)
+  const shouldSaveChanges = useRef(false)
+  const editorContentRef = useRef(initialContent)
+  // TODO: pass this as editorContent to Question; update it on submit
+  // const [editorContent, setEditorContent] = useState(initialContent)
+
+  useEffect(() => {
+    const autoSaveTimer = setInterval(() => {
+      // this works
+      if (shouldSaveChanges.current) {
+        console.log('autosave content')
+        // call save function to with to save editorContent.current
+        console.log(editorContentRef.current)
+        shouldSaveChanges.current = false
+      } else {
+        console.log('nothing to save')
+      }
+    }, 5000)
+
+    // clear timer when component unmounts
+    return () => clearInterval(autoSaveTimer)
+  }, [])
 
   const emptyNavigationFunction = e => {
     e.preventDefault()
@@ -134,14 +155,22 @@ export const Base = args => {
 
   const onSubmit = data => {
     console.log(data)
+    // setEditorContent(data.editorContent)
     setSubmitted(true)
+  }
+
+  const handleEditorContentChanged = newContent => {
+    if (!shouldSaveChanges.current) {
+      shouldSaveChanges.current = true
+      editorContentRef.current = newContent
+    }
   }
 
   return (
     <Wrapper>
       <Question
         {...args}
-        editorContent={content}
+        editorContent={initialContent}
         initialMetadataValues={options}
         isSubmitted={submitted}
         loading={false}
@@ -149,7 +178,7 @@ export const Base = args => {
         onClickBackButton={emptyNavigationFunction}
         onClickNextButton={emptyNavigationFunction}
         onClickPreviousButton={emptyNavigationFunction}
-        onEditorContentAutoSave={() => console.log('editor content auto save')}
+        onEditorContentAutoSave={handleEditorContentChanged}
         onMetadataAutoSave={() => console.log('metadata auto save')}
         onQuestionSubmit={onSubmit}
         questionAgreedTc={false}
@@ -177,7 +206,7 @@ export const EditorView = () => {
 
   return (
     <Question
-      editorContent={content}
+      editorContent={initialContent}
       editorView
       initialMetadataValues={initialValues}
       isSubmitted

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -87,6 +87,46 @@ const StyledTabPane = styled(Tabs.TabPane)`
   overflow: auto;
 `
 
+// need to memoize Wax to prevent rerendering on state change (e.g. after accepting T&C)
+const MemoizedWax = memo(
+  props => {
+    const { content, innerRef, onContentChange, readOnly } = props
+
+    return (
+      <WaxWrapper
+        config={config}
+        content={content}
+        innerRef={innerRef}
+        layout={HhmiLayout}
+        onContentChange={onContentChange}
+        readOnly={readOnly}
+      />
+    )
+  }, // add a comparison function for when we want the editor to rerender
+  // returning true means the component doesn't rerender when parent rerenders
+  (prevProps, nextProps) =>
+    prevProps.readOnly === nextProps.readOnly &&
+    prevProps.content === nextProps.content,
+)
+
+MemoizedWax.propTypes = {
+  content: PropTypes.shape(),
+  innerRef: PropTypes.oneOfType([
+    // Either a function
+    PropTypes.func,
+    // Or the instance of a DOM native element (see the note about SSR)
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
+  onContentChange: PropTypes.func.isRequired,
+  readOnly: PropTypes.bool,
+}
+
+MemoizedWax.defaultProps = {
+  content: {},
+  readOnly: false,
+  innerRef: null,
+}
+
 // QUESTION submit button here seems to be outside the form
 // submit also refers to wax
 // does all this pose an accessibility problem?
@@ -123,7 +163,6 @@ const Question = props => {
   // const contentF = () => [console.log(WaxRef.current.getContent())]
 
   const [agreedTc, setAgreedTc] = useState(questionAgreedTc)
-  // const [questionContent, setQuestionContent] = useState(editorContent)
 
   const handleQuestionContentChange = content => {
     // setQuestionContent(content)
@@ -271,11 +310,9 @@ const Question = props => {
         >
           <StyledTabPane key={0} tab={QuestionTab}>
             <QuestionWrapper>
-              <WaxWrapper
-                config={config}
+              <MemoizedWax
                 content={editorContent}
                 innerRef={waxRef}
-                layout={HhmiLayout}
                 onContentChange={handleQuestionContentChange}
                 readOnly={isSubmitted && !underReview}
               />
