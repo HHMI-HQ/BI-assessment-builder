@@ -553,7 +553,7 @@ Question.defaultProps = {
   onPublish: () => {},
   onReject: () => {},
   editorContent: {},
-  initialMetadataValues: null,
+  initialMetadataValues: {},
   onClickPreviousButton: () => {},
   onClickNextButton: () => {},
   editorView: false,

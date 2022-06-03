@@ -999,6 +999,159 @@ const questionContentExample3 = {
   ],
 }
 
+const editorInitialContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      attrs: {
+        class: 'paragraph',
+      },
+      content: [
+        {
+          type: 'text',
+          text: 'test test 1234',
+        },
+      ],
+    },
+    {
+      type: 'multiple_choice_container',
+      attrs: {
+        id: '8fbb4bf0-dc85-4d5c-b07c-78ce9ff3066b',
+        class: 'multiple-choice',
+      },
+      content: [
+        {
+          type: 'question_node_multiple',
+          attrs: {
+            class: 'multiple-choice-question',
+            id: '5a5659c1-6c0a-48c2-93f9-7588d2728083',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'text',
+                  text: 'check the true ones',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'multiple_choice',
+          attrs: {
+            class: 'multiple-choice-option',
+            id: 'c5a851e9-70a4-4857-bfc9-9be5e1e1fcc2',
+            correct: true,
+            answer: false,
+            feedback: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'text',
+                  text: 'true',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'multiple_choice',
+          attrs: {
+            class: 'multiple-choice-option',
+            id: 'a64ed837-186a-42cc-8085-a98f8a91eec5',
+            correct: false,
+            answer: false,
+            feedback: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'text',
+                  text: 'false',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'multiple_choice',
+          attrs: {
+            class: 'multiple-choice-option',
+            id: '6eb402e1-76fe-4f71-84fc-cfa2f80fb957',
+            correct: true,
+            answer: false,
+            feedback: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'text',
+                  text: 'also true',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+}
+
+const initialMetadataValues = {
+  topic: 'cellBiology',
+  subtopic: 'cellStructureFunction',
+  supplementaryTopics: [
+    {
+      topic: 'ecology',
+      subtopic: 'matterEnergy',
+    },
+  ],
+  framework: 'biBiology',
+  supplementaryFields: [
+    {
+      unit: 'ecology',
+      courseTopic: 'climateChange',
+      application: 'IBB-A4.4.3',
+      skill: null,
+      understanding: 'IBB-U4.4.6',
+    },
+  ],
+  keywords: ['test', 'test2'],
+  biointeractiveResources: [
+    'electronTransportChain',
+    'howTermitesEnrichEcosystems',
+  ],
+  cognitiveLevel: 'higher-understand',
+  affectiveLevel: 'responding',
+  psychomotorLevel: 'physicalAbilities',
+  unit: 'ecology',
+  courseTopic: 'energyFlow',
+  skill: 'IBB-S4.2.1',
+  understanding: 'IBB-U4.2.1',
+}
+
 export {
   objectCleaner,
   questionDataTransformer,
@@ -1016,4 +1169,6 @@ export {
   questionContentExample,
   questionContentExample2,
   questionContentExample3,
+  editorInitialContent,
+  initialMetadataValues,
 }

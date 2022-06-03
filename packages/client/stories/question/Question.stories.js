@@ -2,7 +2,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { lorem } from 'faker'
 
 import { th } from '@coko/client'
 
@@ -12,45 +11,14 @@ import {
   flatIBCourseMetadata,
   flatVisionAndChangeMetadata,
   flatAAMCMetadata,
+  editorInitialContent,
+  initialMetadataValues,
 } from '../../app/utilities'
 
 const Wrapper = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   height: 800px;
 `
-
-const options = {
-  // topic: 'biochemistryMolecularBiology',
-}
-
-const initialValues = {
-  topic: 'biochemistryMolecularBiology',
-  subtopic: 'generalChemistry',
-  framework: 'apEnvironmentalScience',
-  supplementaryTopics: [
-    {
-      topic: 'cellBiology',
-      subtopic: 'cellStructureFunction',
-      unit: 'populations',
-      courseTopic: 'carryingCapacity',
-      learningObjective: 'ERT-3.E',
-      essentialKnowledge: 'ERT-3.E.1',
-    },
-  ],
-  keywords: ['test', 'test2'],
-  biointeractiveResources: [
-    'aTPSynthesis',
-    'bCR-ABL',
-    'bCR-ABL:ProteinStructureAndFunction',
-  ],
-  cognitiveLevel: 'higher-understand',
-  affectiveLevel: 'responding',
-  psychomotorLevel: 'perceptualAbilities',
-  unit: 'theLivingWorldBiodiversity',
-  courseTopic: 'ecosystemServices',
-  learningObjective: 'ERT-2.C',
-  essentialKnowledge: 'ERT-2.C.1',
-}
 
 const initialContent = {
   type: 'doc',
@@ -60,7 +28,8 @@ const initialContent = {
       content: [
         {
           type: 'text',
-          text: lorem.sentences(130),
+          text:
+            'Initial value: simple paragraph. Type your question content here. Go to Editor View story for more complex initial value',
         },
       ],
     },
@@ -128,8 +97,7 @@ export const Base = args => {
   const [submitted, setSubmitted] = useState(false)
   const shouldSaveChanges = useRef(false)
   const editorContentRef = useRef(initialContent)
-  // TODO: pass this as editorContent to Question; update it on submit
-  // const [editorContent, setEditorContent] = useState(initialContent)
+  const [editorContent, setEditorContent] = useState(initialContent)
 
   useEffect(() => {
     const autoSaveTimer = setInterval(() => {
@@ -155,7 +123,13 @@ export const Base = args => {
 
   const onSubmit = data => {
     console.log(data)
-    // setEditorContent(data.editorContent)
+
+    const editorState = {
+      type: 'doc',
+      content: JSON.parse(JSON.stringify(data.editorContent)),
+    }
+
+    setEditorContent(editorState)
     setSubmitted(true)
   }
 
@@ -170,8 +144,7 @@ export const Base = args => {
     <Wrapper>
       <Question
         {...args}
-        editorContent={initialContent}
-        initialMetadataValues={options}
+        editorContent={editorContent}
         isSubmitted={submitted}
         loading={false}
         metadata={flatMeta}
@@ -206,9 +179,9 @@ export const EditorView = () => {
 
   return (
     <Question
-      editorContent={initialContent}
+      editorContent={editorInitialContent}
       editorView
-      initialMetadataValues={initialValues}
+      initialMetadataValues={initialMetadataValues}
       isSubmitted
       loading={false}
       metadata={flatMeta}
