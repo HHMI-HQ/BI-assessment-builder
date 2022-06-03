@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -155,18 +155,39 @@ const Question = props => {
     showAssignHEButton,
     showNextQuestionLink,
     underReview,
+    autoSaveInterval,
   } = props
 
   const formRef = useRef()
   const waxRef = useRef()
 
-  // const contentF = () => [console.log(WaxRef.current.getContent())]
+  const shouldSaveChanges = useRef(false)
 
   const [agreedTc, setAgreedTc] = useState(questionAgreedTc)
 
-  const handleQuestionContentChange = content => {
-    // setQuestionContent(content)
-    onEditorContentAutoSave(content)
+  useEffect(() => {
+    const autoSaveTimer = setInterval(() => {
+      if (shouldSaveChanges.current) {
+        // eslint-disable-next-line no-console
+        console.log('autosave content')
+        const newContent = waxRef.current.getContent()
+        onEditorContentAutoSave(newContent)
+        shouldSaveChanges.current = false
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('nothing to save')
+      }
+    }, autoSaveInterval)
+
+    // clear timer when component unmounts
+    return () => clearInterval(autoSaveTimer)
+  }, [])
+
+  const handleQuestionContentChange = () => {
+    // auto save if there are changes AND (question is not submitted, or is submitted and under review)
+    if (!shouldSaveChanges.current && isSubmitted === underReview) {
+      shouldSaveChanges.current = true
+    }
   }
 
   const handleAgreeTcChange = e => {
@@ -546,6 +567,7 @@ Question.propTypes = {
   // TO DO - provide valid shape
   initialMetadataValues: PropTypes.shape(),
   underReview: PropTypes.bool,
+  autoSaveInterval: PropTypes.number,
 }
 
 Question.defaultProps = {
@@ -562,6 +584,7 @@ Question.defaultProps = {
   facultyView: false,
   underReview: false,
   resources: [],
+  autoSaveInterval: 5000,
 }
 
 export default Question

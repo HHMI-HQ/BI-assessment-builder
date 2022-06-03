@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { th } from '@coko/client'
@@ -95,26 +95,9 @@ const flatMeta = {
 
 export const Base = args => {
   const [submitted, setSubmitted] = useState(false)
-  const shouldSaveChanges = useRef(false)
-  const editorContentRef = useRef(initialContent)
+  // const shouldSaveChanges = useRef(false)
+  // const editorContentRef = useRef(initialContent)
   const [editorContent, setEditorContent] = useState(initialContent)
-
-  useEffect(() => {
-    const autoSaveTimer = setInterval(() => {
-      // this works
-      if (shouldSaveChanges.current) {
-        console.log('autosave content')
-        // call save function to with to save editorContent.current
-        console.log(editorContentRef.current)
-        shouldSaveChanges.current = false
-      } else {
-        console.log('nothing to save')
-      }
-    }, 5000)
-
-    // clear timer when component unmounts
-    return () => clearInterval(autoSaveTimer)
-  }, [])
 
   const emptyNavigationFunction = e => {
     e.preventDefault()
@@ -134,16 +117,15 @@ export const Base = args => {
   }
 
   const handleEditorContentChanged = newContent => {
-    if (!shouldSaveChanges.current) {
-      shouldSaveChanges.current = true
-      editorContentRef.current = newContent
-    }
+    // save content
+    console.log(newContent)
   }
 
   return (
     <Wrapper>
       <Question
         {...args}
+        autoSaveInterval={5000}
         editorContent={editorContent}
         isSubmitted={submitted}
         loading={false}
@@ -177,6 +159,11 @@ export const EditorView = () => {
     setReviewing(true)
   }
 
+  const handleEditorContentChanged = newContent => {
+    // save content
+    console.log(newContent)
+  }
+
   return (
     <Question
       editorContent={editorInitialContent}
@@ -186,7 +173,7 @@ export const EditorView = () => {
       loading={false}
       metadata={flatMeta}
       onClickBackButton={() => console.log('go back to dashboard')}
-      onEditorContentAutoSave={() => console.log('editor content auto save')}
+      onEditorContentAutoSave={handleEditorContentChanged}
       onMetadataAutoSave={() => console.log('metadata auto save')}
       onMoveToReview={moveToReview}
       onPublish={publish}
