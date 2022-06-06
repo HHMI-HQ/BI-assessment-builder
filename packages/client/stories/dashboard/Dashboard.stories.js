@@ -7,30 +7,25 @@ import styled from 'styled-components'
 import { createData } from '../_helpers'
 import {
   generateMetadata,
-  getRandomLearningObjective,
-  getRandomUnderstanding,
+  getRandomCourse,
+  getRandomObjectivesForCourse,
 } from '../../app/utilities'
 
-const learningObjectivesAndUnderstandings = () => {
-  const total = Math.floor(Math.random() * 4) + 1
-  const numberOfLOs = Math.floor(Math.random() * total)
-  const numberOfUs = total - numberOfLOs
+const generateCoursesForQuestion = () => {
+  const courses = []
+  const nrOfCourses = Math.floor(Math.random() * 2 + 1) // 1-2
 
-  const learningObjectives = []
-  const understandings = []
-
-  for (let i = 0; i < numberOfLOs; i += 1) {
-    learningObjectives.push(getRandomLearningObjective().label)
+  for (let i = 0; i < nrOfCourses; i += 1) {
+    const course = getRandomCourse()
+    const objectives = getRandomObjectivesForCourse(course)
+    courses.push({
+      course,
+      objectives: objectives.list,
+      label: objectives.label,
+    })
   }
 
-  for (let i = 0; i < numberOfUs; i += 1) {
-    understandings.push(getRandomUnderstanding().label)
-  }
-
-  return {
-    learningObjectives,
-    understandings,
-  }
+  return courses
 }
 
 const makeData = n =>
@@ -52,7 +47,8 @@ const makeData = n =>
       ],
     },
     metadata: generateMetadata(),
-    additionalMetadata: learningObjectivesAndUnderstandings(),
+    courses: generateCoursesForQuestion(),
+    // additionalMetadata: learningObjectivesAndUnderstandings(),
     status: ['Published', 'Submitted', 'Under review', 'Rejected'][
       Math.floor(Math.random() * 4)
     ],

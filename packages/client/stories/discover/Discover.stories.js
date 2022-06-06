@@ -11,31 +11,9 @@ import {
   flatVisionAndChangeMetadata,
   flatAAMCMetadata,
   generateMetadata,
-  getRandomLearningObjective,
-  getRandomUnderstanding,
+  getRandomCourse,
+  getRandomObjectivesForCourse,
 } from '../../app/utilities'
-
-const learningObjectivesAndUnderstandings = () => {
-  const total = Math.floor(Math.random() * 4) + 1
-  const numberOfLOs = Math.floor(Math.random() * total)
-  const numberOfUs = total - numberOfLOs
-
-  const learningObjectives = []
-  const understandings = []
-
-  for (let i = 0; i < numberOfLOs; i += 1) {
-    learningObjectives.push(getRandomLearningObjective().label)
-  }
-
-  for (let i = 0; i < numberOfUs; i += 1) {
-    understandings.push(getRandomUnderstanding().label)
-  }
-
-  return {
-    learningObjectives,
-    understandings,
-  }
-}
 
 const sortOptions = [
   {
@@ -49,6 +27,23 @@ const sortOptions = [
     isDefault: true,
   },
 ]
+
+const generateCoursesForQuestion = () => {
+  const courses = []
+  const nrOfCourses = Math.floor(Math.random() * 2 + 1) // 1-2
+
+  for (let i = 0; i < nrOfCourses; i += 1) {
+    const course = getRandomCourse()
+    const objectives = getRandomObjectivesForCourse(course)
+    courses.push({
+      course,
+      objectives: objectives.list,
+      label: objectives.label,
+    })
+  }
+
+  return courses
+}
 
 const makeData = n =>
   range(n).map(i => ({
@@ -68,7 +63,7 @@ const makeData = n =>
       ],
     },
     metadata: generateMetadata(),
-    additionalMetadata: learningObjectivesAndUnderstandings(),
+    courses: generateCoursesForQuestion(),
     href: `question/${uuid()}`,
   }))
 

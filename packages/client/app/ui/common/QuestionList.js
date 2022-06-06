@@ -13,8 +13,9 @@ const ButtonWithoutStyles = styled.button`
 const RenderItem = ({ item, onClickRow }) => {
   return (
     <QuestionItem
-      additionalMetadata={item.additionalMetadata}
+      // additionalMetadata={item.additionalMetadata}
       content={item.description}
+      courses={item.courses}
       header={item.header}
       href={item.href}
       id={item.id}

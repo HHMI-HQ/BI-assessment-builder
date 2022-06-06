@@ -1,3 +1,4 @@
+/* stylelint-disable string-quotes */
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -59,17 +60,17 @@ const Status = styled.span`
 `
 
 const SecondRow = styled.div`
-  display: flex;
-  gap: 10px;
   justify-content: space-evenly;
   margin-bottom: 10px;
   padding: 0 5px;
 
   details {
-    flex: 1 1 0px;
+    /* flex: 1 1 0px; */
 
     summary {
       cursor: pointer;
+      padding-right: 5px;
+      width: fit-content;
 
       &:hover,
       &:focus {
@@ -98,6 +99,7 @@ const SecondRow = styled.div`
 
 const BottomRow = styled.div`
   display: flex;
+  gap: 10px;
   justify-content: space-between;
   padding: 0 5px;
 `
@@ -118,17 +120,7 @@ const MetadataValue = styled.div``
 const contentPlaceholder = `<p class="paragraph">-</p>`
 
 const QuestionItem = props => {
-  const {
-    additionalMetadata,
-    className,
-    metadata,
-    content,
-    status,
-    href,
-    id,
-  } = props
-
-  const { learningObjectives, understandings } = additionalMetadata
+  const { className, metadata, content, status, href, id, courses } = props
 
   return (
     <Wrapper className={className} id={id}>
@@ -145,30 +137,20 @@ const QuestionItem = props => {
       </FirstRow>
 
       <SecondRow>
-        {learningObjectives?.length > 0 && (
-          <details>
-            <summary>
-              <MetadataLabel>Learning Objectives</MetadataLabel>
-            </summary>
-            <ul>
-              {learningObjectives?.map(lo => (
-                <li key={uuid()}>{lo}</li>
-              ))}
-            </ul>
-          </details>
-        )}
-        {understandings?.length > 0 && (
-          <details>
-            <summary>
-              <MetadataLabel>Understandings</MetadataLabel>
-            </summary>
-            <ul>
-              {understandings?.map(u => (
-                <li key={uuid()}>{u}</li>
-              ))}
-            </ul>
-          </details>
-        )}
+        {courses.map(c => {
+          return (
+            <details key={uuid()}>
+              <summary>
+                <MetadataLabel>{`${c.label} for ${c.course.label}`}</MetadataLabel>
+              </summary>
+              <ul>
+                {c.objectives.map(o => (
+                  <li key={uuid()}>{o.label}</li>
+                ))}
+              </ul>
+            </details>
+          )
+        })}
       </SecondRow>
 
       <BottomRow>
@@ -192,25 +174,27 @@ QuestionItem.propTypes = {
       value: PropTypes.string,
     }),
   ).isRequired,
-  additionalMetadata: PropTypes.shape({
-    learningObjectives: PropTypes.arrayOf(PropTypes.string),
-    understandings: PropTypes.arrayOf(PropTypes.string),
-  }),
   content: PropTypes.shape(),
   status: PropTypes.string,
   href: PropTypes.string,
   id: PropTypes.string,
+  courses: PropTypes.arrayOf(
+    PropTypes.shape({
+      course: PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string,
+      }),
+      objectives: PropTypes.arrayOf(PropTypes.shape()),
+    }),
+  ),
 }
 
 QuestionItem.defaultProps = {
-  additionalMetadata: {
-    learningObjectives: [],
-    understandings: [],
-  },
   content: null,
   status: '',
   href: '#',
   id: uuid(),
+  courses: [],
 }
 
 export default QuestionItem

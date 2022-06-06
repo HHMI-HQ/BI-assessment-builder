@@ -11,6 +11,8 @@ import {
   questionContentExample,
   questionContentExample2,
   questionContentExample3,
+  getRandomCourse,
+  getRandomObjectivesForCourse,
 } from '../../app/utilities'
 
 const meta = generateMetadata()
@@ -20,56 +22,26 @@ const extraMeta = {
   understandings: [getRandomUnderstanding().label],
 }
 
+const courses = []
+const nrOfCourses = Math.floor(Math.random() * 2 + 1) // 1-3
+
+for (let i = 0; i < nrOfCourses; i += 1) {
+  const course = getRandomCourse()
+  const objectives = getRandomObjectivesForCourse(course)
+  courses.push({
+    course,
+    objectives: objectives.list,
+    label: objectives.label,
+  })
+}
+
 export const Base = args => (
   <QuestionItem
-    additionalMetadata={extraMeta}
     status={getRandomStatus()}
     {...args}
     content={questionContentExample3}
+    courses={courses}
     metadata={meta}
-  />
-)
-
-export const WithLearningObjectives = () => (
-  <QuestionItem
-    additionalMetadata={{
-      learningObjectives: [
-        getRandomLearningObjective().label,
-        getRandomLearningObjective().label,
-      ],
-    }}
-    content={questionContentExample3}
-    metadata={meta}
-    status={getRandomStatus()}
-    title={getRandomLearningObjective().label}
-  />
-)
-
-export const WithUnderstandings = () => (
-  <QuestionItem
-    additionalMetadata={{
-      understandings: [
-        getRandomUnderstanding().label,
-        getRandomUnderstanding().label,
-      ],
-    }}
-    content={questionContentExample3}
-    metadata={meta}
-    status={getRandomStatus()}
-    title={getRandomLearningObjective().label}
-  />
-)
-
-export const WithLearningObjectivesAndUnderstandings = () => (
-  <QuestionItem
-    additionalMetadata={{
-      learningObjectives: [getRandomLearningObjective().label],
-      understandings: [getRandomUnderstanding().label],
-    }}
-    content={questionContentExample3}
-    metadata={meta}
-    status={getRandomStatus()}
-    title={getRandomLearningObjective().label}
   />
 )
 

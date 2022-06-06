@@ -9,6 +9,8 @@ import {
   generateMetadata,
   getRandomLearningObjective,
   getRandomUnderstanding,
+  getRandomCourse,
+  getRandomObjectivesForCourse,
 } from '../../app/utilities'
 
 const learningObjectivesAndUnderstandings = () => {
@@ -33,6 +35,23 @@ const learningObjectivesAndUnderstandings = () => {
   }
 }
 
+const courseData = () => {
+  const courses = []
+  const nrOfCourses = Math.floor(Math.random() * 2 + 1) // 1-2
+
+  for (let i = 0; i < nrOfCourses; i += 1) {
+    const course = getRandomCourse()
+    const objectives = getRandomObjectivesForCourse(course)
+    courses.push({
+      course,
+      objectives: objectives.list,
+      label: objectives.label,
+    })
+  }
+
+  return courses
+}
+
 const makeData = n =>
   createData(n, i => ({
     id: uuid(),
@@ -53,6 +72,7 @@ const makeData = n =>
     },
     metadata: generateMetadata(),
     additionalMetadata: learningObjectivesAndUnderstandings(),
+    courses: courseData(),
     status: ['Published', 'Submitted', 'Under review', 'Rejected'][
       Math.floor(Math.random() * 4)
     ],

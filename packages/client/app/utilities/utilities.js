@@ -714,6 +714,14 @@ const generateMetadata = () => {
       Math.floor(Math.random() * randomTopic.subTopics.length)
     ]
 
+  const randomTopic2 =
+    topicsMetadata[Math.floor(Math.random() * topicsMetadata.length)]
+
+  const randomSubtopic2 =
+    randomTopic2.subTopics[
+      Math.floor(Math.random() * randomTopic2.subTopics.length)
+    ]
+
   const randomQuestionType =
     questionTypes[Math.floor(Math.random() * questionTypes.length)]
 
@@ -733,11 +741,11 @@ const generateMetadata = () => {
   return [
     {
       label: 'topic',
-      value: randomTopic.label,
+      value: `${randomTopic.label}, ${randomTopic2.label}`,
     },
     {
       label: 'subtopic',
-      value: randomSubtopic.label,
+      value: `${randomSubtopic.label}, ${randomSubtopic2.label}`,
     },
     {
       label: 'question type',
@@ -770,6 +778,74 @@ const getRandomUnderstanding = () => {
   ]
 }
 
+const getRandomCourseWithLearningObjectives = () => {
+  // const index = Math.floor(Math.random() * 4)
+  // const randomCourse = frameworksMeta[index]
+  let flatMetadata
+
+  // if (index < 2) {
+  //   flatMetadata = flatAPCoursesMetadata(randomCourse)
+
+  //   const lo =
+  //     flatMetadata.learningObjectives[
+  //       Math.floor(Math.random() * flatMetadata.learningObjectives.length)
+  //     ]
+  // }
+
+  // flatMetadata = flatIBCourseMetadata(randomCourse)
+  return flatMetadata.understandings[
+    Math.floor(Math.random() * flatMetadata.understandings.length)
+  ]
+}
+
+const getRandomCourse = () => {
+  return frameworksMeta[Math.floor(Math.random() * 4)]
+}
+
+const getRandomObjectivesForCourse = course => {
+  let flatMetadata
+
+  if (
+    course.value === 'apBiology' ||
+    course.value === 'apEnvironmentalScience'
+  ) {
+    flatMetadata = flatAPCoursesMetadata(course)
+    const objectives = []
+    const nrOfObjectives = Math.floor(Math.random() * 2 + 1)
+
+    for (let i = 0; i < nrOfObjectives; i += 1) {
+      objectives.push(
+        flatMetadata.learningObjectives[
+          Math.floor(Math.random() * flatMetadata.learningObjectives.length)
+        ],
+      )
+    }
+
+    return { list: objectives, label: 'Learning Objectives' }
+  }
+
+  if (
+    course.value === 'biBiology' ||
+    course.value === 'biEnvironmentalScience'
+  ) {
+    flatMetadata = flatIBCourseMetadata(course)
+    const objectives = []
+    const nrOfObjectives = Math.floor(Math.random() * 2 + 1)
+
+    for (let i = 0; i < nrOfObjectives; i += 1) {
+      objectives.push(
+        flatMetadata.understandings[
+          Math.floor(Math.random() * flatMetadata.understandings.length)
+        ],
+      )
+    }
+
+    return { list: objectives, label: 'Understandings' }
+  }
+
+  return null
+}
+
 const getRandomStatus = () =>
   ['Published', 'Submitted', 'Under review', 'Rejected'][
     Math.floor(Math.random() * 4)
@@ -797,8 +873,7 @@ const questionContentExample = {
           content: [
             {
               type: 'text',
-              text:
-                'Does the question look good in the dashboard? (adding some more text here, since we don’t know yet which text will be displayed in the dashboard/discover page, the one in the question body, or the context the we gave above it. I hope this much text is enough for the test we want to make.)',
+              text: 'Does the question look good in the dashboard? (adding some more text here, since we don’t know yet which text will be displayed in the dashboard/discover page, the one in the question body, or the context the we gave above it. I hope this much text is enough for the test we want to make.)',
             },
           ],
         },
@@ -993,8 +1068,7 @@ const questionContentExample3 = {
   content: [
     {
       type: 'text',
-      text:
-        'Figures a and c show two different species of corals from a reef off the Caribbean coast of Panama. Parts of both corals have undergone bleaching, which is indicated by the arrows pointing to the white areas.',
+      text: 'Figures a and c show two different species of corals from a reef off the Caribbean coast of Panama. Parts of both corals have undergone bleaching, which is indicated by the arrows pointing to the white areas.',
     },
   ],
 }
@@ -1165,6 +1239,9 @@ export {
   generateMetadata,
   getRandomLearningObjective,
   getRandomUnderstanding,
+  getRandomCourseWithLearningObjectives,
+  getRandomCourse,
+  getRandomObjectivesForCourse,
   getRandomStatus,
   questionContentExample,
   questionContentExample2,
