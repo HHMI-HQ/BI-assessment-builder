@@ -2,7 +2,7 @@ const { deferConfig } = require('config/defer')
 
 module.exports = {
   'pubsweet-server': {
-    externalURL: 'http://localhost:3000',
+    externalURL: 'http://localhost:4000',
     baseUrl: deferConfig(
       cfg =>
         `${cfg['pubsweet-server'].protocol}://${cfg['pubsweet-server'].host}${
