@@ -103,7 +103,34 @@ Dashboard.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
-      quesitons: PropTypes.arrayOf(PropTypes.shape()),
+      questions: PropTypes.arrayOf(
+        PropTypes.shape({
+          metadata: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+            }),
+          ),
+          content: PropTypes.shape({
+            type: PropTypes.string,
+            content: PropTypes.arrayOf(PropTypes.shape()),
+          }),
+          status: PropTypes.string,
+          href: PropTypes.string,
+          id: PropTypes.string,
+          courses: PropTypes.arrayOf(
+            PropTypes.shape({
+              course: PropTypes.shape({
+                label: PropTypes.string,
+              }),
+              label: PropTypes.string,
+              objectives: PropTypes.arrayOf(
+                PropTypes.shape({ label: PropTypes.string }),
+              ),
+            }),
+          ),
+        }),
+      ),
       totalCount: PropTypes.number,
       showBulkActions: PropTypes.bool,
     }),

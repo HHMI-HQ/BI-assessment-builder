@@ -14,7 +14,7 @@ const RenderItem = ({ item, onClickRow }) => {
   return (
     <QuestionItem
       // additionalMetadata={item.additionalMetadata}
-      content={item.description}
+      content={item.content}
       courses={item.courses}
       header={item.header}
       href={item.href}
@@ -131,14 +131,28 @@ QuestionList.propTypes = {
   loading: PropTypes.bool,
   questions: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      /* eslint-disable-next-line react/forbid-prop-types */
-      description: PropTypes.object,
       metadata: PropTypes.arrayOf(
         PropTypes.shape({
           label: PropTypes.string,
           value: PropTypes.string,
+        }),
+      ),
+      content: PropTypes.shape({
+        type: PropTypes.string,
+        content: PropTypes.arrayOf(PropTypes.shape()),
+      }),
+      status: PropTypes.string,
+      href: PropTypes.string,
+      id: PropTypes.string,
+      courses: PropTypes.arrayOf(
+        PropTypes.shape({
+          course: PropTypes.shape({
+            label: PropTypes.string,
+          }),
+          label: PropTypes.string,
+          objectives: PropTypes.arrayOf(
+            PropTypes.shape({ label: PropTypes.string }),
+          ),
         }),
       ),
     }),

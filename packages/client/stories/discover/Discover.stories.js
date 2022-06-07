@@ -48,7 +48,7 @@ const generateCoursesForQuestion = () => {
 const makeData = n =>
   range(n).map(i => ({
     id: String(i + 1),
-    description: {
+    content: {
       type: 'doc',
       content: [
         {

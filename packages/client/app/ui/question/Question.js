@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useRef, useState } from 'react'
+/* stylelint-disable string-quotes */
+import React, { memo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -115,7 +116,9 @@ MemoizedWax.propTypes = {
     // Either a function
     PropTypes.func,
     // Or the instance of a DOM native element (see the note about SSR)
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+    PropTypes.shape({
+      current: PropTypes.shape(),
+    }),
   ]),
   onContentChange: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
@@ -149,45 +152,22 @@ const Question = props => {
     onQuestionSubmit,
     onReject,
     onPublish,
+    onClickAssignHE,
     onMoveToReview,
     questionAgreedTc,
     resources,
     showAssignHEButton,
     showNextQuestionLink,
     underReview,
-    autoSaveInterval,
   } = props
 
   const formRef = useRef()
   const waxRef = useRef()
 
-  const shouldSaveChanges = useRef(false)
-
   const [agreedTc, setAgreedTc] = useState(questionAgreedTc)
 
-  useEffect(() => {
-    const autoSaveTimer = setInterval(() => {
-      if (shouldSaveChanges.current) {
-        // eslint-disable-next-line no-console
-        console.log('autosave content')
-        const newContent = waxRef.current.getContent()
-        onEditorContentAutoSave(newContent)
-        shouldSaveChanges.current = false
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('nothing to save')
-      }
-    }, autoSaveInterval)
-
-    // clear timer when component unmounts
-    return () => clearInterval(autoSaveTimer)
-  }, [])
-
-  const handleQuestionContentChange = () => {
-    // auto save if there are changes AND (question is not submitted, or is submitted and under review)
-    if (!shouldSaveChanges.current && isSubmitted === underReview) {
-      shouldSaveChanges.current = true
-    }
+  const handleQuestionContentChange = content => {
+    onEditorContentAutoSave(content)
   }
 
   const handleAgreeTcChange = e => {
@@ -195,11 +175,6 @@ const Question = props => {
   }
 
   const handleSubmit = () => {
-    // onQuestionSubmit({
-    //   agreedTc,
-    //   metadata: formRef.current.getFormValues(),
-    //   editorContent: questionContent,
-    // })
     formRef.current.submit()
   }
 
@@ -272,7 +247,12 @@ const Question = props => {
   const RightAreaEditor = (
     <>
       {showAssignHEButton && (
-        <StyledButton aria-label="Assign Handling Editor" ghost type="primary ">
+        <StyledButton
+          aria-label="Assign Handling Editor"
+          ghost
+          onClick={onClickAssignHE}
+          type="primary "
+        >
           Assign HE
         </StyledButton>
       )}
@@ -369,6 +349,7 @@ Question.propTypes = {
   onMoveToReview: PropTypes.func,
   onPublish: PropTypes.func,
   onReject: PropTypes.func,
+  onClickAssignHE: PropTypes.func,
 
   editorContent: PropTypes.shape(),
   questionAgreedTc: PropTypes.bool.isRequired,
@@ -567,13 +548,13 @@ Question.propTypes = {
   // TO DO - provide valid shape
   initialMetadataValues: PropTypes.shape(),
   underReview: PropTypes.bool,
-  autoSaveInterval: PropTypes.number,
 }
 
 Question.defaultProps = {
   onMoveToReview: () => {},
   onPublish: () => {},
   onReject: () => {},
+  onClickAssignHE: () => {},
   editorContent: {},
   initialMetadataValues: {},
   onClickPreviousButton: () => {},
@@ -584,7 +565,6 @@ Question.defaultProps = {
   facultyView: false,
   underReview: false,
   resources: [],
-  autoSaveInterval: 5000,
 }
 
 export default Question

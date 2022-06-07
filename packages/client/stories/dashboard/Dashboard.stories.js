@@ -32,7 +32,7 @@ const makeData = n =>
   createData(n, i => ({
     id: uuid(),
     title: lorem.words(6),
-    description: {
+    content: {
       type: 'doc',
       content: [
         {

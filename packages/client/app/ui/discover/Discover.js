@@ -100,17 +100,28 @@ Discover.propTypes = {
   /** list of search result to render */
   questions: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      /* eslint-disable-next-line react/forbid-prop-types */
-      description: PropTypes.object,
-      meta: PropTypes.arrayOf(
+      metadata: PropTypes.arrayOf(
         PropTypes.shape({
-          unit: PropTypes.string,
-          section: PropTypes.string,
-          topic: PropTypes.string,
-          category: PropTypes.string,
-          published: PropTypes.string,
+          label: PropTypes.string,
+          value: PropTypes.string,
+        }),
+      ),
+      content: PropTypes.shape({
+        type: PropTypes.string,
+        content: PropTypes.arrayOf(PropTypes.shape()),
+      }),
+      status: PropTypes.string,
+      href: PropTypes.string,
+      id: PropTypes.string,
+      courses: PropTypes.arrayOf(
+        PropTypes.shape({
+          course: PropTypes.shape({
+            label: PropTypes.string,
+          }),
+          label: PropTypes.string,
+          objectives: PropTypes.arrayOf(
+            PropTypes.shape({ label: PropTypes.string }),
+          ),
         }),
       ),
     }),

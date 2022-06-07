@@ -174,7 +174,10 @@ QuestionItem.propTypes = {
       value: PropTypes.string,
     }),
   ).isRequired,
-  content: PropTypes.shape(),
+  content: PropTypes.shape({
+    type: PropTypes.string,
+    content: PropTypes.arrayOf(PropTypes.shape()),
+  }),
   status: PropTypes.string,
   href: PropTypes.string,
   id: PropTypes.string,
@@ -182,9 +185,11 @@ QuestionItem.propTypes = {
     PropTypes.shape({
       course: PropTypes.shape({
         label: PropTypes.string,
-        value: PropTypes.string,
       }),
-      objectives: PropTypes.arrayOf(PropTypes.shape()),
+      label: PropTypes.string,
+      objectives: PropTypes.arrayOf(
+        PropTypes.shape({ label: PropTypes.string }),
+      ),
     }),
   ),
 }

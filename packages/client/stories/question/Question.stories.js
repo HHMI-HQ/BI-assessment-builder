@@ -28,8 +28,7 @@ const initialContent = {
       content: [
         {
           type: 'text',
-          text:
-            'Initial value: simple paragraph. Type your question content here. Go to Editor View story for more complex initial value',
+          text: 'Initial value: simple paragraph. Type your question content here. Go to Editor View story for more complex initial value',
         },
       ],
     },
@@ -95,8 +94,6 @@ const flatMeta = {
 
 export const Base = args => {
   const [submitted, setSubmitted] = useState(false)
-  // const shouldSaveChanges = useRef(false)
-  // const editorContentRef = useRef(initialContent)
   const [editorContent, setEditorContent] = useState(initialContent)
 
   const emptyNavigationFunction = e => {
