@@ -211,7 +211,183 @@ Sidebar.propTypes = {
   setFilters: PropTypes.func.isRequired,
   /** text that goes to the top of the sidebar */
   text: PropTypes.string,
-  metadata: PropTypes.shape().isRequired,
+  metadata: PropTypes.shape({
+    topics: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string,
+        subtopics: PropTypes.arrayOf(
+          PropTypes.shape({
+            label: PropTypes.string,
+            value: PropTypes.string,
+          }),
+        ),
+      }),
+    ),
+    blooms: PropTypes.shape({
+      cognitive: PropTypes.arrayOf(
+        PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
+      ),
+      affective: PropTypes.arrayOf(
+        PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
+      ),
+      psychomotor: PropTypes.arrayOf(
+        PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
+      ),
+    }),
+    frameworks: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.shape({
+          label: PropTypes.string,
+          value: PropTypes.string,
+          units: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+            }),
+          ),
+          topics: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+            }),
+          ),
+          learningObjectives: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+              topic: PropTypes.string,
+            }),
+          ),
+          essentialKnowledge: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+              topic: PropTypes.string,
+              learningObjective: PropTypes.string,
+            }),
+          ),
+        }),
+        PropTypes.shape({
+          label: PropTypes.string,
+          value: PropTypes.string,
+          units: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+            }),
+          ),
+          topics: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+            }),
+          ),
+          applications: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+              topic: PropTypes.string,
+            }),
+          ),
+          skills: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+              topic: PropTypes.string,
+            }),
+          ),
+          understandings: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              unit: PropTypes.string,
+              topic: PropTypes.string,
+            }),
+          ),
+        }),
+        PropTypes.shape({
+          label: PropTypes.string,
+          value: PropTypes.string,
+        }),
+      ]),
+    ),
+    introToBioMeta: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.shape({
+          label: PropTypes.string,
+          value: PropTypes.string,
+          coreConcepts: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              explanatoryItems: PropTypes.arrayOf(PropTypes.string),
+            }),
+          ),
+          subdisciplines: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+            }),
+          ),
+          subdisciplineStatements: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              coreConcept: PropTypes.string,
+              subdiscipline: PropTypes.string,
+            }),
+          ),
+          coreCompetencies: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+            }),
+          ),
+          subcompetencies: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              coreCompetence: PropTypes.string,
+              explanation: PropTypes.string,
+            }),
+          ),
+          subcompetenceStatements: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              coreCompetence: PropTypes.string,
+              subcompetence: PropTypes.string,
+            }),
+          ),
+        }),
+        PropTypes.shape({
+          label: PropTypes.string,
+          value: PropTypes.string,
+          concepts: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+            }),
+          ),
+          categories: PropTypes.arrayOf(
+            PropTypes.shape({
+              label: PropTypes.string,
+              value: PropTypes.string,
+              concept: PropTypes.string,
+              explanation: PropTypes.string,
+            }),
+          ),
+        }),
+      ]),
+    ),
+  }).isRequired,
 }
 
 Sidebar.defaultProps = {
