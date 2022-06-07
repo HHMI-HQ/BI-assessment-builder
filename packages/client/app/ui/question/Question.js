@@ -35,7 +35,6 @@ const Wrapper = styled.div`
     padding: 0 !important;
   }
 
-  /* stylelint-disable-next-line string-quotes */
   div[role='tabpanel'] > .ant-row {
     margin: 0 !important;
   }
@@ -544,7 +543,15 @@ Question.propTypes = {
       ]),
     ),
   }).isRequired,
-  resources: PropTypes.arrayOf(PropTypes.shape()),
+  resources: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string,
+      url: PropTypes.string,
+      topics: PropTypes.arrayOf(PropTypes.string),
+      subtopics: PropTypes.arrayOf(PropTypes.string),
+    }),
+  ),
   // TO DO - provide valid shape
   initialMetadataValues: PropTypes.shape(),
   underReview: PropTypes.bool,

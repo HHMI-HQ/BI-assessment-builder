@@ -686,7 +686,15 @@ Metadata.propTypes = {
       ]),
     ),
   }).isRequired,
-  resources: PropTypes.arrayOf(PropTypes.shape()),
+  resources: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string,
+      url: PropTypes.string,
+      topics: PropTypes.arrayOf(PropTypes.string),
+      subtopics: PropTypes.arrayOf(PropTypes.string),
+    }),
+  ),
   editorView: PropTypes.bool,
   // TO DO - provide valid shape
   /* eslint-disable-next-line react/forbid-prop-types */
