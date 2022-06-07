@@ -90,7 +90,7 @@ const Dashboard = props => {
         ({ value, label, questions, totalCount, showBulkActions }) => (
           <StyledTabPane className="test" key={value} tab={label}>
             <QuestionList
-              bulkActions={showBulkActions && bulkActions}
+              bulkAction={showBulkActions && bulkActions}
               currentPage={searchParams.page}
               key={searchParams.role}
               loading={loading}
@@ -112,9 +112,9 @@ const Dashboard = props => {
 
 Dashboard.propTypes = {
   /** custom component for bulk actions on selected questions */
-  bulkActions: PropTypes.shape(),
+  bulkActions: PropTypes.element,
   /** custom component for create question */
-  createQuestionButton: PropTypes.shape(),
+  createQuestionButton: PropTypes.element,
   /** Loading results. */
   loading: PropTypes.bool,
   /** handele selection and deselection of questions */
