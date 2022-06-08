@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 `
 
 const StyledSupplementaryFieldsContainer = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: ${grid(6)};
 `
 
 const Metadata = React.forwardRef((props, ref) => {
