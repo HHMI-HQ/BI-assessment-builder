@@ -11,8 +11,7 @@ COPY yarn.lock .
 RUN yarn install  --frozen-lockfile
 
 COPY ./.storybook ./.storybook
-COPY ./app/ui ./app/ui
-COPY ./app/theme.js ./app/theme.js
+COPY ./app ./app
 COPY ./stories ./stories
 
 RUN yarn build-storybook \
