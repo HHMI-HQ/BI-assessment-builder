@@ -1,10 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { debounce as lodashDebounceFunc } from 'lodash'
 
 import { Select as AntSelect } from 'antd'
+
+// no ref for Select component, so we need a wrapper to attach the ref and query its children
+const Wrapper = styled.div`
+  .ant-select {
+    width: 100%;
+  }
+`
 
 const StyledSelect = styled(AntSelect)`
   width: 100%;
@@ -19,6 +26,10 @@ const StyledDropdown = styled.div`
       `}
   }
 `
+
+const dropdownRender = (menu, wrapOptionText) => (
+  <StyledDropdown wrapOptionText={wrapOptionText}>{menu}</StyledDropdown>
+)
 
 const Select = props => {
   const {
@@ -39,6 +50,16 @@ const Select = props => {
     ...rest
   } = props
 
+  const selectRef = useRef(null)
+
+  // axe devtools complains about missing aria-expanded attribute
+  // it is added after you click on the element, but in the beginning it is not present
+  useEffect(() => {
+    selectRef.current
+      .querySelector(`.ant-select [role="combobox"]`)
+      .setAttribute('aria-expanded', false)
+  }, [])
+
   const handleSearch = searchValue => {
     onSearch(searchValue)
   }
@@ -50,21 +71,17 @@ const Select = props => {
     : handleSearch
 
   return (
-    <StyledSelect
-      className={className}
-      dropdownRender={menu => {
-        return (
-          <StyledDropdown wrapOptionText={wrapOptionText}>
-            {menu}
-          </StyledDropdown>
-        )
-      }}
-      filterOption={async && !filterOption ? false : filterOption}
-      notFoundContent={!notFoundContent && async ? null : notFoundContent}
-      onSearch={onSearch && searchFunc}
-      showSearch={showSearch || !!onSearch}
-      {...rest}
-    />
+    <Wrapper ref={selectRef}>
+      <StyledSelect
+        className={className}
+        dropdownRender={menu => dropdownRender(menu, wrapOptionText)}
+        filterOption={async && !filterOption ? false : filterOption}
+        notFoundContent={!notFoundContent && async ? null : notFoundContent}
+        onSearch={onSearch && searchFunc}
+        showSearch={showSearch || !!onSearch}
+        {...rest}
+      />
+    </Wrapper>
   )
 }
 
