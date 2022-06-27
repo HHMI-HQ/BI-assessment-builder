@@ -3,6 +3,7 @@ const { cloneDeep } = require('lodash')
 const {
   BaseModel,
   modelTypes: { boolean },
+  // uuid,
 } = require('@coko/server')
 
 const QuestionVersion = require('../questionVersion/questionVersion.model')
@@ -10,9 +11,12 @@ const QuestionVersion = require('../questionVersion/questionVersion.model')
 // TO DO -- move to cokoapps
 const applyListQueryOptions = async (query, options = {}) => {
   let q = cloneDeep(query)
-  const { orderBy, page, pageSize } = options
+  const { orderBy, ascending, page, pageSize } = options
 
-  if (orderBy) q = q.orderBy(orderBy)
+  let ascendingValue
+  if (ascending === true) ascendingValue = 'asc'
+  if (ascending === false) ascendingValue = 'desc'
+  if (orderBy) q = q.orderBy(orderBy, ascendingValue)
 
   if (
     (Number.isInteger(page) && !Number.isInteger(pageSize)) ||
@@ -44,7 +48,7 @@ const applyListQueryOptions = async (query, options = {}) => {
 
   return {
     result: page !== undefined ? results : result,
-    totalCount: total || result.length,
+    totalCount: total !== undefined ? total : result.length,
   }
 }
 
@@ -149,17 +153,36 @@ class Question extends BaseModel {
 
   // eg. find all questions apart from the ones this user is an author of
   static async findByExcludingRole(userId, role, options = {}) {
-    const query = Question.query(options.trx).whereRaw(
-      `not id = some(
-          select questions.id
-          from questions
-          left join "teams" on "questions"."id" = "teams"."object_id"
-          left join team_members on team_members.team_id = teams.id
-          where role = '${role}' and user_id = '${userId}'
-      )`,
-    )
+    const { submittedOnly } = options
 
-    return applyListQueryOptions(query, options)
+    let queryToRun = Question.query(options.trx).whereNotIn('id', builder => {
+      return builder
+        .select('questions.id')
+        .from('questions')
+        .leftJoin('teams', 'teams.objectId', 'questions.id')
+        .leftJoin('team_members', 'team_members.team_id', 'teams.id')
+        .where({
+          role,
+          userId,
+        })
+    })
+
+    if (submittedOnly)
+      queryToRun = queryToRun.whereIn('id', builder => {
+        return builder
+          .select('questions.id')
+          .from('questions')
+          .leftJoin(
+            'question_versions',
+            'questions.id',
+            'question_versions.question_id',
+          )
+          .where({
+            submitted: true,
+          })
+      })
+
+    return applyListQueryOptions(queryToRun, options)
   }
 }
 

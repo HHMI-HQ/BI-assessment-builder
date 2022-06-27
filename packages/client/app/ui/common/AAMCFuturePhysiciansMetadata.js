@@ -90,7 +90,7 @@ const AAMCFuturePhysiciansMetadata = props => {
         ]}
       >
         <Select
-          allowClear
+          // allowClear
           disabled={readOnly}
           onChange={handleConceptChange}
           optionFilterProp="label"
@@ -101,28 +101,26 @@ const AAMCFuturePhysiciansMetadata = props => {
       </Form.Item>
       <Form.Item dependencies={[conceptField]} noStyle>
         {() => (
-          <>
-            <Form.Item
-              label="Category"
-              name={categoryName}
-              rules={[
-                isRequired
-                  ? { required: true, message: 'Category is required' }
-                  : {},
-              ]}
-            >
-              <Select
-                allowClear
-                disabled={
-                  readOnly || (!filterMode && !getFieldValue(conceptField))
-                }
-                optionFilterProp="label"
-                options={filterCategoryOptions()}
-                showSearch
-                wrapOptionText
-              />
-            </Form.Item>
-          </>
+          <Form.Item
+            label="Category"
+            name={categoryName}
+            rules={[
+              isRequired
+                ? { required: true, message: 'Category is required' }
+                : {},
+            ]}
+          >
+            <Select
+              // allowClear
+              disabled={
+                readOnly || (!filterMode && !getFieldValue(conceptField))
+              }
+              optionFilterProp="label"
+              options={filterCategoryOptions()}
+              showSearch
+              wrapOptionText
+            />
+          </Form.Item>
         )}
       </Form.Item>
       <Form.Item dependencies={[conceptField, categoryField]} noStyle>

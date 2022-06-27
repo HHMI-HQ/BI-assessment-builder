@@ -44,8 +44,7 @@ typings/
 
 # env & config
 *.env*
-config/local*
-*/config/local*
+packages/server/config/local*
 
 # Storybook build outputs
 .out
@@ -62,6 +61,9 @@ dist/
 # Temporary folders
 tmp/
 temp/
+
+# Local folders
+packages/server/scripts/local
 
 # Container data
 data/

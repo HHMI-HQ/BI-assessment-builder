@@ -3,10 +3,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Input } from 'antd'
 
+import { inputShadow } from './_reusableStyles'
+
 const StyledSearch = styled(Input.Search)`
-  /* .ant-input-search-button {
-    border-left: 0;
-  } */
+  ${inputShadow}
 `
 
 const Search = props => {

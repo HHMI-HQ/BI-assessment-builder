@@ -85,6 +85,10 @@ const versionQuestionResolver = async version => {
   return getQuestion(version.questionId)
 }
 
+const contentResolver = version => {
+  return JSON.stringify(version.content)
+}
+
 module.exports = {
   Query: {
     question: questionResolver,
@@ -106,5 +110,6 @@ module.exports = {
   },
   QuestionVersion: {
     question: versionQuestionResolver,
+    content: contentResolver,
   },
 }

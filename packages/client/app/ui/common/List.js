@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, memo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { without } from 'lodash'
+import without from 'lodash/without'
 
 import { List as AntList, Pagination /* ConfigProvider */ } from 'antd'
 
@@ -33,7 +33,10 @@ const Wrapper = styled.div`
 `
 
 const SearchWrapper = styled.div`
+  align-self: center;
+  max-width: 100%;
   padding: 0 ${grid(2)};
+  width: 1170px;
 `
 
 const InternalHeader = styled.div`
@@ -75,6 +78,7 @@ const StyledList = styled(AntList)`
 `
 
 const FooterWrapper = styled.div`
+  border: 1px solid ${th('colorBorder')};
   display: flex;
   justify-content: space-between;
   padding: 5px;
@@ -288,9 +292,11 @@ const List = props => {
     passedPagination.current = largestPage
   }
 
-  const shouldShowPagination =
-    passedPagination.total > splitDataSource.length ||
-    splitDataSource.length > 10 // hardcoded 10 for pageSize, bcs if we set pageSize > data.length pagination will disapear with no chance of getting it back
+  // should be optional when we move to common libs?
+  // const shouldShowPagination =
+  //   passedPagination.total > splitDataSource.length ||
+  //   splitDataSource.length > 10 // hardcoded 10 for pageSize, bcs if we set pageSize > data.length pagination will disapear with no chance of getting it back
+  const shouldShowPagination = true
 
   const showInternalHeaderRow = showSort || showTotalCount
   const defaultSortOption = sortOptions && sortOptions.find(o => o.isDefault)
@@ -345,7 +351,7 @@ const List = props => {
 
           {showSort && (
             <SortWrapper>
-              {/* disableing linter for this line because the label is indeed associated with the select input */}
+              {/* disabling linter for this line because the label is indeed associated with the select input */}
               {/* alternatively: add a label prop to Select and render it from within the component */}
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
               <label>
@@ -363,13 +369,16 @@ const List = props => {
 
       <Spin spinning={loading}>
         {/* <ConfigProvider renderEmpty={EmptyList}> */}
+
         <StyledList
           dataSource={splitDataSource}
           renderItem={listItemToRender}
           {...rest}
         />
-        <FooterWrapper className={className}>
-          {footerContent}
+
+        <FooterWrapper>
+          {footerContent || <div />}
+
           {shouldShowPagination && (
             <nav aria-label="Pagination" ref={paginationRef} role="navigation">
               <Pagination

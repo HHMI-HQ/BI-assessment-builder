@@ -80,6 +80,7 @@ const StyledTabItem = styled.div`
 const QuestionWrapper = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
+  height: 100%;
 `
 
 const StyledTabPane = styled(Tabs.TabPane)`
@@ -102,11 +103,11 @@ const MemoizedWax = memo(
         readOnly={readOnly}
       />
     )
-  }, // add a comparison function for when we want the editor to rerender
+  },
+  // add a comparison function for when we want the editor to rerender
   // returning true means the component doesn't rerender when parent rerenders
-  (prevProps, nextProps) =>
-    prevProps.readOnly === nextProps.readOnly &&
-    prevProps.content === nextProps.content,
+  (prevProps, nextProps) => prevProps.readOnly === nextProps.readOnly,
+  // && prevProps.content === nextProps.content,
 )
 
 MemoizedWax.propTypes = {
@@ -288,20 +289,14 @@ const Question = props => {
     </FacultyHeaderWrapper>
   )
 
-  if (loading) return null
+  if (loading) return <Spin />
 
   return (
     <Wrapper>
       <Spin renderBackground={false} spinning={loading}>
-        {/* <Wrapper className={className}> */}
         <Tabs
           renderTabBar={(tabProps, DefaultTabBar) => {
-            return facultyView ? (
-              FacultyHeader
-            ) : (
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              <DefaultTabBar {...tabProps} />
-            )
+            return facultyView ? FacultyHeader : <DefaultTabBar {...tabProps} />
           }}
           tabBarExtraContent={{
             left: BackButton,
@@ -330,7 +325,6 @@ const Question = props => {
             </QuestionWrapper>
           </StyledTabPane>
         </Tabs>
-        {/* </Wrapper> */}
       </Spin>
     </Wrapper>
   )

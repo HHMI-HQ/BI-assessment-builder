@@ -1351,10 +1351,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@coko/client@0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@coko/client/-/client-0.0.26.tgz#410736f57f61e705d8edb511d46ef82e6c0dfff9"
-  integrity sha512-lgBTnRyv6WggvN6/5IM/j9kMYdNv/Mp3QUOoUw489p4j70a8H1vgLqRR3buihqxdr1MrkxYTW5hQB3SzW6Zf3A==
+"@coko/client@0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@coko/client/-/client-0.0.28.tgz#439861068a6750dbefdd325e240e1695554b6251"
+  integrity sha512-Pk02eSQ2bPi4bMVsMmpUaexK/QZ0GTqhlT7rO4B4Zh1h+bsTlGvPgYYqoVLJ7EaWfkFoVbIqWrOsXQUP1p1vsg==
   dependencies:
     "@babel/cli" "^7.13.14"
     "@babel/core" "^7.13.14"
@@ -1735,17 +1735,18 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@pmmmwh/react-refresh-webpack-plugin@0.5.0-beta.7", "@pmmmwh/react-refresh-webpack-plugin@^0.5.0-beta.6", "@pmmmwh/react-refresh-webpack-plugin@^0.5.1":
-  version "0.5.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.0-beta.7.tgz#84e2ac2db585f06d0aa52aee095341bd7d319447"
-  integrity sha512-oO9sGfhI+rtq4xK+QJar3Ka/6Kx35ag8uT5i4Khvvf5QIdoC10BHKs75IEyNDEvQGv9mF4M8YWH9uZT/to0K4Q==
+"@pmmmwh/react-refresh-webpack-plugin@0.5.7", "@pmmmwh/react-refresh-webpack-plugin@^0.5.0-beta.6", "@pmmmwh/react-refresh-webpack-plugin@^0.5.1":
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.7.tgz#58f8217ba70069cc6a73f5d7e05e85b458c150e2"
+  integrity sha512-bcKCAzF0DV2IIROp9ZHkRJa6O4jy7NlnHdWL3GmcUxYWNjLXkK5kfELELwEfSP5hXPfVL/qOGMAROuMQb9GG8Q==
   dependencies:
-    ansi-html "^0.0.7"
+    ansi-html-community "^0.0.8"
+    common-path-prefix "^3.0.0"
     core-js-pure "^3.8.1"
     error-stack-parser "^2.0.6"
+    find-up "^5.0.0"
     html-entities "^2.1.0"
     loader-utils "^2.0.0"
-    native-url "^0.3.4"
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
@@ -3719,7 +3720,7 @@ ansi-align@^3.0.0:
   dependencies:
     string-width "^3.0.0"
 
-ansi-html-community@0.0.8:
+ansi-html-community@0.0.8, ansi-html-community@^0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/ansi-html-community/-/ansi-html-community-0.0.8.tgz#69fbc4d6ccbe383f9736934ae34c3f8290f1bf41"
   integrity sha512-1APHAyr3+PCamwNw3bXCPp4HFLONZt/yIH0sZp0/469KWNTEy+qN5jQ3GVX6DMZ1UXAi34yVwtTeaG/HpBuuzw==
@@ -5143,6 +5144,11 @@ commander@^7.0.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
+
+common-path-prefix@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/common-path-prefix/-/common-path-prefix-3.0.0.tgz#7d007a7e07c58c4b4d5f433131a19141b29f11e0"
+  integrity sha512-QE33hToZseCH3jS0qN96O/bSh3kaw/h+Tq7ngyY9eWDUnTlTNUyqfqvCXioLe5Na5jFsL78ra/wuBU4iuEgd4w==
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -8781,13 +8787,6 @@ native-request@^1.0.5:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/native-request/-/native-request-1.1.0.tgz#acdb30fe2eefa3e1bc8c54b3a6852e9c5c0d3cb0"
   integrity sha512-uZ5rQaeRn15XmpgE0xoPL8YWqcX90VtCFglYwAgkvKM5e8fog+vePLAhHxuuv/gRkrQxIeh5U3q9sMNUrENqWw==
-
-native-url@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/native-url/-/native-url-0.3.4.tgz#29c943172aed86c63cee62c8c04db7f5756661f8"
-  integrity sha512-6iM8R99ze45ivyH8vybJ7X0yekIcPf5GgLV5K0ENCbmRcaRIDoj37BC8iLEmaaBfqqb8enuZ5p0uhY+lVAbAcA==
-  dependencies:
-    querystring "^0.2.0"
 
 nearley@^2.7.10:
   version "2.20.1"

@@ -67,6 +67,10 @@ const NestedWrapper = styled.div`
 
     > div {
       height: 100%;
+
+      > div.ant-spin-spinning {
+        height: 100%;
+      }
     }
   }
 `

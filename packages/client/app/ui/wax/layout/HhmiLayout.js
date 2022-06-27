@@ -38,6 +38,7 @@ const TopMenu = styled.div`
   justify-content: center;
   user-select: none;
 
+  /* stylelint-disable-next-line string-quotes */
   > div[data-name='MultipleChoice'] {
     span {
       display: none;
@@ -47,6 +48,7 @@ const TopMenu = styled.div`
 
 const EditorWrapper = styled.div`
   display: flex;
+  flex-grow: 1;
   justify-content: center;
   overflow-y: auto;
 `
@@ -62,7 +64,7 @@ const EditorArea = styled.div`
   .ProseMirror {
     /* font-family: ${th('fontInterface')}; */
     font-family: inherit;
-    /* height: 100%; */
+    height: 100%;
     padding: ${grid(5)};
     /* position: relative; */
 

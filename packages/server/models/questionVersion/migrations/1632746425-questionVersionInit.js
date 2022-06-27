@@ -16,23 +16,24 @@ exports.up = knex => {
         .references('id')
         .inTable('questions')
 
-      table.text('content').nullable()
+      table.jsonb('content').nullable()
 
       table.boolean('submitted').defaultTo(false).notNullable()
       table.boolean('underReview').defaultTo(false).notNullable()
       table.boolean('published').defaultTo(false).notNullable()
 
-      table.string('topic').nullable()
-      table.string('subTopic').nullable()
+      table.timestamp('publicationDate', { useTz: true })
+
+      table.jsonb('topics')
+      table.jsonb('courses')
+
       table.jsonb('keywords')
-      table.string('biointeractiveResources').nullable()
+      table.jsonb('biointeractiveResources')
+
       table.string('cognitiveLevel').nullable()
       table.string('affectiveLevel').nullable()
       table.string('psychomotorLevel').nullable()
       table.string('readingLevel').nullable()
-      table.string('framework').nullable()
-      table.jsonb('frameworkMetadata')
-      table.jsonb('supplementaryFields').defaultTo([])
 
       table.text('type')
     })

@@ -9,7 +9,13 @@ import {
 } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { PageLayout, RequireAuth, useCurrentUser } from '@coko/client'
+import {
+  PageLayout as Page,
+  RequireAuth,
+  useCurrentUser,
+  grid,
+  th,
+} from '@coko/client'
 
 // import { NavigationBar } from './ui'
 import { Button /* Spin */ } from 'ui'
@@ -23,36 +29,48 @@ import {
   RequestPasswordReset,
   ResetPassword,
   VerifyCheck,
+  Dashboard,
+  Question,
 } from './pages'
 
 import { CURRENT_USER } from './graphql'
 
-// hack as PageLayout does not have className prop
-// const Wrapper = styled.div`
-//   height: 100%;
-//   > div {
-//     > div {
-//       > div {
-//         padding: ${grid(2)};
-//       }
-//     }
-//   }
-// `
-
-const Wrapper = styled.div`
-  align-items: center;
+const Layout = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: center;
+`
 
-  > div:first-child {
-    font-size: 18px;
-    margin-bottom: 20px;
+const HeaderFooter = styled.div`
+  align-items: center;
+  /* background-color: darkseagreen; */
+  background-color: slategray;
+  /* background-color: ${th('colorPrimary')}; */
+  color: white;
+  display: flex;
+  font-weight: bold;
+  height: ${grid(10)};
+  justify-content: space-between;
+  padding: 0 ${grid(4)};
+  width: 100%;
+
+  /* stylelint-disable-next-line */
+  > div {
+    align-items: center;
+    display: flex;
+
+    /* stylelint-disable-next-line */
+    > div:first-child {
+      margin-right: ${grid(4)};
+    }
   }
 `
 
-const Placeholder = () => {
+const StyledPage = styled(Page)`
+  height: calc(100% - ${grid(20)});
+`
+
+const LogoutButton = () => {
   const { setCurrentUser } = useCurrentUser()
   const client = useApolloClient()
   const history = useHistory()
@@ -60,25 +78,39 @@ const Placeholder = () => {
   const logout = () => {
     setCurrentUser(null)
     client.cache.reset()
+
     localStorage.removeItem('token')
+    localStorage.removeItem('dashboardLastUsedTab')
+
     history.push('/login')
   }
 
-  return (
-    <Wrapper>
-      <div>landing page</div>
-      <div>
-        <Button onClick={logout}>Logout</Button>
-      </div>
-    </Wrapper>
-  )
+  return <Button onClick={logout}>Logout</Button>
 }
 
 // const Loader = () => <Spin spinning />
 
-// const currentUserHasGlobalRole = (user, role) => {
-//   user.teams.find(t => t.global && t.role === role)
-// }
+const Header = () => {
+  const { currentUser } = useCurrentUser()
+
+  return (
+    <HeaderFooter>
+      <div>HHMI</div>
+      <div>
+        <div>{currentUser?.displayName}</div>
+        <div>{currentUser && <LogoutButton />}</div>
+      </div>
+    </HeaderFooter>
+  )
+}
+
+const Footer = () => {
+  return (
+    <HeaderFooter>
+      <div>Footer</div>
+    </HeaderFooter>
+  )
+}
 
 const RequireProfile = ({ children }) => {
   const { pathname } = useLocation()
@@ -108,48 +140,60 @@ const Authenticated = ({ children }) => {
 }
 
 const routes = (
-  // <Wrapper>
-  <PageLayout
-    fadeInPages
-    // navComponent={NavigationBar}
-  >
-    <Switch>
-      <Route
-        exact
-        path="/"
-        render={() => (
-          <Authenticated>
-            <Placeholder />
-          </Authenticated>
-        )}
-      />
+  <Layout>
+    <Header />
 
-      <Route
-        exact
-        path="/signup-profile"
-        render={() => (
-          <Authenticated>
-            <SignupProfile />
-          </Authenticated>
-        )}
-      />
+    <StyledPage fadeInPages={false} padPages={false}>
+      <Switch>
+        <Route
+          exact
+          path="/signup-profile"
+          render={() => (
+            <Authenticated>
+              <SignupProfile />
+            </Authenticated>
+          )}
+        />
 
-      <Route component={Login} exact path="/login" />
-      <Route component={Signup} exact path="/signup" />
-      <Route component={VerifyEmail} exact path="/email-verification/:token" />
-      <Route
-        component={RequestPasswordReset}
-        exact
-        path="/request-password-reset"
-      />
-      <Route component={ResetPassword} exact path="/password-reset/:token" />
-      <Route component={VerifyCheck} exact path="/ensure-verified-login" />
+        <Route
+          exact
+          path="/dashboard"
+          render={() => (
+            <Authenticated>
+              <Dashboard />
+            </Authenticated>
+          )}
+        />
 
-      {/* <Route component={Dashboard} exact path="/dashboard" /> */}
-      {/* <Route component={Question} exact path="/question/:id" /> */}
-    </Switch>
-  </PageLayout>
-  // </Wrapper>
+        <Route
+          exact
+          path="/question/:id"
+          render={() => (
+            <Authenticated>
+              <Question />
+            </Authenticated>
+          )}
+        />
+
+        <Route component={Login} exact path="/login" />
+        <Route component={Signup} exact path="/signup" />
+        <Route
+          component={VerifyEmail}
+          exact
+          path="/email-verification/:token"
+        />
+        <Route
+          component={RequestPasswordReset}
+          exact
+          path="/request-password-reset"
+        />
+        <Route component={ResetPassword} exact path="/password-reset/:token" />
+        <Route component={VerifyCheck} exact path="/ensure-verified-login" />
+      </Switch>
+    </StyledPage>
+
+    <Footer />
+  </Layout>
 )
 
 export default routes

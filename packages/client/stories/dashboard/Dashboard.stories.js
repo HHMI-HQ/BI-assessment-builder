@@ -1,4 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable no-console */
+
 import React, { useState } from 'react'
 import { lorem } from 'faker'
 import { uuid } from '@coko/client'
@@ -68,7 +69,7 @@ const sortOptions = [
 
 const totalResults = 33
 
-const Wraper = styled.div`
+const Wrapper = styled.div`
   /* background: linear-gradient(97.37deg, #058d96 -34.57%, #8ac341 93.86%); */
   background-color: #a5a1a2;
   height: 90vh;
@@ -94,7 +95,6 @@ export const AuthorDashboard = args => {
 
   const handleSearch = async params => {
     const { query = '', page = 1, sortBy, role } = params
-    // eslint-disable-next-line no-console
     console.log(`${query}, ${page}, ${sortBy}, ${role}`)
 
     setLoading(true)
@@ -109,7 +109,7 @@ export const AuthorDashboard = args => {
     }, 500)
   }
 
-  const CreateQuestion = <Button type="primary">Create Question</Button>
+  const handleClickCreate = () => console.log('create')
 
   const tabs = [
     {
@@ -121,17 +121,17 @@ export const AuthorDashboard = args => {
   ]
 
   return (
-    <Wraper>
+    <Wrapper>
       <Dashboard
-        createQuestionButton={CreateQuestion}
         loading={loading}
+        onClickCreate={handleClickCreate}
         onSearch={handleSearch}
         tabsContent={tabs}
         {...args}
         showSort
         sortOptions={sortOptions}
       />
-    </Wraper>
+    </Wrapper>
   )
 }
 
@@ -168,10 +168,8 @@ export const EditorDashboard = args => {
     }, 500)
   }
 
-  const handleBulkAction = () => {
-    // eslint-disable-next-line no-console
-    console.log(selectedQuestions)
-  }
+  const handleBulkAction = () => console.log(selectedQuestions)
+  const handleClickCreate = () => console.log('create')
 
   const BulkAction = (
     <Button
@@ -182,8 +180,6 @@ export const EditorDashboard = args => {
       Assign handling editor
     </Button>
   )
-
-  const CreateQuestion = <Button type="primary">Create Question</Button>
 
   const tabs = [
     {
@@ -202,11 +198,11 @@ export const EditorDashboard = args => {
   ]
 
   return (
-    <Wraper>
+    <Wrapper>
       <Dashboard
         bulkActions={BulkAction}
-        createQuestionButton={CreateQuestion}
         loading={loading}
+        onClickCreate={handleClickCreate}
         onQuestionSelected={setSelectedQuestions}
         onSearch={handleSearch}
         tabsContent={tabs}
@@ -214,7 +210,7 @@ export const EditorDashboard = args => {
         showSort
         sortOptions={sortOptions}
       />
-    </Wraper>
+    </Wrapper>
   )
 }
 

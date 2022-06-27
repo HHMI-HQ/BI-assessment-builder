@@ -11,7 +11,7 @@ const LoginPage = props => {
 
   const [loginMutation, { data, loading, error }] = useMutation(LOGIN)
 
-  const redirectUrl = new URLSearchParams(search).get('next') || '/'
+  const redirectUrl = new URLSearchParams(search).get('next') || '/dashboard'
 
   const login = formData => {
     const mutationData = {

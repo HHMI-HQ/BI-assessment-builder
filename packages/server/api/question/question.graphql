@@ -1,25 +1,62 @@
+# TYPES
+
 type Question {
   id: ID!
   versions(latestOnly: Boolean, publishedOnly: Boolean): [QuestionVersion!]!
   agreedTc: Boolean!
+  rejected: Boolean!
 }
 
-input UpdateQuestionInput {
-  agreedTc: Boolean
-  questionVersionId: ID!
-  topic: String
-  subTopic: String
-  submitted: Boolean!
+type QuestionVersion {
+  id: ID!
+  created: DateTime!
+  updated: DateTime!
+
+  question: Question!
   content: String
-  keywords: [String]
-  biointeractiveResources: String
+
+  submitted: Boolean!
+  underReview: Boolean!
+  published: Boolean!
+
+  publicationDate: DateTime
+
+  topics: [Topic!]!
+  courses: [Course!]!
+
+  keywords: [String!]!
+  biointeractiveResources: [String!]!
+
   cognitiveLevel: String
   affectiveLevel: String
   psychomotorLevel: String
   readingLevel: String
-  framework: String
-  frameworkMetadata: FrameworkMetadataInput
-  supplementaryFields: [SupplementaryFieldsInput]
+}
+
+type Topic {
+  topic: String!
+  subtopic: String
+}
+
+type Course {
+  course: String!
+  units: [Unit!]!
+}
+
+type Unit {
+  application: String
+  coreCompetence: String
+  coreConcept: String
+  courseTopic: String
+  essentialKnowledge: String
+  learningObjective: String
+  skill: String
+  subcompetence: String
+  subcompetenceStatement: String
+  subdiscipline: String
+  subdisciplineStatement: String
+  understanding: String
+  unit: String
 }
 
 type QuestionsResponse {
@@ -27,12 +64,70 @@ type QuestionsResponse {
   totalCount: Int
 }
 
+# INPUTS
+
+input UpdateQuestionInput {
+  agreedTc: Boolean
+  content: String
+
+  topics: [TopicInput!]
+  courses: [CourseInput!]
+
+  keywords: [String!]
+  biointeractiveResources: [String!]
+
+  cognitiveLevel: String
+  affectiveLevel: String
+  psychomotorLevel: String
+  readingLevel: String
+}
+
+input TopicInput {
+  topic: String!
+  subtopic: String
+}
+
+input CourseInput {
+  course: String!
+  units: [UnitInput!]!
+}
+
+input UnitInput {
+  application: String
+  courseTopic: String
+  essentialKnowledge: String
+  learningObjective: String
+  skill: String
+  understanding: String
+  unit: String
+}
+
+# QUERIES & MUTATIONS
+
 extend type Query {
   question(id: ID!): Question!
   getPublishedQuestions: QuestionsResponse!
-  getAuthorDashboard: QuestionsResponse!
-  getReviewerDashboard: QuestionsResponse!
-  getManagingEditorDashboard: QuestionsResponse!
+
+  getAuthorDashboard(
+    orderBy: String
+    ascending: Boolean
+    page: Int
+    pageSize: Int
+  ): QuestionsResponse!
+
+  getReviewerDashboard(
+    orderBy: String
+    ascending: Boolean
+    page: Int
+    pageSize: Int
+  ): QuestionsResponse!
+
+  getManagingEditorDashboard(
+    orderBy: String
+    ascending: Boolean
+    page: Int
+    pageSize: Int
+  ): QuestionsResponse!
 }
 
 extend type Mutation {

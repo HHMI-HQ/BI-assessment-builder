@@ -41,7 +41,7 @@ const metadata = {
       value: 'sciencePractices',
     },
   ],
-  subTopics: [
+  subtopics: [
     {
       label: 'General Chemistry',
       value: 'generalChemistry',
