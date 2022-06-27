@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 // import styled from 'styled-components'
 
-import { useHistory } from 'react-router-dom'
 import AuthenticationForm from './AuthenticationForm'
 import AuthenticationHeader from './AuthenticationHeader'
 import AuthenticationWrapper from './AuthenticationWrapper'
@@ -47,10 +46,6 @@ const RequestPasswordReset = props => {
   const { className, hasError, hasSuccess, loading, onSubmit, userEmail } =
     props
 
-  const history = useHistory()
-
-  const handleReturnToLogin = () => history.push('/login')
-
   return (
     <Page maxWidth={600}>
       <AuthenticationWrapper className={className}>
@@ -59,7 +54,7 @@ const RequestPasswordReset = props => {
         {hasSuccess && (
           <Result
             extra={[
-              <Button key={1} onClick={handleReturnToLogin} type="link">
+              <Button href="./login" key={1} type="link">
                 Return to the login form
               </Button>,
             ]}
