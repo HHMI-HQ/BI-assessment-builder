@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { QuestionList, TabsStyled as Tabs } from '../common'
+import { QuestionList, TabsStyled as Tabs, Button, Spin } from '../common'
+
+const Wrapper = styled.div`
+  height: 100%;
+
+  .ant-spin-container,
+  .ant-spin-nested-loading {
+    height: 100%;
+  }
+`
 
 const StyledTabs = styled(Tabs)`
   height: 100%;
@@ -14,7 +23,7 @@ const StyledTabs = styled(Tabs)`
 const StyledTabPane = styled(Tabs.TabPane)`
   height: 100%;
   margin: auto;
-  max-width: 1170px;
+  /* max-width: 1170px; */
 `
 
 // QUESTION how to handle search, filter and pagination with multiple sections
@@ -22,20 +31,21 @@ const Dashboard = props => {
   const {
     bulkActions,
     className,
+    initialTabKey,
     loading,
-    createQuestionButton,
+    onClickCreate,
     onQuestionSelected,
     onSearch,
-    tabsContent,
     showSort,
     sortOptions,
+    tabsContent,
   } = props
 
   const [searchParams, setSearchParams] = useState({
     query: '',
     page: 1,
     sortBy: 'date',
-    role: 'author',
+    role: initialTabKey,
   })
 
   const setSearchPage = page => {
@@ -58,51 +68,73 @@ const Dashboard = props => {
     onSearch(searchParams)
   }, [searchParams])
 
+  const CreateQuestionButton = (
+    <Button onClick={onClickCreate} type="primary">
+      Create Question
+    </Button>
+  )
+
   return (
-    <StyledTabs
-      className={className}
-      onChange={setRole}
-      tabBarExtraContent={createQuestionButton}
-    >
-      {tabsContent.map(
-        ({ value, label, questions, totalCount, showBulkActions }) => (
-          <StyledTabPane className="test" key={value} tab={label}>
-            <QuestionList
-              bulkAction={showBulkActions && bulkActions}
-              currentPage={searchParams.page}
-              key={searchParams.role}
-              loading={loading}
-              onPageChange={setSearchPage}
-              onQuestionSelected={onQuestionSelected}
-              onSearch={setSearchQuery}
-              onSortOptionChange={setSortOption}
-              questions={questions}
-              showRowCheckboxes={!!showBulkActions}
-              showSort={showSort}
-              sortOptions={sortOptions}
-              totalCount={totalCount}
-            />
-          </StyledTabPane>
-        ),
-      )}
-    </StyledTabs>
+    <Wrapper>
+      <Spin renderBackground={false} spinning={loading}>
+        <StyledTabs
+          className={className}
+          defaultActiveKey={initialTabKey}
+          onChange={setRole}
+          tabBarExtraContent={CreateQuestionButton}
+        >
+          {tabsContent.map(
+            ({
+              value,
+              label,
+              loading: tabLoading,
+              questions,
+              totalCount,
+              showBulkActions,
+            }) => (
+              <StyledTabPane key={value} tab={label}>
+                <QuestionList
+                  bulkAction={(showBulkActions && bulkActions) || null}
+                  currentPage={searchParams.page}
+                  key={searchParams.role}
+                  loading={tabLoading}
+                  onPageChange={setSearchPage}
+                  onQuestionSelected={onQuestionSelected}
+                  onSearch={setSearchQuery}
+                  onSortOptionChange={setSortOption}
+                  questions={questions}
+                  showRowCheckboxes={!!showBulkActions}
+                  showSort={showSort}
+                  sortOptions={sortOptions}
+                  totalCount={totalCount}
+                />
+              </StyledTabPane>
+            ),
+          )}
+        </StyledTabs>
+      </Spin>
+    </Wrapper>
   )
 }
 
 Dashboard.propTypes = {
   /** custom component for bulk actions on selected questions */
   bulkActions: PropTypes.element,
-  /** custom component for create question */
-  createQuestionButton: PropTypes.element,
-  /** Loading results. */
-  loading: PropTypes.bool,
-  /** handele selection and deselection of questions */
+  initialTabKey: PropTypes.string,
+  loading: PropTypes.bool.isRequired,
+  /** create new question */
+  onClickCreate: PropTypes.func.isRequired,
+  /** handle selection and deselection of questions */
   onQuestionSelected: PropTypes.func,
   onSearch: PropTypes.func.isRequired,
+  showSort: PropTypes.bool,
+  sortOptions: PropTypes.arrayOf(PropTypes.shape()),
   tabsContent: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
+      /** Loading results. */
+      loading: PropTypes.bool,
       questions: PropTypes.arrayOf(
         PropTypes.shape({
           metadata: PropTypes.arrayOf(
@@ -135,18 +167,15 @@ Dashboard.propTypes = {
       showBulkActions: PropTypes.bool,
     }),
   ),
-  showSort: PropTypes.bool,
-  sortOptions: PropTypes.arrayOf(PropTypes.shape()),
 }
 
 Dashboard.defaultProps = {
   bulkActions: null,
-  createQuestionButton: null,
-  loading: false,
+  initialTabKey: null,
   onQuestionSelected: () => {},
-  tabsContent: [],
   showSort: false,
   sortOptions: [],
+  tabsContent: [],
 }
 
 export default Dashboard

@@ -48,11 +48,11 @@ const TopicAndSubtopic = props => {
     const selectedTopic = getFieldValue(topicField)
 
     if (selectedTopic) {
-      return topicsMetadata.find(t => t.value === selectedTopic).subTopics
+      return topicsMetadata.find(t => t.value === selectedTopic).subtopics
     }
 
     const allSubtopics = topicsMetadata
-      .map(t => t.subTopics)
+      .map(t => t.subtopics)
       .flat()
       .map(s => ({
         label: s.label,
@@ -72,7 +72,7 @@ const TopicAndSubtopic = props => {
         ]}
       >
         <Select
-          allowClear
+          // allowClear
           disabled={readOnly}
           onChange={handleTopicChange}
           optionFilterProp="label"
@@ -95,7 +95,7 @@ const TopicAndSubtopic = props => {
             ]}
           >
             <Select
-              allowClear
+              // allowClear
               disabled={readOnly || (!filterMode && !getFieldValue(topicField))}
               optionFilterProp="label"
               options={filterSubtopicOptions()}

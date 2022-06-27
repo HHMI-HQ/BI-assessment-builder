@@ -1,30 +1,51 @@
 /* eslint-disable import/prefer-default-export */
 import { gql } from '@apollo/client'
 
-const QUESTIONS = gql`
-  query Questions($where: QuestionWhereInput) {
-    questions(where: $where) {
+export const GET_AUTHOR_DASHBOARD = gql`
+  query GetAuthorDashboard(
+    $orderBy: String
+    $ascending: Boolean
+    $page: Int
+    $pageSize: Int
+  ) {
+    getAuthorDashboard(
+      orderBy: $orderBy
+      ascending: $ascending
+      page: $page
+      pageSize: $pageSize
+    ) {
       result {
         id
         versions(latestOnly: true) {
-          topic
-          subTopic
+          id
           content
-          cognitiveLevel
-          affectiveLevel
-          psychomotorLevel
-          framework
-          frameworkMetadata {
-            learningObjective
-          }
-          supplementaryFields {
+
+          submitted
+          underReview
+          published
+          publicationDate
+
+          topics {
             topic
-            subTopic
-            frameworkMetadata {
+            subtopic
+          }
+
+          courses {
+            course
+            units {
+              # application
+              # courseTopic
+              # essentialKnowledge
               learningObjective
+              # skill
+              understanding
+              # unit
             }
           }
-          created
+
+          cognitiveLevel
+          # affectiveLevel
+          # psychomotorLevel
         }
       }
       totalCount
@@ -32,53 +53,60 @@ const QUESTIONS = gql`
   }
 `
 
-const QUESTION = gql`
-  query Question($id: ID!) {
-    question(id: $id) {
-      id
-      agreedTc
-      versions(latestOnly: true) {
+export const GET_EDITOR_DASHBOARD = gql`
+  query GetEditorDashboard(
+    $orderBy: String
+    $ascending: Boolean
+    $page: Int
+    $pageSize: Int
+  ) {
+    getManagingEditorDashboard(
+      orderBy: $orderBy
+      ascending: $ascending
+      page: $page
+      pageSize: $pageSize
+    ) {
+      result {
         id
-        questionId
-        submitted
-        content
-        keywords
-        topic
-        subTopic
-        biointeractiveResources
-        cognitiveLevel
-        affectiveLevel
-        psychomotorLevel
-        readingLevel
-        framework
-        frameworkMetadata {
-          unit
-          frameworkTopic
-          learningObjective
-          essentialKnowledge
-          coreConcept
-          statement
-          subDiscipline
-        }
-        supplementaryFields {
-          topic
-          subTopic
-          frameworkMetadata {
-            unit
-            frameworkTopic
-            learningObjective
-            essentialKnowledge
-            coreConcept
-            statement
-            subDiscipline
+        rejected
+        versions(latestOnly: true) {
+          id
+          content
+
+          submitted
+          underReview
+          published
+          publicationDate
+
+          topics {
+            topic
+            subtopic
           }
+
+          courses {
+            course
+            units {
+              # application
+              # courseTopic
+              # essentialKnowledge
+              learningObjective
+              # skill
+              understanding
+              # unit
+            }
+          }
+
+          cognitiveLevel
+          # affectiveLevel
+          # psychomotorLevel
         }
       }
+      totalCount
     }
   }
 `
 
-const CREATE_QUESTION = gql`
+export const CREATE_QUESTION = gql`
   mutation CreateQuestion {
     createQuestion {
       id
@@ -86,149 +114,141 @@ const CREATE_QUESTION = gql`
   }
 `
 
-const UPDATE_QUESTION = gql`
-  mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
-    updateQuestion(id: $id, input: $input) {
+export const QUESTION = gql`
+  query Question($id: ID!) {
+    question(id: $id) {
       id
-      agreedTc
       versions(latestOnly: true) {
         id
-        questionId
-        submitted
         content
-        topic
-        subTopic
+
+        submitted
+        underReview
+        published
+
+        topics {
+          topic
+          subtopic
+        }
+
+        courses {
+          course
+          units {
+            application
+            courseTopic
+            essentialKnowledge
+            learningObjective
+            skill
+            understanding
+            unit
+          }
+        }
+
         keywords
         biointeractiveResources
+
         cognitiveLevel
         affectiveLevel
         psychomotorLevel
         readingLevel
-        framework
-        frameworkMetadata {
-          unit
-          frameworkTopic
-          learningObjective
-          essentialKnowledge
-          coreConcept
-          statement
-          subDiscipline
-        }
-        supplementaryFields {
-          topic
-          subTopic
-          frameworkMetadata {
-            unit
-            frameworkTopic
-            learningObjective
-            essentialKnowledge
-            coreConcept
-            statement
-            subDiscipline
-          }
-        }
       }
     }
   }
 `
 
-const SUBMIT_QUESTION = gql`
-  mutation SubmitQuestion($id: ID!, $input: SubmitQuestionInput!) {
-    submitQuestion(id: $id, input: $input) {
+export const UPDATE_QUESTION = gql`
+  mutation UpdateQuestion(
+    $questionId: ID!
+    $questionVersionId: ID!
+    $input: UpdateQuestionInput!
+  ) {
+    updateQuestion(
+      questionId: $questionId
+      questionVersionId: $questionVersionId
+      input: $input
+    ) {
       id
-      agreedTc
       versions(latestOnly: true) {
         id
-        questionId
-        submitted
         content
+
+        submitted
+        underReview
+        published
+
+        topics {
+          topic
+          subtopic
+        }
+
+        courses {
+          course
+          units {
+            application
+            courseTopic
+            essentialKnowledge
+            learningObjective
+            skill
+            understanding
+          }
+        }
+
         keywords
-        topic
-        subTopic
         biointeractiveResources
+
         cognitiveLevel
         affectiveLevel
         psychomotorLevel
         readingLevel
-        framework
-        frameworkMetadata {
-          unit
-          frameworkTopic
-          learningObjective
-          essentialKnowledge
-          coreConcept
-          statement
-          subDiscipline
-        }
-        supplementaryFields {
-          topic
-          subTopic
-          frameworkMetadata {
-            unit
-            frameworkTopic
-            learningObjective
-            essentialKnowledge
-            coreConcept
-            statement
-            subDiscipline
-          }
-        }
       }
     }
   }
 `
 
-const AUTO_SAVE_QUESTION = gql`
-  mutation AutoSaveQuestion($id: ID!, $input: AutoSaveQuestionInput!) {
-    autoSaveQuestion(id: $id, input: $input) {
+export const SUBMIT_QUESTION = gql`
+  mutation SubmitQuestion(
+    $questionId: ID!
+    $questionVersionId: ID!
+    $input: UpdateQuestionInput!
+  ) {
+    submitQuestion(
+      questionId: $questionId
+      questionVersionId: $questionVersionId
+      input: $input
+    ) {
       id
       agreedTc
       versions(latestOnly: true) {
-        id
-        questionId
         submitted
-        content
-        keywords
-        biointeractiveResources
-        cognitiveLevel
-        affectiveLevel
-        psychomotorLevel
-        readingLevel
-        framework
-        topic
-        subTopic
-        frameworkMetadata {
-          unit
-          frameworkTopic
-          learningObjective
-          essentialKnowledge
-          coreConcept
-          statement
-          subDiscipline
-        }
-        supplementaryFields {
-          topic
-          subTopic
-          frameworkMetadata {
-            unit
-            frameworkTopic
-            learningObjective
-            essentialKnowledge
-            coreConcept
-            statement
-            subDiscipline
-          }
-        }
       }
     }
   }
 `
 
-export {
-  QUESTIONS,
-  QUESTION,
-  CREATE_QUESTION,
-  SUBMIT_QUESTION,
-  AUTO_SAVE_QUESTION,
-  UPDATE_QUESTION,
-}
+export const REJECT_QUESTION = gql`
+  mutation RejectQuestion($questionId: ID!) {
+    rejectQuestion(questionId: $questionId) {
+      id
+      rejected
+    }
+  }
+`
+
+export const MOVE_QUESTION_VERSION_TO_REVIEW = gql`
+  mutation MoveQuestionVersionToReview($questionVersionId: ID!) {
+    moveQuestionVersionToReview(questionVersionId: $questionVersionId) {
+      id
+      underReview
+    }
+  }
+`
+
+export const PUBLISH_QUESTION_VERSION = gql`
+  mutation PublishQuestionVersion($questionVersionId: ID!) {
+    publishQuestionVersion(questionVersionId: $questionVersionId) {
+      id
+      published
+      publicationDate
+    }
+  }
+`

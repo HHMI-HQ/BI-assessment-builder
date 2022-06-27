@@ -3,7 +3,7 @@ const metadata = {
     {
       label: 'Biochemistry & Molecular Biology',
       value: 'biochemistryMolecularBiology',
-      subTopics: [
+      subtopics: [
         {
           label: 'General Chemistry',
           value: 'generalChemistry',
@@ -33,7 +33,7 @@ const metadata = {
     {
       label: 'Genetics',
       value: 'genetics',
-      subTopics: [
+      subtopics: [
         {
           label: 'Gene Expression & Regulation',
           value: 'geneExpressionRegulation',
@@ -67,7 +67,7 @@ const metadata = {
     {
       label: 'Cell biology',
       value: 'cellBiology',
-      subTopics: [
+      subtopics: [
         {
           label: 'Cellular Transport',
           value: 'cellularTransport',
@@ -105,7 +105,7 @@ const metadata = {
     {
       label: 'Diversity of life',
       value: 'diversityOfLife',
-      subTopics: [
+      subtopics: [
         {
           label: 'Bacteria',
           value: 'bacteria',
@@ -127,7 +127,7 @@ const metadata = {
     {
       label: 'Anatomy & Physiology',
       value: 'anatomyPhysiology',
-      subTopics: [
+      subtopics: [
         {
           label: 'Nervous & Endocrine Systems',
           value: 'nervousEndocrineSystems',
@@ -173,7 +173,7 @@ const metadata = {
     {
       label: 'Evolution',
       value: 'evolution',
-      subTopics: [
+      subtopics: [
         {
           label: 'Artificial Selection',
           value: 'artificialSelection',
@@ -211,7 +211,7 @@ const metadata = {
     {
       label: 'Ecology',
       value: 'ecology',
-      subTopics: [
+      subtopics: [
         {
           label: 'Populations',
           value: 'populations',
@@ -237,7 +237,7 @@ const metadata = {
     {
       label: 'Environmental science',
       value: 'environmentalScience',
-      subTopics: [
+      subtopics: [
         {
           label: 'Human Population & Impacts',
           value: 'humanPopulationImpacts',
@@ -263,7 +263,7 @@ const metadata = {
     {
       label: 'Earth science',
       value: 'earthScience',
-      subTopics: [
+      subtopics: [
         {
           label: 'Earth History',
           value: 'earthHistory',
@@ -297,7 +297,7 @@ const metadata = {
     {
       label: 'Science practices',
       value: 'sciencePractices',
-      subTopics: [
+      subtopics: [
         {
           label: 'Experimental Design',
           value: 'experimentalDesign',

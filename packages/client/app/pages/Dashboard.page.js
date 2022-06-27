@@ -1,62 +1,216 @@
-import React from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import React, { useState, useEffect } from 'react'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 
-import { QUESTIONS, CREATE_QUESTION } from '../graphql'
-import { Dashboard, Spin } from '../ui'
-import { dashboardDataMapper } from '../utilities'
+import {
+  GET_AUTHOR_DASHBOARD,
+  GET_EDITOR_DASHBOARD,
+  CREATE_QUESTION,
+  CURRENT_USER,
+} from '../graphql'
+import { Dashboard } from '../ui'
+import {
+  hasGlobalRole,
+  // dashboardDataMapper,
+  metadataForQuestionPage as metadataValues,
+} from '../utilities'
+
+const defaultSearchOptions = {
+  orderBy: 'created',
+  ascending: false,
+  pageSize: 10,
+}
+
+const transform = questions => {
+  if (!questions) return null
+
+  return questions.map(question => {
+    const { id, versions } = question
+    const latestVersion = versions[0]
+    const { content, publicationDate, cognitiveLevel } = latestVersion
+    const parsedContent = content ? JSON.parse(content) : null
+
+    const courses = latestVersion.courses.map(c => {
+      const courseInValues = metadataValues.frameworks.find(
+        f => f.value === c.course,
+      )
+
+      const beginning = c.course.slice(0, 2).toLowerCase()
+      // const isIB = beginning === 'ib'
+      const isAP = beginning === 'ap'
+
+      const objectives = c.units.map(unit => ({
+        label: courseInValues.learningObjectives?.find(
+          lo => lo.value === unit.learningObjective,
+        ).label,
+      }))
+
+      const understandings = c.units.map(unit => ({
+        label: courseInValues.understandings?.find(
+          und => und.value === unit.understanding,
+        ).label,
+      }))
+
+      return {
+        course: {
+          label: courseInValues.label,
+        },
+        label: isAP ? 'learning objectives' : 'understandings',
+        objectives: isAP ? objectives : understandings,
+      }
+    })
+
+    const firstTopic = latestVersion.topics[0]
+
+    const topicValues = metadataValues.topics.find(
+      t => t.value === firstTopic?.topic,
+    )
+
+    const subtopic = topicValues?.subtopics.find(
+      s => s.value === firstTopic.subtopic,
+    ).label
+
+    const cognitiveValues = metadataValues.blooms.cognitive
+
+    const allCognitiveOptions = [
+      ...cognitiveValues[0].options,
+      ...cognitiveValues[1].options,
+    ]
+
+    const cognitiveDisplayValue = allCognitiveOptions.find(
+      o => o.value === cognitiveLevel,
+    )?.label
+
+    let status
+    if (latestVersion.submitted) status = 'Submitted'
+    if (latestVersion.underReview) status = 'Under review'
+    if (latestVersion.published) status = 'Published'
+    if (question.rejected) status = 'Rejected'
+
+    return {
+      metadata: [
+        { label: 'topic', value: topicValues?.label },
+        { label: 'subtopic', value: subtopic },
+        // question type: how do we know that data ?? what if it's more than one?
+        { label: "bloom's level", value: cognitiveDisplayValue },
+        { label: 'published date', value: publicationDate },
+      ],
+      content: parsedContent,
+      status,
+      href: `/question/${id}`,
+      id,
+      courses,
+    }
+  })
+}
 
 const DashboardPage = () => {
+  // #region hooks
   const history = useHistory()
-  const { loading, data } = useQuery(QUESTIONS, { variables: { where: {} } })
 
-  const [createQuestion] = useMutation(CREATE_QUESTION, {
+  const initialTabKey = localStorage.getItem('dashboardLastUsedTab') || 'author'
+  const [currentTabKey, setCurrentTabKey] = useState(initialTabKey)
+  const [currentPage, setCurrenPage] = useState(0)
+
+  const { data: currentUserResponse } = useQuery(CURRENT_USER)
+
+  const [
+    authorQuery,
+    { data: authorResponse, loading: authorLoading, called: authorCalled },
+  ] = useLazyQuery(GET_AUTHOR_DASHBOARD)
+
+  const [
+    editorQuery,
+    { data: editorResponse, loading: editorLoading, called: editorCalled },
+  ] = useLazyQuery(GET_EDITOR_DASHBOARD)
+
+  const authorData = authorResponse && authorResponse.getAuthorDashboard
+  const editorData = editorResponse && editorResponse.getManagingEditorDashboard
+
+  const queryMapper = {
+    query: {
+      author: authorQuery,
+      editor: editorQuery,
+    },
+    called: {
+      author: authorCalled,
+      editor: editorCalled,
+    },
+  }
+
+  useEffect(() => {
+    queryMapper.query[currentTabKey]({
+      variables: {
+        ...defaultSearchOptions,
+        page: currentPage - 1,
+      },
+    })
+  }, [currentTabKey, currentPage])
+
+  const [createQuestionMutation] = useMutation(CREATE_QUESTION, {
     refetchQueries: [
       {
-        query: QUESTIONS,
-        variables: {
-          where: {},
-        },
+        query: GET_AUTHOR_DASHBOARD,
       },
     ],
   })
+  // #endregion hooks
 
-  const onClickHandler = () => {
-    createQuestion().then(
-      ({
-        data: {
-          createQuestion: { id },
-        },
-      }) => {
+  // #region handlers
+  const handleCreateQuestion = () => {
+    createQuestionMutation()
+      .then(res => {
+        const { id } = res.data.createQuestion
         history.push(`/question/${id}`)
-      },
-    )
+      })
+      .catch(e => console.error(e))
   }
 
-  if (!data) {
-    return null
+  const handleSearch = options => {
+    const { page, role } = options
+    setCurrentTabKey(role)
+    setCurrenPage(page)
+    localStorage.setItem('dashboardLastUsedTab', role)
   }
+  // #endregion handlers
 
-  let result, totalCount
+  // #region data
+  const loading = !currentUserResponse?.currentUser // question list loading is inside the tab
+  const isEditor = hasGlobalRole(currentUserResponse?.currentUser, 'editor')
 
-  if (data) {
-    result = data.questions.result
-    totalCount = data.questions.totalCount
-  }
+  const tabs = [
+    {
+      label: 'Authored Questions',
+      value: 'author',
+      questions: authorData && transform(authorData.result),
+      totalCount: authorData && authorData.totalCount,
+      showBulkActions: false,
+      loading: authorLoading,
+    },
+    isEditor && {
+      label: 'Editor Questions',
+      value: 'editor',
+      questions: editorData && transform(editorData.result),
+      totalCount: editorData && editorData.totalCount,
+      showBulkActions: false,
+      loading: editorLoading,
+    },
+  ].filter(Boolean)
 
-  const authorData = dashboardDataMapper(result)
+  // #endregion data
 
   return (
-    <Spin renderBackground={false} spinning={loading}>
-      <Dashboard
-        authorItems={authorData}
-        authorTotalCountNumber={totalCount}
-        editorItems={[]}
-        onClickCreateQuestion={onClickHandler}
-        reviewerItems={[]}
-        withTotalCount
-      />
-    </Spin>
+    <Dashboard
+      // bulkActions
+      initialTabKey={initialTabKey}
+      loading={loading}
+      // onQuestionSelected
+      onClickCreate={handleCreateQuestion}
+      onSearch={handleSearch}
+      // showSort
+      // sortOptions
+      tabsContent={tabs}
+    />
   )
 }
 

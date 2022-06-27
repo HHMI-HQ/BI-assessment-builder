@@ -170,7 +170,7 @@ const Sidebar = props => {
           />
           <Form.Item label="Course" name="course">
             <Select
-              allowClear
+              // allowClear
               optionFilterProp="label"
               options={metadata.frameworks.map(i => {
                 return {

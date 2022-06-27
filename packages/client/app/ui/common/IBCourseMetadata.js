@@ -241,7 +241,7 @@ const IBCourseMetadata = props => {
         ]}
       >
         <Select
-          allowClear
+          // allowClear
           disabled={readOnly}
           onChange={handleFrameworkUnitChange}
           optionFilterProp="label"
@@ -262,7 +262,7 @@ const IBCourseMetadata = props => {
             ]}
           >
             <Select
-              allowClear
+              // allowClear
               disabled={readOnly || (!filterMode && !getFieldValue(unitField))}
               onChange={handleFrameworkTopicChange}
               optionFilterProp="label"
@@ -291,7 +291,7 @@ const IBCourseMetadata = props => {
               ]}
             >
               <Select
-                allowClear
+                // allowClear
                 disabled={
                   readOnly || (!filterMode && !getFieldValue(topicField))
                 }
@@ -319,7 +319,7 @@ const IBCourseMetadata = props => {
               ]}
             >
               <Select
-                allowClear
+                // allowClear
                 disabled={
                   readOnly || (!filterMode && !getFieldValue(topicField))
                 }
@@ -334,28 +334,24 @@ const IBCourseMetadata = props => {
       </Form.Item>
       <Form.Item dependencies={[unitField, topicField]} noStyle>
         {() => (
-          <>
-            <Form.Item
-              label="Understanding"
-              name={understandingName}
-              rules={[
-                isRequired
-                  ? { required: true, message: 'Understanding is required' }
-                  : {},
-              ]}
-            >
-              <Select
-                allowClear
-                disabled={
-                  readOnly || (!filterMode && !getFieldValue(topicField))
-                }
-                optionFilterProp="label"
-                options={filterUnderstandingOptions()}
-                showSearch
-                wrapOptionText
-              />
-            </Form.Item>
-          </>
+          <Form.Item
+            label="Understanding"
+            name={understandingName}
+            rules={[
+              isRequired
+                ? { required: true, message: 'Understanding is required' }
+                : {},
+            ]}
+          >
+            <Select
+              // allowClear
+              disabled={readOnly || (!filterMode && !getFieldValue(topicField))}
+              optionFilterProp="label"
+              options={filterUnderstandingOptions()}
+              showSearch
+              wrapOptionText
+            />
+          </Form.Item>
         )}
       </Form.Item>
     </>

@@ -10,9 +10,8 @@ services:
       - ${CLIENT_PORT:-4000}:${CLIENT_PORT:-4000}
     environment:
       - NODE_ENV=development
-      # - CLIENT_ENTRY_FILE_PATH=./app.js
       - CLIENT_PORT=${CLIENT_PORT:-4000}
-      # - CLIENT_FAST_REFRESH=1
+      - CLIENT_FAST_REFRESH=1
       - SERVER_PROTOCOL=${SERVER_PROTOCOL:-http}
       - SERVER_HOST=${SERVER_HOST:-localhost}
       - SERVER_PORT=${SERVER_PORT:-3000}

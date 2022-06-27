@@ -60,16 +60,16 @@ const generateMetadata = () => {
     topicsMetadata[Math.floor(Math.random() * topicsMetadata.length)]
 
   const randomSubtopic =
-    randomTopic.subTopics[
-      Math.floor(Math.random() * randomTopic.subTopics.length)
+    randomTopic.subtopics[
+      Math.floor(Math.random() * randomTopic.subtopics.length)
     ]
 
   const randomTopic2 =
     topicsMetadata[Math.floor(Math.random() * topicsMetadata.length)]
 
   const randomSubtopic2 =
-    randomTopic2.subTopics[
-      Math.floor(Math.random() * randomTopic2.subTopics.length)
+    randomTopic2.subtopics[
+      Math.floor(Math.random() * randomTopic2.subtopics.length)
     ]
 
   const randomQuestionType =

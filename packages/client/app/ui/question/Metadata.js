@@ -292,7 +292,7 @@ const Metadata = React.forwardRef((props, ref) => {
           rules={[{ required: true, message: 'Course is required' }]}
         >
           <Select
-            allowClear
+            // allowClear
             disabled={readOnly}
             options={metadata.frameworks.map(i => ({
               label: i.label,
@@ -376,7 +376,7 @@ const Metadata = React.forwardRef((props, ref) => {
                       ]}
                     >
                       <Select
-                        allowClear
+                        // allowClear
                         disabled={readOnly}
                         options={metadata.frameworks.map(i => ({
                           label: i.label,
@@ -497,9 +497,9 @@ const Metadata = React.forwardRef((props, ref) => {
           <Select disabled={readOnly} options={metadata.blooms.psychomotor} />
         </Form.Item>
 
-        <Form.Item label="Reading level" name="readingLevel">
+        {/* <Form.Item label="Reading level" name="readingLevel">
           <Select disabled={readOnly} options={[]} />
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     </Wrapper>
   )

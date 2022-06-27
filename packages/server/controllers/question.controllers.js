@@ -63,29 +63,39 @@ const getPublishedQuestions = (options = {}) => {
 // }
 
 const getAuthorDashboard = (userId, options = {}) => {
-  const { orderBy, page, pageSize, trx } = options
-  return Question.findByRole(userId, 'author', { orderBy, page, pageSize, trx })
-}
+  const { orderBy, ascending, page, pageSize, trx } = options
 
-const getReviewerDashboard = (userId, options = {}) => {
-  const { orderBy, page, pageSize, trx } = options
-
-  return Question.findByRole(userId, 'reviewer', {
+  return Question.findByRole(userId, 'author', {
     orderBy,
+    ascending,
     page,
     pageSize,
     trx,
   })
 }
 
-const getManagingEditorDashboard = (userId, options = {}) => {
-  const { orderBy, page, pageSize, trx } = options
+const getReviewerDashboard = (userId, options = {}) => {
+  const { orderBy, ascending, page, pageSize, trx } = options
+
+  return Question.findByRole(userId, 'reviewer', {
+    orderBy,
+    ascending,
+    page,
+    pageSize,
+    trx,
+  })
+}
+
+const getManagingEditorDashboard = async (userId, options = {}) => {
+  const { orderBy, ascending, page, pageSize, trx } = options
 
   // managing editor gets all questions apart from the ones they authored themselves
   return Question.findByExcludingRole(userId, 'author', {
     orderBy,
+    ascending,
     page,
     pageSize,
+    submittedOnly: true,
     trx,
   })
 }
@@ -229,6 +239,7 @@ const publishQuestionVersion = async (questionVersionId, options = {}) => {
       {
         underReview: false,
         published: true,
+        publicationDate: new Date(),
       },
       { trx: options.trx },
     )

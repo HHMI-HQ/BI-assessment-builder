@@ -2,6 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import { uuid, th, grid } from '@coko/client'
 
@@ -10,9 +11,19 @@ import { DashLayout } from '../wax/layout'
 import { dashConfig } from '../wax/config'
 
 const Wrapper = styled.div`
-  padding: ${grid(1)} 0;
+  margin: ${grid(1)};
+  padding: ${grid(4)} ${grid(3)};
   position: relative;
+  transition: background-color 0.15s ease-in-out;
   width: 100%;
+
+  &:hover {
+    background-color: ${th('colorBackgroundHue')};
+
+    .ProseMirror {
+      background-color: ${th('colorBackgroundHue')};
+    }
+  }
 `
 
 const FirstRow = styled.div`
@@ -21,14 +32,12 @@ const FirstRow = styled.div`
   margin-bottom: ${grid(2)};
 `
 
-const WaxContainer = styled.a`
+const WaxContainer = styled(Link)`
   flex-grow: 1;
-  height: 45px;
   overflow: hidden;
-  padding-left: ${grid(1)};
-  transition: outline ease 200ms;
+  /* transition: outline ease 200ms; */
 
-  &:hover,
+  /* &:hover, */
   &:focus {
     outline: 1px solid ${th('colorPrimary')};
   }
@@ -55,14 +64,13 @@ const Status = styled.span`
     }
   }};
   flex: 0 0 110px;
-  padding: ${grid(1)} ${grid(2)};
+  padding: 0 ${grid(2)};
   text-align: right;
 `
 
 const SecondRow = styled.div`
   justify-content: space-evenly;
   margin-bottom: ${grid(2)};
-  padding: 0 ${grid(1)};
 
   details {
     summary {
@@ -70,7 +78,7 @@ const SecondRow = styled.div`
       padding-right: ${grid(1)};
       width: fit-content;
 
-      &:hover,
+      /* &:hover, */
       &:focus {
         outline: 1px solid ${th('colorPrimary')};
       }
@@ -99,7 +107,6 @@ const BottomRow = styled.div`
   display: flex;
   gap: ${grid(2)};
   justify-content: space-between;
-  padding: 0 ${grid(1)};
 `
 
 const Metadata = styled.div`
@@ -121,7 +128,7 @@ const QuestionItem = props => {
   return (
     <Wrapper className={className} id={id}>
       <FirstRow>
-        <WaxContainer href={href}>
+        <WaxContainer to={href}>
           <WaxWrapper
             config={dashConfig}
             content={content}

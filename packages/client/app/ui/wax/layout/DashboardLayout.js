@@ -1,7 +1,7 @@
-/* eslint-disable */
-/* stylelint-disable */
+/* eslint-disable react/prop-types */
+
 import React, { useContext } from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import styled from 'styled-components'
 import { WaxContext, ComponentPlugin } from 'wax-prosemirror-core'
 import { grid, th } from '@coko/client'
 // import { cokoTheme } from '../theme'
@@ -14,9 +14,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   font-family: ${th('fontInterface')};
   font-size: ${th('fontSizeBase')};
-  height: 48px;
-  line-height: ${grid(4)};
-
   overflow-y: auto;
   width: 100%;
 
@@ -45,7 +42,9 @@ const WaxSurfaceScroll = styled.div`
   box-sizing: border-box;
   display: flex;
   width: 100%;
-  /* PM styles  for main content*/
+
+  /* PM styles  for main content */
+  /* stylelint-disable-next-line order/properties-alphabetical-order */
   ${EditorElements}
 `
 
@@ -55,15 +54,23 @@ const EditorContainer = styled.div`
   width: 100%;
 
   .ProseMirror {
+    /* background: palegreen; */
     /* box-shadow: 0 0 8px #ecedf1; */
+    font-family: ${th('fontInterface')};
+    font-size: ${th('fontSizeBase')};
+    margin-right: 0;
     min-height: 100%;
     /* padding-top: ${grid(10)}; */
+    transition: background-color 0.15s ease-in-out;
     width: 100%;
-    margin-right: ${grid(14)};
+
+    p {
+      margin-bottom: 0;
+    }
   }
 `
 
-const MainMenuToolBar = ComponentPlugin('mainMenuToolBar')
+// const MainMenuToolBar = ComponentPlugin('mainMenuToolBar')
 const WaxOverlays = ComponentPlugin('waxOverlays')
 
 const DashboardLayout = ({ editor }) => {

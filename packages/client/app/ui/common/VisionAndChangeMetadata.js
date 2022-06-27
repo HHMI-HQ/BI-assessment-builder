@@ -264,7 +264,7 @@ const VisionAndChangeMetadata = props => {
       <p>Vision and Change Framework</p>
       <Form.Item label="Core concept" name={coreConceptName}>
         <Select
-          allowClear
+          // allowClear
           disabled={readOnly}
           onChange={handleCoreConceptChange}
           optionFilterProp="label"
@@ -290,7 +290,7 @@ const VisionAndChangeMetadata = props => {
             )}
             <Form.Item label="Subdiscipline" name={subdisciplineName}>
               <Select
-                allowClear
+                // allowClear
                 disabled={
                   readOnly || (!filterMode && !getFieldValue(coreConceptField))
                 }
@@ -311,7 +311,7 @@ const VisionAndChangeMetadata = props => {
             name={subdisciplineStatementName}
           >
             <Select
-              allowClear
+              // allowClear
               disabled={
                 readOnly || (!filterMode && !getFieldValue(subdisciplineField))
               }
@@ -326,7 +326,7 @@ const VisionAndChangeMetadata = props => {
 
       <Form.Item label="Core competence" name={coreCompetenceName}>
         <Select
-          allowClear
+          // allowClear
           disabled={readOnly}
           onChange={handleCoreCompetenceChange}
           optionFilterProp="label"
@@ -339,7 +339,7 @@ const VisionAndChangeMetadata = props => {
         {() => (
           <Form.Item label="Subcompetence" name={subcompetenceName}>
             <Select
-              allowClear
+              // allowClear
               disabled={
                 readOnly || (!filterMode && !getFieldValue(coreCompetenceField))
               }
@@ -366,7 +366,7 @@ const VisionAndChangeMetadata = props => {
               name={subcompetenceStatementName}
             >
               <Select
-                allowClear
+                // allowClear
                 disabled={
                   readOnly ||
                   (!filterMode && !getFieldValue(subcompetenceField))

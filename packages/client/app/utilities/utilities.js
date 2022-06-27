@@ -1,4 +1,5 @@
 import { isEmpty, uniqBy } from 'lodash'
+import { metadata } from 'ui'
 import flatMetadataValues from '../ui/_helpers/flatMetadataValues'
 
 const apDictionary = [
@@ -19,7 +20,7 @@ const objectCleaner = obj =>
 const questionDataTransformer = ({
   framework,
   topic,
-  subTopic,
+  subtopic,
   keywords,
   affectiveLevel,
   biointeractiveResources,
@@ -32,7 +33,7 @@ const questionDataTransformer = ({
   const result = {
     framework,
     topic,
-    subTopic,
+    subtopic,
     affectiveLevel,
     biointeractiveResources,
     cognitiveLevel,
@@ -47,7 +48,7 @@ const questionDataTransformer = ({
     supplementaryFields.forEach((item, index) => {
       const temp = {
         topic: item.topic || null,
-        subTopic: item?.subTopic || null,
+        subtopic: item?.subtopic || null,
       }
 
       if (framework && framework === 'visionAndChange') {
@@ -112,14 +113,14 @@ const questionDataMapper = ({
   psychomotorLevel,
   readingLevel,
   topic,
-  subTopic,
+  subtopic,
   frameworkMetadata,
   supplementaryFields,
 }) => {
   const result = {
     framework,
     topic,
-    subTopic,
+    subtopic,
     keywords,
     affectiveLevel,
     biointeractiveResources,
@@ -131,7 +132,7 @@ const questionDataMapper = ({
   if (supplementaryFields.length > 0) {
     const transformedSupplementaryFields = []
     supplementaryFields.forEach((item, index) => {
-      const temp = { topic: item.topic, subTopic: item.subTopic }
+      const temp = { topic: item.topic, subtopic: item.subtopic }
 
       if (
         framework &&
@@ -189,8 +190,8 @@ const displayNameExtractor = (label, value) => {
       return found.label
     }
 
-    case 'subTopic': {
-      const found = flatMetadataValues.subTopics.find(s => s.value === value)
+    case 'subtopic': {
+      const found = flatMetadataValues.subtopics.find(s => s.value === value)
 
       if (!found) {
         return undefined
@@ -253,8 +254,8 @@ const dashboardDataMapper = data => {
           value: displayNameExtractor('topic', item.versions[0].topic),
         },
         {
-          label: 'subTopic',
-          value: displayNameExtractor('subTopic', item.versions[0].subTopic),
+          label: 'subtopic',
+          value: displayNameExtractor('subtopic', item.versions[0].subtopic),
         },
         {
           label: 'cognitiveLevel',
@@ -616,14 +617,72 @@ const flatAAMCMetadata = data => {
   }
 }
 
+const frameworks = metadata.frameworks.map(framework => {
+  const frameworkData = {
+    label: framework.label,
+    value: framework.value,
+  }
+
+  let additionalMetadata
+
+  if (
+    framework.value === 'apBiology' ||
+    framework.value === 'apEnvironmentalScience'
+  ) {
+    additionalMetadata = flatAPCoursesMetadata(framework)
+  }
+
+  if (
+    framework.value === 'biBiology' ||
+    framework.value === 'biEnvironmentalScience'
+  ) {
+    additionalMetadata = flatIBCourseMetadata(framework)
+  }
+
+  return {
+    ...frameworkData,
+    ...additionalMetadata,
+  }
+})
+
+const introToBioMeta = metadata.introToBioMeta.map(data => {
+  const meta = {
+    label: data.label,
+    value: data.value,
+  }
+
+  let additionalMetadata
+
+  if (data.value === 'visionAndChange') {
+    additionalMetadata = flatVisionAndChangeMetadata(data)
+  }
+
+  if (data.value === 'aamcFuturePhysicians') {
+    additionalMetadata = flatAAMCMetadata(data)
+  }
+
+  return {
+    ...meta,
+    ...additionalMetadata,
+  }
+})
+
+const metadataForQuestionPage = {
+  topics: metadata.topics,
+  blooms: metadata.blooms,
+  frameworks,
+  introToBioMeta,
+}
+
 export {
-  objectCleaner,
-  questionDataTransformer,
-  questionDataMapper,
   dashboardDataMapper,
-  profileOptions,
+  flatAAMCMetadata,
   flatAPCoursesMetadata,
   flatIBCourseMetadata,
   flatVisionAndChangeMetadata,
-  flatAAMCMetadata,
+  metadataForQuestionPage,
+  objectCleaner,
+  profileOptions,
+  questionDataMapper,
+  questionDataTransformer,
 }

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { th } from '@coko/client'
+import { th, grid } from '@coko/client'
+
 import List from './List'
 import QuestionItem from './QuestionItem'
 
@@ -32,6 +33,12 @@ RenderItem.propTypes = {
 }
 
 const StyledList = styled(List)`
+  padding-top: ${grid(4)};
+
+  .ant-list {
+    box-shadow: inset 0 0 4px ${th('colorBorder')};
+  }
+
   .ant-list-items {
     padding: 0 10px;
 
@@ -117,6 +124,7 @@ const QuestionList = props => {
       onSortOptionChange={onSortOptionChange}
       pagination={pagination()}
       renderItem={item => <RenderItem item={item} onClickRow={onClickRow} />}
+      searchPlaceholder="Search..."
       showSearch={showSearch}
       showSort={showSort}
       showTotalCount={showTotalCount}
@@ -178,7 +186,7 @@ QuestionList.propTypes = {
 }
 
 QuestionList.defaultProps = {
-  bulkAction: <div />,
+  bulkAction: null,
   loading: false,
   currentPage: 1,
   onPageChange: () => {},

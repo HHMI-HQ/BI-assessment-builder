@@ -3,9 +3,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Input as AntInput } from 'antd'
 
+import { inputShadow } from './_reusableStyles'
+
 const Wrapper = styled.div``
 
-const StyledInput = styled(AntInput)``
+const StyledInput = styled(AntInput)`
+  ${inputShadow}
+`
 
 const StyledPassword = styled(AntInput.Password)``
 

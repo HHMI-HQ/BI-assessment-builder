@@ -241,7 +241,7 @@ const APCourseMetadata = props => {
         ]}
       >
         <Select
-          allowClear
+          // allowClear
           disabled={readOnly}
           onChange={handleFrameworkUnitChange}
           optionFilterProp="label"
@@ -262,7 +262,7 @@ const APCourseMetadata = props => {
             ]}
           >
             <Select
-              allowClear
+              // allowClear
               disabled={readOnly || (!filterMode && !getFieldValue(unitField))}
               onChange={handleFrameworkTopicChange}
               optionFilterProp="label"
@@ -286,7 +286,7 @@ const APCourseMetadata = props => {
             ]}
           >
             <Select
-              allowClear
+              // allowClear
               disabled={readOnly || (!filterMode && !getFieldValue(topicField))}
               onChange={handleFrameworkLearningObjectiveChange}
               optionFilterProp="label"
@@ -313,7 +313,7 @@ const APCourseMetadata = props => {
             ]}
           >
             <Select
-              allowClear
+              // allowClear
               disabled={
                 readOnly ||
                 (!filterMode && !getFieldValue(learningObjectiveField))
