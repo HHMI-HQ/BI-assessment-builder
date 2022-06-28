@@ -1095,7 +1095,11 @@ const Question = props => {
         </>
       )}
       {isInProduction && (
-        <StyledButton data-testid="publish-question-btn" onClick={handlePublish} type="primary">
+        <StyledButton
+          data-testid="publish-question-btn"
+          onClick={handlePublish}
+          type="primary"
+        >
           Publish
         </StyledButton>
       )}
