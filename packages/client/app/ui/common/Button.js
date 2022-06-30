@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Button as AntButton } from 'antd'
-import { omit } from 'lodash'
+import { omit, pick } from 'lodash'
 
 import { darken, th, grid } from '@coko/client'
 
@@ -13,7 +14,7 @@ const colors = {
   // warn: 'colorWarning',
 }
 
-const StyledButton = styled(AntButton)`
+const CustomButtonStyles = css`
   box-shadow: none;
   font-size: ${th('fontSizeBase')};
   /* let lineHeight expand the button height */
@@ -102,13 +103,21 @@ const StyledButton = styled(AntButton)`
   padding: 0 ${grid(4)};
 `
 
+const StyledButton = styled(AntButton)`
+  ${CustomButtonStyles}
+`
+
+const StyledLink = styled(Link)`
+  ${CustomButtonStyles}
+`
+
 /**
  * API is the same as https://ant.design/components/button/#API, except for the
  * `danger` prop, which is ommited in favour of `status`, described below.
  */
 
 const Button = props => {
-  const { children, className, autoFocus, ...rest } = props
+  const { children, className, autoFocus, to, ...rest } = props
   const passProps = omit(rest, 'danger')
 
   const buttonRef = useRef(null)
@@ -118,6 +127,34 @@ const Button = props => {
       buttonRef.current?.focus()
     }
   }, [])
+
+  if (to !== '') {
+    const prefixCls = 'ant-btn'
+    const sizeClassNameMap = { large: 'lg', small: 'sm' }
+
+    const classes = [
+      prefixCls,
+      rest.shape !== 'default' && rest.shape && `${prefixCls}-${rest.shape}`,
+      rest.type && `${prefixCls}-${rest.type}`,
+      rest.size &&
+        rest.size !== 'middle' &&
+        `${prefixCls}-${sizeClassNameMap[rest.size]}`,
+      rest.ghost && `${prefixCls}-background-ghost`,
+      rest.block && `${prefixCls}-block`,
+      rest.direction === 'rtl' && `${prefixCls}-rtl`,
+      className,
+    ].filter(Boolean)
+
+    // only keep releant props when rendering a Link
+    const linkProps = pick(rest, ['target', 'onClick'])
+
+    return (
+      <StyledLink className={classes} ref={buttonRef} to={to} {...linkProps}>
+        {rest.icon}
+        <span>{children}</span>
+      </StyledLink>
+    )
+  }
 
   return (
     <StyledButton className={className} ref={buttonRef} {...passProps}>
@@ -129,11 +166,13 @@ const Button = props => {
 Button.propTypes = {
   status: PropTypes.oneOf(['error', 'danger', 'success']),
   autoFocus: PropTypes.bool,
+  to: PropTypes.string,
 }
 
 Button.defaultProps = {
   status: null,
   autoFocus: false,
+  to: '',
 }
 
 export default Button

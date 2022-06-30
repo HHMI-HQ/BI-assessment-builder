@@ -1373,7 +1373,6 @@ Question.propTypes = {
   onClickAssignHE: PropTypes.func,
   onClickExportToScorm: PropTypes.func,
   onClickExportToWord: PropTypes.func,
-
   editorContent: PropTypes.shape(),
   questionAgreedTc: PropTypes.bool,
   submitting: PropTypes.bool,

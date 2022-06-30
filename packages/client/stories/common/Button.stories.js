@@ -1,5 +1,6 @@
 import React from 'react'
 import { lorem } from 'faker'
+import { LinkOutlined } from '@ant-design/icons'
 
 import { Button } from 'ui'
 
@@ -22,9 +23,15 @@ export const PrimarySuccess = () => (
   </Button>
 )
 
-export const Link = () => (
-  <Button ghost href="#" type="primary">
-    Link that looks like a button
+export const AnchorButton = () => (
+  <Button href="#" type="primary">
+    Anchor tag with button styles
+  </Button>
+)
+
+export const LinkButton = () => (
+  <Button direction="rtl" ghost icon={<LinkOutlined />} to="#" type="primary">
+    React-router Link with buttons styles
   </Button>
 )
 
