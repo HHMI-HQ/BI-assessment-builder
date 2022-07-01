@@ -50,6 +50,7 @@ const SignupQuestionnaire = props => {
             <ProfileInfo
               countries={countries}
               courses={courses}
+              disableEmail
               form={form}
               initialValues={initialValues}
               institutionalSetting={institutionalSetting}

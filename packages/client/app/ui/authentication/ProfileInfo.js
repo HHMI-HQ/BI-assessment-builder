@@ -25,6 +25,7 @@ const ProfileInfo = props => {
   const {
     autoSave,
     className,
+    disableEmail,
     form,
     initialValues,
     loading,
@@ -171,7 +172,10 @@ const ProfileInfo = props => {
                   },
                 ]}
               >
-                <Input placeholder="Fill in your email address" />
+                <Input
+                  disabled={disableEmail}
+                  placeholder="Fill in your email address"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -528,6 +532,7 @@ const ProfileInfo = props => {
 
 ProfileInfo.propTypes = {
   autoSave: PropTypes.bool,
+  disableEmail: PropTypes.bool,
   message: PropTypes.string,
   form: PropTypes.shape(),
   initialValues: PropTypes.shape(),
@@ -550,6 +555,7 @@ ProfileInfo.propTypes = {
 
 ProfileInfo.defaultProps = {
   autoSave: true,
+  disableEmail: false,
   message: '',
   form: null,
   initialValues: {},
