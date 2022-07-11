@@ -10,7 +10,14 @@ import { HhmiLayout } from '../wax/layout'
 import { config } from '../wax/config'
 
 import Metadata from './Metadata'
-import { Button, Checkbox, Spin, TabsStyled as Tabs } from '../common'
+import {
+  Button,
+  Checkbox,
+  Modal,
+  Paragraph,
+  Spin,
+  TabsStyled as Tabs,
+} from '../common'
 import WaxWrapper from '../wax/Wax'
 
 const Wrapper = styled.div`
@@ -170,6 +177,50 @@ const Question = props => {
     onEditorContentAutoSave(content)
   }
 
+  const showTermsAndConditions = e => {
+    e.preventDefault()
+    Modal.info({
+      title: 'Accept Terms and Conditions',
+      content: (
+        <Paragraph>
+          By submitting information via the form below (the “Question
+          Information”), and clicking the “Submit” button, you agree to{' '}
+          <a
+            href="https://www.hhmi.org/terms-of-use"
+            rel="noreferrer"
+            target="_blank"
+          >
+            HHMI’s Terms of Use
+          </a>{' '}
+          and you grant to the Howard Hughes Medical Institute (“HHMI”) and our
+          affiliates (referred to collectively with HHMI as, “we,” “us,” or
+          “our”) a royalty-free, perpetual, irrevocable, non-exclusive right and
+          license to use, publish, reproduce, modify, adapt, edit, translate,
+          create derivative works from, incorporate into other works,
+          distribute, sub-license, and otherwise exploit such Question
+          Information, and derivatives or modifications thereof, throughout the
+          universe in any form, media or technology now known or hereafter
+          developed, including without limitation sub-licensing and distributing
+          the Question Information or derivatives or modifications thereof under
+          a Creative Commons license selected by HHMI. You hereby represent,
+          warrant and covenant that the Question Information submitted by you is
+          original to you, and that neither the existence nor the exploitation
+          thereof shall infringe upon or violate any trademark, patent,
+          copyright, trade secret, right of privacy or publicity, or other
+          common law right of any third party.
+        </Paragraph>
+      ),
+      maskClosable: true,
+      afterClose: () =>
+        document.body.querySelector('#termsAndConditions').focus(),
+      width: '570px',
+      bodyStyle: {
+        marginRight: 38,
+        textAlign: 'justify',
+      },
+    })
+  }
+
   const handleAgreeTcChange = e => {
     setAgreedTc(!agreedTc)
   }
@@ -225,7 +276,14 @@ const Question = props => {
   const RightAreaAuthor = isSubmitted ? null : (
     <RightAreaWrapper>
       <Checkbox checked={agreedTc} onChange={handleAgreeTcChange}>
-        Accept terms and conditions
+        Accept{' '}
+        <a
+          href="#termsAndCondition"
+          id="termsAndConditions"
+          onClick={showTermsAndConditions}
+        >
+          terms and conditions
+        </a>
       </Checkbox>
 
       <StyledButton

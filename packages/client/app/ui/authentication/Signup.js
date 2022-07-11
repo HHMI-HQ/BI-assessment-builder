@@ -62,6 +62,11 @@ const Signup = props => {
       maskClosable: true,
       afterClose: () =>
         document.body.querySelector('#termsAndConditions').focus(),
+      width: 570,
+      bodyStyle: {
+        marginRight: 38,
+        textAlign: 'justify',
+      },
     })
   }
 
