@@ -114,15 +114,27 @@ const DashboardPage = () => {
 
   const { data: currentUserResponse } = useQuery(CURRENT_USER)
 
+  // leave fetch policy to network until pagination is handled in the cache (with a merge function)
   const [
     authorQuery,
-    { data: authorResponse, loading: authorLoading, called: authorCalled },
-  ] = useLazyQuery(GET_AUTHOR_DASHBOARD)
+    {
+      data: authorResponse,
+      loading: authorLoading,
+      called: authorCalled,
+      // fetchMore: fetchMoreAuthor,
+    },
+  ] = useLazyQuery(GET_AUTHOR_DASHBOARD, {
+    fetchPolicy: 'network-only',
+    variables: {
+      ...defaultSearchOptions,
+      page: 0,
+    },
+  })
 
   const [
     editorQuery,
     { data: editorResponse, loading: editorLoading, called: editorCalled },
-  ] = useLazyQuery(GET_EDITOR_DASHBOARD)
+  ] = useLazyQuery(GET_EDITOR_DASHBOARD, { fetchPolicy: 'network-only' })
 
   const authorData = authorResponse && authorResponse.getAuthorDashboard
   const editorData = editorResponse && editorResponse.getManagingEditorDashboard
@@ -148,11 +160,7 @@ const DashboardPage = () => {
   }, [currentTabKey, currentPage])
 
   const [createQuestionMutation] = useMutation(CREATE_QUESTION, {
-    refetchQueries: [
-      {
-        query: GET_AUTHOR_DASHBOARD,
-      },
-    ],
+    // refetchQueries: [{ query: GET_AUTHOR_DASHBOARD }],
   })
   // #endregion hooks
 
@@ -168,9 +176,12 @@ const DashboardPage = () => {
 
   const handleSearch = options => {
     const { page, role } = options
+    localStorage.setItem('dashboardLastUsedTab', role)
+
     setCurrentTabKey(role)
     setCurrenPage(page)
-    localStorage.setItem('dashboardLastUsedTab', role)
+
+    // fetchMoreAuthor({ variables: { page: page - 1 } })
   }
   // #endregion handlers
 
