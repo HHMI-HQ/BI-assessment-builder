@@ -80,23 +80,7 @@ class Question extends BaseModel {
     return Question.getVersions(this.id, options)
   }
 
-  static async findPublished(options = {}) {
-    const query = Question.query(options.trx)
-      .leftJoin(
-        'question_versions',
-        'questions.id',
-        'question_versions.question_id',
-      )
-      .select('questions.*')
-      .distinct('questions.id')
-      .where({
-        published: true,
-      })
-
-    return applyListQueryOptions(query, options)
-  }
-
-  static async filterQuestions(params = {}, options = {}) {
+  static async filterPublishedQuestions(params = {}, options = {}) {
     try {
       const query = Question.query(options.trx)
         .leftJoin(
@@ -117,6 +101,96 @@ class Question extends BaseModel {
       if (params.filters.subtopic) {
         query.whereJsonSupersetOf('topics', [
           { subtopic: params.filters.subtopic },
+        ])
+      }
+
+      if (params.filters.course) {
+        query.whereJsonSupersetOf('courses', [
+          { course: params.filters.course },
+        ])
+      }
+
+      if (params.filters.unit) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                unit: params.filters.unit,
+              },
+            ],
+          },
+        ])
+      }
+
+      if (params.filters.courseTopic) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                courseTopic: params.filters.courseTopic,
+              },
+            ],
+          },
+        ])
+      }
+
+      if (params.filters.learningObjective) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                learningObjective: params.filters.learningObjective,
+              },
+            ],
+          },
+        ])
+      }
+
+      if (params.filters.essentialKnowledge) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                essentialKnowledge: params.filters.essentialKnowledge,
+              },
+            ],
+          },
+        ])
+      }
+
+      if (params.filters.application) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                application: params.filters.application,
+              },
+            ],
+          },
+        ])
+      }
+
+      if (params.filters.skill) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                skill: params.filters.skill,
+              },
+            ],
+          },
+        ])
+      }
+
+      if (params.filters.understanding) {
+        query.whereJsonSupersetOf('courses', [
+          {
+            units: [
+              {
+                understanding: params.filters.understanding,
+              },
+            ],
+          },
         ])
       }
 

@@ -44,7 +44,7 @@ const getPublishedQuestions = async (params = {}, options = {}) => {
 
     return useTransaction(
       async tr => {
-        return Question.filterQuestions(params, {
+        return Question.filterPublishedQuestions(params, {
           orderBy,
           page,
           pageSize,
