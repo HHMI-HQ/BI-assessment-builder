@@ -108,11 +108,38 @@ input UnitInput {
   unit: String
 }
 
+input SidebarFilters {
+  topic: String
+  subtopic: String
+  course: String
+  application: String
+  courseTopic: String
+  essentialKnowledge: String
+  learningObjective: String
+  skill: String
+  understanding: String
+  unit: String
+
+  cognitiveLevel: [String]
+  # after branch with questionType field gets merged
+  # questionType: String
+}
+
+input FilterQuestionsParams {
+  filters: SidebarFilters
+  search: String
+}
+
 # QUERIES & MUTATIONS
 
 extend type Query {
   question(id: ID!): Question!
-  getPublishedQuestions: QuestionsResponse!
+  getPublishedQuestions(
+    # orderBy: String
+    # ascending: Boolean
+    params: FilterQuestionsParams
+    options: PageInput
+  ): QuestionsResponse!
 
   getAuthorDashboard(
     orderBy: String
