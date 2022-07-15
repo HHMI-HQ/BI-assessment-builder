@@ -33,9 +33,8 @@ extend type User {
 input UserProfileInput {
   givenNames: String!
   surname: String!
-  middleName: String
   displayName: String!
-  pronouns: String!
+  pronouns: String
 
   email: String!
   phone: String!

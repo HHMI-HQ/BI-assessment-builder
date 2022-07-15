@@ -111,28 +111,13 @@ const ProfileInfo = props => {
             <Col span={6}>
               {/* QUESTION is this useful information? */}
               {/* QUESTION should this be required? */}
-              <Form.Item
-                label="Preferred Pronouns"
-                name="pronouns"
-                rules={[
-                  {
-                    required: true,
-                    message: 'You have to fill in your prefered pronouns',
-                  },
-                ]}
-              >
+              <Form.Item label="Pronouns" name="pronouns">
                 <Input placeholder="Fill in your preferred pronouns" />
               </Form.Item>
             </Col>
           </Row>
 
           <Row>
-            <Col span={12}>
-              <Form.Item label="Middle name" name="middleName">
-                <Input placeholder="Fill in your middle name" />
-              </Form.Item>
-            </Col>
-
             <Col span={12}>
               {/* QUESTION why not the display name? */}
               <Form.Item
@@ -148,9 +133,7 @@ const ProfileInfo = props => {
                 <Input placeholder="Fill in your display name" />
               </Form.Item>
             </Col>
-          </Row>
 
-          <Row>
             <Col span={12}>
               <Form.Item
                 label="Phone"
@@ -161,15 +144,18 @@ const ProfileInfo = props => {
                     message: 'You have to fill in your phone number',
                   },
                   {
-                    pattern: /^\d+$/,
-                    message: 'Please enter a valid phone number',
+                    pattern: /^(\+?\d\s*)+$/,
+                    message:
+                      'Please enter a valid format (optional + in front, followed by digits or spaces only) ',
                   },
                 ]}
               >
                 <Input placeholder="Fill in your phone number" />
               </Form.Item>
             </Col>
+          </Row>
 
+          <Row>
             <Col span={12}>
               <Form.Item
                 label="Email"
@@ -258,8 +244,8 @@ const ProfileInfo = props => {
             </Col>
 
             <Col span={12}>
-              <Form.Item label="Work / Home Address" name="address">
-                <Input placeholder="Type your work/home address" />
+              <Form.Item label="Address" name="address">
+                <Input placeholder="Type your address" />
               </Form.Item>
             </Col>
           </Row>
@@ -330,7 +316,7 @@ const ProfileInfo = props => {
             <Col span={12}>
               {/* QUESTION is the number input more appropriate here? */}
               <Form.Item
-                label="Years of teaching exprerience"
+                label="Years of teaching experience"
                 name="yearsOfExperience"
                 rules={[
                   {
@@ -378,7 +364,7 @@ const ProfileInfo = props => {
                     return (
                       <Form.Item
                         label="Do you teach AP/IB courses?"
-                        name="ap-ib-courses"
+                        name="apIbCourses"
                         rules={[
                           {
                             required: true,
@@ -427,12 +413,6 @@ const ProfileInfo = props => {
                       <Form.Item
                         label="Please specify the level you primarily teach:"
                         name="otherLevel"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'This information is required',
-                          },
-                        ]}
                       >
                         <Input placeholder="What level do you primarily teach?" />
                       </Form.Item>
@@ -441,6 +421,17 @@ const ProfileInfo = props => {
 
                   return null
                 }}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item label="What course(s) do you teach?" name="courses">
+                <Select
+                  mode="multiple"
+                  options={courses}
+                  placeholder="Select courses"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -464,28 +455,25 @@ const ProfileInfo = props => {
             </Col>
 
             <Col span={12}>
-              {/* QUESTION need options */}
-              <Form.Item label="What course(s) do you teach?" name="courses">
-                <Select
-                  mode="multiple"
-                  options={courses}
-                  placeholder="Select courses"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+              <Form.Item dependencies={['reviewerInterest']} noStyle>
+                {({ getFieldValue }) => {
+                  if (getFieldValue('reviewerInterest') === false) {
+                    return null
+                  }
 
-          <Row>
-            <Col span={24}>
-              <Form.Item
-                label="Select the three topics you are most comfortable reviewing for scientific accuracy"
-                name="coursesReview"
-              >
-                <Select
-                  mode="multiple"
-                  options={topics}
-                  placeholder="Select three topics"
-                />
+                  return (
+                    <Form.Item
+                      label="Select the three topics you are most comfortable reviewing for scientific accuracy"
+                      name="coursesReview"
+                    >
+                      <Select
+                        mode="multiple"
+                        options={topics}
+                        placeholder="Select three topics"
+                      />
+                    </Form.Item>
+                  )
+                }}
               </Form.Item>
             </Col>
           </Row>
@@ -515,8 +503,8 @@ const ProfileInfo = props => {
 
           <Row>
             <Col span={12}>
-              <Form.Item label="Source" name="source">
-                <Input placeholder="Where did you hear about this?" />
+              <Form.Item label="Where did you hear about this?" name="source">
+                <Input placeholder="Enter source" />
               </Form.Item>
             </Col>
           </Row>
