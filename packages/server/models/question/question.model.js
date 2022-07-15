@@ -227,6 +227,30 @@ class Question extends BaseModel {
     }
   }
 
+  static async filterQuestions(params = {}, options = {}) {
+    try {
+      // const cognitiveLevelFilter =
+      const query = Question.query(options.trx)
+        .leftJoin(
+          'question_versions',
+          'questions.id',
+          'question_versions.question_id',
+        )
+        .select('questions.*')
+        .distinct('questions.id')
+        .where({
+          published: true,
+          // cognitiveLevel: 'higher-understand',
+        })
+        .whereIn('cognitiveLevel', [])
+
+      return applyListQueryOptions(query, options)
+    } catch (e) {
+      console.error('Question model: filter failed', e)
+      throw new Error(e)
+    }
+  }
+
   // eg. find all questions this user is an author of
   static async findByRole(userId, role, options = {}) {
     const query = Question.query(options.trx)
