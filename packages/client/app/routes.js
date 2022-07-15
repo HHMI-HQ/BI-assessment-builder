@@ -32,6 +32,7 @@ import {
   ResetPassword,
   VerifyCheck,
   Dashboard,
+  Discover,
   Question,
   ManageUsers,
   TeamManager,
@@ -184,6 +185,8 @@ const routes = (
             </Authenticated>
           )}
         />
+
+        <Route exact path="/discover" render={() => <Discover />} />
 
         <Route
           exact

@@ -262,3 +262,43 @@ export const PUBLISH_QUESTION_VERSION = gql`
     }
   }
 `
+
+export const GET_PUBLISHED_QUESTIONS = gql`
+  query GetPublishedQuestions(
+    # $orderBy: String
+    # $ascending: Boolean
+    $params: FilterQuestionsParams
+    $options: PageInput
+  ) {
+    getPublishedQuestions(params: $params, options: $options) {
+      result {
+        id
+        versions(latestOnly: true) {
+          id
+          content
+
+          submitted
+          underReview
+          published
+          publicationDate
+
+          topics {
+            topic
+            subtopic
+          }
+
+          courses {
+            course
+            units {
+              learningObjective
+              understanding
+            }
+          }
+
+          cognitiveLevel
+        }
+      }
+      totalCount
+    }
+  }
+`
