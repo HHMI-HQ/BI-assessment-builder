@@ -227,45 +227,6 @@ class Question extends BaseModel {
     }
   }
 
-  static async filterQuestions(params = {}, options = {}) {
-    try {
-      const query = Question.query(options.trx)
-        .leftJoin(
-          'question_versions',
-          'questions.id',
-          'question_versions.question_id',
-        )
-        .select('questions.*')
-        .distinct('questions.id')
-        .where({
-          published: true,
-        })
-
-      if (params.filters.topic) {
-        query.whereJsonSupersetOf('topics', [{ topic: params.filters.topic }])
-      }
-
-      if (params.filters.subtopic) {
-        query.whereJsonSupersetOf('topics', [
-          { subtopic: params.filters.subtopic },
-        ])
-      }
-
-      if (params && params.filters && params.filters.cognitiveLevel) {
-        query.whereIn('cognitive_level', params.filters.cognitiveLevel)
-      }
-
-      if (params && params.filters && params.filters.questionType) {
-        query.whereIn('questionType', params.filters.questionType)
-      }
-
-      return applyListQueryOptions(query, options)
-    } catch (e) {
-      console.error('Question model: filter failed', e)
-      throw new Error(e)
-    }
-  }
-
   // eg. find all questions this user is an author of
   static async findByRole(userId, role, options = {}) {
     const query = Question.query(options.trx)
