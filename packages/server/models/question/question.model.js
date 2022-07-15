@@ -229,7 +229,6 @@ class Question extends BaseModel {
 
   static async filterQuestions(params = {}, options = {}) {
     try {
-      // const cognitiveLevelFilter =
       const query = Question.query(options.trx)
         .leftJoin(
           'question_versions',
@@ -240,9 +239,25 @@ class Question extends BaseModel {
         .distinct('questions.id')
         .where({
           published: true,
-          // cognitiveLevel: 'higher-understand',
         })
-        .whereIn('cognitiveLevel', [])
+
+      if (params.filters.topic) {
+        query.whereJsonSupersetOf('topics', [{ topic: params.filters.topic }])
+      }
+
+      if (params.filters.subtopic) {
+        query.whereJsonSupersetOf('topics', [
+          { subtopic: params.filters.subtopic },
+        ])
+      }
+
+      if (params && params.filters && params.filters.cognitiveLevel) {
+        query.whereIn('cognitive_level', params.filters.cognitiveLevel)
+      }
+
+      if (params && params.filters && params.filters.questionType) {
+        query.whereIn('questionType', params.filters.questionType)
+      }
 
       return applyListQueryOptions(query, options)
     } catch (e) {
