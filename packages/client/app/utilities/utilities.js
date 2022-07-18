@@ -316,7 +316,7 @@ const profileOptions = {
       value: '2-year-college',
     },
     {
-      label: '2-year college',
+      label: '4-year college',
       value: '4-year-college',
     },
     {
