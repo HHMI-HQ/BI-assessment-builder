@@ -23,49 +23,6 @@ const sidebarText = 'Find questions by aplying one or more of the filters below'
 
 const PAGE_SIZE = 10
 
-// const dummyData = [
-//   {
-//     id: '1',
-//     content: {
-//       type: 'doc',
-//       content: [
-//         {
-//           type: 'paragraph',
-//           content: [
-//             {
-//               type: 'text',
-//               text: 'Inventore et esse. Fugiat magnam et dolorum. Qui ipsam iure sit officia dolor animi et molestias doloremque. Minus quia quidem qui. Dolor sequi qui fugit aut maxime rem. Qui inventore consequatur odit saepe. Distinctio et quo corporis eum voluptatem. Voluptatem aut odit neque architecto eveniet voluptas modi.',
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//     metadata: [
-//       { label: 'topic', value: 'Evolution, Ecology' },
-//       { label: 'subtopic', value: 'Phylogeny, Communities' },
-//       { label: 'question type', value: 'Matching' },
-//       { label: "bloom's level", value: 'Understand (higher-order)' },
-//       { label: 'published date', value: '25 June 2022' },
-//     ],
-//     courses: [
-//       {
-//         course: { label: 'AP Environmental Science' },
-//         objectives: [
-//           {
-//             label:
-//               'EIN-1.C Explain how human populations experience growth and decline.',
-//             value: 'EIN-1.C',
-//             unit: 'populations',
-//             topic: 'humanPopulationDynamics',
-//           },
-//         ],
-//         label: 'Learning Objectives',
-//       },
-//     ],
-//     href: 'question/03cebc04-7e91-4a3b-946b-403ad2f4208e',
-//   },
-// ]
-
 const transform = questions => {
   if (!questions) return null
 
@@ -103,13 +60,32 @@ const transform = questions => {
       }
     })
 
-    const firstTopic = latestVersion.topics[0]
+    const topics = latestVersion.topics
+      .map(topic => {
+        const topicObject = metadata.topics.find(t => t.value === topic?.topic)
 
-    const topicValues = metadata.topics.find(t => t.value === firstTopic?.topic)
+        const subtopicObject = topicObject?.subtopics.find(
+          s => s.value === topic.subtopic,
+        )
 
-    const subtopic = topicValues?.subtopics.find(
-      s => s.value === firstTopic.subtopic,
-    ).label
+        return {
+          topic: topicObject.label,
+          subtopic: subtopicObject.label,
+        }
+      })
+      .reduce(
+        (accumulator, topic, index, array) => {
+          return {
+            topics: `${accumulator.topics}${topic.topic}${
+              index < array.length - 1 ? ', ' : ''
+            }`,
+            subtopics: `${accumulator.subtopics}${topic.subtopic}${
+              index < array.length - 1 ? ', ' : ''
+            }`,
+          }
+        },
+        { topics: '', subtopics: '' },
+      )
 
     const cognitiveValues = metadata.blooms.cognitive
 
@@ -130,8 +106,8 @@ const transform = questions => {
 
     return {
       metadata: [
-        { label: 'topic', value: topicValues?.label },
-        { label: 'subtopic', value: subtopic },
+        { label: 'topic', value: topics.topics },
+        { label: 'subtopic', value: topics.subtopics },
         // question type: how do we know that data ?? what if it's more than one?
         { label: "bloom's level", value: cognitiveDisplayValue },
         { label: 'published date', value: publicationDate },
