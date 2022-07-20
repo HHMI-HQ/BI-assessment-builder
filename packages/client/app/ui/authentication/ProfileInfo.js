@@ -483,6 +483,12 @@ const ProfileInfo = props => {
               <Form.Item
                 label="Have you had training in writing/reviewing assessment items?"
                 name="assessmentTraining"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select an option',
+                  },
+                ]}
               >
                 <Radio name="assessmentTraining" options={yesOrNoOptions} />
               </Form.Item>
@@ -492,6 +498,12 @@ const ProfileInfo = props => {
               <Form.Item
                 label="Have you had training on assessing items for inclusive language?"
                 name="assessmentTrainingInclusive"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select an option',
+                  },
+                ]}
               >
                 <Radio
                   name="assessmentTrainingInclusive"
