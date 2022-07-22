@@ -35,7 +35,7 @@ export const Discover = props => {
     query: '',
     page: 1,
     filters: {},
-    sortBy: 'date',
+    orderBy: 'date-desc',
   })
 
   const setSearchPage = page => {
@@ -52,15 +52,15 @@ export const Discover = props => {
       filters,
       page: 1,
       query: '',
-      sortBy: searchParams.sortBy,
+      orderBy: searchParams.orderBy,
     })
   }
 
-  const setSortOption = sortBy => {
+  const setSortOption = orderBy => {
     sortOptions.filter(opt => opt.isDefault)[0].isDefault = false
-    sortOptions.filter(opt => opt.value === sortBy)[0].isDefault = true
+    sortOptions.filter(opt => opt.value === orderBy)[0].isDefault = true
 
-    setSearchParams({ ...searchParams, sortBy, page: 1 })
+    setSearchParams({ ...searchParams, orderBy, page: 1 })
   }
 
   useEffect(() => {

@@ -89,7 +89,7 @@ class Question extends BaseModel {
           'question_versions.question_id',
         )
         .select('questions.*')
-        .distinct('questions.id')
+        // .distinct('questions.id') can't orderBy, unless i also add publication_date
         .where({
           published: true,
         })

@@ -8,14 +8,14 @@ import { GET_PUBLISHED_QUESTIONS } from '../graphql'
 
 const sortOptions = [
   {
-    label: 'Date (ascending)',
-    value: 'date-asc',
+    label: 'Date (descending)',
+    value: 'date-desc',
     isDefault: true,
   },
   {
-    label: 'Date (descending)',
-    value: 'date-des',
-    isDefault: true,
+    label: 'Date (ascending)',
+    value: 'date-asc',
+    isDefault: false,
   },
 ]
 
@@ -133,7 +133,8 @@ const DiscoverPage = () => {
     query: '',
     page: 1,
     filters: {},
-    sortBy: 'date-des',
+    orderBy: 'publication_date',
+    ascending: false,
   })
 
   const { data: questionsData, loading } = useQuery(GET_PUBLISHED_QUESTIONS, {
@@ -143,6 +144,8 @@ const DiscoverPage = () => {
         search: searchParams.query,
       },
       options: {
+        orderBy: searchParams.orderBy,
+        ascending: searchParams.ascending,
         page: searchParams.page - 1,
         pageSize: PAGE_SIZE,
       },
@@ -150,7 +153,19 @@ const DiscoverPage = () => {
   })
 
   const handleSearch = params => {
-    setSearchParams(params)
+    if (params.orderBy === 'date-desc') {
+      setSearchParams({
+        ...params,
+        orderBy: 'publication_date',
+        ascending: false,
+      })
+    } else if (params.orderBy === 'date-asc') {
+      setSearchParams({
+        ...params,
+        orderBy: 'publication_date',
+        ascending: true,
+      })
+    }
   }
 
   return (

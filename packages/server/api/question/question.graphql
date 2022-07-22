@@ -130,15 +130,20 @@ input FilterQuestionsParams {
   search: String
 }
 
+input QuestionPageInput {
+  orderBy: String
+  ascending: Boolean
+  pageSize: Int!
+  page: Int!
+}
+
 # QUERIES & MUTATIONS
 
 extend type Query {
   question(id: ID!): Question!
   getPublishedQuestions(
-    # orderBy: String
-    # ascending: Boolean
     params: FilterQuestionsParams
-    options: PageInput
+    options: QuestionPageInput
   ): QuestionsResponse!
 
   getAuthorDashboard(

@@ -40,12 +40,13 @@ const getQuestionVersions = async (questionId, options = {}) => {
 
 const getPublishedQuestions = async (params = {}, options = {}) => {
   try {
-    const { orderBy, page, pageSize, trx } = options
+    const { orderBy, ascending, page, pageSize, trx } = options
 
     return useTransaction(
       async tr => {
         return Question.filterPublishedQuestions(params, {
           orderBy,
+          ascending,
           page,
           pageSize,
           trx: tr,

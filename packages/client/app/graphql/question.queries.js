@@ -265,10 +265,8 @@ export const PUBLISH_QUESTION_VERSION = gql`
 
 export const GET_PUBLISHED_QUESTIONS = gql`
   query GetPublishedQuestions(
-    # $orderBy: String
-    # $ascending: Boolean
     $params: FilterQuestionsParams
-    $options: PageInput
+    $options: QuestionPageInput
   ) {
     getPublishedQuestions(params: $params, options: $options) {
       result {
