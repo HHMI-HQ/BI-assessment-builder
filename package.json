@@ -25,5 +25,10 @@
   "dependencies": {},
   "devDependencies": {
     "@coko/lint": "^2.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && lint-staged"
+    }
   }
 }
