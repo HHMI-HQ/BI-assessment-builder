@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Discover } from 'ui'
+import { Discover, DateParser } from 'ui'
 import { useQuery } from '@apollo/client'
 
 import { metadataForQuestionPage as metadata } from '../utilities'
@@ -110,7 +110,14 @@ const transform = questions => {
         { label: 'subtopic', value: topics.subtopics },
         // question type: how do we know that data ?? what if it's more than one?
         { label: "bloom's level", value: cognitiveDisplayValue },
-        { label: 'published date', value: publicationDate },
+        {
+          label: 'published date',
+          value: (
+            <DateParser dateFormat="MMMM DD, YYYY" timestamp={publicationDate}>
+              {timestamp => timestamp}
+            </DateParser>
+          ),
+        },
       ],
       content: parsedContent,
       status,
