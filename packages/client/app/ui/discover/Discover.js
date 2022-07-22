@@ -21,6 +21,7 @@ export const Discover = props => {
     questions,
     sidebarText,
     onSearch,
+    pageSize,
     sidebarMetadata,
     totalCount,
     showSort,
@@ -81,7 +82,7 @@ export const Discover = props => {
         onSearch={setSearchQuery}
         onSortOptionChange={setSortOption}
         questions={questions}
-        questionsPerPage={10}
+        questionsPerPage={pageSize}
         showSort={showSort}
         sortOptions={sortOptions}
         totalCount={totalCount}
@@ -97,6 +98,7 @@ Discover.propTypes = {
   loading: PropTypes.bool,
   /** Handle search */
   onSearch: PropTypes.func.isRequired,
+  pageSize: PropTypes.number,
   /** list of search result to render */
   questions: PropTypes.arrayOf(
     PropTypes.shape({
@@ -318,6 +320,7 @@ Discover.propTypes = {
 
 Discover.defaultProps = {
   loading: false,
+  pageSize: 10,
   questions: [],
   sidebarText: '',
   totalCount: 0,

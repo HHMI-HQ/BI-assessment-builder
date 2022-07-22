@@ -157,6 +157,7 @@ const DiscoverPage = () => {
     <Discover
       loading={loading}
       onSearch={handleSearch}
+      pageSize={PAGE_SIZE}
       questions={
         questionsData && transform(questionsData.getPublishedQuestions.result)
       }
