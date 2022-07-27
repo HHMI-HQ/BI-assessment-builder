@@ -2,12 +2,12 @@ import React from 'react'
 // import { Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 // import styled from 'styled-components'
-
+import { Link } from 'react-router-dom'
 import AuthenticationForm from './AuthenticationForm'
 import AuthenticationHeader from './AuthenticationHeader'
 import AuthenticationWrapper from './AuthenticationWrapper'
 import SuccessSubTitle from './SuccessSubTitle'
-import { Button, Form, Input, Paragraph, Result, Page } from '../common'
+import { Form, Input, Paragraph, Result, Page } from '../common'
 
 const RequestPasswordResetForm = props => {
   // disable prop types that will be checked in the exported component anyway
@@ -54,9 +54,9 @@ const RequestPasswordReset = props => {
         {hasSuccess && (
           <Result
             extra={[
-              <Button key={1} type="link">
+              <Link href="/login" key={1}>
                 Return to the login form
-              </Button>,
+              </Link>,
             ]}
             status="success"
             subTitle={<SuccessSubTitle userEmail={userEmail} />}
