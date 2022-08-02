@@ -4,6 +4,7 @@ import {
   Route,
   Switch,
   Redirect,
+  Link,
   useLocation,
   useHistory,
 } from 'react-router-dom'
@@ -32,6 +33,7 @@ import {
   Dashboard,
   Question,
   ManageUsers,
+  TeamManager,
 } from './pages'
 
 import { CURRENT_USER } from './graphql'
@@ -61,10 +63,14 @@ const HeaderFooter = styled.div`
     display: flex;
 
     /* stylelint-disable-next-line */
-    > div:first-child {
+    > div:not(:last-child) {
       margin-right: ${grid(4)};
     }
   }
+`
+
+const StyledLink = styled(Link)`
+  color: ${th('colorTextReverse')};
 `
 
 const StyledPage = styled(Page)`
@@ -96,8 +102,16 @@ const Header = () => {
 
   return (
     <HeaderFooter>
-      <div>HHMI</div>
       <div>
+        <StyledLink to="/dashboard">HHMI</StyledLink>
+      </div>
+      <div>
+        <div>
+          <StyledLink to="/manage-users">User Manager</StyledLink>
+        </div>
+        <div>
+          <StyledLink to="/manage-teams">Team Manager</StyledLink>
+        </div>
         <div>{currentUser?.displayName}</div>
         <div>{currentUser && <LogoutButton />}</div>
       </div>
@@ -182,6 +196,16 @@ const routes = (
           render={() => (
             <Authenticated>
               <ManageUsers />
+            </Authenticated>
+          )}
+        />
+
+        <Route
+          exact
+          path="/manage-teams"
+          render={() => (
+            <Authenticated>
+              <TeamManager />
             </Authenticated>
           )}
         />

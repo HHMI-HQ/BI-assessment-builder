@@ -72,6 +72,10 @@ const TeamManagerBlock = props => {
     })
   }
 
+  const handleSearch = searchValue => {
+    onSearch(teamId, searchValue)
+  }
+
   return (
     <Wrapper className={className}>
       <H4>{displayName}</H4>
@@ -83,7 +87,7 @@ const TeamManagerBlock = props => {
           loading={searchLoading}
           mode="multiple"
           onChange={handleSelectChange}
-          onSearch={onSearch}
+          onSearch={handleSearch}
           options={searchOptions}
           placeholder="Search for a user"
           value={selectData}

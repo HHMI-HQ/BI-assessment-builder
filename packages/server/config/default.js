@@ -65,10 +65,6 @@ module.exports = {
         displayName: 'Editor',
         role: 'editor',
       },
-      author: {
-        displayName: 'Author',
-        role: 'author',
-      },
       reviewer: {
         displayName: 'Reviewer',
         role: 'reviewer',

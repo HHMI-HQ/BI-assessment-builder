@@ -16,9 +16,12 @@ class Team extends TeamModel {
             .leftJoin('teams', 'team_members.team_id', 'teams.id')
             .where({ teamId })
         })
-        .where('users.givenNames', 'ilike', `%${query}%`)
-        .orWhere('users.surname', 'ilike', `%${query}%`)
-        .orWhere('users.displayName', 'ilike', `%${query}%`)
+        .where(builder => {
+          return builder
+            .where('users.givenNames', 'ilike', `%${query}%`)
+            .orWhere('users.surname', 'ilike', `%${query}%`)
+            .orWhere('users.displayName', 'ilike', `%${query}%`)
+        })
     } catch (e) {
       throw new Error(e)
     }
