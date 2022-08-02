@@ -41,7 +41,7 @@ const TeamManagerList = props => {
     <Wrapper className={className}>
       <Layout>
         <Layout.Header>
-          <TeamManagerListHeader>Manage teams</TeamManagerListHeader>
+          <TeamManagerListHeader>Team Manager</TeamManagerListHeader>
         </Layout.Header>
 
         <Layout.Content>

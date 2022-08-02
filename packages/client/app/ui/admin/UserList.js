@@ -128,7 +128,7 @@ const UserList = props => {
   return (
     <Wrapper className={className}>
       <StyledSection>
-        <PageHeader>Manage Users</PageHeader>
+        <PageHeader>User Manager</PageHeader>
         <Table
           columns={columns}
           dataSource={dataSource}

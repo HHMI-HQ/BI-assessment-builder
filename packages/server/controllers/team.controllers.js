@@ -1,8 +1,12 @@
-const { useTransaction } = require('@coko/server')
+const { logger, useTransaction } = require('@coko/server')
 
 const { Team } = require('../models')
 
 const getNonTeamMemberUsers = async (teamId, searchValue) => {
+  logger.info(
+    `Team controllers: getNonTeamMemberUsers: searching for non team member users for team id ${teamId}`,
+  )
+
   return Team.searchForNonTeamMemberUsers(teamId, searchValue)
 }
 
