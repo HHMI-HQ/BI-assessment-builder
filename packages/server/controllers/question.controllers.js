@@ -62,31 +62,33 @@ const getPublishedQuestions = (options = {}) => {
 // }
 
 const getAuthorDashboard = (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, trx } = options
+  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
 
   return Question.findByRole(userId, 'author', {
     orderBy,
     ascending,
     page,
     pageSize,
+    searchQuery,
     trx,
   })
 }
 
 const getReviewerDashboard = (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, trx } = options
+  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
 
   return Question.findByRole(userId, 'reviewer', {
     orderBy,
     ascending,
     page,
     pageSize,
+    searchQuery,
     trx,
   })
 }
 
 const getManagingEditorDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, trx } = options
+  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
 
   // managing editor gets all questions apart from the ones they authored themselves
   return Question.findByExcludingRole(userId, 'author', {
@@ -94,6 +96,7 @@ const getManagingEditorDashboard = async (userId, options = {}) => {
     ascending,
     page,
     pageSize,
+    searchQuery,
     submittedOnly: true,
     trx,
   })

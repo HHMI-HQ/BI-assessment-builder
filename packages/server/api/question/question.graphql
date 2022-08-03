@@ -113,6 +113,7 @@ extend type Query {
     ascending: Boolean
     page: Int
     pageSize: Int
+    searchQuery: String
   ): QuestionsResponse!
 
   getReviewerDashboard(
@@ -120,6 +121,7 @@ extend type Query {
     ascending: Boolean
     page: Int
     pageSize: Int
+    searchQuery: String
   ): QuestionsResponse!
 
   getManagingEditorDashboard(
@@ -127,6 +129,7 @@ extend type Query {
     ascending: Boolean
     page: Int
     pageSize: Int
+    searchQuery: String
   ): QuestionsResponse!
 }
 

@@ -30,10 +30,10 @@ exports.up = knex => {
       table.jsonb('keywords')
       table.jsonb('biointeractiveResources')
 
-      table.string('cognitiveLevel').nullable()
-      table.string('affectiveLevel').nullable()
-      table.string('psychomotorLevel').nullable()
-      table.string('readingLevel').nullable()
+      table.text('cognitiveLevel').nullable()
+      table.text('affectiveLevel').nullable()
+      table.text('psychomotorLevel').nullable()
+      table.text('readingLevel').nullable()
 
       table.text('type')
     })
