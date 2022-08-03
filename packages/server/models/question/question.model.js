@@ -103,6 +103,16 @@ class Question extends BaseModel {
       .leftJoin('team_members', 'team_members.team_id', 'teams.id')
       .where({ role, userId })
 
+    if (options.searchQuery) {
+      query
+        .leftJoin(
+          'question_versions',
+          'question_versions.question_id',
+          'questions.id',
+        )
+        .where('content_text', 'ilike', `%${options.searchQuery}%`)
+    }
+
     return applyListQueryOptions(query, options)
   }
 
@@ -110,7 +120,7 @@ class Question extends BaseModel {
   static async findByExcludingRole(userId, role, options = {}) {
     const { submittedOnly } = options
 
-    let queryToRun = Question.query(options.trx).whereNotIn('id', builder => {
+    let query = Question.query(options.trx).whereNotIn('id', builder => {
       return builder
         .select('questions.id')
         .from('questions')
@@ -122,8 +132,18 @@ class Question extends BaseModel {
         })
     })
 
+    if (options.searchQuery) {
+      query
+        .leftJoin(
+          'question_versions',
+          'question_versions.question_id',
+          'questions.id',
+        )
+        .where('content_text', 'ilike', `%${options.searchQuery}%`)
+    }
+
     if (submittedOnly)
-      queryToRun = queryToRun.whereIn('id', builder => {
+      query = query.whereIn('id', builder => {
         return builder
           .select('questions.id')
           .from('questions')
@@ -137,7 +157,7 @@ class Question extends BaseModel {
           })
       })
 
-    return applyListQueryOptions(queryToRun, options)
+    return applyListQueryOptions(query, options)
   }
 }
 

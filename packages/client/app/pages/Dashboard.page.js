@@ -110,7 +110,8 @@ const DashboardPage = () => {
 
   const initialTabKey = localStorage.getItem('dashboardLastUsedTab') || 'author'
   const [currentTabKey, setCurrentTabKey] = useState(initialTabKey)
-  const [currentPage, setCurrenPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [currentSearchQuery, setCurrentSearchQuery] = useState(null)
 
   const { data: currentUserResponse } = useQuery(CURRENT_USER)
 
@@ -151,17 +152,22 @@ const DashboardPage = () => {
   }
 
   useEffect(() => {
-    queryMapper.query[currentTabKey]({
+    runQuery(currentSearchQuery)
+  }, [currentTabKey, currentPage])
+
+  const runQuery = query => {
+    const queryVariables = {
       variables: {
         ...defaultSearchOptions,
         page: currentPage - 1,
+        searchQuery: query,
       },
-    })
-  }, [currentTabKey, currentPage])
+    }
 
-  const [createQuestionMutation] = useMutation(CREATE_QUESTION, {
-    // refetchQueries: [{ query: GET_AUTHOR_DASHBOARD }],
-  })
+    queryMapper.query[currentTabKey](queryVariables)
+  }
+
+  const [createQuestionMutation] = useMutation(CREATE_QUESTION)
   // #endregion hooks
 
   // #region handlers
@@ -175,13 +181,14 @@ const DashboardPage = () => {
   }
 
   const handleSearch = options => {
-    const { page, role } = options
-    localStorage.setItem('dashboardLastUsedTab', role)
+    const { page, role, query } = options
 
     setCurrentTabKey(role)
-    setCurrenPage(page)
+    setCurrentPage(page)
+    setCurrentSearchQuery(query)
 
-    // fetchMoreAuthor({ variables: { page: page - 1 } })
+    localStorage.setItem('dashboardLastUsedTab', role)
+    runQuery(query)
   }
   // #endregion handlers
 

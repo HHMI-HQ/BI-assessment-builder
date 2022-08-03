@@ -7,12 +7,14 @@ export const GET_AUTHOR_DASHBOARD = gql`
     $ascending: Boolean
     $page: Int
     $pageSize: Int
+    $searchQuery: String
   ) {
     getAuthorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
+      searchQuery: $searchQuery
     ) {
       result {
         id
@@ -59,12 +61,14 @@ export const GET_EDITOR_DASHBOARD = gql`
     $ascending: Boolean
     $page: Int
     $pageSize: Int
+    $searchQuery: String
   ) {
     getManagingEditorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
+      searchQuery: $searchQuery
     ) {
       result {
         id

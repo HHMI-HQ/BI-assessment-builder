@@ -11,6 +11,25 @@ const {
   },
 } = require('@coko/server')
 
+const extractDocumentText = data => {
+  let allContent = ''
+
+  const extract = obj => {
+    const { content } = obj
+    if (!Array.isArray(content)) return
+
+    content.forEach(item => {
+      const { text, content: itemContent } = item
+
+      if (text) allContent += `${text} `
+      if (itemContent) extract(item)
+    })
+  }
+
+  extract(data)
+  return allContent
+}
+
 class QuestionVersion extends BaseModel {
   static get tableName() {
     return 'questionVersions'
@@ -40,8 +59,12 @@ class QuestionVersion extends BaseModel {
   $parseJson(json, opt) {
     const data = super.$parseJson(json, opt)
 
+    // transform stringified wax content to json before storing in the db
     if (data.content && typeof data.content === 'string') {
       data.content = JSON.parse(data.content)
+
+      // store pure text of the question separately (for use in searching)
+      data.contentText = extractDocumentText(data.content)
     }
 
     return data
@@ -51,7 +74,9 @@ class QuestionVersion extends BaseModel {
     return {
       properties: {
         questionId: id,
+
         content: objectNullable,
+        contentText: stringNullable,
 
         submitted: boolean,
         underReview: boolean,
