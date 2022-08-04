@@ -202,6 +202,10 @@ class Question extends BaseModel {
         query.whereIn('questionType', params.filters.questionType)
       }
 
+      if (params && params.searchQuery) {
+        query.where('content_text', 'ilike', `%${params.searchQuery}%`)
+      }
+
       return applyListQueryOptions(query, options)
     } catch (e) {
       console.error('Question model: filter failed', e)

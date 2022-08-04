@@ -127,7 +127,7 @@ input SidebarFilters {
 
 input FilterQuestionsParams {
   filters: SidebarFilters
-  search: String
+  searchQuery: String
 }
 
 input QuestionPageInput {
