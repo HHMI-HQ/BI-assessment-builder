@@ -141,7 +141,7 @@ const DiscoverPage = () => {
     variables: {
       params: {
         filters: searchParams.filters,
-        search: searchParams.query,
+        searchQuery: searchParams.query,
       },
       options: {
         orderBy: searchParams.orderBy,
