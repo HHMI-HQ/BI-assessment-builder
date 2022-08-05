@@ -11,25 +11,51 @@ import {
 } from '../../app/utilities'
 
 const initialValues = {
-  topic: 'genetics',
-  subtopic: 'patternsOfInheritance',
-  framework: 'apEnvironmentalScience',
-  supplementaryTopics: [
+  topics: [
     {
       topic: 'genetics',
-      subtopic: 'bioinformatics',
-      unit: 'theLivingWorldEcosystems',
-      courseTopic: 'thePhosphorusCycle',
-      learningObjective: 'ERT-1.F',
-      essentialKnowledge: 'ERT-1.F.2',
+      subtopic: 'patternsOfInheritance',
+    },
+    {
+      topic: 'cellBiology',
+      subtopic: 'cellStructureFunction',
     },
   ],
-  biointeractiveResources: ['hIVReverseTranscriptionAndAZT'],
+  courses: [
+    {
+      course: 'apEnvironmentalScience',
+      units: [
+        {
+          unit: 'populations',
+          courseTopic: 'generalistAndSpecialistSpecies',
+          learningObjective: 'ERT-3.A',
+          essentialKnowledge: 'ERT-3.A.1',
+        },
+        {
+          unit: 'theLivingWorldEcosystems',
+          courseTopic: 'terrestrialBiomes',
+          learningObjective: 'ERT-1.B',
+          essentialKnowledge: 'ERT-1.B.2',
+        },
+      ],
+    },
+    {
+      course: 'biEnvironmentalScience',
+      units: [
+        {
+          unit: 'ecosystemsAndEcology',
+          courseTopic: 'communitiesAndEcosystems',
+          application: 'IBES-A2.2.3',
+          understanding: 'IBES-U2.2.4',
+        },
+      ],
+    },
+  ],
+  biointeractiveResources: [
+    'biochemistryAndCellSignalingPathwayOfTheMc1rGene',
+    'cysticFibrosisMechanismAndTreatment',
+  ],
   cognitiveLevel: 'higher-understand',
-  unit: 'theLivingWorldBiodiversity',
-  courseTopic: 'ecosystemServices',
-  learningObjective: 'ERT-2.B',
-  essentialKnowledge: 'ERT-2.B.1',
 }
 
 export const Author = () => {
@@ -98,7 +124,7 @@ export const Author = () => {
     <Metadata
       metadata={flatMetadata}
       // readOnly
-      onFormFinish={console.log('on form finish')}
+      onFormFinish={() => console.log('on form finish')}
       resources={resources}
     />
   )
@@ -170,7 +196,6 @@ export const Editor = args => {
     setReady(true)
   }, [])
 
-  console.log(flatMetadata)
   return (
     <>
       <Checkbox onChange={() => setEditable(!editable)}>Editable</Checkbox>
@@ -180,8 +205,9 @@ export const Editor = args => {
           editorView
           initialValues={initialValues}
           metadata={flatMetadata}
-          onFormFinish={console.log('on form finish')}
+          onFormFinish={() => console.log('on form finish')}
           readOnly={!editable}
+          resources={resources}
         />
       )}
     </>

@@ -36,31 +36,20 @@ const IBCourseMetadata = props => {
     ? [index, applicationKey]
     : applicationKey
 
+  const applicationField = [supplementaryKey, index, applicationKey]
+
   const skillName = supplementaryKey ? [index, skillKey] : skillKey
+
+  const skillField = [supplementaryKey, index, skillKey]
 
   const understandingName = supplementaryKey
     ? [index, understandingKey]
     : understandingKey
 
-  useEffect(() => {
-    if (supplementaryKey) {
-      // if (getFieldValue(topicField) || getFieldValue([index, applicationKey]))
-      const cloned = [...getFieldValue(supplementaryKey)]
-      // console.log(cloned)
-      cloned[index] = {
-        ...cloned[index],
-        [unitKey]: null,
-        [topicKey]: null,
-        [applicationKey]: null,
-        [skillKey]: null,
-        [understandingKey]: null,
-      }
+  const understandingField = [supplementaryKey, index, understandingKey]
 
-      // Throws "Maximum update depth exceeded" error!
-      // setFieldsValue({
-      //   [supplementaryKey]: cloned,
-      // })
-    } else {
+  useEffect(() => {
+    if (!supplementaryKey) {
       setFieldsValue({
         [unitKey]: null,
         [topicKey]: null,
@@ -73,19 +62,21 @@ const IBCourseMetadata = props => {
 
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      if (getFieldValue(topicField)) {
+        const cloned = [...getFieldValue(supplementaryKey)]
 
-      cloned[index] = {
-        ...cloned[index],
-        [topicKey]: null,
-        [applicationKey]: null,
-        [skillKey]: null,
-        [understandingKey]: null,
+        cloned[index] = {
+          ...cloned[index],
+          [topicKey]: null,
+          [applicationKey]: null,
+          [skillKey]: null,
+          [understandingKey]: null,
+        }
+
+        setFieldsValue({
+          [supplementaryKey]: cloned,
+        })
       }
-
-      setFieldsValue({
-        [supplementaryKey]: cloned,
-      })
     } else {
       setFieldsValue({
         [topicKey]: null,
@@ -98,18 +89,24 @@ const IBCourseMetadata = props => {
 
   const handleFrameworkTopicChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      if (
+        getFieldValue(applicationField) ||
+        getFieldValue(skillField) ||
+        getFieldValue(understandingField)
+      ) {
+        const cloned = [...getFieldValue(supplementaryKey)]
 
-      cloned[index] = {
-        ...cloned[index],
-        [applicationKey]: null,
-        [skillKey]: null,
-        [understandingKey]: null,
+        cloned[index] = {
+          ...cloned[index],
+          [applicationKey]: null,
+          [skillKey]: null,
+          [understandingKey]: null,
+        }
+
+        setFieldsValue({
+          [supplementaryKey]: cloned,
+        })
       }
-
-      setFieldsValue({
-        [supplementaryKey]: cloned,
-      })
     } else {
       setFieldsValue({
         [applicationKey]: null,

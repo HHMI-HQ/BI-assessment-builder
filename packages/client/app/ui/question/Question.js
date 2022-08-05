@@ -546,8 +546,36 @@ Question.propTypes = {
       subtopics: PropTypes.arrayOf(PropTypes.string),
     }),
   ),
-  // TO DO - provide valid shape
-  initialMetadataValues: PropTypes.shape(),
+  initialMetadataValues: PropTypes.shape({
+    topics: PropTypes.arrayOf(
+      PropTypes.shape({
+        topic: PropTypes.string,
+        subtopic: PropTypes.string,
+      }),
+    ),
+    courses: PropTypes.arrayOf(
+      PropTypes.shape({
+        course: PropTypes.string,
+        units: PropTypes.arrayOf(
+          PropTypes.shape({
+            unit: PropTypes.string,
+            courseTopic: PropTypes.string,
+            learningObjective: PropTypes.string,
+            essentialKnowledge: PropTypes.string,
+            application: PropTypes.string,
+            skill: PropTypes.string,
+            understanding: PropTypes.string,
+          }),
+        ),
+      }),
+    ),
+    keywords: PropTypes.arrayOf(PropTypes.string),
+    biointeractiveResources: PropTypes.arrayOf(PropTypes.string),
+    cognitiveLevel: PropTypes.string,
+    affectiveLevel: PropTypes.string,
+    psychomotorLevel: PropTypes.string,
+    readingLevel: PropTypes.string,
+  }),
   underReview: PropTypes.bool,
 }
 
