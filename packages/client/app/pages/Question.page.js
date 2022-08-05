@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/client'
 import debounce from 'lodash/debounce'
@@ -21,81 +21,67 @@ import { metadataForQuestionPage, hasRole, hasGlobalRole } from '../utilities'
 const AUTOSAVE_DELAY = 500
 
 // #region transformations
-const metadataApiToUi = v => {
-  if (!v) return {}
+const metadataApiToUi = values => {
+  const courseData = [...values.courses]
 
-  const [firstTopic, ...otherTopics] = v.topics
-  const [firstCourse /* ..otherCourses */] = v.courses
+  const transformedCoursesData = []
 
-  const course = firstCourse?.course
-  const units = firstCourse?.units
+  courseData.forEach(({ course, units }) => {
+    if (units.length > 1) {
+      units.forEach(unit => {
+        transformedCoursesData.push({
+          course,
+          ...unit,
+        })
+      })
+    } else {
+      transformedCoursesData.push({
+        course,
+        ...units[0],
+      })
+    }
+  })
 
-  const firstUnit = units && units[0]
-  const otherUnits = units && units.slice(1)
-
-  const values = {
-    ...firstTopic,
-    supplementaryTopics: otherTopics,
-
-    framework: course,
-    ...firstUnit,
-    supplementaryFields: otherUnits,
-
-    keywords: v.keywords,
-    biointeractiveResources: v.biointeractiveResources,
-
-    cognitiveLevel: v.cognitiveLevel,
-    affectiveLevel: v.affectiveLevel,
-    psychomotorLevel: v.psychomotorLevel,
-    readingLevel: v.readingLevel,
+  return {
+    ...values,
+    courses: transformedCoursesData,
   }
-
-  return values
 }
 
 const metadataUiToApi = values => {
+  // filter empty topics
   const topicFields = t => {
     if (!t.topic) return null
-
-    return {
-      topic: t.topic,
-      subtopic: t.subtopic || null,
-    }
+    return t
   }
 
-  const topics = [
-    values.topic && {
-      topic: values.topic,
-      subtopic: values.subtopic || null,
-    },
-    ...(values.supplementaryTopics || [])
-      .map(t => topicFields(t))
-      .filter(Boolean),
-  ].filter(Boolean)
+  const topics = values.topics.map(t => topicFields(t)).filter(Boolean)
 
+  // transform courses structure
+  const transformedCoursesData = []
+
+  values.courses.forEach(({ course, ...units }) => {
+    const prevIndex = transformedCoursesData.findIndex(c => c.course === course)
+
+    if (prevIndex < 0) {
+      transformedCoursesData.push({
+        course,
+        units: [units],
+      })
+    } else {
+      transformedCoursesData[prevIndex].units.push(units)
+    }
+  })
+
+  // filter empty courses
   const coursesFields = course => {
-    if (!course) return null
-
-    return {
-      unit: course.unit,
-      courseTopic: course.courseTopic,
-      learningObjective: course.learningObjective || null,
-      essentialKnowledge: course.essentialKnowledge || null,
-      application: course.application || null,
-      skill: course.skill || null,
-      understanding: course.understanding || null,
-    }
+    if (!course.course) return null
+    return course
   }
 
-  const courses = [
-    values.framework && {
-      course: values.framework,
-      units: [
-        coursesFields(values),
-        ...(values.supplementaryFields || []).map(f => coursesFields(f)),
-      ],
-    },
-  ].filter(Boolean)
+  const courses = transformedCoursesData
+    .map(course => coursesFields(course))
+    .filter(Boolean)
 
   const metadataToSave = {
     topics,
@@ -117,7 +103,7 @@ const QuestionPage = () => {
   const { id } = useParams()
   const history = useHistory()
 
-  const [initialMetadata, setInitialMetadata] = React.useState({})
+  const [initialMetadata, setInitialMetadata] = useState({})
 
   const { data, loading, error } = useQuery(QUESTION, {
     variables: { id },

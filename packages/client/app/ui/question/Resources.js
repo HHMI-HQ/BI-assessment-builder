@@ -16,7 +16,7 @@ const LabelWrapper = styled.div`
 `
 
 const Resources = props => {
-  const { readOnly, resources, selectedTopics } = props
+  const { readOnly, resources, selectedTopics, getFieldValue, name } = props
 
   const [availableResourses, setAvailableResources] = useState([])
   const [selectedResourses, setSelectedResources] = useState([])
@@ -30,6 +30,12 @@ const Resources = props => {
       setAvailableResources(relevantResources)
     } else {
       setAvailableResources(resources)
+    }
+
+    const preselectedResources = getFieldValue('biointeractiveResources')
+
+    if (preselectedResources) {
+      setSelectedResources(preselectedResources)
     }
   }, [selectedTopics])
 
@@ -62,7 +68,7 @@ const Resources = props => {
             </a>
           </LabelWrapper>
         }
-        name="biointeractiveResources"
+        name={name}
       >
         <Select
           // allowClear
@@ -76,17 +82,35 @@ const Resources = props => {
         />
       </StyledFormItem>
       <ul>{renderSelectedResourseLink()}</ul>
+      {/* <ul>
+        {selectedResourses.map(resource => {
+          const resourceObject = resources.find(r => r.value === resource)
+
+          console.log(resourceObject)
+
+          return (
+            <li key={resourceObject.value}>
+              <a href={resourceObject.url} rel="noreferrer" target="_blank">
+                {resourceObject.label}
+              </a>
+            </li>
+          )
+        })}
+      </ul> */}
     </>
   )
 }
 
 Resources.propTypes = {
+  getFieldValue: PropTypes.func.isRequired,
+  name: PropTypes.string,
   readOnly: PropTypes.bool,
   resources: PropTypes.arrayOf(PropTypes.shape()),
   selectedTopics: PropTypes.arrayOf(PropTypes.string),
 }
 
 Resources.defaultProps = {
+  name: 'biointeractiveResources',
   readOnly: false,
   resources: [],
   selectedTopics: [],

@@ -40,9 +40,9 @@ const transform = questions => {
       const isAP = beginning === 'ap'
 
       const objectives = c.units.map(unit => ({
-        label: courseInValues.learningObjectives?.find(
+        label: courseInValues?.learningObjectives?.find(
           lo => lo.value === unit.learningObjective,
-        ).label,
+        )?.label,
       }))
 
       const understandings = c.units.map(unit => ({
@@ -68,7 +68,7 @@ const transform = questions => {
 
     const subtopic = topicValues?.subtopics.find(
       s => s.value === firstTopic.subtopic,
-    ).label
+    )?.label
 
     const cognitiveValues = metadataValues.blooms.cognitive
 

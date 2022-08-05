@@ -44,21 +44,12 @@ const APCourseMetadata = props => {
     ? [index, essentialKnowledgeKey]
     : essentialKnowledgeKey
 
+  const essentialKnowledgeField = supplementaryKey
+    ? [supplementaryKey, index, essentialKnowledgeKey]
+    : essentialKnowledgeKey
+
   useEffect(() => {
-    if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
-      cloned[index] = {
-        ...cloned[index],
-        [unitKey]: null,
-        [topicKey]: null,
-        [learningObjectiveKey]: null,
-        [essentialKnowledgeKey]: null,
-      }
-      // Throws "Maximum update depth exceeded" error!
-      // setFieldsValue({
-      //   [supplementaryKey]: cloned,
-      // })
-    } else {
+    if (!supplementaryKey) {
       setFieldsValue({
         [unitField]: null,
         [topicField]: null,
@@ -66,22 +57,23 @@ const APCourseMetadata = props => {
         [essentialKnowledgeKey]: null,
       })
     }
-  }, [courseData])
+  }, [])
 
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      if (getFieldValue(topicField)) {
+        const cloned = [...getFieldValue(supplementaryKey)]
+        cloned[index] = {
+          ...cloned[index],
+          [topicKey]: null,
+          [learningObjectiveKey]: null,
+          [essentialKnowledgeKey]: null,
+        }
 
-      cloned[index] = {
-        ...cloned[index],
-        [topicKey]: null,
-        [learningObjectiveKey]: null,
-        [essentialKnowledgeKey]: null,
+        setFieldsValue({
+          [supplementaryKey]: cloned,
+        })
       }
-
-      setFieldsValue({
-        [supplementaryKey]: cloned,
-      })
     } else {
       setFieldsValue({
         [topicKey]: null,
@@ -93,17 +85,17 @@ const APCourseMetadata = props => {
 
   const handleFrameworkTopicChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
-
-      cloned[index] = {
-        ...cloned[index],
-        [learningObjectiveKey]: null,
-        [essentialKnowledgeKey]: null,
+      if (getFieldValue(learningObjectiveField)) {
+        const cloned = [...getFieldValue(supplementaryKey)]
+        cloned[index] = {
+          ...cloned[index],
+          [learningObjectiveKey]: null,
+          [essentialKnowledgeKey]: null,
+        }
+        setFieldsValue({
+          [supplementaryKey]: cloned,
+        })
       }
-
-      setFieldsValue({
-        [supplementaryKey]: cloned,
-      })
     } else {
       setFieldsValue({
         [learningObjectiveKey]: null,
@@ -114,16 +106,18 @@ const APCourseMetadata = props => {
 
   const handleFrameworkLearningObjectiveChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      if (getFieldValue(essentialKnowledgeField)) {
+        const cloned = [...getFieldValue(supplementaryKey)]
 
-      cloned[index] = {
-        ...cloned[index],
-        [essentialKnowledgeKey]: null,
+        cloned[index] = {
+          ...cloned[index],
+          [essentialKnowledgeKey]: null,
+        }
+
+        setFieldsValue({
+          [supplementaryKey]: cloned,
+        })
       }
-
-      setFieldsValue({
-        [supplementaryKey]: cloned,
-      })
     } else {
       setFieldsValue({
         [essentialKnowledgeKey]: null,
