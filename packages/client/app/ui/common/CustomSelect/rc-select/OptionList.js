@@ -292,6 +292,7 @@ const OptionList = (_, ref) => {
   return (
     <>
       <div
+        aria-multiselectable={mode === 'multiple'}
         id={`${id}_list`}
         role="listbox"
         style={{ height: 0, width: 0, overflow: 'hidden' }}
