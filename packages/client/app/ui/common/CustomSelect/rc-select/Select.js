@@ -89,7 +89,7 @@ const Select = React.forwardRef((props, ref) => {
     virtual,
     listHeight = 200,
     listItemHeight = 20,
-    preRenderOptionList = false,
+    preRenderOptionList = true,
 
     // Value
     value,
@@ -504,6 +504,9 @@ const Select = React.forwardRef((props, ref) => {
     })
   }
 
+  const hasOptionList = mode !== 'tags' || parsedOptions.options.length > 0
+  const noAvailableOptions = parsedOptions.options.length === 0
+
   // ========================== Context ===========================
   const selectContext = React.useMemo(() => {
     const realVirtual = virtual !== false && dropdownMatchSelectWidth !== false
@@ -520,6 +523,8 @@ const Select = React.forwardRef((props, ref) => {
       listHeight,
       listItemHeight,
       childrenAsData,
+      hasOptionList,
+      noAvailableOptions,
     }
   }, [
     parsedOptions,
@@ -535,6 +540,8 @@ const Select = React.forwardRef((props, ref) => {
     listHeight,
     listItemHeight,
     childrenAsData,
+    hasOptionList,
+    noAvailableOptions,
   ])
 
   // ========================== Warning ===========================
@@ -559,7 +566,6 @@ const Select = React.forwardRef((props, ref) => {
         // >>> Values
         emptyOptions={!displayOptions.length}
         forceRender={preRenderOptionList}
-        hasOptionList={mode !== 'tags' || parsedOptions.options.length > 0}
         // >>> Search
         id={mergedId}
         mode={mode}

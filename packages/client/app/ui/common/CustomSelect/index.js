@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { debounce as lodashDebounceFunc } from 'lodash'
@@ -42,24 +42,6 @@ const Select = props => {
     wrapOptionText,
     ...rest
   } = props
-
-  useEffect(() => {
-    // selectRef.current
-    //   .querySelector(`.ant-select [role="combobox"]`)
-    //   .setAttribute('aria-expanded', false)
-    // selectRef2.current
-    //   .querySelector(`.ant-select [role="combobox"]`)
-    //   .setAttribute('aria-expanded', false)
-    // console.log(selectRef.current)
-    // console.log(selectRef2.current.selectRef.current)
-    // console.log(AntSelect.)
-    // console.log(StyledSelect)
-    // const selectChildren = React.Children.map(
-    //   StyledSelect.children,
-    //   child => child,
-    // )
-    // console.log(selectChildren)
-  }, [])
 
   const handleSearch = searchValue => {
     onSearch(searchValue)

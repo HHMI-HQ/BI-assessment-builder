@@ -7,6 +7,7 @@ import KeyCode from 'rc-util/lib/KeyCode'
 import isMobile from 'rc-util/lib/isMobile'
 import useMergedState from 'rc-util/lib/hooks/useMergedState'
 // import { useLayoutEffect } from 'rc-util/lib/hooks/useLayoutEffect'
+import pickAttrs from 'rc-util/lib/pickAttrs'
 import { getSeparatedContent } from './utils/valueUtil'
 import SelectTrigger from './SelectTrigger'
 import Selector from './Selector'
@@ -686,7 +687,11 @@ const BaseSelect = React.forwardRef((props, ref) => {
       <div
         className={mergedClassName}
         role="presentation"
-        {...domProps}
+        {...pickAttrs(domProps, {
+          aria: false,
+          data: true,
+          attr: true,
+        })}
         onBlur={onContainerBlur}
         onFocus={onContainerFocus}
         onKeyDown={onInternalKeyDown}

@@ -7,11 +7,11 @@ import omit from 'rc-util/lib/omit'
 import * as React from 'react'
 import { useContext } from 'react'
 import { ConfigProvider, Empty } from 'antd'
-import { FormItemContext } from 'antd/lib/form/context'
 import RcSelect, { OptGroup, Option } from './rc-select'
 import getIcons from './iconUtil'
 
 const DisabledContext = React.createContext(false)
+const FormItemInputContext = React.createContext({})
 
 const SECRET_COMBOBOX_MODE_DO_NOT_USE = 'SECRET_COMBOBOX_MODE_DO_NOT_USE'
 
@@ -107,7 +107,7 @@ const InternalSelect = (
     hasFeedback,
     isFormItemInput,
     feedbackIcon,
-  } = useContext(FormItemContext)
+  } = useContext(FormItemInputContext)
 
   const mergedStatus = getMergedStatus(contextStatus, customStatus)
 
