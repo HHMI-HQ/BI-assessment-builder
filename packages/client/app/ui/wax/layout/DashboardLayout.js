@@ -46,12 +46,20 @@ const WaxSurfaceScroll = styled.div`
   /* PM styles  for main content */
   /* stylelint-disable-next-line order/properties-alphabetical-order */
   ${EditorElements}
+
+  &:hover {
+    background-color: ${th('colorBackgroundHue')};
+  }
 `
 
 const EditorContainer = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
+
+  > div {
+    width: 100%;
+  }
 
   .ProseMirror {
     /* background: palegreen; */
@@ -61,6 +69,7 @@ const EditorContainer = styled.div`
     margin-right: 0;
     min-height: 100%;
     /* padding-top: ${grid(10)}; */
+    text-align: justify;
     transition: background-color 0.15s ease-in-out;
     width: 100%;
 

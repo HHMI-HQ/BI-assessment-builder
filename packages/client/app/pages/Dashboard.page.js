@@ -28,7 +28,7 @@ const transform = questions => {
     const { id, versions } = question
     const latestVersion = versions[0]
     const { content, publicationDate, cognitiveLevel } = latestVersion
-    const parsedContent = content ? JSON.parse(content) : null
+    const parsedContent = extractDocumentText(content)
 
     const courses = latestVersion.courses.map(c => {
       const courseInValues = metadataValues.frameworks.find(
@@ -102,6 +102,49 @@ const transform = questions => {
       courses,
     }
   })
+}
+
+const extractDocumentText = data => {
+  if (data === null) return null
+  let allContent = ''
+  const incoming = JSON.parse(data)
+
+  const extract = obj => {
+    const { content } = obj
+    if (!Array.isArray(content)) return
+
+    content.forEach(item => {
+      const { text, content: itemContent } = item
+
+      if (text) allContent += `${text} `
+      if (itemContent) extract(item)
+    })
+  }
+
+  extract(incoming)
+
+  const maxLength = 300
+  allContent = allContent.substring(0, maxLength + 1).trim()
+  allContent =
+    allContent.length === maxLength ? `${allContent} ...` : allContent
+
+  return {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        attrs: {
+          class: 'paragraph',
+        },
+        content: [
+          {
+            type: 'text',
+            text: allContent,
+          },
+        ],
+      },
+    ],
+  }
 }
 
 const DashboardPage = () => {
