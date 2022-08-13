@@ -86,7 +86,8 @@ const versionQuestionResolver = async version => {
 }
 
 const contentResolver = version => {
-  return JSON.stringify(version.content)
+  const { content } = version
+  return content === null ? content : JSON.stringify(content)
 }
 
 module.exports = {

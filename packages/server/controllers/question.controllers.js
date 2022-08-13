@@ -38,7 +38,7 @@ const getQuestionVersions = async (questionId, options = {}) => {
   }
 }
 
-const getPublishedQuestions = (options = {}) => {
+const getPublishedQuestions = async (options = {}) => {
   const { orderBy, page, pageSize, trx } = options
   return Question.getPublishedQuestions({ orderBy, page, pageSize, trx })
 }
@@ -61,7 +61,7 @@ const getPublishedQuestions = (options = {}) => {
 //   }
 // }
 
-const getAuthorDashboard = (userId, options = {}) => {
+const getAuthorDashboard = async (userId, options = {}) => {
   const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
 
   return Question.findByRole(userId, 'author', {
@@ -74,7 +74,7 @@ const getAuthorDashboard = (userId, options = {}) => {
   })
 }
 
-const getReviewerDashboard = (userId, options = {}) => {
+const getReviewerDashboard = async (userId, options = {}) => {
   const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
 
   return Question.findByRole(userId, 'reviewer', {
