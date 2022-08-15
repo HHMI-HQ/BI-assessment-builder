@@ -121,8 +121,7 @@ input SidebarFilters {
   unit: String
 
   cognitiveLevel: [String]
-  # after branch with questionType field gets merged
-  # questionType: String
+  questionType: [String]
 }
 
 input FilterQuestionsParams {

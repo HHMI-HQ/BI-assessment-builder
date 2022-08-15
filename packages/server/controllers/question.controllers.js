@@ -55,7 +55,7 @@ const getPublishedQuestions = async (params = {}, options = {}) => {
       { trx, passedTrxOnly: true },
     )
   } catch (e) {
-    logger.error(`error filterUsers: ${e.message}`)
+    logger.error(`error getPublishedQuestions: ${e.message}`)
     throw new Error(e)
   }
 
