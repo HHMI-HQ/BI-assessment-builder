@@ -155,7 +155,7 @@ const DashboardPage = () => {
 
   const initialTabKey = localStorage.getItem('dashboardLastUsedTab') || 'author'
   const [currentTabKey, setCurrentTabKey] = useState(initialTabKey)
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
   const [currentSearchQuery, setCurrentSearchQuery] = useState(null)
 
   const { data: currentUserResponse } = useQuery(CURRENT_USER)
