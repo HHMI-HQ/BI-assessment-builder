@@ -128,6 +128,8 @@ const extractDocumentText = data => {
   allContent =
     allContent.length === maxLength ? `${allContent} ...` : allContent
 
+  if (!allContent) allContent = ' '
+
   return {
     type: 'doc',
     content: [
