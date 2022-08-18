@@ -617,34 +617,42 @@ const flatAAMCMetadata = data => {
   }
 }
 
-const frameworks = metadata.frameworks.map(framework => {
-  const frameworkData = {
-    label: framework.label,
-    value: framework.value,
-  }
+const frameworks = metadata.frameworks
+  .map(framework => {
+    const frameworkData = {
+      label: framework.label,
+      value: framework.value,
+    }
 
-  let additionalMetadata
+    let additionalMetadata
 
-  if (
-    framework.value === 'apBiology' ||
-    framework.value === 'apEnvironmentalScience'
-  ) {
-    additionalMetadata = flatAPCoursesMetadata(framework)
-  }
+    if (
+      framework.value === 'apBiology' ||
+      framework.value === 'apEnvironmentalScience'
+    ) {
+      additionalMetadata = flatAPCoursesMetadata(framework)
+    }
 
-  if (
-    framework.value === 'biBiology' ||
-    framework.value === 'biEnvironmentalScience'
-  ) {
-    additionalMetadata = flatIBCourseMetadata(framework)
-  }
+    if (
+      framework.value === 'biBiology' ||
+      framework.value === 'biEnvironmentalScience'
+    ) {
+      additionalMetadata = flatIBCourseMetadata(framework)
+    }
 
-  return {
-    ...frameworkData,
-    ...additionalMetadata,
-  }
-})
+    return {
+      ...frameworkData,
+      ...additionalMetadata,
+    }
+  })
+  // temporarily filter out Intro to Biology courses
+  .filter(
+    framework =>
+      framework.value !== 'introductoryBiologyForNonMajors' &&
+      framework.value !== 'introductoryBiologyForMajors',
+  )
 
+// eslint-disable-next-line no-unused-vars
 const introToBioMeta = metadata.introToBioMeta.map(data => {
   const meta = {
     label: data.label,
@@ -707,7 +715,7 @@ const metadataForQuestionPage = {
   topics: metadata.topics,
   blooms: metadata.blooms,
   frameworks,
-  introToBioMeta,
+  // introToBioMeta,
 }
 
 export {
