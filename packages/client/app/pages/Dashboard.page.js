@@ -71,8 +71,8 @@ const transform = questions => {
         )
 
         return {
-          topic: topicObject.label,
-          subtopic: subtopicObject.label,
+          topic: topicObject?.label,
+          subtopic: subtopicObject?.label,
         }
       })
       .reduce(
