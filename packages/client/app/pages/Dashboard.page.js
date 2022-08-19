@@ -8,7 +8,7 @@ import {
   CREATE_QUESTION,
   CURRENT_USER,
 } from '../graphql'
-import { Dashboard } from '../ui'
+import { Dashboard, DateParser } from '../ui'
 import {
   hasGlobalRole,
   // dashboardDataMapper,
@@ -60,15 +60,34 @@ const transform = questions => {
       }
     })
 
-    const firstTopic = latestVersion.topics[0]
+    const topics = latestVersion.topics
+      .map(topic => {
+        const topicObject = metadataValues.topics.find(
+          t => t.value === topic?.topic,
+        )
 
-    const topicValues = metadataValues.topics.find(
-      t => t.value === firstTopic?.topic,
-    )
+        const subtopicObject = topicObject?.subtopics.find(
+          s => s.value === topic.subtopic,
+        )
 
-    const subtopic = topicValues?.subtopics.find(
-      s => s.value === firstTopic.subtopic,
-    )?.label
+        return {
+          topic: topicObject?.label,
+          subtopic: subtopicObject?.label,
+        }
+      })
+      .reduce(
+        (accumulator, topic, index, array) => {
+          return {
+            topics: `${accumulator.topics}${topic.topic}${
+              index < array.length - 1 ? ', ' : ''
+            }`,
+            subtopics: `${accumulator.subtopics}${topic.subtopic}${
+              index < array.length - 1 ? ', ' : ''
+            }`,
+          }
+        },
+        { topics: '', subtopics: '' },
+      )
 
     const cognitiveValues = metadataValues.blooms.cognitive
 
@@ -89,11 +108,18 @@ const transform = questions => {
 
     return {
       metadata: [
-        { label: 'topic', value: topicValues?.label },
-        { label: 'subtopic', value: subtopic },
+        { label: 'topic', value: topics.topics },
+        { label: 'subtopic', value: topics.subtopics },
         // question type: how do we know that data ?? what if it's more than one?
         { label: "bloom's level", value: cognitiveDisplayValue },
-        { label: 'published date', value: publicationDate },
+        {
+          label: 'published date',
+          value: publicationDate && (
+            <DateParser dateFormat="MMMM DD, YYYY" timestamp={publicationDate}>
+              {timestamp => timestamp}
+            </DateParser>
+          ),
+        },
       ],
       content: parsedContent,
       status,
