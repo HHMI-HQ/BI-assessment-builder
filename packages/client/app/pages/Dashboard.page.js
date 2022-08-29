@@ -46,9 +46,9 @@ const transform = questions => {
       }))
 
       const understandings = c.units.map(unit => ({
-        label: courseInValues.understandings?.find(
+        label: courseInValues?.understandings?.find(
           und => und.value === unit.understanding,
-        ).label,
+        )?.label,
       }))
 
       return {
