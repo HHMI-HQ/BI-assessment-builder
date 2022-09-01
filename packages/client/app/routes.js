@@ -105,7 +105,12 @@ const Header = () => {
   return (
     <HeaderFooter>
       <div>
-        <StyledLink to="/dashboard">HHMI</StyledLink>
+        <div>
+          <StyledLink to="/dashboard">HHMI</StyledLink>
+        </div>
+        <div>
+          <StyledLink to="/discover">Discover</StyledLink>
+        </div>
       </div>
       <div>
         {currentUser && hasGlobalRole(currentUser, 'admin') && (

@@ -19,7 +19,8 @@ const sortOptions = [
   },
 ]
 
-const sidebarText = 'Find questions by aplying one or more of the filters below'
+const sidebarText =
+  'Explore questions by applying one or more of the filters below'
 
 const PAGE_SIZE = 10
 
@@ -98,12 +99,6 @@ const transform = questions => {
       o => o.value === cognitiveLevel,
     )?.label
 
-    let status
-    if (latestVersion.submitted) status = 'Submitted'
-    if (latestVersion.underReview) status = 'Under review'
-    if (latestVersion.published) status = 'Published'
-    if (question.rejected) status = 'Rejected'
-
     return {
       metadata: [
         { label: 'topic', value: topics.topics },
@@ -120,7 +115,6 @@ const transform = questions => {
         },
       ],
       content: parsedContent,
-      status,
       href: `/question/${id}`,
       id,
       courses,
