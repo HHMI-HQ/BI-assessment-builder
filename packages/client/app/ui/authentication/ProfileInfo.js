@@ -372,7 +372,11 @@ const ProfileInfo = props => {
                           },
                         ]}
                       >
-                        <Radio options={yesOrNoOptions} />
+                        <Radio
+                          aria-label="Do you teach AP/IB courses?"
+                          name="apIbCourses"
+                          options={yesOrNoOptions}
+                        />
                       </Form.Item>
                     )
                   }
@@ -393,6 +397,8 @@ const ProfileInfo = props => {
                         ]}
                       >
                         <Radio
+                          aria-label="Which best describes your position?"
+                          name="employmentStatus"
                           options={[
                             {
                               label: 'Full time faculty',
@@ -450,7 +456,11 @@ const ProfileInfo = props => {
                   },
                 ]}
               >
-                <Radio name="reviewerInterest" options={yesOrNoOptions} />
+                <Radio
+                  aria-label="Are you interested in serving as a reviewer?"
+                  name="reviewerInterest"
+                  options={yesOrNoOptions}
+                />
               </Form.Item>
             </Col>
 
@@ -490,7 +500,11 @@ const ProfileInfo = props => {
                   },
                 ]}
               >
-                <Radio name="assessmentTraining" options={yesOrNoOptions} />
+                <Radio
+                  aria-label="Have you had training in writing/reviewing assessment items?"
+                  name="assessmentTraining"
+                  options={yesOrNoOptions}
+                />
               </Form.Item>
             </Col>
 
@@ -506,6 +520,7 @@ const ProfileInfo = props => {
                 ]}
               >
                 <Radio
+                  aria-label="Have you had training on assessing items for inclusive language?"
                   name="assessmentTrainingInclusive"
                   options={yesOrNoOptions}
                 />
