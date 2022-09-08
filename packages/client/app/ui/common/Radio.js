@@ -33,6 +33,7 @@ const Radio = props => {
     <StyledRadioGroup
       className={className}
       onChange={handleChange}
+      role="radiogroup"
       vertical={vertical}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}

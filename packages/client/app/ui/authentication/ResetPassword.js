@@ -32,11 +32,13 @@ const ResetPassword = props => {
         {verifying && <Result icon={<Spin />} title="Verifying..." />}
 
         {success && (
-          <Result
-            status="success"
-            subTitle="Redirecting you to login screen..."
-            title="Password successfully changed"
-          />
+          <div role="alert">
+            <Result
+              status="success"
+              subTitle="Redirecting you to login screen..."
+              title="Password successfully changed"
+            />
+          </div>
         )}
 
         {!hasSuccess && !verifying && (

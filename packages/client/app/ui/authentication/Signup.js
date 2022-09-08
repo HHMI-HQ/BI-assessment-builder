@@ -76,17 +76,19 @@ const Signup = props => {
         <AuthenticationHeader>Sign up</AuthenticationHeader>
 
         {hasSuccess && (
-          <Result
-            className={className}
-            status="success"
-            subTitle={
-              <Paragraph>
-                We&apos;ve sent you a verification email. Click on the link in
-                the email to activate your account.
-              </Paragraph>
-            }
-            title="Sign up successful!"
-          />
+          <div role="alert">
+            <Result
+              className={className}
+              status="success"
+              subTitle={
+                <Paragraph>
+                  We&apos;ve sent you a verification email. Click on the link in
+                  the email to activate your account.
+                </Paragraph>
+              }
+              title="Sign up successful!"
+            />
+          </div>
         )}
 
         {!hasSuccess && (

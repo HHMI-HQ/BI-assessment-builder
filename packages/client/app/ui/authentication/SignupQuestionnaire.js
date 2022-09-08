@@ -36,11 +36,13 @@ const SignupQuestionnaire = props => {
     <Page maxWidth={900}>
       <Wrapper>
         {submitted && (
-          <Result
-            status="success"
-            subTitle="Redirecting..."
-            title="Thank you for submitting your profile!"
-          />
+          <div role="alert">
+            <Result
+              status="success"
+              subTitle="Redirecting..."
+              title="Thank you for submitting your profile!"
+            />
+          </div>
         )}
 
         {!submitted && (
