@@ -194,11 +194,14 @@ class Question extends BaseModel {
         ])
       }
 
-      if (params && params.filters && params.filters.cognitiveLevel) {
+      if (
+        params.filters.cognitiveLevel &&
+        params.filters.cognitiveLevel.length
+      ) {
         query.whereIn('cognitive_level', params.filters.cognitiveLevel)
       }
 
-      if (params && params.filters && params.filters.questionType) {
+      if (params.filters.questionType && params.filters.questionType.length) {
         query.whereIn('questionType', params.filters.questionType)
       }
 
