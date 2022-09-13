@@ -220,10 +220,6 @@ class Question extends BaseModel {
         })
       }
 
-      if (params && params.searchQuery) {
-        query.where('content_text', 'ilike', `%${params.searchQuery}%`)
-      }
-
       return applyListQueryOptions(query, options)
     } catch (e) {
       console.error('Question model: filter failed', e)
