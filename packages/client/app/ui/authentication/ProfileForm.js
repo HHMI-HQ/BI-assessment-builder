@@ -11,6 +11,7 @@ const FormButtonsContainer = styled.div`
   display: flex;
   gap: ${grid(1)};
   justify-content: right;
+  padding: 0 ${grid(4)};
 `
 
 const ProfileForm = props => {

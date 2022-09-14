@@ -30,10 +30,10 @@ const Wrapper = styled.div`
 `
 
 const Ribbon = props => {
-  const { className, children, hide, status } = props
+  const { className, children, hide, status, ...rest } = props
 
   return (
-    <Wrapper className={className} hide={hide} status={status}>
+    <Wrapper className={className} hide={hide} status={status} {...rest}>
       {children}
     </Wrapper>
   )

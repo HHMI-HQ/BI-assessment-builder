@@ -10,6 +10,7 @@ const initialValues = {
   country: 'US',
   state: 'NY',
   courses: ['biology', 'genetics'],
+  reviewerInterest: false,
   assessmentTrainingInclusive: true,
 }
 
@@ -119,6 +120,7 @@ export const Base = () => {
         onCountryChange={onCountryChange}
         onPasswordUpdate={handlePasswordSubmit}
         onProfileUpdate={handleProfileSubmit}
+        showSecondaryButton={false}
         states={stateOptions}
         submissionStatus={submissionStatus}
         topics={profileOptions.topics}

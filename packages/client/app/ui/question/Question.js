@@ -100,9 +100,11 @@ const QuestionWrapper = styled.div`
   height: 100%;
 `
 
-const StyledTabPane = styled(Tabs.TabPane)`
-  flex: 1;
-  overflow: auto;
+const StyledTabs = styled(Tabs)`
+  .ant-tabs-tabpane {
+    flex: 1;
+    overflow: auto;
+  }
 `
 // #endregion styled
 
@@ -458,7 +460,34 @@ const Question = props => {
   return (
     <Wrapper>
       <Spin renderBackground={false} spinning={loading}>
-        <Tabs
+        <StyledTabs
+          items={[
+            {
+              label: QuestionTab,
+              key: 0,
+              children: (
+                <QuestionWrapper>
+                  <MemoizedWax
+                    content={editorContent}
+                    innerRef={waxRef}
+                    onContentChange={handleQuestionContentChange}
+                    readOnly={readOnly}
+                  />
+
+                  <Metadata
+                    editorView={editorView}
+                    initialValues={initialMetadataValues}
+                    innerRef={formRef}
+                    metadata={metadata}
+                    onAutoSave={handleMetadataAutoSave}
+                    onFormFinish={onFormFinish}
+                    readOnly={readOnly}
+                    resources={resources}
+                  />
+                </QuestionWrapper>
+              ),
+            },
+          ]}
           renderTabBar={(tabProps, DefaultTabBar) => {
             return facultyView ? FacultyHeader : <DefaultTabBar {...tabProps} />
           }}
@@ -466,29 +495,7 @@ const Question = props => {
             left: BackButton,
             right: RightArea,
           }}
-        >
-          <StyledTabPane key={0} tab={QuestionTab}>
-            <QuestionWrapper>
-              <MemoizedWax
-                content={editorContent}
-                innerRef={waxRef}
-                onContentChange={handleQuestionContentChange}
-                readOnly={readOnly}
-              />
-
-              <Metadata
-                editorView={editorView}
-                initialValues={initialMetadataValues}
-                innerRef={formRef}
-                metadata={metadata}
-                onAutoSave={handleMetadataAutoSave}
-                onFormFinish={onFormFinish}
-                readOnly={readOnly}
-                resources={resources}
-              />
-            </QuestionWrapper>
-          </StyledTabPane>
-        </Tabs>
+        />
       </Spin>
     </Wrapper>
   )

@@ -16,6 +16,10 @@ extend type User {
   teachingExperience: String
   typeOfInstitution: String
 
+  apIbCourses: Boolean
+  employmentStatus: String
+  otherLevel: String
+
   # TO DO -- make these not nullable when the coko server user model issue is solved
   # coursesTeaching: [String!]!
   # topicsReviewing: [String!]!
@@ -50,6 +54,10 @@ input UserProfileInput {
   institutionalSetting: String!
   teachingExperience: String!
   typeOfInstitution: String!
+
+  apIbCourses: Boolean
+  employmentStatus: String
+  otherLevel: String
 
   reviewerInterest: Boolean!
 

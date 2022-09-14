@@ -13,7 +13,7 @@ import UIRibbon from './Ribbon'
 const FormWrapper = styled.div``
 
 const Ribbon = styled(UIRibbon)`
-  margin: ${grid(2)} 0;
+  margin: ${grid(2)} ${grid(4)};
 `
 
 const FormItem = props => {
@@ -80,7 +80,7 @@ const Form = props => {
   }
 
   const FeedbackElement = showRibbon && (
-    <FeedbackComponent status={submissionStatus}>
+    <FeedbackComponent role="alert" status={submissionStatus}>
       {ribbonMessage}
     </FeedbackComponent>
   )

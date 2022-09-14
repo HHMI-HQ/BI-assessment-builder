@@ -2,87 +2,85 @@
 
 import { gql } from '@apollo/client'
 
+const USER_FIELDS = gql`
+  fragment UserFields on User {
+    id
+
+    givenNames
+    surname
+    username
+    displayName
+    middleName
+    pronouns
+
+    phone
+
+    country
+    state
+    city
+    address
+    zipCode
+
+    position
+    organization
+    institutionalSetting
+    teachingExperience
+    typeOfInstitution
+
+    apIbCourses
+    employmentStatus
+    otherLevel
+
+    coursesTeaching
+    topicsReviewing
+
+    receivedTraining
+    receivedInclusiveLanguageTraining
+
+    source
+
+    profileSubmitted
+
+    defaultIdentity {
+      id
+      email
+      isVerified
+    }
+
+    teams {
+      id
+      role
+      global
+      objectId
+    }
+  }
+`
+
 export const CURRENT_USER = gql`
   query CurrentUser {
     currentUser {
-      id
-
-      givenNames
-      surname
-      username
-      displayName
-      middleName
-      pronouns
-
-      phone
-
-      country
-      state
-      city
-      address
-      zipCode
-
-      position
-      organization
-      institutionalSetting
-      teachingExperience
-      typeOfInstitution
-
-      coursesTeaching
-      topicsReviewing
-
-      receivedTraining
-      receivedInclusiveLanguageTraining
-
-      source
-
-      profileSubmitted
-
-      defaultIdentity {
-        id
-        email
-        isVerified
-      }
-
-      teams {
-        id
-        role
-        global
-        objectId
-      }
+      ...UserFields
     }
   }
+  ${USER_FIELDS}
 `
 
 export const SUBMIT_QUESTIONNAIRE = gql`
   mutation SubmitQuestionnaire($input: UserProfileInput!) {
     submitQuestionnaire(input: $input) {
-      id
-      profileSubmitted
-
-      teams {
-        id
-        role
-        global
-        objectId
-      }
+      ...UserFields
     }
   }
+  ${USER_FIELDS}
 `
 
 export const UPDATE_PROFILE = gql`
   mutation UpdateUserProfile($input: UserProfileInput!) {
     updateUserProfile(input: $input) {
-      id
-
-      teams {
-        id
-        role
-        global
-        objectId
-      }
+      ...UserFields
     }
   }
+  ${USER_FIELDS}
 `
 
 export const GET_USERS = gql`
@@ -136,5 +134,11 @@ export const DEACTIVATE_USERS = gql`
     deactivateUsers(ids: $ids) {
       id
     }
+  }
+`
+
+export const UPDATE_PASSWORD = gql`
+  mutation UpdatePassword($input: UpdatePasswordInput!) {
+    updatePassword(input: $input)
   }
 `

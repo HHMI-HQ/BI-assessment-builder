@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { grid } from '@coko/client'
 import { Row as AntRow, Col } from 'antd'
 import ProfileForm from './ProfileForm'
 import { FormSection, Form, Input, Select, Radio } from '../common'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  margin-bottom: ${grid(8)};
+`
 
 const Row = ({ children }) => <AntRow gutter={8}>{children}</AntRow>
 
@@ -343,12 +346,6 @@ const ProfileInfo = props => {
               <Form.Item
                 label="Primary Institution Type"
                 name="typeOfInstitution"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select an option',
-                  },
-                ]}
               >
                 <Select
                   options={institutionLevels}
@@ -365,12 +362,6 @@ const ProfileInfo = props => {
                       <Form.Item
                         label="Do you teach AP/IB courses?"
                         name="apIbCourses"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please select an option',
-                          },
-                        ]}
                       >
                         <Radio
                           aria-label="Do you teach AP/IB courses?"
@@ -389,12 +380,6 @@ const ProfileInfo = props => {
                       <Form.Item
                         label="Which best describes your position?"
                         name="employmentStatus"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please select an option',
-                          },
-                        ]}
                       >
                         <Radio
                           aria-label="Which best describes your position?"
@@ -475,6 +460,12 @@ const ProfileInfo = props => {
                     <Form.Item
                       label="Select the three topics you are most comfortable reviewing for scientific accuracy"
                       name="coursesReview"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please select three topics',
+                        },
+                      ]}
                     >
                       <Select
                         mode="multiple"

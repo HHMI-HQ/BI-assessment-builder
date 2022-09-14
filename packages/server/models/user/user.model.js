@@ -33,6 +33,10 @@ class User extends UserModel {
         teachingExperience: stringNullable,
         typeOfInstitution: stringNullable,
 
+        apIbCourses: booleanNullable,
+        employmentStatus: stringNullable,
+        otherLevel: stringNullable,
+
         coursesTeaching: arrayOfStrings,
         topicsReviewing: arrayOfStrings,
 

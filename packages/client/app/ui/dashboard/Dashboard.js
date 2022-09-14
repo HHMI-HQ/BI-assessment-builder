@@ -17,13 +17,12 @@ const StyledTabs = styled(Tabs)`
 
   .ant-tabs-content {
     height: 100%;
-  }
-`
 
-const StyledTabPane = styled(Tabs.TabPane)`
-  height: 100%;
-  margin: auto;
-  /* max-width: 1170px; */
+    .ant-tabs-tabpane {
+      height: 100%;
+      margin: auto;
+    }
+  }
 `
 
 // QUESTION how to handle search, filter and pagination with multiple sections
@@ -80,10 +79,7 @@ const Dashboard = props => {
         <StyledTabs
           className={className}
           defaultActiveKey={initialTabKey}
-          onChange={setRole}
-          tabBarExtraContent={CreateQuestionButton}
-        >
-          {tabsContent.map(
+          items={tabsContent.map(
             ({
               value,
               label,
@@ -91,8 +87,10 @@ const Dashboard = props => {
               questions,
               totalCount,
               showBulkActions,
-            }) => (
-              <StyledTabPane key={value} tab={label}>
+            }) => ({
+              label,
+              key: value,
+              children: (
                 <QuestionList
                   bulkAction={(showBulkActions && bulkActions) || null}
                   currentPage={searchParams.page}
@@ -108,10 +106,12 @@ const Dashboard = props => {
                   sortOptions={sortOptions}
                   totalCount={totalCount}
                 />
-              </StyledTabPane>
-            ),
+              ),
+            }),
           )}
-        </StyledTabs>
+          onChange={setRole}
+          tabBarExtraContent={CreateQuestionButton}
+        />
       </Spin>
     </Wrapper>
   )
