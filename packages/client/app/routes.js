@@ -191,7 +191,7 @@ const routes = (
           )}
         />
 
-        <Route exact path="/discover" render={() => <Discover />} />
+        <Route component={Discover} exact path="/discover" />
 
         <Route
           exact
