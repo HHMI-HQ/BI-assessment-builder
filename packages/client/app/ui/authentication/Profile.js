@@ -2,14 +2,18 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid } from '@coko/client'
-import { TabsStyled } from '../common'
+import { TabsStyled as Tabs } from '../common'
 import ProfileInfo from './ProfileInfo'
 import ChangePassword from './ChangePassword'
 
 const Wrapper = styled.div``
 
-const StyledTabPane = styled(TabsStyled.TabPane)`
-  margin-top: ${grid(4)};
+const StyledTabs = styled(Tabs)`
+  .ant-tabs-tabpane {
+    margin: ${grid(4)} auto 0;
+    max-width: 100%;
+    width: 900px;
+  }
 `
 
 const Profile = props => {
@@ -68,39 +72,54 @@ const Profile = props => {
     onPasswordUpdate(values)
   }
 
+  const items = [
+    {
+      label: 'Profile info',
+      key: 'profileInfo',
+      children: (
+        <ProfileInfo
+          countries={countries}
+          courses={courses}
+          initialValues={initialValues}
+          institutionalSetting={institutionalSetting}
+          institutionLevels={institutionLevels}
+          loading={loading}
+          message={message}
+          onAutoSave={onAutoSave}
+          onCountryChange={onCountryChange}
+          onSubmit={handleProfileInfoSubmit}
+          onValuesChange={handleValuesChange}
+          // secondaryButtonLabel="Cancel"
+          showSecondaryButton={false}
+          states={states}
+          submissionStatus={submissionStatus}
+          submitButtonLabel="Save"
+          topics={topics}
+        />
+      ),
+    },
+    {
+      label: 'Password',
+      key: 'changePassword',
+      children: (
+        <ChangePassword
+          loading={loading}
+          message={message}
+          onSubmit={handleChangePasswordSubmit}
+          onValuesChange={handleValuesChange}
+          submissionStatus={submissionStatus}
+        />
+      ),
+    },
+  ]
+
   return (
     <Wrapper className={className}>
-      <TabsStyled activeKey={activeKey} onTabClick={checkForUnsavedChanges}>
-        <StyledTabPane key="profileInfo" tab="Profile info">
-          <ProfileInfo
-            countries={countries}
-            courses={courses}
-            initialValues={initialValues}
-            institutionalSetting={institutionalSetting}
-            institutionLevels={institutionLevels}
-            loading={loading}
-            message={message}
-            onAutoSave={onAutoSave}
-            onCountryChange={onCountryChange}
-            onSubmit={handleProfileInfoSubmit}
-            onValuesChange={handleValuesChange}
-            secondaryButtonLabel="Cancel"
-            states={states}
-            submissionStatus={submissionStatus}
-            submitButtonLabel="Save"
-            topics={topics}
-          />
-        </StyledTabPane>
-        <StyledTabPane key="changePassword" tab="Password">
-          <ChangePassword
-            loading={loading}
-            message={message}
-            onSubmit={handleChangePasswordSubmit}
-            onValuesChange={handleValuesChange}
-            submissionStatus={submissionStatus}
-          />
-        </StyledTabPane>
-      </TabsStyled>
+      <StyledTabs
+        activeKey={activeKey}
+        items={items}
+        onTabClick={checkForUnsavedChanges}
+      />
     </Wrapper>
   )
 }

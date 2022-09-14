@@ -1,5 +1,5 @@
 import React from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import {
   Route,
   Switch,
@@ -26,7 +26,6 @@ import { hasGlobalRole } from './utilities'
 import {
   Login,
   Signup,
-  SignupProfile,
   VerifyEmail,
   RequestPasswordReset,
   ResetPassword,
@@ -35,6 +34,7 @@ import {
   Question,
   ManageUsers,
   TeamManager,
+  UserProfile,
 } from './pages'
 
 import { CURRENT_USER } from './graphql'
@@ -117,7 +117,9 @@ const Header = () => {
             </div>
           </>
         )}
-        <div>{currentUser?.displayName}</div>
+        <div>
+          <StyledLink to="/profile">{currentUser?.displayName}</StyledLink>
+        </div>
         <div>{currentUser && <LogoutButton />}</div>
       </div>
     </HeaderFooter>
@@ -134,9 +136,7 @@ const Footer = () => {
 
 const RequireProfile = ({ children }) => {
   const { pathname } = useLocation()
-  // const { currentUser } = useCurrentUser()
-  const { data: currentUserQueryData } = useQuery(CURRENT_USER)
-  const currentUser = currentUserQueryData?.currentUser
+  const { currentUser } = useCurrentUser()
 
   if (!currentUser) return null
 
@@ -170,7 +170,7 @@ const routes = (
           path="/signup-profile"
           render={() => (
             <Authenticated>
-              <SignupProfile />
+              <UserProfile signup />
             </Authenticated>
           )}
         />
@@ -211,6 +211,15 @@ const routes = (
           render={() => (
             <Authenticated>
               <TeamManager />
+            </Authenticated>
+          )}
+        />
+        <Route
+          exact
+          path="/profile"
+          render={() => (
+            <Authenticated>
+              <UserProfile />
             </Authenticated>
           )}
         />
