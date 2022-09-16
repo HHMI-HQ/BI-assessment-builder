@@ -5,8 +5,8 @@ const clearDb = require('./_clearDb')
 describe('Question model', () => {
   beforeEach(() => clearDb())
 
-  afterAll(() => {
-    clearDb()
+  afterAll(async () => {
+    await clearDb()
     const knex = Question.knex()
     knex.destroy()
   })
@@ -33,7 +33,7 @@ describe('Question model', () => {
   })
 
   // Two questions, only one has a published version.
-  // Results should return only the one question.
+  // Results should return only the one published question.
   test('finds published questions', async () => {
     const questionOne = await Question.insert({})
     await Question.insert({}) // question two
@@ -46,9 +46,44 @@ describe('Question model', () => {
       published: true,
     })
 
-    const questions = await Question.findPublished()
+    const questions = await Question.filterPublishedQuestions()
 
     expect(questions.result.length).toBe(1)
+  })
+
+  test('finds only one result for published questions with multiple versions', async () => {
+    const question = await Question.insert({})
+
+    const questionVersionOne = await QuestionVersion.findOne({
+      questionId: question.id,
+    })
+
+    await questionVersionOne.patch({
+      published: true,
+    })
+
+    const questionVersionTwo = await question.createNewVersion()
+
+    await questionVersionTwo.patch({
+      published: true,
+    })
+
+    const versions = await QuestionVersion.find({
+      questionId: question.id,
+      published: true,
+    })
+
+    expect(versions.totalCount).toBe(2)
+
+    const questions = await Question.filterPublishedQuestions(
+      {},
+      {
+        orderBy: 'publicationDate',
+        ascending: true,
+      },
+    )
+
+    expect(questions.totalCount).toBe(1)
   })
 
   test('finds question versions', async () => {
