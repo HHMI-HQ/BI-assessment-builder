@@ -601,6 +601,7 @@ const Question = props => {
                         metadata={metadata}
                         onAutoSave={handleMetadataAutoSave}
                         onFormFinish={onFormFinish}
+                        presentationMode={facultyView}
                         readOnly={readOnly}
                         resources={resources}
                       />
