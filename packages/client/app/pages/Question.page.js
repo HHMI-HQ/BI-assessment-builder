@@ -290,7 +290,6 @@ const QuestionPage = props => {
       editorView={isEditor && !isAuthor}
       facultyView={testMode}
       initialMetadataValues={initialMetadata}
-      isLoggedIn={!!user}
       isPublished={version.published}
       isSubmitted={version.submitted}
       isUnderReview={version.underReview}

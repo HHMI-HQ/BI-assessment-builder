@@ -35,7 +35,6 @@ const EditorWrapper = styled.div`
 
 const EditorArea = styled.div`
   flex-grow: 1;
-  max-width: 100ch;
   position: relative;
 
   .ProseMirror {

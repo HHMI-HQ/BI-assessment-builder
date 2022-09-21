@@ -127,9 +127,25 @@ const StyledRadioToggle = styled(Radio)`
 // #endregion styled
 
 // #region wax
-const EditorAreaContainer = styled.div`
+const EditorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: auto;
+  max-width: 75vw;
+  overflow: hidden;
+  width: 100%;
+`
+
+const EditorScrollContainer = styled.div`
   flex-grow: 1;
   overflow: auto;
+`
+
+const SubmitTestBar = styled.div`
+  background-color: ${th('colorBackground')};
+  border-top: 1px solid ${th('colorBorder')};
+  padding: ${grid(1)} ${grid(2)};
 `
 
 // need to memoize Wax to prevent rerendering on state change (e.g. after accepting T&C)
@@ -141,29 +157,60 @@ const MemoizedWax = memo(
       layout,
       onContentChange,
       readOnly,
-      submitted,
-      testMode,
+      published,
+      withMetadata,
     } = props
 
+    const [submitted, setSubmitted] = useState(published && withMetadata)
+
+    const [testMode, setTestMode] = useState(
+      published && !submitted && !withMetadata,
+    )
+
+    const submitTest = () => {
+      setSubmitted(true)
+      setTestMode(false)
+    }
+
+    useEffect(() => {
+      if (withMetadata) {
+        setSubmitted(true)
+        setTestMode(false)
+      } else {
+        setSubmitted(false)
+        setTestMode(true)
+      }
+    }, [withMetadata])
+
     return (
-      <EditorAreaContainer>
-        <WaxWrapper
-          config={config}
-          content={content}
-          customValues={{ showFeedback: submitted, testMode }}
-          innerRef={innerRef}
-          layout={layout}
-          onContentChange={onContentChange}
-          readOnly={readOnly}
-        />
-      </EditorAreaContainer>
+      <EditorWrapper>
+        <EditorScrollContainer>
+          <WaxWrapper
+            config={config}
+            content={content}
+            customValues={{ showFeedback: submitted, testMode }}
+            innerRef={innerRef}
+            layout={layout}
+            onContentChange={onContentChange}
+            readOnly={readOnly}
+          />
+        </EditorScrollContainer>
+
+        {!withMetadata && !submitted && (
+          <SubmitTestBar>
+            <Button onClick={submitTest} type="primary">
+              Submit
+            </Button>
+          </SubmitTestBar>
+        )}
+      </EditorWrapper>
     )
   },
   // add a comparison function for when we want the editor to rerender
   // returning true means the component doesn't rerender when parent rerenders
   (prevProps, nextProps) =>
     prevProps.readOnly === nextProps.readOnly &&
-    prevProps.submitted === nextProps.submitted,
+    prevProps.withMetadata === nextProps.withMetadata,
   // && prevProps.content === nextProps.content,
 )
 
@@ -180,16 +227,16 @@ MemoizedWax.propTypes = {
   layout: PropTypes.shape().isRequired,
   onContentChange: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
-  submitted: PropTypes.bool,
-  testMode: PropTypes.bool,
+  withMetadata: PropTypes.bool,
+  published: PropTypes.bool,
 }
 
 MemoizedWax.defaultProps = {
   content: {},
   readOnly: false,
   innerRef: null,
-  submitted: false,
-  testMode: false,
+  published: false,
+  withMetadata: true,
 }
 // #endregion wax
 
@@ -258,23 +305,6 @@ AutoSaving.defaultProps = {
 }
 // #endregion Autosave
 
-const EditorWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-`
-
-const SubmitTestBar = styled.div`
-  background-color: ${th('colorBackground')};
-  border-top: 1px solid ${th('colorBorder')};
-  padding: ${grid(1)} ${grid(2)};
-`
-
-const StyledMetadata = styled(Metadata)`
-  background-color: ${th('colorBackground')};
-`
-
 // QUESTION submit button here seems to be outside the form
 // submit also refers to wax
 // does all this pose an accessibility problem?
@@ -314,7 +344,6 @@ const Question = props => {
 
   const [agreedTc, setAgreedTc] = useState(questionAgreedTc)
   const [autoSaving, setAutoSaving] = useState(false)
-  const [submittedTest, setSubmitted] = useState(false)
   const [showMetadata, setShowMetadata] = useState(isUserLoggedIn)
 
   const readOnly =
@@ -399,10 +428,6 @@ const Question = props => {
       metadata: values,
       editorContent: waxRef.current.getContent(),
     })
-  }
-
-  const submitTest = () => {
-    setSubmitted(true)
   }
   // #endregion handlers
 
@@ -558,36 +583,28 @@ const Question = props => {
               key: 0,
               children: (
                 <QuestionWrapper showMetadata={showMetadata}>
-                  <EditorWrapper>
-                    <MemoizedWax
-                      content={editorContent}
-                      innerRef={waxRef}
-                      layout={facultyView ? TestModeLayout : HhmiLayout}
-                      onContentChange={handleQuestionContentChange}
-                      readOnly={readOnly}
-                      submitted={submittedTest}
-                      testMode={facultyView && !submittedTest}
-                    />
-
-                    {facultyView && (
-                      <SubmitTestBar>
-                        <Button onClick={submitTest} type="primary">
-                          Submit
-                        </Button>
-                      </SubmitTestBar>
-                    )}
-                  </EditorWrapper>
+                  <MemoizedWax
+                    content={editorContent}
+                    innerRef={waxRef}
+                    layout={facultyView ? TestModeLayout : HhmiLayout}
+                    onContentChange={handleQuestionContentChange}
+                    published={isPublished}
+                    readOnly={readOnly}
+                    withMetadata={showMetadata}
+                  />
                   {showMetadata && (
-                    <StyledMetadata
-                      editorView={editorView}
-                      initialValues={initialMetadataValues}
-                      innerRef={formRef}
-                      metadata={metadata}
-                      onAutoSave={handleMetadataAutoSave}
-                      onFormFinish={onFormFinish}
-                      readOnly={readOnly}
-                      resources={resources}
-                    />
+                    <MetadataWrapper>
+                      <Metadata
+                        editorView={editorView}
+                        initialValues={initialMetadataValues}
+                        innerRef={formRef}
+                        metadata={metadata}
+                        onAutoSave={handleMetadataAutoSave}
+                        onFormFinish={onFormFinish}
+                        readOnly={readOnly}
+                        resources={resources}
+                      />
+                    </MetadataWrapper>
                   )}
                 </QuestionWrapper>
               ),
