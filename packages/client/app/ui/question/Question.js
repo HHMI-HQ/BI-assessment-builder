@@ -172,6 +172,14 @@ const AutoSaving = props => {
     (new Date() - lastAutoSave) / 1000 / 60 / 60,
   )
 
+  if (!lastAutoSave) {
+    return (
+      <AutoSavingWrapper>
+        <CheckOutlined /> Autosaving is on
+      </AutoSavingWrapper>
+    )
+  }
+
   if (autoSaving === false) {
     return (
       <AutoSavingWrapper>
@@ -194,20 +202,16 @@ const AutoSaving = props => {
     )
   }
 
-  return (
-    <AutoSavingWrapper>
-      <CheckOutlined /> Autosaving is on
-    </AutoSavingWrapper>
-  )
+  return null
 }
 
 AutoSaving.propTypes = {
-  autoSaving: PropTypes.oneOfType([PropTypes.bool, PropTypes.oneOf([null])]),
+  autoSaving: PropTypes.bool,
   lastAutoSave: PropTypes.shape(),
 }
 
 AutoSaving.defaultProps = {
-  autoSaving: null,
+  autoSaving: false,
   lastAutoSave: null,
 }
 
@@ -434,7 +438,10 @@ const Question = props => {
   const RightArea = (
     <RightAreaWrapper>
       {readOnly ? null : (
-        <AutoSaving autoSaving={autoSaving} lastAutoSave={new Date(updated)} />
+        <AutoSaving
+          autoSaving={autoSaving}
+          lastAutoSave={updated && new Date(updated)}
+        />
       )}
       {editorView ? RightAreaEditor : RightAreaAuthor}
     </RightAreaWrapper>

@@ -158,51 +158,15 @@ const createQuestion = async (userId, options = {}) => {
   }
 }
 
-const submitQuestion = async (
-  questionId,
-  questionVersionId,
-  data,
-  options = {},
-) => {
-  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} submitQuestion:`
-  logger.info(`${CONTROLLER_MESSAGE} submitting question with id ${questionId}`)
-
-  try {
-    const newData = { ...data, submitted: true }
-    return updateQuestion(questionId, questionVersionId, newData, options)
-  } catch (e) {
-    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
-    throw new Error(e)
-  }
-}
-
-const updateQuestion = async (
-  questionId,
-  questionVersionId,
-  data,
-  options = {},
-) => {
-  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} updateQuestion:`
+// update Question by id
+const modifyQuestion = async (questionId, data, options, controllerMessage) => {
+  const CONTROLLER_MESSAGE = `${controllerMessage} modifyQuestion:`
   logger.info(`${CONTROLLER_MESSAGE} updating question with id ${questionId}`)
 
   try {
-    const { agreedTc, ...versionData } = data
-
     return useTransaction(
       async trx => {
-        const updatedQuestion = await Question.patchAndFetchById(
-          questionId,
-          { agreedTc },
-          { trx },
-        )
-
-        await QuestionVersion.patchAndFetchById(
-          questionVersionId,
-          { ...versionData },
-          { trx },
-        )
-
-        return updatedQuestion
+        return Question.patchAndFetchById(questionId, data, { trx })
       },
       {
         trx: options.trx,
@@ -214,20 +178,80 @@ const updateQuestion = async (
   }
 }
 
-const rejectQuestion = async (questionId, options = {}) => {
-  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} rejectQuestion:`
-  logger.info(`${CONTROLLER_MESSAGE} rejecting question with id ${questionId}`)
+const modifyQuestionVersion = async (
+  questionVersionId,
+  versionData,
+  options,
+  controllerMessage,
+) => {
+  const CONTROLLER_MESSAGE = `${controllerMessage} updateQuestionVersion:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} updating question version with id ${questionVersionId}`,
+  )
 
   try {
-    return Question.patchAndFetchById(
-      questionId,
-      { rejected: true },
-      { trx: options.trx },
+    return useTransaction(
+      async trx => {
+        return QuestionVersion.patchAndFetchById(
+          questionVersionId,
+          versionData,
+          { trx },
+        )
+      },
+      {
+        trx: options.trx,
+      },
     )
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
     throw new Error(e)
   }
+}
+
+const submitQuestion = async (
+  questionId,
+  questionVersionId,
+  data,
+  options = {},
+) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} submitQuestion:`
+  logger.info(`${CONTROLLER_MESSAGE} submitting question with id ${questionId}`)
+
+  const { agreedTc, ...versionData } = data
+  const newData = { ...versionData, submitted: true }
+  // set submitted = true in QuestionVersion
+  await modifyQuestionVersion(
+    questionVersionId,
+    newData,
+    options,
+    CONTROLLER_MESSAGE,
+  )
+  // set agreedTc = true in Question and return
+  return modifyQuestion(questionId, { agreedTc }, options, CONTROLLER_MESSAGE)
+}
+
+const updateQuestion = async (
+  questionId,
+  questionVersionId,
+  data,
+  options = {},
+) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} updateQuestion:`
+  logger.info(`${CONTROLLER_MESSAGE} updating question with id ${questionId}`)
+
+  await modifyQuestionVersion(
+    questionVersionId,
+    { ...data, lastEdit: new Date() },
+    options,
+  )
+  return getQuestion(questionId)
+}
+
+const rejectQuestion = async (questionId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} rejectQuestion:`
+  logger.info(`${CONTROLLER_MESSAGE} rejecting question with id ${questionId}`)
+
+  return modifyQuestion(questionId, { rejected: true }, { trx: options.trx })
 }
 
 const moveQuestionVersionToReview = async (questionVersionId, options = {}) => {
@@ -236,16 +260,11 @@ const moveQuestionVersionToReview = async (questionVersionId, options = {}) => {
     `${CONTROLLER_MESSAGE} moving question version with id ${questionVersionId} to review`,
   )
 
-  try {
-    return QuestionVersion.patchAndFetchById(
-      questionVersionId,
-      { underReview: true },
-      { trx: options.trx },
-    )
-  } catch (e) {
-    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
-    throw new Error(e)
-  }
+  return modifyQuestionVersion(
+    questionVersionId,
+    { underReview: true },
+    { trx: options.trx },
+  )
 }
 
 const publishQuestionVersion = async (questionVersionId, options = {}) => {
@@ -254,20 +273,15 @@ const publishQuestionVersion = async (questionVersionId, options = {}) => {
     `${CONTROLLER_MESSAGE} publishing question version with id ${questionVersionId}`,
   )
 
-  try {
-    return QuestionVersion.patchAndFetchById(
-      questionVersionId,
-      {
-        underReview: false,
-        published: true,
-        publicationDate: new Date(),
-      },
-      { trx: options.trx },
-    )
-  } catch (e) {
-    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
-    throw new Error(e)
-  }
+  return modifyQuestionVersion(
+    questionVersionId,
+    {
+      underReview: false,
+      published: true,
+      publicationDate: new Date(),
+    },
+    { trx: options.trx },
+  )
 }
 
 // const deleteQuestion = async questionId => {
