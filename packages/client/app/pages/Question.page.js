@@ -182,7 +182,6 @@ const QuestionPage = () => {
         questionVersionId: version.id,
         input: {
           content: JSON.stringify(content),
-          lastEdit: new Date(),
         },
       },
     }
@@ -205,7 +204,6 @@ const QuestionPage = () => {
         questionVersionId: version.id,
         input: {
           ...metadataToSave,
-          lastEdit: new Date(),
         },
       },
     }
