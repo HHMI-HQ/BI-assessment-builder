@@ -224,7 +224,7 @@ MemoizedWax.propTypes = {
       current: PropTypes.shape(),
     }),
   ]),
-  layout: PropTypes.shape().isRequired,
+  layout: PropTypes.elementType.isRequired,
   onContentChange: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
   withMetadata: PropTypes.bool,
