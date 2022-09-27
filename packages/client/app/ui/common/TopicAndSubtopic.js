@@ -27,16 +27,8 @@ const TopicAndSubtopic = props => {
 
   const handleTopicChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
-
-      cloned[index] = {
-        ...cloned[index],
-        [subtopicKey]: null,
-      }
-
-      setFieldsValue({
-        [supplementaryKey]: cloned,
-      })
+      const fields = getFieldValue(supplementaryKey)
+      Object.assign(fields[index], { [subtopicKey]: null })
     } else {
       setFieldsValue({
         [subtopicKey]: null,

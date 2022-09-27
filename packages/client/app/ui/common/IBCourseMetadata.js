@@ -63,18 +63,13 @@ const IBCourseMetadata = props => {
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(topicField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const fields = getFieldValue(supplementaryKey)
 
-        cloned[index] = {
-          ...cloned[index],
+        Object.assign(fields[index], {
           [topicKey]: null,
           [applicationKey]: null,
           [skillKey]: null,
           [understandingKey]: null,
-        }
-
-        setFieldsValue({
-          [supplementaryKey]: cloned,
         })
       }
     } else {
@@ -94,17 +89,12 @@ const IBCourseMetadata = props => {
         getFieldValue(skillField) ||
         getFieldValue(understandingField)
       ) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const fields = getFieldValue(supplementaryKey)
 
-        cloned[index] = {
-          ...cloned[index],
+        Object.assign(fields[index], {
           [applicationKey]: null,
           [skillKey]: null,
           [understandingKey]: null,
-        }
-
-        setFieldsValue({
-          [supplementaryKey]: cloned,
         })
       }
     } else {

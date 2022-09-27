@@ -62,16 +62,12 @@ const APCourseMetadata = props => {
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(topicField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
-        cloned[index] = {
-          ...cloned[index],
+        const fields = getFieldValue(supplementaryKey)
+
+        Object.assign(fields[index], {
           [topicKey]: null,
           [learningObjectiveKey]: null,
           [essentialKnowledgeKey]: null,
-        }
-
-        setFieldsValue({
-          [supplementaryKey]: cloned,
         })
       }
     } else {
@@ -86,14 +82,11 @@ const APCourseMetadata = props => {
   const handleFrameworkTopicChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(learningObjectiveField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
-        cloned[index] = {
-          ...cloned[index],
+        const fields = getFieldValue(supplementaryKey)
+
+        Object.assign(fields[index], {
           [learningObjectiveKey]: null,
           [essentialKnowledgeKey]: null,
-        }
-        setFieldsValue({
-          [supplementaryKey]: cloned,
         })
       }
     } else {
@@ -107,15 +100,10 @@ const APCourseMetadata = props => {
   const handleFrameworkLearningObjectiveChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(essentialKnowledgeField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const fields = getFieldValue(supplementaryKey)
 
-        cloned[index] = {
-          ...cloned[index],
+        Object.assign(fields[index], {
           [essentialKnowledgeKey]: null,
-        }
-
-        setFieldsValue({
-          [supplementaryKey]: cloned,
         })
       }
     } else {
