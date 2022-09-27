@@ -259,6 +259,7 @@ const Metadata = React.forwardRef((props, ref) => {
               {topicsIndexes.map(index => (
                 <div key={`supplementaryTopic-${index}`}>
                   <TopicAndSubtopic
+                    autofocus={index > 0}
                     getFieldValue={form.getFieldValue}
                     index={index}
                     isRequired

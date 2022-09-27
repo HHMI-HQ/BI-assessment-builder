@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Form from './Form'
 import Select from './Select'
 
 const TopicAndSubtopic = props => {
   const {
+    autofocus,
     filterMode,
     getFieldValue,
     isRequired,
@@ -24,6 +25,14 @@ const TopicAndSubtopic = props => {
     : topicKey
 
   const subtopicName = supplementaryKey ? [index, subtopicKey] : subtopicKey
+
+  useEffect(() => {
+    if (autofocus) {
+      document
+        .getElementById(`${supplementaryKey}_${index}_${topicKey}`)
+        .focus()
+    }
+  }, [])
 
   const handleTopicChange = () => {
     if (supplementaryKey) {
@@ -101,6 +110,7 @@ const TopicAndSubtopic = props => {
 }
 
 TopicAndSubtopic.propTypes = {
+  autofocus: PropTypes.bool,
   filterMode: PropTypes.bool,
   getFieldValue: PropTypes.func.isRequired,
   isRequired: PropTypes.bool,
@@ -114,6 +124,7 @@ TopicAndSubtopic.propTypes = {
 }
 
 TopicAndSubtopic.defaultProps = {
+  autofocus: false,
   readOnly: false,
   index: 1,
   isRequired: false,
