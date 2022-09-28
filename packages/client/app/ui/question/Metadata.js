@@ -1,5 +1,4 @@
-import React, { useState, useImperativeHandle, useEffect } from 'react'
-import { dropRight } from 'lodash'
+import React, { useImperativeHandle, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -64,9 +63,6 @@ const Metadata = React.forwardRef((props, ref) => {
 
   const topicsKey = 'topics'
   const coursesKey = 'courses'
-
-  const [topicsIndexes, setTopicsIndexes] = useState([])
-  const [coursesIndexes, setCoursesIndexes] = useState([])
 
   const renderFrameworkFields = (getFieldValue, index = -1, key = '') => {
     const selectedCourse = getFieldValue([key, index, 'course'])
@@ -142,79 +138,45 @@ const Metadata = React.forwardRef((props, ref) => {
     return null
   }
 
-  const handleSupplementaryAdd = (add, key) => {
-    const addFunction = supIndexes => {
-      const clone = [...supIndexes]
-
-      if (clone.length === 0) {
-        clone.push(0)
-        return clone
-      }
-
-      clone.push(clone.length)
-      return clone
-    }
-
-    if (key === topicsKey) {
-      setTopicsIndexes(addFunction)
-    } else if (key === coursesKey) {
-      setCoursesIndexes(addFunction)
-    }
-
-    add()
-  }
-
-  const handleSupplementaryRemove = (remove, key) => {
-    if (key === topicsKey) {
-      const last = topicsIndexes.length - 1
-      remove(last)
-      setTopicsIndexes(dropRight([...topicsIndexes]))
-    } else if (key === coursesKey) {
-      const last = coursesIndexes.length - 1
-      remove(last)
-      setCoursesIndexes(dropRight([...coursesIndexes]))
-    }
-  }
-
   const getSelectedTopics = topics => topics.filter(t => !!t)
 
   // need to reset fields when course choice changes, because it enter a recursive loop when done inside metadata components
   const resetCourseFields = (value, index, key, remove) => {
-    const cloned = [...form.getFieldValue(key)]
-    cloned[index] = {
-      course: value,
-    }
+    const fields = form.getFieldValue(key)
 
-    form.setFieldsValue({
-      [key]: cloned,
+    Object.assign(fields[index], {
+      course: value,
+      unit: null,
+      courseTopic: null,
+      learningObjective: null,
+      essentialKnowledge: null,
+      application: null,
+      skill: null,
+      understanding: null,
     })
 
-    // remove 2nd set of fields if author
-    if (!editorView && coursesIndexes.length > 1) {
-      handleSupplementaryRemove(remove, key)
+    // if author changes course value, remove 2nd set of curricula reference fields
+    if (index === 0 && !editorView) {
+      remove(1)
     }
   }
 
   useEffect(() => {
-    let sIndexes = [0]
+    const initialMetadata = JSON.parse(JSON.stringify(initialValues))
 
-    if (initialValues[topicsKey]?.length) {
-      sIndexes = initialValues[topicsKey]?.map((_, index) => index)
+    if (!initialValues[topicsKey] || initialValues[topicsKey]?.length === 0) {
+      initialMetadata[topicsKey].push({})
     }
 
-    setTopicsIndexes(sIndexes)
-
-    // reset to use for calculating existing supplementary curricula
-    sIndexes = [0]
-
-    if (initialValues[coursesKey]?.length) {
-      sIndexes = initialValues[coursesKey]?.map((_, index) => index)
+    if (
+      !initialMetadata[coursesKey] ||
+      initialMetadata[coursesKey]?.length === 0
+    ) {
+      initialMetadata[coursesKey].push({})
     }
 
-    setCoursesIndexes(sIndexes)
-
-    form.setFieldsValue(initialValues)
-  }, [initialValues])
+    form.setFieldsValue(initialMetadata)
+  }, [])
 
   // TODO: find a better solution (assigning the initialValue directly confilcts with form.setFieldsValues)
   // initialValue for 2nd course metadata for author
@@ -247,19 +209,14 @@ const Metadata = React.forwardRef((props, ref) => {
           name="questionType"
           rules={[{ required: true, message: 'Question type is required' }]}
         >
-          <Select
-            // allowClear
-            disabled={readOnly}
-            options={metadata.questionTypes}
-          />
+          <Select disabled={readOnly} options={metadata.questionTypes} />
         </Form.Item>
         <Form.List name={topicsKey} noStyle>
-          {(_, { add, remove }) => (
+          {(topicFields, { add, remove }) => (
             <StyledSupplementaryFieldsContainer>
-              {topicsIndexes.map(index => (
-                <div key={`supplementaryTopic-${index}`}>
+              {topicFields.map((field, index) => (
+                <div key={`supplementaryTopic-${field.key}`}>
                   <TopicAndSubtopic
-                    autofocus={index > 0}
                     getFieldValue={form.getFieldValue}
                     index={index}
                     isRequired
@@ -272,22 +229,22 @@ const Metadata = React.forwardRef((props, ref) => {
               ))}
               {!readOnly && (
                 <>
-                  {topicsIndexes.length < 2 && (
+                  {topicFields.length < 2 && (
                     <Button
                       disabled={readOnly}
                       onClick={() => {
-                        handleSupplementaryAdd(add, topicsKey)
+                        add()
                       }}
                       type="primary"
                     >
                       Add a second topic
                     </Button>
                   )}
-                  {topicsIndexes.length > 1 && (
+                  {topicFields.length > 1 && (
                     <Button
                       disabled={readOnly}
                       onClick={() => {
-                        handleSupplementaryRemove(remove, topicsKey)
+                        remove(1)
                       }}
                       type="danger"
                     >
@@ -301,10 +258,10 @@ const Metadata = React.forwardRef((props, ref) => {
         </Form.List>
 
         <Form.List name={coursesKey} noStyle>
-          {(_, { add, remove }) => (
+          {(courseFields, { add, remove }) => (
             <StyledSupplementaryFieldsContainer>
-              {coursesIndexes.map(index => (
-                <div key={`supplementaryFields-${index}`}>
+              {courseFields.map((field, index) => (
+                <div key={`supplementaryFields-${field.key}`}>
                   {index === 1 && !editorView && <p>Second reference</p>}
                   <Form.Item
                     hidden={index === 1 && !editorView}
@@ -336,11 +293,11 @@ const Metadata = React.forwardRef((props, ref) => {
 
               {!readOnly && (
                 <>
-                  {(coursesIndexes.length < 2 || editorView) && (
+                  {(courseFields.length < 2 || editorView) && (
                     <Button
                       disabled={readOnly}
                       onClick={() => {
-                        handleSupplementaryAdd(add, coursesKey)
+                        add()
                       }}
                       type="primary"
                     >
@@ -349,12 +306,11 @@ const Metadata = React.forwardRef((props, ref) => {
                         : 'Add a second curricula reference'}
                     </Button>
                   )}
-                  {((coursesIndexes.length > 1 && !editorView) ||
-                    (editorView && coursesIndexes.length > 1)) && ( // transformedInitialValues.courses.length
+                  {courseFields.length > 1 && (
                     <Button
                       disabled={readOnly}
                       onClick={() => {
-                        handleSupplementaryRemove(remove, coursesKey)
+                        remove(courseFields.length - 1)
                       }}
                       type="danger"
                     >
@@ -697,7 +653,7 @@ Metadata.propTypes = {
 Metadata.defaultProps = {
   editorView: false,
   onAutoSave: null,
-  initialValues: {},
+  initialValues: { topics: [], courses: [] },
   readOnly: false,
   resources: [],
   presentationMode: false,
