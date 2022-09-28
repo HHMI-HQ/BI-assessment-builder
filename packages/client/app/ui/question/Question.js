@@ -161,7 +161,8 @@ const MemoizedWax = memo(
       withMetadata,
     } = props
 
-    const [submitted, setSubmitted] = useState(published && withMetadata)
+    const [submitted, setSubmitted] = useState(published && !withMetadata)
+    const [editorContent, setEditorContent] = useState(content)
 
     const [testMode, setTestMode] = useState(
       published && !submitted && !withMetadata,
@@ -170,16 +171,28 @@ const MemoizedWax = memo(
     const submitTest = () => {
       setSubmitted(true)
       setTestMode(false)
+
+      const contentFeedback = JSON.parse(
+        JSON.stringify({
+          type: 'doc',
+          content: innerRef.current.getContent(),
+        }),
+      )
+
+      setEditorContent(contentFeedback)
     }
 
     useEffect(() => {
       if (withMetadata) {
-        setSubmitted(true)
+        setSubmitted(false)
         setTestMode(false)
       } else {
         setSubmitted(false)
         setTestMode(true)
       }
+
+      // reset original content after switching views
+      setEditorContent(content)
     }, [withMetadata])
 
     return (
@@ -187,11 +200,11 @@ const MemoizedWax = memo(
         <EditorScrollContainer>
           <WaxWrapper
             config={config}
-            content={content}
-            customValues={{ showFeedback: submitted, testMode }}
+            content={editorContent}
+            customValues={{ showFeedBack: submitted, testMode }}
             innerRef={innerRef}
             layout={layout}
-            onContentChange={onContentChange}
+            onContentChange={!testMode && onContentChange}
             readOnly={readOnly}
           />
         </EditorScrollContainer>
