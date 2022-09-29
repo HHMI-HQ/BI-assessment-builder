@@ -161,7 +161,7 @@ const MemoizedWax = memo(
       withMetadata,
     } = props
 
-    const [submitted, setSubmitted] = useState(published && !withMetadata)
+    const [submitted, setSubmitted] = useState(false)
     const [editorContent, setEditorContent] = useState(content)
 
     const [testMode, setTestMode] = useState(
@@ -180,6 +180,12 @@ const MemoizedWax = memo(
       )
 
       setEditorContent(contentFeedback)
+    }
+
+    const resetTest = () => {
+      setSubmitted(false)
+      setTestMode(true)
+      setEditorContent(content)
     }
 
     useEffect(() => {
@@ -209,11 +215,17 @@ const MemoizedWax = memo(
           />
         </EditorScrollContainer>
 
-        {!withMetadata && !submitted && (
+        {!withMetadata && (
           <SubmitTestBar>
-            <Button onClick={submitTest} type="primary">
-              Submit
-            </Button>
+            {submitted ? (
+              <Button onClick={resetTest} type="primary">
+                Reset
+              </Button>
+            ) : (
+              <Button onClick={submitTest} type="primary">
+                Submit
+              </Button>
+            )}
           </SubmitTestBar>
         )}
       </EditorWrapper>
