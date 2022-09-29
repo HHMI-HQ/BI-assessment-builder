@@ -1,5 +1,5 @@
 /* stylelint-disable string-quotes */
-import React, { memo, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -25,7 +25,7 @@ import {
   Spin,
   TabsStyled as Tabs,
 } from '../common'
-import WaxWrapper from '../wax/Wax'
+import Wax from '../wax/Wax'
 
 // #region styled
 const Wrapper = styled.div`
@@ -109,6 +109,16 @@ const StyledTabs = styled(Tabs)`
   }
 `
 
+const EditorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: auto;
+  max-width: 75vw;
+  overflow: hidden;
+  width: 100%;
+`
+
 const MetadataWrapper = styled.section`
   background-color: ${th('colorBackground')};
   border-left: 1px solid ${th('colorBorder')};
@@ -125,145 +135,6 @@ const StyledRadioToggle = styled(Radio)`
   }
 `
 // #endregion styled
-
-// #region wax
-const EditorWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin: auto;
-  max-width: 75vw;
-  overflow: hidden;
-  width: 100%;
-`
-
-const EditorScrollContainer = styled.div`
-  flex-grow: 1;
-  overflow: auto;
-`
-
-const SubmitTestBar = styled.div`
-  background-color: ${th('colorBackground')};
-  border-top: 1px solid ${th('colorBorder')};
-  padding: ${grid(1)} ${grid(2)};
-`
-
-// need to memoize Wax to prevent rerendering on state change (e.g. after accepting T&C)
-const MemoizedWax = memo(
-  props => {
-    const {
-      content,
-      innerRef,
-      layout,
-      onContentChange,
-      readOnly,
-      published,
-      withMetadata,
-    } = props
-
-    const [submitted, setSubmitted] = useState(false)
-    const [editorContent, setEditorContent] = useState(content)
-
-    const [testMode, setTestMode] = useState(
-      published && !submitted && !withMetadata,
-    )
-
-    const submitTest = () => {
-      setSubmitted(true)
-      setTestMode(false)
-
-      const contentFeedback = JSON.parse(
-        JSON.stringify({
-          type: 'doc',
-          content: innerRef.current.getContent(),
-        }),
-      )
-
-      setEditorContent(contentFeedback)
-    }
-
-    const resetTest = () => {
-      setSubmitted(false)
-      setTestMode(true)
-      setEditorContent(content)
-    }
-
-    useEffect(() => {
-      if (withMetadata) {
-        setSubmitted(false)
-        setTestMode(false)
-      } else {
-        setSubmitted(false)
-        setTestMode(true)
-      }
-
-      // reset original content after switching views
-      setEditorContent(content)
-    }, [withMetadata])
-
-    return (
-      <EditorWrapper>
-        <EditorScrollContainer>
-          <WaxWrapper
-            config={config}
-            content={editorContent}
-            customValues={{ showFeedBack: submitted, testMode }}
-            innerRef={innerRef}
-            layout={layout}
-            onContentChange={!testMode && onContentChange}
-            readOnly={readOnly}
-          />
-        </EditorScrollContainer>
-
-        {!withMetadata && (
-          <SubmitTestBar>
-            {submitted ? (
-              <Button onClick={resetTest} type="primary">
-                Reset
-              </Button>
-            ) : (
-              <Button onClick={submitTest} type="primary">
-                Submit
-              </Button>
-            )}
-          </SubmitTestBar>
-        )}
-      </EditorWrapper>
-    )
-  },
-  // add a comparison function for when we want the editor to rerender
-  // returning true means the component doesn't rerender when parent rerenders
-  (prevProps, nextProps) =>
-    prevProps.readOnly === nextProps.readOnly &&
-    prevProps.withMetadata === nextProps.withMetadata,
-  // && prevProps.content === nextProps.content,
-)
-
-MemoizedWax.propTypes = {
-  content: PropTypes.shape(),
-  innerRef: PropTypes.oneOfType([
-    // Either a function
-    PropTypes.func,
-    // Or the instance of a DOM native element (see the note about SSR)
-    PropTypes.shape({
-      current: PropTypes.shape(),
-    }),
-  ]),
-  layout: PropTypes.elementType.isRequired,
-  onContentChange: PropTypes.func.isRequired,
-  readOnly: PropTypes.bool,
-  withMetadata: PropTypes.bool,
-  published: PropTypes.bool,
-}
-
-MemoizedWax.defaultProps = {
-  content: {},
-  readOnly: false,
-  innerRef: null,
-  published: false,
-  withMetadata: true,
-}
-// #endregion wax
 
 // #region Autosave
 const AutoSavingWrapper = styled.span`
@@ -608,15 +479,18 @@ const Question = props => {
               key: 0,
               children: (
                 <QuestionWrapper showMetadata={showMetadata}>
-                  <MemoizedWax
-                    content={editorContent}
-                    innerRef={waxRef}
-                    layout={facultyView ? TestModeLayout : HhmiLayout}
-                    onContentChange={handleQuestionContentChange}
-                    published={isPublished}
-                    readOnly={readOnly}
-                    withMetadata={showMetadata}
-                  />
+                  <EditorWrapper>
+                    <Wax
+                      config={config}
+                      content={editorContent}
+                      innerRef={waxRef}
+                      layout={facultyView ? TestModeLayout : HhmiLayout}
+                      onContentChange={handleQuestionContentChange}
+                      published={isPublished}
+                      readOnly={readOnly}
+                      testView={!showMetadata}
+                    />
+                  </EditorWrapper>
                   {showMetadata && (
                     <MetadataWrapper>
                       <Metadata
