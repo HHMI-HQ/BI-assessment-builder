@@ -112,7 +112,9 @@ const StyledTabs = styled(Tabs)`
 const MetadataWrapper = styled.section`
   background-color: ${th('colorBackground')};
   border-left: 1px solid ${th('colorBorder')};
+  height: 100%;
   min-width: 0;
+  overflow-y: auto;
 `
 
 const StyledRadioToggle = styled(Radio)`
