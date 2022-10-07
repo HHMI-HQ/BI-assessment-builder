@@ -27,6 +27,7 @@ const Wrapper = styled.div`
 `
 
 const EditorWrapper = styled.div`
+  background-color: ${th('colorBackground')};
   display: flex;
   flex-grow: 1;
   justify-content: center;
@@ -35,7 +36,12 @@ const EditorWrapper = styled.div`
 
 const EditorArea = styled.div`
   flex-grow: 1;
+  max-width: 100ch;
   position: relative;
+
+  > div {
+    height: unset;
+  }
 
   .ProseMirror {
     font-family: inherit;

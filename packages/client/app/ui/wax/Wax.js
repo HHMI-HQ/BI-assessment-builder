@@ -100,7 +100,7 @@ const WaxWrapper = React.memo(
             readonly={readOnly}
             ref={innerRef}
             targetFormat="JSON"
-            value={editorContent}
+            value={testMode ? editorContent : content}
           />
         </EditorScrollContainer>
 
@@ -130,7 +130,7 @@ const WaxWrapper = React.memo(
 
 WaxWrapper.propTypes = {
   content: PropTypes.shape(),
-  onContentChange: PropTypes.func.isRequired,
+  onContentChange: PropTypes.func,
   config: PropTypes.shape().isRequired,
   innerRef: PropTypes.oneOfType([
     // Either a function
@@ -148,6 +148,7 @@ WaxWrapper.propTypes = {
 
 WaxWrapper.defaultProps = {
   content: {},
+  onContentChange: () => {},
   innerRef: null,
   readOnly: false,
   published: false,

@@ -57,8 +57,14 @@ const EditorWrapper = styled.div`
 /* ${EditorElements} */
 
 const EditorArea = styled.div`
+  background-color: ${th('colorBackground')};
   flex-grow: 1;
+  max-width: 100ch;
   position: relative;
+
+  > div {
+    height: unset;
+  }
 
   .ProseMirror {
     /* font-family: ${th('fontInterface')}; */
