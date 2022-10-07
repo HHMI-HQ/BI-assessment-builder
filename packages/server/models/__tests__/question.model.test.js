@@ -478,4 +478,46 @@ describe('Question model', () => {
 
     expect(results.totalCount).toBe(1)
   })
+
+  test('filter questions and order by publication date', async () => {
+    const question1 = await Question.insert({})
+    const questionOneVersionOne = await question1.createNewVersion()
+
+    const question2 = await Question.insert({})
+    const questionTwoVersionOne = await question2.createNewVersion()
+
+    await questionOneVersionOne.patch({
+      published: true,
+      publicationDate: new Date(2022, 0, 2),
+    })
+
+    await questionTwoVersionOne.patch({
+      published: true,
+      publicationDate: new Date(2022, 0, 3),
+    })
+
+    let response = await Question.filterPublishedQuestions(
+      {},
+      {
+        orderBy: 'publicationDate',
+        ascending: true,
+      },
+    )
+
+    expect(response.totalCount).toBe(2)
+    expect(response.result[0].id).toBe(question1.id)
+    expect(response.result[1].id).toBe(question2.id)
+
+    response = await Question.filterPublishedQuestions(
+      {},
+      {
+        orderBy: 'publicationDate',
+        ascending: false,
+      },
+    )
+
+    expect(response.totalCount).toBe(2)
+    expect(response.result[0].id).toBe(question2.id)
+    expect(response.result[1].id).toBe(question1.id)
+  })
 })
