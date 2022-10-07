@@ -220,7 +220,11 @@ class Question extends BaseModel {
         })
       }
 
-      return applyListQueryOptions(query, options)
+      query.as('q1')
+
+      const parentQuery = Question.query(options.trx).select('*').from(query)
+
+      return applyListQueryOptions(parentQuery, options)
     } catch (e) {
       console.error('Question model: filter failed', e)
       throw new Error(e)
