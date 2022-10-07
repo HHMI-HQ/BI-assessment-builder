@@ -41,20 +41,20 @@ const transform = questions => {
       const isAP = beginning === 'ap'
 
       const objectives = c.units.map(unit => ({
-        label: courseInValues.learningObjectives?.find(
+        label: courseInValues?.learningObjectives?.find(
           lo => lo.value === unit.learningObjective,
         ).label,
       }))
 
       const understandings = c.units.map(unit => ({
-        label: courseInValues.understandings?.find(
+        label: courseInValues?.understandings?.find(
           und => und.value === unit.understanding,
         ).label,
       }))
 
       return {
         course: {
-          label: courseInValues.label,
+          label: courseInValues?.label,
         },
         label: isAP ? 'learning objectives' : 'understandings',
         objectives: isAP ? objectives : understandings,
