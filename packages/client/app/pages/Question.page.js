@@ -250,7 +250,7 @@ const QuestionPage = props => {
       },
     }
 
-    submitQuestionMutation(mutationData)
+    return submitQuestionMutation(mutationData)
   }
 
   const handleClickAssignHE = () => {}
@@ -266,7 +266,7 @@ const QuestionPage = props => {
       },
     }
 
-    moveQuestionVersionToReviewMutation(mutationData)
+    return moveQuestionVersionToReviewMutation(mutationData)
   }
 
   const handlePublish = () => {
@@ -276,11 +276,11 @@ const QuestionPage = props => {
       },
     }
 
-    publishQuestionVersionMutation(mutationData)
+    return publishQuestionVersionMutation(mutationData)
   }
 
   const handleReject = () => {
-    rejectQuestionMutation()
+    return rejectQuestionMutation()
   }
   // #endregion handlers
 
