@@ -77,6 +77,11 @@ const RightAreaWrapper = styled.div`
   display: flex;
 `
 
+const RightAreaRejected = styled.span`
+  font-weight: bold;
+  margin-right: ${grid(2)};
+`
+
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${grid(2)};
 `
@@ -352,7 +357,7 @@ const Question = props => {
     initialMetadataValues,
     isUserLoggedIn,
     isPublished,
-    // isRejected,
+    isRejected,
     isSubmitted,
     isUnderReview,
     loading,
@@ -384,7 +389,8 @@ const Question = props => {
 
   const readOnly =
     (editorView && (!isUnderReview || isPublished)) ||
-    (!editorView && isSubmitted)
+    (!editorView && isSubmitted) ||
+    isRejected
 
   // need to reset showMetadata, in case user loads after the page is rendered
   useEffect(() => {
@@ -683,6 +689,8 @@ const Question = props => {
     </>
   )
 
+  const RightAreaNotRejected = editorView ? RightAreaEditor : RightAreaAuthor
+
   const RightArea = (
     <RightAreaWrapper>
       {readOnly ? null : (
@@ -691,7 +699,11 @@ const Question = props => {
           lastAutoSave={updated && new Date(updated)}
         />
       )}
-      {editorView ? RightAreaEditor : RightAreaAuthor}
+      {isRejected ? (
+        <RightAreaRejected>This question was rejected</RightAreaRejected>
+      ) : (
+        RightAreaNotRejected
+      )}
     </RightAreaWrapper>
   )
 
@@ -793,7 +805,7 @@ Question.propTypes = {
   questionAgreedTc: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
-  // isRejected: PropTypes.bool.isRequired,
+  isRejected: PropTypes.bool,
   isSubmitted: PropTypes.bool.isRequired,
   isUnderReview: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool,
@@ -1060,6 +1072,7 @@ Question.defaultProps = {
   resources: [],
   updated: '',
   isUserLoggedIn: true,
+  isRejected: false,
 }
 
 export default Question
