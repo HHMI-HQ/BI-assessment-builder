@@ -478,10 +478,18 @@ const Question = props => {
       onOk() {
         onMoveToReview()
           .then(() => {
-            showMoveToReviewSucessDialog()
+            showDialog(
+              'success',
+              'Question moved to review',
+              'Question was moved to review successfully',
+            )
           })
           .catch(() => {
-            showMoveToReviewErrorDialog()
+            showDialog(
+              'error',
+              'Problem moving the question to review',
+              'There was an error while moving your question to review. Please try again!',
+            )
           })
       },
       onCancel() {},
@@ -498,10 +506,18 @@ const Question = props => {
       onOk() {
         onPublish()
           .then(() => {
-            showPublishSuccessDialog()
+            showDialog(
+              'success',
+              'Question published successfully',
+              'Question was published and is now available in the Discover page',
+            )
           })
           .catch(() => {
-            showPublishErrorDialog()
+            showDialog(
+              'error',
+              'Problem publishing the question',
+              'There was an error while publishin the question. Please try again',
+            )
           })
       },
       onCancel() {},
@@ -517,97 +533,30 @@ const Question = props => {
       onOk() {
         onReject()
           .then(() => {
-            showRejectSuccessDialog()
+            showDialog(
+              'success',
+              'Question rejected',
+              'The question was rejected',
+            )
           })
           .catch(() => {
-            showRejectErrorDialog()
+            showDialog(
+              'error',
+              'Problem rejecting the questions',
+              'There was an error while rejecting this question. Please try again!',
+            )
           })
       },
       onCancel() {},
     })
   }
 
-  const showSubmitSuccessDialog = () => {
-    success({
-      title: 'Question submitted successfully',
-      content: <Paragraph>Question was submitted successfully</Paragraph>,
-      maskClosable: true,
-    })
-  }
+  const showDialog = (type, title, content) => {
+    const dialogType = type === 'success' ? success : error
 
-  const showSubmitErrorDialog = () => {
-    error({
-      title: 'Problem submitting the question',
-      content: (
-        <Paragraph>
-          There was an error while submitting your question. Please try again!
-        </Paragraph>
-      ),
-      maskClosable: true,
-    })
-  }
-
-  const showMoveToReviewSucessDialog = () => {
-    success({
-      title: 'Question moved to review',
-      content: <Paragraph>Question was moved to review successfully</Paragraph>,
-      maskClosable: true,
-    })
-  }
-
-  const showMoveToReviewErrorDialog = () => {
-    error({
-      title: 'Problem moving the question to review',
-      content: (
-        <Paragraph>
-          There was an error while moving your question to review. Please try
-          again!
-        </Paragraph>
-      ),
-      maskClosable: true,
-    })
-  }
-
-  const showPublishSuccessDialog = () => {
-    success({
-      title: 'Question published successfully',
-      content: (
-        <Paragraph>
-          Question was published and is now available in the Discover page
-        </Paragraph>
-      ),
-      maskClosable: true,
-    })
-  }
-
-  const showPublishErrorDialog = () => {
-    error({
-      title: 'Problem submitting the question',
-      content: (
-        <Paragraph>
-          There was an error while publishin the question. Please try again!
-        </Paragraph>
-      ),
-      maskClosable: true,
-    })
-  }
-
-  const showRejectSuccessDialog = () => {
-    success({
-      title: 'Question rejected',
-      content: <Paragraph>The question was rejected</Paragraph>,
-      maskClosable: true,
-    })
-  }
-
-  const showRejectErrorDialog = () => {
-    error({
-      title: 'Problem rejecting the question',
-      content: (
-        <Paragraph>
-          There was an error while rejecting this question. Please try again!
-        </Paragraph>
-      ),
+    dialogType({
+      title,
+      content,
       maskClosable: true,
     })
   }
@@ -619,10 +568,18 @@ const Question = props => {
       editorContent: waxRef.current.getContent(),
     })
       .then(() => {
-        showSubmitSuccessDialog()
+        showDialog(
+          'success',
+          'Question submitted successfully',
+          'Question was submitted successfully',
+        )
       })
       .catch(() => {
-        showSubmitErrorDialog()
+        showDialog(
+          'error',
+          'Problem submitting the question',
+          'There was an error while submitting your question. Please try again!',
+        )
       })
   }
   // #endregion handlers
