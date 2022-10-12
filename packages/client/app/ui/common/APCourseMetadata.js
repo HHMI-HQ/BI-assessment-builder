@@ -51,13 +51,13 @@ const APCourseMetadata = props => {
   useEffect(() => {
     if (!supplementaryKey) {
       setFieldsValue({
-        [unitField]: null,
-        [topicField]: null,
+        [unitKey]: null,
+        [topicKey]: null,
         [learningObjectiveKey]: null,
         [essentialKnowledgeKey]: null,
       })
     }
-  }, [])
+  }, [courseData])
 
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
