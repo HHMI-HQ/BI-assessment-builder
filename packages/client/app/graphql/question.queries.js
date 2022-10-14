@@ -122,6 +122,7 @@ export const QUESTION = gql`
   query Question($id: ID!) {
     question(id: $id) {
       id
+      rejected
       versions(latestOnly: true) {
         id
         content

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { th } from '@coko/client'
 
-import { Question, metadata, resources } from 'ui'
+import { Question, Checkbox, metadata, resources } from 'ui'
 import {
   flatAPCoursesMetadata,
   flatIBCourseMetadata,
@@ -292,6 +292,8 @@ export const Base = args => {
   const [editorContent, setEditorContent] = useState(initialContent)
   const [lastUpdated, setLastUpdated] = useState(new Date().toISOString())
 
+  const [error, setError] = useState(false)
+
   const emptyNavigationFunction = e => {
     e.preventDefault()
     console.log('link clicked')
@@ -305,8 +307,17 @@ export const Base = args => {
       content: JSON.parse(JSON.stringify(data.editorContent)),
     }
 
-    setEditorContent(editorState)
-    setSubmitted(true)
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!error) {
+          setEditorContent(editorState)
+          setSubmitted(true)
+          resolve()
+        } else {
+          reject()
+        }
+      }, 1000)
+    })
   }
 
   const handleEditorContentChanged = newContent => {
@@ -333,6 +344,9 @@ export const Base = args => {
 
   return (
     <Wrapper>
+      <Checkbox onChange={e => setError(e.target.checked)}>
+        Will have error on submit
+      </Checkbox>
       <Question
         {...args}
         autoSaveInterval={5000}
@@ -357,17 +371,50 @@ export const Base = args => {
 
 export const EditorView = () => {
   const [reviewing, setReviewing] = useState(false)
+  const [published, setPublished] = useState(false)
+  const [rejected, setRejected] = useState(false)
+  const [error, setError] = useState(false)
 
-  const reject = () => {
+  const rejectQuestion = () => {
     console.log('rejected')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!error) {
+          setRejected(true)
+          resolve()
+        } else {
+          reject()
+        }
+      }, 1000)
+    })
   }
 
   const publish = () => {
     console.log('publish')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!error) {
+          setPublished(true)
+          resolve()
+        } else {
+          reject()
+        }
+      }, 1000)
+    })
   }
 
   const moveToReview = () => {
-    setReviewing(true)
+    console.log('move to review')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!error) {
+          setReviewing(true)
+          resolve()
+        } else {
+          reject()
+        }
+      }, 1000)
+    })
   }
 
   const handleEditorContentChanged = newContent => {
@@ -377,11 +424,17 @@ export const EditorView = () => {
 
   return (
     <Wrapper>
+      <Checkbox onChange={e => setError(e.target.checked)}>
+        Will have error on move to review/publish/reject
+      </Checkbox>
       <Question
         editorContent={editorInitialContent}
         editorView
         initialMetadataValues={metadataApiToUi(initialMetadataValues)}
+        isPublished={published}
+        isRejected={rejected}
         isSubmitted
+        isUnderReview={reviewing}
         loading={false}
         metadata={flatMeta}
         onClickBackButton={() => console.log('go back to dashboard')}
@@ -390,11 +443,11 @@ export const EditorView = () => {
         onMoveToReview={moveToReview}
         onPublish={publish}
         onQuestionSubmit={data => console.log(data)}
-        onReject={reject}
+        onReject={rejectQuestion}
         questionAgreedTc={false}
         resources={resources}
+        showAssignHEButton={false}
         submitting={false}
-        underReview={reviewing}
       />
     </Wrapper>
   )
