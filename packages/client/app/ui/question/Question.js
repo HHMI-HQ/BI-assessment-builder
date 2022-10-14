@@ -179,6 +179,9 @@ const MemoizedWax = memo(
       published && !submitted && !withMetadata,
     )
 
+    // only for users taking the test in student view
+    const preserveLocalState = published && !withMetadata
+
     const submitTest = () => {
       setSubmitted(true)
       setTestMode(false)
@@ -217,7 +220,7 @@ const MemoizedWax = memo(
         <EditorScrollContainer>
           <WaxWrapper
             config={config}
-            content={testMode ? editorContent : content}
+            content={preserveLocalState ? editorContent : content}
             customValues={{ showFeedBack: submitted, testMode }}
             innerRef={innerRef}
             layout={layout}
