@@ -22,10 +22,13 @@ import {
   Modal,
   Paragraph,
   Radio,
+  Ribbon,
   Spin,
   TabsStyled as Tabs,
 } from '../common'
 import WaxWrapper from '../wax/Wax'
+
+const { confirm, info, success, error } = Modal
 
 // #region styled
 const Wrapper = styled.div`
@@ -350,6 +353,7 @@ const Question = props => {
     initialMetadataValues,
     isUserLoggedIn,
     isPublished,
+    isRejected,
     isSubmitted,
     isUnderReview,
     loading,
@@ -380,8 +384,9 @@ const Question = props => {
   const [showMetadata, setShowMetadata] = useState(isUserLoggedIn)
 
   const readOnly =
-    (editorView && (isUnderReview || isPublished)) ||
-    (!editorView && isSubmitted)
+    (editorView && (!isUnderReview || isPublished)) ||
+    (!editorView && isSubmitted) ||
+    isRejected
 
   // need to reset showMetadata, in case user loads after the page is rendered
   useEffect(() => {
@@ -405,7 +410,7 @@ const Question = props => {
 
   const showTermsAndConditions = e => {
     e.preventDefault()
-    Modal.info({
+    info({
       title: 'Accept Terms and Conditions',
       content: (
         <Paragraph>
@@ -452,7 +457,110 @@ const Question = props => {
   }
 
   const handleSubmit = () => {
-    formRef.current.submit()
+    confirm({
+      title: 'Are you sure you want to submit the question?',
+      content:
+        'This will make the question visible to editors an reviewers, and after a successful review it will be published for all users.',
+      okText: 'Submit',
+      okType: 'primary',
+      onOk() {
+        formRef.current.submit()
+      },
+      onCancel() {},
+    })
+  }
+
+  const handleMoveToReview = () => {
+    confirm({
+      title: 'You are about to move the question to review',
+      content:
+        'Editors will be able to make changes to the question and then publish it. Are you sure?',
+      okText: 'Move to review',
+      okType: 'primary',
+      onOk() {
+        onMoveToReview()
+          .then(() => {
+            showDialog(
+              'success',
+              'Question moved to review',
+              'Question was moved to review successfully',
+            )
+          })
+          .catch(() => {
+            showDialog(
+              'error',
+              'Problem moving the question to review',
+              'There was an error while moving your question to review. Please try again!',
+            )
+          })
+      },
+      onCancel() {},
+    })
+  }
+
+  const handlePublish = () => {
+    confirm({
+      title: 'Are you sure you want to publish this question version?',
+      content:
+        'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Discover page',
+      okText: 'Yes, publish',
+      okType: 'primary',
+      onOk() {
+        onPublish()
+          .then(() => {
+            showDialog(
+              'success',
+              'Question published successfully',
+              'Question was published and is now available in the Discover page',
+            )
+          })
+          .catch(() => {
+            showDialog(
+              'error',
+              'Problem publishing the question',
+              'There was an error while publishin the question. Please try again',
+            )
+          })
+      },
+      onCancel() {},
+    })
+  }
+
+  const handleReject = () => {
+    confirm({
+      title: 'Are you sure you want to reject this question?',
+      content: 'By rejecting, the question will not be reviewed or published.',
+      okText: 'Reject',
+      okType: 'primary',
+      onOk() {
+        onReject()
+          .then(() => {
+            showDialog(
+              'success',
+              'Question rejected',
+              'The question was rejected',
+            )
+          })
+          .catch(() => {
+            showDialog(
+              'error',
+              'Problem rejecting the questions',
+              'There was an error while rejecting this question. Please try again!',
+            )
+          })
+      },
+      onCancel() {},
+    })
+  }
+
+  const showDialog = (type, title, content) => {
+    const dialogType = type === 'success' ? success : error
+
+    dialogType({
+      title,
+      content,
+      maskClosable: true,
+    })
   }
 
   const onFormFinish = values => {
@@ -461,6 +569,20 @@ const Question = props => {
       metadata: values,
       editorContent: waxRef.current.getContent(),
     })
+      .then(() => {
+        showDialog(
+          'success',
+          'Question submitted successfully',
+          'Question was submitted successfully',
+        )
+      })
+      .catch(() => {
+        showDialog(
+          'error',
+          'Problem submitting the question',
+          'There was an error while submitting your question. Please try again!',
+        )
+      })
   }
   // #endregion handlers
 
@@ -542,20 +664,18 @@ const Question = props => {
           Assign HE
         </StyledButton>
       )}
-
       {isUnderReview && (
-        <StyledButton onClick={onPublish} type="primary">
+        <StyledButton onClick={handlePublish} type="primary">
           Publish
         </StyledButton>
       )}
-
       {isSubmitted && !isUnderReview && !isPublished && (
         <>
-          <StyledButton onClick={onReject} type="danger">
+          <StyledButton onClick={handleReject} type="danger">
             Do not accept
           </StyledButton>
 
-          <StyledButton onClick={onMoveToReview} type="primary">
+          <StyledButton onClick={handleMoveToReview} type="primary">
             Move to Review
           </StyledButton>
         </>
@@ -573,7 +693,7 @@ const Question = props => {
           lastAutoSave={updated && new Date(updated)}
         />
       )}
-      {editorView ? RightAreaEditor : RightAreaAuthor}
+      {!isRejected && (editorView ? RightAreaEditor : RightAreaAuthor)}
     </RightAreaWrapper>
   )
 
@@ -615,32 +735,39 @@ const Question = props => {
               label: QuestionTab,
               key: 0,
               children: (
-                <QuestionWrapper showMetadata={showMetadata}>
-                  <MemoizedWax
-                    content={editorContent}
-                    innerRef={waxRef}
-                    layout={facultyView ? TestModeLayout : HhmiLayout}
-                    onContentChange={handleQuestionContentChange}
-                    published={isPublished}
-                    readOnly={readOnly}
-                    withMetadata={showMetadata}
-                  />
-                  {showMetadata && (
-                    <MetadataWrapper>
-                      <Metadata
-                        editorView={editorView}
-                        initialValues={initialMetadataValues}
-                        innerRef={formRef}
-                        metadata={metadata}
-                        onAutoSave={handleMetadataAutoSave}
-                        onFormFinish={onFormFinish}
-                        presentationMode={facultyView}
-                        readOnly={readOnly}
-                        resources={resources}
-                      />
-                    </MetadataWrapper>
+                <>
+                  {isRejected && (
+                    <Ribbon status="error">
+                      This question has been rejected by the editors
+                    </Ribbon>
                   )}
-                </QuestionWrapper>
+                  <QuestionWrapper showMetadata={showMetadata}>
+                    <MemoizedWax
+                      content={editorContent}
+                      innerRef={waxRef}
+                      layout={facultyView ? TestModeLayout : HhmiLayout}
+                      onContentChange={handleQuestionContentChange}
+                      published={isPublished}
+                      readOnly={readOnly}
+                      withMetadata={showMetadata}
+                    />
+                    {showMetadata && (
+                      <MetadataWrapper>
+                        <Metadata
+                          editorView={editorView}
+                          initialValues={initialMetadataValues}
+                          innerRef={formRef}
+                          metadata={metadata}
+                          onAutoSave={handleMetadataAutoSave}
+                          onFormFinish={onFormFinish}
+                          presentationMode={facultyView}
+                          readOnly={readOnly}
+                          resources={resources}
+                        />
+                      </MetadataWrapper>
+                    )}
+                  </QuestionWrapper>
+                </>
               ),
             },
           ]}
@@ -675,6 +802,7 @@ Question.propTypes = {
   questionAgreedTc: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
+  isRejected: PropTypes.bool.isRequired,
   isSubmitted: PropTypes.bool.isRequired,
   isUnderReview: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool,
