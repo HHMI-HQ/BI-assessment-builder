@@ -92,6 +92,8 @@ export const Base = args => {
         loading={false}
         metadata={metadataTransformer(metadata)}
         onClickBackButton={emptyNavigationFunction}
+        onClickNextButton={emptyNavigationFunction}
+        onClickPreviousButton={emptyNavigationFunction}
         onEditorContentAutoSave={handleEditorContentChanged}
         onMetadataAutoSave={handleMetadataAutosave}
         onQuestionSubmit={onSubmit}
