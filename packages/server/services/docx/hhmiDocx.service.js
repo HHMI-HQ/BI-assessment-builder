@@ -71,6 +71,10 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       question_node_true_false: this.trueFalseQuestionHandler,
       true_false: this.trueFalseOptionHandler,
 
+      true_false_single_correct_container: this.trueFalseHandler,
+      question_node_true_false_single: this.trueFalseQuestionHandler,
+      true_false_single_correct: this.trueFalseOptionHandler,
+
       fill_the_gap_container: this.fillTheGapContainerHandler,
       fill_the_gap: this.fillTheGapHandler,
     }
