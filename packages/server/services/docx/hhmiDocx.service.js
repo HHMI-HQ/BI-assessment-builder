@@ -1,3 +1,5 @@
+const cloneDeep = require('lodash/cloneDeep')
+
 const {
   AlignmentType,
   Document,
@@ -60,6 +62,19 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       multiple_choice_container: this.multipleChoiceHandler,
       question_node_multiple: this.multipleChoiceQuestionHandler,
       multiple_choice: this.multipleChoiceOptionHandler,
+
+      multiple_choice_single_correct_container: this.multipleChoiceHandler,
+      question_node_multiple_single: this.multipleChoiceQuestionHandler,
+      multiple_choice_single_correct: this.multipleChoiceOptionHandler,
+
+      true_false_container: this.trueFalseHandler,
+      question_node_true_false: this.trueFalseQuestionHandler,
+      true_false: this.trueFalseOptionHandler,
+
+      true_false_single_correct_container: this.trueFalseHandler,
+      question_node_true_false_single: this.trueFalseQuestionHandler,
+      true_false_single_correct: this.trueFalseOptionHandler,
+
       fill_the_gap_container: this.fillTheGapContainerHandler,
       fill_the_gap: this.fillTheGapHandler,
     }
@@ -106,12 +121,14 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     this.showFeedback = options.showFeedback || false
     this.showMetadata = options.showMetadata || false
     this.multipleChoiceSolutions = {}
+    this.trueFalseSolutions = {}
     this.fillTheGapSolutions = {}
     this.fillTheGapFeedback = {}
 
     this.metadataSpacing = new TextRun({ text: '  ' })
   }
 
+  // #region multiple-choice
   multipleChoiceHandler = multipleChoice => {
     const groupId = multipleChoice.attrs.id
     this.listInstance += 1
@@ -130,25 +147,71 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     ]
   }
 
-  multipleChoiceQuestionHandler = question => {
-    const parsed = this.contentParser(question.content)
+  multipleChoiceQuestionHandler = question =>
+    this.contentParser(question.content)
 
-    // const label = new Paragraph({
-    //   children: [
-    //     new TextRun({
-    //       text: 'Question:',
-    //       bold: true,
-    //       size: this.baseFontSize + 2,
-    //     }),
-    //   ],
-    // })
+  multipleChoiceOptionHandler = (multipleChoiceOption, options = {}) => {
+    const { /* id, */ correct, feedback } = multipleChoiceOption.attrs
+    const { multipleChoiceGroupId } = options
 
-    // const output = [label, ...parsed]
-    // return output
+    this.multipleChoiceSolutions[multipleChoiceGroupId].push({
+      correct,
+      feedback,
+    })
 
-    return parsed
+    return this.contentParser(multipleChoiceOption.content, options)
+  }
+  // #endregion multiple-choice
+
+  // #region true-false
+  trueFalseHandler = trueFalse => {
+    const groupId = trueFalse.attrs.id
+    this.listInstance += 1
+    this.trueFalseSolutions[groupId] = []
+
+    return [
+      new Paragraph({
+        children: [],
+      }),
+      ...this.contentParser(
+        // remove last item, as it's an empty paragraph that wax generates
+        trueFalse.content.slice(0, trueFalse.content.length - 1),
+        {
+          trueFalseGroupId: groupId,
+          instance: this.listInstance,
+          listType: this.listTypes.MULTIPLE_CHOICE,
+          level: 0,
+        },
+      ),
+    ]
   }
 
+  trueFalseQuestionHandler = question => {
+    return this.contentParser(question.content)
+  }
+
+  trueFalseOptionHandler = (trueFalseOption, options = {}) => {
+    const { /* id, */ correct, feedback } = trueFalseOption.attrs
+    const { trueFalseGroupId } = options
+
+    this.trueFalseSolutions[trueFalseGroupId].push({
+      correct,
+      feedback,
+    })
+
+    const { content } = cloneDeep(trueFalseOption)
+    const lastChild = content[content.length - 1]
+
+    lastChild.content.push({
+      type: 'text',
+      text: '      True / False',
+    })
+
+    return this.contentParser(content, options)
+  }
+  // #endregion true-false
+
+  // #region fill-the-gap
   fillTheGapContainerHandler = container => {
     const groupId = container.attrs.id
     this.fillTheGapSolutions[groupId] = []
@@ -173,18 +236,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
     return new TextRun({ text: '  ______  ' })
   }
-
-  multipleChoiceOptionHandler = (multipleChoiceOption, options = {}) => {
-    const { /* id, */ correct, feedback } = multipleChoiceOption.attrs
-    const { multipleChoiceGroupId } = options
-
-    this.multipleChoiceSolutions[multipleChoiceGroupId].push({
-      correct,
-      feedback,
-    })
-
-    return this.contentParser(multipleChoiceOption.content, options)
-  }
+  // #endregion fill-the-gap
 
   feedbackParser = () => {
     let content = [
@@ -207,6 +259,58 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       let listContent = []
 
       if (multipleChoiceSolutionKeys.length > 1) {
+        listContent.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `Multiple choice question ${i + 1}`,
+                bold: true,
+              }),
+            ],
+          }),
+        )
+      }
+
+      groupSolutions.forEach(option => {
+        const isCorrect = new Paragraph({
+          children: [
+            new TextRun({
+              text: option.correct ? 'Correct' : 'Not correct',
+            }),
+          ],
+          numbering: {
+            reference: this.listTypes.MULTIPLE_CHOICE,
+            level: 0,
+            instance: this.listInstance,
+          },
+          spacing: {
+            after: 50,
+          },
+        })
+
+        const feedback = new Paragraph({
+          children: [new TextRun({ text: option.feedback })],
+          indent: {
+            left: convertMillimetersToTwip(7),
+          },
+        })
+
+        listContent = listContent.concat([isCorrect, feedback])
+      })
+
+      content = content.concat(listContent)
+    })
+
+    // TO DO -- refactor with multiple choice
+    const trueFalseSolutionKeys = Object.keys(this.trueFalseSolutions)
+
+    trueFalseSolutionKeys.forEach((groupId, i) => {
+      this.listInstance += 1
+      const groupSolutions = this.trueFalseSolutions[groupId]
+
+      let listContent = []
+
+      if (trueFalseSolutionKeys.length > 1) {
         listContent.push(
           new Paragraph({
             children: [

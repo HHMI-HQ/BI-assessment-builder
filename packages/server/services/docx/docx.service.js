@@ -53,6 +53,7 @@ class WaxToDocxConverter {
     this.typeToHandlerMap = {
       bulletlist: this.bulletListHandler,
       figure: this.figureHandler,
+      hard_break: this.hardBreakHandler,
       image: this.imageHandler,
       list_item: this.listItemHandler,
       orderedlist: this.orderedListHandler,
@@ -328,7 +329,7 @@ class WaxToDocxConverter {
         bottom: 70,
         left: 100,
       },
-      verticalAlign: VerticalAlign.BOTTOM,
+      verticalAlign: VerticalAlign.TOP,
     })
   }
   // #endregion tables
@@ -406,6 +407,11 @@ class WaxToDocxConverter {
     }
 
     return new Paragraph(paragraphObject)
+  }
+
+  /* eslint-disable-next-line class-methods-use-this */
+  hardBreakHandler = () => {
+    return new TextRun({ text: '' })
   }
 
   contentParser = (content, options = {}) => {

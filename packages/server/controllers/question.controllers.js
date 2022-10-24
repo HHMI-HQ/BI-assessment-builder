@@ -351,12 +351,17 @@ const generateWordFile = async (questionVersionId, options = {}) => {
 
     const version = await QuestionVersion.findById(questionVersionId)
 
-    const formatDate = date =>
-      date.toLocaleDateString('en-US', {
+    const formatDate = date => {
+      if (!date) return 'N/A'
+
+      return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       })
+    }
+
+    // console.log(version.content)
 
     const converter = new WaxToDocxConverter(
       version.content,
