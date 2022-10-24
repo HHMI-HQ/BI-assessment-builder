@@ -14,6 +14,8 @@ const isAdmin = rule()(async (_, __, ctx) => {
 
 const permissions = {
   Mutation: {
+    // Authentication
+    resendVerificationEmailAfterLogin: isAuthenticated,
     // Users
     submitQuestionnaire: isAuthenticated,
     updateUserProfile: isAuthenticated,
@@ -39,6 +41,8 @@ const permissions = {
       }),
 
     // Teams
+    addTeamMember: isAuthenticated,
+    updateTeamMembership: isAuthenticated,
     updateGlobalTeams: isAuthenticated && isAdmin,
 
     // Questions
@@ -53,6 +57,7 @@ const permissions = {
     // Users
     filterUsers: isAuthenticated && isAdmin,
     // Teams
+    getGlobalTeams: isAuthenticated && isAdmin,
     getNonTeamMemberUsers: isAuthenticated && isAdmin,
     // Questions:
     getAuthorDashboard: isAuthenticated,
