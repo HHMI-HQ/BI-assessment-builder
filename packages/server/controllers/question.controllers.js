@@ -361,6 +361,8 @@ const generateWordFile = async (questionVersionId, options = {}) => {
       })
     }
 
+    // console.log(version.content)
+
     const converter = new WaxToDocxConverter(
       version.content,
       {}, // image data
