@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { debounce as lodashDebounceFunc } from 'lodash'
@@ -20,28 +20,54 @@ const StyledDropdown = styled.div`
   }
 `
 
-const dropdownRender = (menu, wrapOptionText) => (
-  <StyledDropdown wrapOptionText={wrapOptionText}>{menu}</StyledDropdown>
-)
-
 const Select = props => {
   const {
     async,
     className,
     // debounce,
     debounceTimeout,
+    maxCount,
 
     // disable rule for props handled by ant
     /* eslint-disable react/prop-types */
     filterOption,
+    mode,
     notFoundContent,
     onSearch,
     showSearch,
+    options,
     /* eslint-enable react/prop-types */
 
     wrapOptionText,
     ...rest
   } = props
+
+  // check if mode === multiple and there is a max count
+  // the following state and handleChange are relevant only to this case
+  const modeMutipleWithMaxCount = mode === 'multiple' && !!maxCount > 0
+  const [selectOptions, setSelectOptions] = useState(options)
+  const [multipleValues, setMultipleValues] = useState([])
+
+  const handleChange = vals => {
+    // when reaching maxCount
+    if (mode === 'multiple' && vals.length === maxCount) {
+      // disable all other options
+      setSelectOptions(opts => {
+        return opts.map(opt => {
+          if (vals.indexOf(opt.value) === -1) return { ...opt, disabled: true }
+          return opt
+        })
+      })
+    }
+
+    // when deselecting after reaching maxCount
+    if (multipleValues.length === maxCount && vals.length < maxCount) {
+      // re-enable the other options as per initial state
+      setSelectOptions(options)
+    }
+
+    setMultipleValues(vals)
+  }
 
   const handleSearch = searchValue => {
     onSearch(searchValue)
@@ -56,14 +82,26 @@ const Select = props => {
   return (
     <StyledSelect
       className={className}
-      defaultOpen={false}
-      dropdownRender={menu => dropdownRender(menu, wrapOptionText)}
+      // eslint-disable-next-line react/no-unstable-nested-components
+      dropdownRender={menu => {
+        return (
+          <StyledDropdown wrapOptionText={wrapOptionText}>
+            {menu}
+          </StyledDropdown>
+        )
+      }}
       filterOption={async && !filterOption ? false : filterOption}
-      forceRender
+      mode={mode}
       notFoundContent={!notFoundContent && async ? null : notFoundContent}
       onSearch={onSearch && searchFunc}
+      options={modeMutipleWithMaxCount ? selectOptions : options}
       showSearch={showSearch || !!onSearch}
-      virtual={false}
+      {...(modeMutipleWithMaxCount
+        ? {
+            onChange: handleChange,
+            value: multipleValues,
+          }
+        : {})}
       {...rest}
     />
   )
@@ -73,6 +111,7 @@ Select.propTypes = {
   async: PropTypes.bool,
   // debounce: PropTypes.bool,
   debounceTimeout: PropTypes.number,
+  maxCount: PropTypes.number,
   wrapOptionText: PropTypes.bool,
 }
 
@@ -80,6 +119,7 @@ Select.defaultProps = {
   async: false,
   // debounce: false,
   debounceTimeout: 500,
+  maxCount: 0,
   wrapOptionText: false,
 }
 
