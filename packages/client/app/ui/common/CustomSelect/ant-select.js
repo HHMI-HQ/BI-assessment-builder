@@ -119,14 +119,12 @@ const InternalSelect = (
   } else if (mode === 'combobox') {
     mergedNotFound = null
   } else {
-    mergedNotFound = (
-      renderEmpty || (
-        <Empty
-          className={`${getPrefixCls('empty')}-small`}
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
-      )
-    )('Select')
+    mergedNotFound = renderEmpty || (
+      <Empty
+        className={`${getPrefixCls('empty')}-small`}
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    )
   }
 
   // ===================== Icons =====================
