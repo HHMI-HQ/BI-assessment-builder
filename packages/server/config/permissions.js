@@ -139,6 +139,7 @@ const permissions = {
     moveQuestionVersionToReview: isEditor,
     moveQuestionVersionToProduction: isEditor,
     publishQuestionVersion: isEditor,
+    createNewQuestionVersion: isEditor,
   },
   Query: {
     // Users
