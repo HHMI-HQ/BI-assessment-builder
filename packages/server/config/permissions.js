@@ -89,13 +89,13 @@ const canUpdateQuestion = rule()(
       return isQuestionAuthor(ctx.connectors.Team.model, ctx.user, questionId)
     }
 
-    // the only other editable state === 'inProduction'
+    // the only other editable state is 'inProduction'
     if (question.inProduction) {
       // only editors can edit
       return user.hasGlobalRole('editor')
     }
 
-    // if submitted, under review or published
+    // if just submitted, under review or published
     return false
   },
 )
