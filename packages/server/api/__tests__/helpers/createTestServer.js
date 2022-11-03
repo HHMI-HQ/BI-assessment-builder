@@ -20,8 +20,6 @@ const schema = require('pubsweet-server/src/graphql/schema')
 const { applyMiddleware } = require('graphql-middleware')
 const { shield } = require('graphql-shield')
 
-const { User } = require('../../../models')
-
 // const hostname = config.has('pubsweet-server.hostname')
 //   ? config.get('pubsweet-server.hostname')
 //   : 'localhost'
@@ -102,11 +100,4 @@ const createGraphQLServer = testUserContext => {
 
 // const createGraphQLServer = require('../../../graphqlServer')
 
-const createTestServer = async () => {
-  // the user that will be making the calls
-  const user = await User.insert({})
-
-  return createGraphQLServer(user.id)
-}
-
-module.exports = createTestServer
+module.exports = createGraphQLServer

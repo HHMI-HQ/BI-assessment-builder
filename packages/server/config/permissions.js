@@ -1,13 +1,11 @@
 const { rule, isAuthenticated } = require('@coko/server/authorization')
 
 const isActive = rule()(async (_, __, ctx) => {
-  if (ctx.user) {
-    const UserModel = ctx.connectors.User.model
-    const user = await UserModel.query().findById(ctx.user)
-    return user.isActive
-  }
+  if (!ctx.user) return false
 
-  return false
+  const UserModel = ctx.connectors.User.model
+  const user = await UserModel.query().findById(ctx.user)
+  return user.isActive
 })
 
 const isEditor = rule()(async (_, __, ctx) => {
@@ -105,7 +103,7 @@ const permissions = {
     // Authentication
     resendVerificationEmailAfterLogin: isAuthenticated,
     // Users
-    submitQuestionnaire: isAuthenticated,
+    submitQuestionnaire: isActive,
     updateUserProfile: isActive,
     updatePassword:
       isActive &&
