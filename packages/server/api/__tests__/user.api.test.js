@@ -49,8 +49,8 @@ describe('User API authorization', () => {
   beforeEach(async () => clearDb())
 
   afterAll(() => {
-    const knex = User.knex()
-    knex.destroy()
+    const user = User.knex()
+    user.destroy()
   })
 
   it('blocks inactive users from quering users', async () => {
