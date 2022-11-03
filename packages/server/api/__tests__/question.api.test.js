@@ -61,7 +61,7 @@ describe('Question API authorization', () => {
 
   afterAll(() => {
     const question = Question.knex()
-    const user = Question.knex()
+    const user = User.knex()
     question.destroy()
     user.destroy()
   })
