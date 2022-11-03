@@ -19,7 +19,7 @@ import {
 } from '@coko/client'
 
 // import { NavigationBar } from './ui'
-import { Button /* Spin */ } from 'ui'
+import { Button, VisuallyHiddenElement /* Spin */ } from 'ui'
 import { hasGlobalRole, MetadataProvider } from './utilities'
 // import { logout } from './utilities'
 
@@ -40,11 +40,42 @@ import {
 
 import { CURRENT_USER } from './graphql'
 
-const Layout = styled.div`
+const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
 `
+
+const pathToPageNameMap = {
+  '/discover': 'Discover page',
+  '/dashboard': 'Dashboard page',
+  '/manage-users': 'User Manager page',
+  '/manage-teams': 'Team Manager page',
+  '/profile': 'User Profile page',
+}
+
+const Layout = props => {
+  const { children } = props
+
+  const history = useHistory()
+
+  history.listen(val => {
+    document.getElementById('page-announcement').innerHTML =
+      pathToPageNameMap[val.pathname]
+  })
+
+  return (
+    <LayoutWrapper>
+      {children}
+      <VisuallyHiddenElement
+        aria-live="polite"
+        as="div"
+        id="page-announcement"
+        role="status"
+      />
+    </LayoutWrapper>
+  )
+}
 
 const HeaderFooter = styled.div`
   align-items: center;
