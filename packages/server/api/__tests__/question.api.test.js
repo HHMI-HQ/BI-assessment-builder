@@ -1,5 +1,5 @@
 const createGraphQLServer = require('./helpers/createTestServer')
-const { User, Question } = require('../../models')
+const { User, Question, QuestionVersion } = require('../../models')
 
 const clearDb = require('../../models/__tests__/_clearDb')
 
@@ -62,6 +62,25 @@ const CREATE_QUESTION = `
       id
     }
   }
+`
+
+const UPDATE_QUESTION = `
+mutation UpdateQuestion(
+  $questionId: ID!
+  $questionVersionId: ID!
+  $input: UpdateQuestionInput!
+) {
+  updateQuestion(
+    questionId: $questionId
+    questionVersionId: $questionVersionId
+    input: $input
+  ) {
+    id
+    versions(latestOnly: true) {
+      id
+    }
+  }
+}
 `
 
 const SUBMIT_QUESTION = `
@@ -227,6 +246,187 @@ describe('Question API authorization', () => {
   })
 
   // updating questions...
+  it('blocks inactive users from updating questions', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks users from updating rejected questions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({ rejected: true })
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks question update if question is not submitted and user is not its author', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks question update if question is submitted but not yet under review', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const submittedVersion = await QuestionVersion.patchAndFetchById(
+      questionVersion.result[0].id,
+      { submitted: true },
+    )
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: submittedVersion.id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks question update if question is under review', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const submittedVersion = await QuestionVersion.patchAndFetchById(
+      questionVersion.result[0].id,
+      { underReview: true },
+    )
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: submittedVersion.id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks non-editors from updating questions in production', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const submittedVersion = await QuestionVersion.patchAndFetchById(
+      questionVersion.result[0].id,
+      { inProduction: true },
+    )
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: submittedVersion.id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks question update if question is published', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const submittedVersion = await QuestionVersion.patchAndFetchById(
+      questionVersion.result[0].id,
+      { published: true },
+    )
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: submittedVersion.id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
   //
   //
   it('blocks inactive users from submitting a question', async () => {
