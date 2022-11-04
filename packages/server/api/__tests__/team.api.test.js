@@ -52,6 +52,7 @@ describe('Team API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -76,6 +77,9 @@ describe('Team API authorization', () => {
       },
     })
 
+    const isAdmin = await user.hasGlobalRole('admin')
+    expect(user.isActive).toBe(true)
+    expect(isAdmin).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')

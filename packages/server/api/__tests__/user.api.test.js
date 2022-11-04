@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-commented-out-tests */
 const createGraphQLServer = require('./helpers/createTestServer')
-const { User, Team, TeamMember } = require('../../models')
+const { User, Team } = require('../../models')
 
 const clearDb = require('../../models/__tests__/_clearDb')
 
@@ -65,6 +65,7 @@ describe('User API authorization', () => {
       variables: { isActive: true },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -72,18 +73,13 @@ describe('User API authorization', () => {
 
   it('blocks users who are not admins from quering users', async () => {
     const user = await User.insert({
-      isActive: false,
+      isActive: true,
     })
 
-    const globalTeam = await Team.insert({
+    await Team.insert({
       role: 'admin',
       displayName: 'Admin',
       global: true,
-    })
-
-    await TeamMember.insert({
-      teamId: globalTeam.id,
-      userId: user.id,
     })
 
     const testServer = await createGraphQLServer(user.id)
@@ -93,6 +89,9 @@ describe('User API authorization', () => {
       variables: { isActive: true },
     })
 
+    const isAdmin = await user.hasGlobalRole('admin')
+    expect(user.isActive).toBe(true)
+    expect(isAdmin).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -131,6 +130,7 @@ describe('User API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -169,6 +169,7 @@ describe('User API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')

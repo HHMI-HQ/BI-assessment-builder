@@ -178,6 +178,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -201,6 +202,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -224,6 +226,9 @@ describe('Question API authorization', () => {
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -240,12 +245,12 @@ describe('Question API authorization', () => {
       query: CREATE_QUESTION,
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
 
-  // updating questions...
   it('blocks inactive users from updating questions', async () => {
     const user = await User.insert({
       isActive: false,
@@ -265,6 +270,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -288,6 +294,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(question.rejected).toBe(true)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -339,6 +346,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(submittedVersion.submitted).toBe(true)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -351,7 +359,7 @@ describe('Question API authorization', () => {
     const question = await Question.insert({})
     const questionVersion = await Question.getVersions(question.id)
 
-    const submittedVersion = await QuestionVersion.patchAndFetchById(
+    const underReviewVersion = await QuestionVersion.patchAndFetchById(
       questionVersion.result[0].id,
       { underReview: true },
     )
@@ -362,11 +370,12 @@ describe('Question API authorization', () => {
       query: UPDATE_QUESTION,
       variables: {
         questionId: question.id,
-        questionVersionId: submittedVersion.id,
+        questionVersionId: underReviewVersion.id,
         input: {},
       },
     })
 
+    expect(underReviewVersion.underReview).toBe(true)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -379,7 +388,7 @@ describe('Question API authorization', () => {
     const question = await Question.insert({})
     const questionVersion = await Question.getVersions(question.id)
 
-    const submittedVersion = await QuestionVersion.patchAndFetchById(
+    const inProductionVersion = await QuestionVersion.patchAndFetchById(
       questionVersion.result[0].id,
       { inProduction: true },
     )
@@ -390,11 +399,15 @@ describe('Question API authorization', () => {
       query: UPDATE_QUESTION,
       variables: {
         questionId: question.id,
-        questionVersionId: submittedVersion.id,
+        questionVersionId: inProductionVersion.id,
         input: {},
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
+    expect(inProductionVersion.inProduction).toBe(true)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -407,7 +420,7 @@ describe('Question API authorization', () => {
     const question = await Question.insert({})
     const questionVersion = await Question.getVersions(question.id)
 
-    const submittedVersion = await QuestionVersion.patchAndFetchById(
+    const publishedVersion = await QuestionVersion.patchAndFetchById(
       questionVersion.result[0].id,
       { published: true },
     )
@@ -418,17 +431,16 @@ describe('Question API authorization', () => {
       query: UPDATE_QUESTION,
       variables: {
         questionId: question.id,
-        questionVersionId: submittedVersion.id,
+        questionVersionId: publishedVersion.id,
         input: {},
       },
     })
 
+    expect(publishedVersion.published).toBe(true)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
-  //
-  //
   it('blocks inactive users from submitting a question', async () => {
     const user = await User.insert({
       isActive: false,
@@ -448,6 +460,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -493,6 +506,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -514,6 +528,9 @@ describe('Question API authorization', () => {
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -521,7 +538,7 @@ describe('Question API authorization', () => {
 
   it('blocks inactive users from moving questions to review', async () => {
     const user = await User.insert({
-      isActive: true,
+      isActive: false,
     })
 
     const question = await Question.insert({})
@@ -536,6 +553,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -557,6 +575,9 @@ describe('Question API authorization', () => {
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -578,6 +599,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -599,6 +621,9 @@ describe('Question API authorization', () => {
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -620,6 +645,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -641,6 +667,9 @@ describe('Question API authorization', () => {
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -661,6 +690,7 @@ describe('Question API authorization', () => {
       },
     })
 
+    expect(user.isActive).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
@@ -681,6 +711,9 @@ describe('Question API authorization', () => {
       },
     })
 
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(false)
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
