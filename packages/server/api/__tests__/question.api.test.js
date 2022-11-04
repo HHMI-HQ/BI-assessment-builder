@@ -56,6 +56,81 @@ const GET_EDITOR_DASHBOARD = `
   }
 `
 
+const CREATE_QUESTION = `
+  mutation CreateQuestion {
+    createQuestion {
+      id
+    }
+  }
+`
+
+const SUBMIT_QUESTION = `
+  mutation SubmitQuestion(
+    $questionId: ID!
+    $questionVersionId: ID!
+    $input: UpdateQuestionInput!
+  ) {
+    submitQuestion(
+      questionId: $questionId
+      questionVersionId: $questionVersionId
+      input: $input
+    ) {
+      id
+      agreedTc
+      versions(latestOnly: true, publishedOnly: false) {
+        submitted
+      }
+    }
+  }
+`
+
+const REJECT_QUESTION = `
+  mutation RejectQuestion($questionId: ID!) {
+    rejectQuestion(questionId: $questionId) {
+      id
+      rejected
+    }
+  }
+`
+
+const MOVE_QUESTION_VERSION_TO_REVIEW = `
+mutation MoveQuestionVersionToReview($questionVersionId: ID!) {
+  moveQuestionVersionToReview(questionVersionId: $questionVersionId) {
+    id
+    underReview
+  }
+}
+`
+
+const MOVE_QUESTION_VERSION_TO_PRODUCTION = `
+mutation MoveQuestionVersionToProdution($questionVersionId: ID!) {
+  moveQuestionVersionToProduction(questionVersionId: $questionVersionId) {
+    id
+    underReview
+    inProduction
+  }
+}
+`
+
+const PUBLISH_QUESTION_VERSION = `
+mutation PublishQuestionVersion($questionVersionId: ID!) {
+  publishQuestionVersion(questionVersionId: $questionVersionId) {
+    id
+  }
+}
+`
+
+const CREATE_NEW_VERSION = `
+mutation CreateNewQuestionVersion($questionId: ID!) {
+  createNewQuestionVersion(questionId: $questionId) {
+    id
+    versions(latestOnly: true, publishedOnly: false) {
+      id
+    }
+  }
+}
+`
+
 describe('Question API authorization', () => {
   beforeEach(async () => clearDb())
 
@@ -127,6 +202,282 @@ describe('Question API authorization', () => {
         page: 1,
         pageSize: 10,
         searchQuery: '',
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('blocks inactive users from creating questions', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: CREATE_QUESTION,
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  // updating questions...
+  //
+  //
+  it('blocks inactive users from submitting a question', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: SUBMIT_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('blocks users from submitting a question of which they are not authors', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: SUBMIT_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('blocks inactive users from rejecting questions', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const question = await Question.insert({})
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: REJECT_QUESTION,
+      variables: {
+        questionId: question.id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('blocks users who are not editors from rejecting questions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: REJECT_QUESTION,
+      variables: {
+        questionId: question.id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('blocks inactive users from moving questions to review', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: MOVE_QUESTION_VERSION_TO_REVIEW,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks users who are not editors from moving questions to review', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: MOVE_QUESTION_VERSION_TO_REVIEW,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks inactive users from moving questions to production', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: MOVE_QUESTION_VERSION_TO_PRODUCTION,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks users who are not editors from moving questions to production', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: MOVE_QUESTION_VERSION_TO_PRODUCTION,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks inactive users from publishing a question', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: PUBLISH_QUESTION_VERSION,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks users who are not editors from publishing a question', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: PUBLISH_QUESTION_VERSION,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks inactive users from creating new question versions', async () => {
+    const user = await User.insert({
+      isActive: false,
+    })
+
+    const question = await Question.insert({})
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: CREATE_NEW_VERSION,
+      variables: {
+        questionId: question.id,
+      },
+    })
+
+    expect(result.data).toBe(null)
+    expect(result.errors.length).toBe(1)
+    expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('blocks users who are not editors from creating new question versions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: CREATE_NEW_VERSION,
+      variables: {
+        questionId: question.id,
       },
     })
 
