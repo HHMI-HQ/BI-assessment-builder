@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { grid } from '@coko/client'
+import { grid, th } from '@coko/client'
 
 import {
   Button,
@@ -24,6 +24,10 @@ const Wrapper = styled.aside`
   > div {
     height: 100%;
   }
+`
+
+const StyledHeading = styled.h2`
+  font-size: ${th('fontSizeBase')};
 `
 
 const StyledForm = styled(Form)`
@@ -125,7 +129,7 @@ const Sidebar = props => {
     <Wrapper className={className}>
       <StyledForm form={form} layout="vertical">
         <FormFieldsContainer>
-          <p>{text}</p>
+          <StyledHeading>{text}</StyledHeading>
           {metadata && (
             <>
               <TopicAndSubtopic
