@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Discover, DateParser } from 'ui'
+import { Discover, DateParser, VisuallyHiddenElement } from 'ui'
 import { useQuery } from '@apollo/client'
 
 import {
@@ -122,25 +122,28 @@ const DiscoverPage = () => {
   }
 
   return (
-    <Discover
-      loading={loading}
-      onSearch={handleSearch}
-      pageSize={PAGE_SIZE}
-      questions={
-        questionsData && metadata
-          ? transform(
-              questionsData.getPublishedQuestions.result,
-              metadata,
-              searchParams,
-            )
-          : []
-      }
-      showSort
-      sidebarMetadata={metadata}
-      sidebarText={sidebarText}
-      sortOptions={sortOptions}
-      totalCount={questionsData?.getPublishedQuestions.totalCount}
-    />
+    <>
+      <VisuallyHiddenElement as="h1">Discover page</VisuallyHiddenElement>
+      <Discover
+        loading={loading}
+        onSearch={handleSearch}
+        pageSize={PAGE_SIZE}
+        questions={
+          questionsData && metadata
+            ? transform(
+                questionsData.getPublishedQuestions.result,
+                metadata,
+                searchParams,
+              )
+            : []
+        }
+        showSort
+        sidebarMetadata={metadata}
+        sidebarText={sidebarText}
+        sortOptions={sortOptions}
+        totalCount={questionsData?.getPublishedQuestions.totalCount}
+      />
+    </>
   )
 }
 

@@ -8,7 +8,7 @@ import {
   CREATE_QUESTION,
   CURRENT_USER,
 } from '../graphql'
-import { Dashboard, DateParser } from '../ui'
+import { Dashboard, DateParser, VisuallyHiddenElement } from '../ui'
 import {
   hasGlobalRole,
   // dashboardDataMapper,
@@ -200,17 +200,20 @@ const DashboardPage = () => {
   // #endregion data
 
   return (
-    <Dashboard
-      // bulkActions
-      initialTabKey={initialTabKey}
-      loading={loading}
-      // onQuestionSelected
-      onClickCreate={handleCreateQuestion}
-      onSearch={handleSearch}
-      // showSort
-      // sortOptions
-      tabsContent={tabs}
-    />
+    <>
+      <VisuallyHiddenElement as="h1">Dashboard page</VisuallyHiddenElement>
+      <Dashboard
+        // bulkActions
+        initialTabKey={initialTabKey}
+        loading={loading}
+        // onQuestionSelected
+        onClickCreate={handleCreateQuestion}
+        onSearch={handleSearch}
+        // showSort
+        // sortOptions
+        tabsContent={tabs}
+      />
+    </>
   )
 }
 

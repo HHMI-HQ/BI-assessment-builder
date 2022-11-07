@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useMutation } from '@apollo/client'
 import { useCurrentUser } from '@coko/client'
 
-import { Profile, SignupQuestionnaire } from 'ui'
+import { Profile, SignupQuestionnaire, VisuallyHiddenElement } from 'ui'
 import {
   profileOptions,
   getCountries,
@@ -207,41 +207,47 @@ const UserProfile = props => {
 
   if (signup) {
     return (
-      <SignupQuestionnaire
+      <>
+        <VisuallyHiddenElement as="h1">User Profile</VisuallyHiddenElement>
+        <SignupQuestionnaire
+          countries={countryOptions}
+          courses={profileOptions.courses}
+          initialValues={initialValues}
+          institutionalSetting={profileOptions.institutionalSetting}
+          institutionLevels={profileOptions.institutionLevels}
+          loading={submitQuestionnaireLoading}
+          message={message}
+          onCountryChange={onCountryChange}
+          onSubmit={handleProfileSubmit}
+          states={statesOptions}
+          submissionStatus={submissionStatus}
+          submitted={submitted}
+          topics={profileOptions.topics}
+        />
+      </>
+    )
+  }
+
+  return (
+    <>
+      <VisuallyHiddenElement as="h1">User Profile</VisuallyHiddenElement>
+      <Profile
         countries={countryOptions}
         courses={profileOptions.courses}
         initialValues={initialValues}
         institutionalSetting={profileOptions.institutionalSetting}
         institutionLevels={profileOptions.institutionLevels}
-        loading={submitQuestionnaireLoading}
+        loading={updateProfileLoading || updatePasswordLoading}
         message={message}
         onCountryChange={onCountryChange}
-        onSubmit={handleProfileSubmit}
+        onPasswordUpdate={handlePasswordSubmit}
+        onProfileUpdate={handleProfileSubmit}
+        showSecondaryButton={false}
         states={statesOptions}
         submissionStatus={submissionStatus}
-        submitted={submitted}
         topics={profileOptions.topics}
       />
-    )
-  }
-
-  return (
-    <Profile
-      countries={countryOptions}
-      courses={profileOptions.courses}
-      initialValues={initialValues}
-      institutionalSetting={profileOptions.institutionalSetting}
-      institutionLevels={profileOptions.institutionLevels}
-      loading={updateProfileLoading || updatePasswordLoading}
-      message={message}
-      onCountryChange={onCountryChange}
-      onPasswordUpdate={handlePasswordSubmit}
-      onProfileUpdate={handleProfileSubmit}
-      showSecondaryButton={false}
-      states={statesOptions}
-      submissionStatus={submissionStatus}
-      topics={profileOptions.topics}
-    />
+    </>
   )
 }
 
