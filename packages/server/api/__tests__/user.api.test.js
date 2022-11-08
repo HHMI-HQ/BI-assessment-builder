@@ -76,12 +76,6 @@ describe('User API authorization', () => {
       isActive: true,
     })
 
-    await Team.insert({
-      role: 'admin',
-      displayName: 'Admin',
-      global: true,
-    })
-
     const testServer = await createGraphQLServer(user.id)
 
     const result = await testServer.executeOperation({

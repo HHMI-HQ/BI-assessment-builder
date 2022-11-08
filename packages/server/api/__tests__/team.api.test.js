@@ -14,7 +14,6 @@ const UPDATE_GLOBAL_TEAMS = `
         id
         user {
           id
-          displayName
         }
       }
     }
@@ -83,5 +82,47 @@ describe('Team API authorization', () => {
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('allow active admin users to update global teams', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const user2 = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'admin',
+      displayName: 'Admin',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_GLOBAL_TEAMS,
+      variables: {
+        input: [
+          {
+            id: globalTeam.id,
+            members: [user.id, user2.id],
+          },
+        ],
+      },
+    })
+
+    const isAdmin = await user.hasGlobalRole('admin')
+
+    expect(user.isActive).toBe(true)
+    expect(isAdmin).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
   })
 })
