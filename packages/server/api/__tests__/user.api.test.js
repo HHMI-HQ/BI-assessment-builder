@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-commented-out-tests */
 const createGraphQLServer = require('./helpers/createTestServer')
-const { User, Team } = require('../../models')
+const { Identity, User, Team, TeamMember } = require('../../models')
 
 const clearDb = require('../../models/__tests__/_clearDb')
 
@@ -97,6 +97,37 @@ describe('User API authorization', () => {
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
 
+  it('allows active users with admin role to query/filter users', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'admin',
+      displayName: 'Admin',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: FILTER_USERS,
+      variables: { isActive: true },
+    })
+
+    const isAdmin = await user.hasGlobalRole('admin')
+
+    expect(user.isActive).toBe(true)
+    expect(isAdmin).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from submitting the profile questionnaire', async () => {
     const user = await User.insert({
       isActive: false,
@@ -136,6 +167,52 @@ describe('User API authorization', () => {
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
 
+  it('allows active users to submit profile questionnaire', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    await Identity.insert({
+      userId: user.id,
+      email: 'user@coko.foundation',
+      isSocial: false,
+      isVerified: true,
+      isDefault: true,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: SUBMIT_QUESTIONNAIRE,
+      variables: {
+        input: {
+          givenNames: 'givenNames',
+          surname: 'surname',
+          displayName: 'displayName',
+          pronouns: 'pronouns',
+          email: 'user@coko.foundation',
+          phone: 'phone',
+          country: 'country',
+          state: 'state',
+          city: 'city',
+          position: 'position',
+          organization: 'organization',
+          institutionalSetting: 'institutionalSetting',
+          teachingExperience: 'teachingExperience',
+          reviewerInterest: false,
+          coursesTeaching: ['course1'],
+          topicsReviewing: ['topic1'],
+          receivedTraining: true,
+          receivedInclusiveLanguageTraining: true,
+        },
+      },
+    })
+
+    expect(user.isActive).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from updating their profile', async () => {
     const user = await User.insert({
       isActive: false,
@@ -173,6 +250,52 @@ describe('User API authorization', () => {
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('allows active users to update their profile', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    await Identity.insert({
+      userId: user.id,
+      email: 'user@coko.foundation',
+      isSocial: false,
+      isVerified: true,
+      isDefault: true,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_PROFILE,
+      variables: {
+        input: {
+          givenNames: 'givenNames',
+          surname: 'surname',
+          displayName: 'displayName',
+          pronouns: 'pronouns',
+          email: 'user@coko.foundation',
+          phone: 'phone',
+          country: 'country',
+          state: 'state',
+          city: 'city',
+          position: 'position',
+          organization: 'organization',
+          institutionalSetting: 'institutionalSetting',
+          teachingExperience: 'teachingExperience',
+          reviewerInterest: false,
+          coursesTeaching: ['course1'],
+          topicsReviewing: ['topic1'],
+          receivedTraining: true,
+          receivedInclusiveLanguageTraining: true,
+        },
+      },
+    })
+
+    expect(user.isActive).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
   })
 })
 
