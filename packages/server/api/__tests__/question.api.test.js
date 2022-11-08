@@ -1,5 +1,12 @@
 const createGraphQLServer = require('./helpers/createTestServer')
-const { User, Question, QuestionVersion } = require('../../models')
+
+const {
+  User,
+  Question,
+  QuestionVersion,
+  Team,
+  TeamMember,
+} = require('../../models')
 
 const clearDb = require('../../models/__tests__/_clearDb')
 
@@ -170,7 +177,7 @@ describe('Question API authorization', () => {
     const result = await testServer.executeOperation({
       query: GET_AUTHOR_DASHBOARD,
       variables: {
-        orderBy: 'date',
+        orderBy: 'created',
         ascending: true,
         page: 1,
         pageSize: 10,
@@ -184,6 +191,29 @@ describe('Question API authorization', () => {
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
 
+  it("allows active users to query author's dashboard", async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: GET_AUTHOR_DASHBOARD,
+      variables: {
+        orderBy: 'created',
+        ascending: true,
+        page: 1,
+        pageSize: 10,
+        searchQuery: '',
+      },
+    })
+
+    expect(user.isActive).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it("blocks inactive users from quering editor's dashboard", async () => {
     const user = await User.insert({
       isActive: false,
@@ -194,7 +224,7 @@ describe('Question API authorization', () => {
     const result = await testServer.executeOperation({
       query: GET_EDITOR_DASHBOARD,
       variables: {
-        orderBy: 'date',
+        orderBy: 'created',
         ascending: true,
         page: 1,
         pageSize: 10,
@@ -218,7 +248,7 @@ describe('Question API authorization', () => {
     const result = await testServer.executeOperation({
       query: GET_EDITOR_DASHBOARD,
       variables: {
-        orderBy: 'date',
+        orderBy: 'created',
         ascending: true,
         page: 1,
         pageSize: 10,
@@ -232,6 +262,42 @@ describe('Question API authorization', () => {
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it("allows active users with editor role to query editor's dashboard", async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const editorTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: editorTeam.id,
+      userId: user.id,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: GET_EDITOR_DASHBOARD,
+      variables: {
+        orderBy: 'created',
+        ascending: true,
+        page: 1,
+        pageSize: 10,
+        searchQuery: '',
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
   })
 
   it('blocks inactive users from creating questions', async () => {
@@ -249,6 +315,22 @@ describe('Question API authorization', () => {
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('allows active users to create questions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: CREATE_QUESTION,
+    })
+
+    expect(user.isActive).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
   })
 
   it('blocks inactive users from updating questions', async () => {
@@ -441,6 +523,99 @@ describe('Question API authorization', () => {
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
+
+  it('allows active authors to update question if it is not yet submitted', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const team = await Team.insert({
+      role: 'author',
+      displayName: 'Author',
+      global: false,
+      objectId: question.id,
+      objectType: 'question',
+    })
+
+    await TeamMember.insert({
+      teamId: team.id,
+      userId: user.id,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    const isAuthor = await Team.query()
+      .leftJoin('team_members', 'team_members.team_id', 'teams.id')
+      .select('teams.role')
+      .findOne({
+        'teams.object_id': question.id,
+        'team_members.user_id': user.id,
+        'teams.role': 'author',
+      })
+
+    expect(user.isActive).toBe(true)
+    expect(isAuthor.role).toBe('author')
+    expect(questionVersion.result[0].submitted).toBe(false)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
+  it('allows active editors to update question if it is in production', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const inProductionVersion = await QuestionVersion.patchAndFetchById(
+      questionVersion.result[0].id,
+      { submitted: true, inProduction: true },
+    )
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: UPDATE_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: inProductionVersion.id,
+        input: {},
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(inProductionVersion.inProduction).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from submitting a question', async () => {
     const user = await User.insert({
       isActive: false,
@@ -490,6 +665,53 @@ describe('Question API authorization', () => {
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
 
+  it('allows active authors to submit their questions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const team = await Team.insert({
+      role: 'author',
+      displayName: 'Author',
+      global: false,
+      objectId: question.id,
+      objectType: 'question',
+    })
+
+    await TeamMember.insert({
+      teamId: team.id,
+      userId: user.id,
+    })
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: SUBMIT_QUESTION,
+      variables: {
+        questionId: question.id,
+        questionVersionId: questionVersion.result[0].id,
+        input: {},
+      },
+    })
+
+    const isAuthor = await Team.query()
+      .leftJoin('team_members', 'team_members.team_id', 'teams.id')
+      .select('teams.role')
+      .findOne({
+        'teams.object_id': question.id,
+        'team_members.user_id': user.id,
+        'teams.role': 'author',
+      })
+
+    expect(user.isActive).toBe(true)
+    expect(isAuthor.role).toBe('author')
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from rejecting questions', async () => {
     const user = await User.insert({
       isActive: false,
@@ -534,6 +756,41 @@ describe('Question API authorization', () => {
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+
+  it('allows active editors to reject questions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const question = await Question.insert({})
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: REJECT_QUESTION,
+      variables: {
+        questionId: question.id,
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
   })
 
   it('blocks inactive users from moving questions to review', async () => {
@@ -582,6 +839,42 @@ describe('Question API authorization', () => {
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
+  it('allows active editors to move questions to review', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: MOVE_QUESTION_VERSION_TO_REVIEW,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from moving questions to production', async () => {
     const user = await User.insert({
       isActive: false,
@@ -628,6 +921,42 @@ describe('Question API authorization', () => {
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
+  it('allows active editors to move questions to production', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: MOVE_QUESTION_VERSION_TO_PRODUCTION,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from publishing a question', async () => {
     const user = await User.insert({
       isActive: false,
@@ -674,6 +1003,42 @@ describe('Question API authorization', () => {
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
   })
+  it('allows active editors to publish questions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const question = await Question.insert({})
+    const questionVersion = await Question.getVersions(question.id)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: PUBLISH_QUESTION_VERSION,
+      variables: {
+        questionVersionId: questionVersion.result[0].id,
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
+  })
+
   it('blocks inactive users from creating new question versions', async () => {
     const user = await User.insert({
       isActive: false,
@@ -717,5 +1082,39 @@ describe('Question API authorization', () => {
     expect(result.data).toBe(null)
     expect(result.errors.length).toBe(1)
     expect(result.errors[0].message).toEqual('Not Authorised!')
+  })
+  it('allows active editors to create new question versions', async () => {
+    const user = await User.insert({
+      isActive: true,
+    })
+
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    const question = await Question.insert({})
+
+    const testServer = await createGraphQLServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: CREATE_NEW_VERSION,
+      variables: {
+        questionId: question.id,
+      },
+    })
+
+    const isEditor = await user.hasGlobalRole('editor')
+
+    expect(user.isActive).toBe(true)
+    expect(isEditor).toBe(true)
+    expect(result.errors).toBe(undefined)
+    expect(result.data).not.toBe(null)
   })
 })
