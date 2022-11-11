@@ -1,8 +1,8 @@
 import {
   topics as topicsMetadata,
   frameworks as frameworksMeta,
-} from '../app/ui/question/metadataValues'
-import flatMetadataValues from '../app/ui/_helpers/flatMetadataValues'
+} from './question/_helpers/metadataValues'
+import flatMetadataValues from './question/_helpers/flatMetadataValues'
 import { flatAPCoursesMetadata, flatIBCourseMetadata } from '../app/utilities'
 
 const generateMetadata = () => {

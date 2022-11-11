@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce'
 
 import { serverUrl } from '@coko/client'
 
-import { Question, resources, Result, Modal } from 'ui'
+import { Question, Result, Modal } from 'ui'
 
 import {
   CURRENT_USER,
@@ -20,9 +20,11 @@ import {
   PUBLISH_QUESTION_VERSION,
   GET_PREV_OR_NEXT_QUESTION_ID,
   GENERATE_WORD_FILE,
+  GENERATE_SCORM_ZIP,
+  GET_RESOURCES,
   CREATE_NEW_VERSION,
 } from '../graphql'
-import { metadataForQuestionPage, hasRole, hasGlobalRole } from '../utilities'
+import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
 const AUTOSAVE_DELAY = 500
 
@@ -113,6 +115,7 @@ const QuestionPage = props => {
   // #region hooks
   const { id } = useParams()
   const history = useHistory()
+  const { metadata } = useMetadata()
 
   const { data, loading, error } = useQuery(QUESTION, {
     variables: {
@@ -122,6 +125,8 @@ const QuestionPage = props => {
   })
 
   const { data: currentUserData } = useQuery(CURRENT_USER)
+
+  const { data: resourcesData } = useQuery(GET_RESOURCES)
 
   const [updateQuestionMutation, { error: updateError }] =
     useMutation(UPDATE_QUESTION)
@@ -173,6 +178,9 @@ const QuestionPage = props => {
 
   const [generateWordFileMutation, { loading: generateWordFileLoading }] =
     useMutation(GENERATE_WORD_FILE)
+
+  const [generateScormZipMutation, { loading: generateScormZipLoading }] =
+    useMutation(GENERATE_SCORM_ZIP)
   // #endregion hooks
 
   // #region data wrangling
@@ -364,7 +372,24 @@ const QuestionPage = props => {
   }
 
   const handleExportToScorm = () => {
-    console.warn('Not implemented yet!')
+    const mutationVariables = {
+      questionVersionId: version.id,
+    }
+
+    generateScormZipMutation({ variables: mutationVariables })
+      .then(res => {
+        const filename = res.data.generateScormZip
+        const url = `${serverUrl}/api/download/${filename}`
+        window.location.assign(url)
+      })
+      .catch(e => {
+        console.error(e)
+        Modal.error({
+          title: 'Conversion error',
+          content:
+            'Something went wrong with your conversion! Please contact your system administrator.',
+        })
+      })
   }
 
   const handleExportToWord = options => {
@@ -418,7 +443,7 @@ const QuestionPage = props => {
       isUnderReview={version.underReview}
       isUserLoggedIn={!!user}
       loading={loading}
-      metadata={metadataForQuestionPage}
+      metadata={metadata}
       onClickAssignHE={handleClickAssignHE}
       onClickBackButton={handleClickBackButton}
       onClickExportToScorm={testMode ? handleExportToScorm : null}
@@ -434,7 +459,8 @@ const QuestionPage = props => {
       onQuestionSubmit={handleQuestionSubmit}
       onReject={handleReject}
       questionAgreedTc={false} //
-      resources={resources}
+      resources={resourcesData?.getResources}
+      scormZipLoading={generateScormZipLoading}
       showAssignHEButton={false} //
       showNextQuestionLink={false} //
       submitting={false} //

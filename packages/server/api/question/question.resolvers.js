@@ -15,6 +15,7 @@ const {
   moveQuestionVersionToProduction,
   publishQuestionVersion,
   generateWordFile,
+  generateScormZip,
   createNewQuestionVersion,
 } = require('../../controllers/question.controllers')
 
@@ -112,6 +113,10 @@ const generateWordFileResolver = async (_, { questionVersionId, options }) => {
   return generateWordFile(questionVersionId, options)
 }
 
+const generateScormZipResolver = async (_, { questionVersionId }) => {
+  return generateScormZip(questionVersionId)
+}
+
 const createNewQuestionVersionResolver = async (_, { questionId }) => {
   return createNewQuestionVersion(questionId)
 }
@@ -134,6 +139,7 @@ module.exports = {
     moveQuestionVersionToProduction: moveQuestionVersionToProductionResolver,
     publishQuestionVersion: publishQuestionVersionResolver,
     generateWordFile: generateWordFileResolver,
+    generateScormZip: generateScormZipResolver,
     createNewQuestionVersion: createNewQuestionVersionResolver,
   },
   Question: {

@@ -20,6 +20,12 @@ module.exports = {
       testRegex: 'controllers/__tests__/.+test.js$',
       globalSetup: '<rootDir>/models/__tests__/_setup.js',
     },
+    {
+      displayName: 'services',
+      testEnvironment: 'node',
+      testRegex: 'services/__tests__/.+test.js$',
+      // globalSetup: '<rootDir>/models/__tests__/_setup.js',
+    },
   ],
   maxWorkers: 1,
 }

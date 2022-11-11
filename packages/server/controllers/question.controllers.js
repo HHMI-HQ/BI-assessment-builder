@@ -6,6 +6,9 @@ const { logger, useTransaction } = require('@coko/server')
 const { Question, QuestionVersion, Team } = require('../models')
 const WaxToDocxConverter = require('../services/docx/hhmiDocx.service')
 const { labels } = require('./constants')
+const WaxToScormConverter = require('../services/scorm/scorm.service')
+const metadataResolver = require('./metadataHandler')
+const resources = require('./resourcesData')
 
 const AUTHOR_TEAM = config.teams.nonGlobal.author
 const BASE_MESSAGE = `${labels.QUESTION_CONTROLLERS}:`
@@ -269,6 +272,7 @@ const updateQuestion = async (
     questionVersionId,
     { ...data, lastEdit: new Date() },
     options,
+    CONTROLLER_MESSAGE,
   )
   return getQuestion(questionId)
 }
@@ -324,6 +328,26 @@ const publishQuestionVersion = async (questionVersionId, options = {}) => {
     },
     { trx: options.trx },
   )
+}
+
+const generateScormZip = async questionVersionId => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} generateScormZip:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} exporting latest question version with question version id ${questionVersionId}`,
+  )
+
+  try {
+    const questionVersion = await QuestionVersion.findById(questionVersionId)
+
+    const scormExporter = new WaxToScormConverter(questionVersion)
+
+    const exportFilename = await scormExporter.buildScormExport()
+
+    return exportFilename
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
 }
 
 const createNewQuestionVersion = async (questionId, options = {}) => {
@@ -444,6 +468,10 @@ const generateWordFile = async (questionVersionId, options = {}) => {
   }
 }
 
+const resourceResolver = async () => {
+  return resources
+}
+
 module.exports = {
   getQuestion,
   getQuestionVersions,
@@ -462,6 +490,10 @@ module.exports = {
   publishQuestionVersion,
   rejectQuestion,
   submitQuestion,
+
+  metadataResolver,
+  resourceResolver,
+  generateScormZip,
   generateWordFile,
   createNewQuestionVersion,
 }

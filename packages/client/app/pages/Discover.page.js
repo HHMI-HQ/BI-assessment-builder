@@ -4,12 +4,13 @@ import { Discover, DateParser } from 'ui'
 import { useQuery } from '@apollo/client'
 
 import {
-  metadataForQuestionPage as metadata,
   extractDocumentText,
   extractCourseAndObjectives,
   extractTopicsAndSubtopics,
   extractBloomsLevel,
+  useMetadata,
 } from '../utilities'
+
 import { GET_PUBLISHED_QUESTIONS } from '../graphql'
 
 const sortOptions = [
@@ -30,7 +31,7 @@ const sidebarText =
 
 const PAGE_SIZE = 10
 
-const transform = (questions, searchParams) => {
+const transform = (questions, metadata, searchParams) => {
   if (!questions) return null
 
   return questions.map(question => {
@@ -87,6 +88,8 @@ const DiscoverPage = () => {
     ascending: false,
   })
 
+  const { metadata } = useMetadata()
+
   const { data: questionsData, loading } = useQuery(GET_PUBLISHED_QUESTIONS, {
     variables: {
       params: {
@@ -124,8 +127,13 @@ const DiscoverPage = () => {
       onSearch={handleSearch}
       pageSize={PAGE_SIZE}
       questions={
-        questionsData &&
-        transform(questionsData.getPublishedQuestions.result, searchParams)
+        questionsData && metadata
+          ? transform(
+              questionsData.getPublishedQuestions.result,
+              metadata,
+              searchParams,
+            )
+          : []
       }
       showSort
       sidebarMetadata={metadata}

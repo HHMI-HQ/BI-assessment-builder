@@ -390,3 +390,9 @@ export const GENERATE_WORD_FILE = gql`
     generateWordFile(questionVersionId: $questionVersionId, options: $options)
   }
 `
+
+export const GENERATE_SCORM_ZIP = gql`
+  mutation GenerateScormZip($questionVersionId: ID!) {
+    generateScormZip(questionVersionId: $questionVersionId)
+  }
+`

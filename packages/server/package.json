@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "@coko/server": "https://gitlab.coko.foundation/cokoapps/server.git#8d8498b09e6b9d33ebe830df0756f7a82a51a0be",
+    "archiver": "^5.3.1",
     "axios": "^0.26.1",
     "config": "^3.3.6",
     "docx": "^7.3.0",
     "image-size": "^1.0.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "xml": "^1.0.1"
   },
   "devDependencies": {
     "faker": "^5.5.3",
