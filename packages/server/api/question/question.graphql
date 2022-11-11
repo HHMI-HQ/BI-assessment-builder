@@ -215,5 +215,6 @@ extend type Mutation {
     options: GenerateWordFileOptionsInput
   ): String!
 
+  generateScormZip(questionVersionId: ID!): String!
   createNewQuestionVersion(questionId: ID!): Question!
 }

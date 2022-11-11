@@ -44,42 +44,6 @@ const Footer = styled.div`
   padding-top: ${grid(4)};
 `
 
-const questionTypes = [
-  {
-    value: 'multipleChoice',
-    label: 'Multiple choice',
-  },
-  {
-    value: 'multipleChoiceSingleCorrect',
-    label: 'Multiple choice (single correct)',
-  },
-  {
-    value: 'trueFalse',
-    label: 'True / False',
-  },
-  {
-    value: 'trueFalseSingleCorrect',
-    label: 'True / False (single correct)',
-  },
-  {
-    value: 'fillInTheBlank',
-    label: 'Fill in the blank',
-  },
-  {
-    value: 'essay',
-    label: 'Essay',
-  },
-  {
-    value: 'matching',
-    label: 'Matching',
-  },
-  {
-    value: 'multipleDropdowns',
-    label: 'Multiple dropdowns',
-  },
-  // fill in the blank, essay, matching, multiple dropdowns
-]
-
 const Sidebar = props => {
   const { className, text, setFilters, metadata } = props
 
@@ -162,55 +126,59 @@ const Sidebar = props => {
       <StyledForm form={form} layout="vertical">
         <FormFieldsContainer>
           <p>{text}</p>
-          <TopicAndSubtopic
-            filterMode
-            getFieldValue={form.getFieldValue}
-            setFieldsValue={form.setFieldsValue}
-            topicsMetadata={metadata.topics}
-          />
-          <Form.Item label="Course" name="course">
-            <Select
-              // allowClear
-              optionFilterProp="label"
-              options={metadata.frameworks.map(i => {
-                return {
-                  label: i.label,
-                  value: i.value,
+          {metadata && (
+            <>
+              <TopicAndSubtopic
+                filterMode
+                getFieldValue={form.getFieldValue}
+                setFieldsValue={form.setFieldsValue}
+                topicsMetadata={metadata.topics}
+              />
+              <Form.Item label="Course" name="course">
+                <Select
+                  // allowClear
+                  optionFilterProp="label"
+                  options={metadata.frameworks.map(i => {
+                    return {
+                      label: i.label,
+                      value: i.value,
+                    }
+                  })}
+                  showSearch
+                />
+              </Form.Item>
+              <Form.Item dependencies={['course']} noStyle>
+                {({ getFieldValue }) =>
+                  !!getFieldValue('course') && renderCourseFields(getFieldValue)
                 }
-              })}
-              showSearch
-            />
-          </Form.Item>
-          <Form.Item dependencies={['course']} noStyle>
-            {({ getFieldValue }) =>
-              !!getFieldValue('course') && renderCourseFields(getFieldValue)
-            }
-          </Form.Item>
-          <Form.Item dependencies={['course']} noStyle>
-            {({ getFieldValue }) =>
-              !!getFieldValue('course') && (
-                <>
-                  <Form.Item label="Question type" name="questionType">
-                    <Select
-                      mode="multiple"
-                      optionFilterProp="label"
-                      options={questionTypes}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="Bloom's cognitive level"
-                    name="cognitiveLevel"
-                  >
-                    <Select
-                      mode="multiple"
-                      optionFilterProp="label"
-                      options={metadata.blooms.cognitive}
-                    />
-                  </Form.Item>
-                </>
-              )
-            }
-          </Form.Item>
+              </Form.Item>
+              <Form.Item dependencies={['course']} noStyle>
+                {({ getFieldValue }) =>
+                  !!getFieldValue('course') && (
+                    <>
+                      <Form.Item label="Question type" name="questionType">
+                        <Select
+                          mode="multiple"
+                          optionFilterProp="label"
+                          options={metadata.questionTypes}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Bloom's cognitive level"
+                        name="cognitiveLevel"
+                      >
+                        <Select
+                          mode="multiple"
+                          optionFilterProp="label"
+                          options={metadata.blooms.cognitive}
+                        />
+                      </Form.Item>
+                    </>
+                  )
+                }
+              </Form.Item>
+            </>
+          )}
         </FormFieldsContainer>
         <Footer>
           <Button onClick={clearFilters}>Clear filters</Button>
@@ -404,11 +372,15 @@ Sidebar.propTypes = {
         }),
       ]),
     ),
-  }).isRequired,
+    questionTypes: PropTypes.arrayOf(
+      PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
+    ),
+  }),
 }
 
 Sidebar.defaultProps = {
   text: '',
+  metadata: null,
 }
 
 export default Sidebar

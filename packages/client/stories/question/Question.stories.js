@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { th } from '@coko/client'
 
-import { Question, Checkbox, metadata, resources } from 'ui'
+import { Question, Checkbox } from 'ui'
 import {
   flatAPCoursesMetadata,
   flatIBCourseMetadata,
@@ -13,6 +13,9 @@ import {
   flatAAMCMetadata,
   questionTypes,
 } from '../../app/utilities'
+
+import metadata from './_helpers/metadataValues'
+import resources from './_helpers/resourcesData'
 
 const Wrapper = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};

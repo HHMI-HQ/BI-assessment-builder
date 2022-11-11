@@ -1,6 +1,4 @@
 import { isEmpty, uniqBy } from 'lodash'
-import { metadata } from '../ui/question'
-import flatMetadataValues from '../ui/_helpers/flatMetadataValues'
 
 const apDictionary = [
   'unit',
@@ -176,111 +174,6 @@ const questionDataMapper = ({
   }
 
   return result
-}
-
-const displayNameExtractor = (label, value) => {
-  switch (label) {
-    case 'topic': {
-      const found = flatMetadataValues.topics.find(t => t.value === value)
-
-      if (!found) {
-        return undefined
-      }
-
-      return found.label
-    }
-
-    case 'subtopic': {
-      const found = flatMetadataValues.subtopics.find(s => s.value === value)
-
-      if (!found) {
-        return undefined
-      }
-
-      return found.label
-    }
-
-    case 'cognitiveLevel': {
-      const found = flatMetadataValues.blooms.cognitive.find(
-        t => t.value === value,
-      )
-
-      if (!found) {
-        return undefined
-      }
-
-      return found.label
-    }
-
-    case 'affectiveLevel': {
-      const found = flatMetadataValues.blooms.affective.find(
-        t => t.value === value,
-      )
-
-      if (!found) {
-        return undefined
-      }
-
-      return found.label
-    }
-
-    case 'psychomotorLevel': {
-      const found = flatMetadataValues.blooms.psychomotor.find(
-        t => t.value === value,
-      )
-
-      if (!found) {
-        return undefined
-      }
-
-      return found.label
-    }
-
-    default: {
-      return undefined
-    }
-  }
-}
-
-const dashboardDataMapper = data => {
-  return data.map(item => {
-    return {
-      title: 'Title placeholder',
-      id: item.id,
-      content: item.versions[0].content,
-      metadata: [
-        {
-          label: 'topic',
-          value: displayNameExtractor('topic', item.versions[0].topic),
-        },
-        {
-          label: 'subtopic',
-          value: displayNameExtractor('subtopic', item.versions[0].subtopic),
-        },
-        {
-          label: 'cognitiveLevel',
-          value: displayNameExtractor(
-            'cognitiveLevel',
-            item.versions[0].cognitiveLevel,
-          ),
-        },
-        {
-          label: 'affectiveLevel',
-          value: displayNameExtractor(
-            'affectiveLevel',
-            item.versions[0].affectiveLevel,
-          ),
-        },
-        {
-          label: 'psychomotorLevel',
-          value: displayNameExtractor(
-            'psychomotorLevel',
-            item.versions[0].psychomotorLevel,
-          ),
-        },
-      ],
-    }
-  })
 }
 
 const extractDocumentText = data => {
@@ -730,64 +623,6 @@ const flatAAMCMetadata = data => {
   }
 }
 
-const frameworks = metadata.frameworks
-  .map(framework => {
-    const frameworkData = {
-      label: framework.label,
-      value: framework.value,
-    }
-
-    let additionalMetadata
-
-    if (
-      framework.value === 'apBiology' ||
-      framework.value === 'apEnvironmentalScience'
-    ) {
-      additionalMetadata = flatAPCoursesMetadata(framework)
-    }
-
-    if (
-      framework.value === 'biBiology' ||
-      framework.value === 'biEnvironmentalScience'
-    ) {
-      additionalMetadata = flatIBCourseMetadata(framework)
-    }
-
-    return {
-      ...frameworkData,
-      ...additionalMetadata,
-    }
-  })
-  // temporarily filter out Intro to Biology courses
-  .filter(
-    framework =>
-      framework.value !== 'introductoryBiologyForNonMajors' &&
-      framework.value !== 'introductoryBiologyForMajors',
-  )
-
-// eslint-disable-next-line no-unused-vars
-const introToBioMeta = metadata.introToBioMeta.map(data => {
-  const meta = {
-    label: data.label,
-    value: data.value,
-  }
-
-  let additionalMetadata
-
-  if (data.value === 'visionAndChange') {
-    additionalMetadata = flatVisionAndChangeMetadata(data)
-  }
-
-  if (data.value === 'aamcFuturePhysicians') {
-    additionalMetadata = flatAAMCMetadata(data)
-  }
-
-  return {
-    ...meta,
-    ...additionalMetadata,
-  }
-})
-
 const questionTypes = [
   {
     value: 'multipleChoice',
@@ -823,16 +658,7 @@ const questionTypes = [
   },
 ]
 
-const metadataForQuestionPage = {
-  questionTypes,
-  topics: metadata.topics,
-  blooms: metadata.blooms,
-  frameworks,
-  // introToBioMeta,
-}
-
 export {
-  dashboardDataMapper,
   extractDocumentText,
   extractTopicsAndSubtopics,
   extractCourseAndObjectives,
@@ -841,7 +667,6 @@ export {
   flatAPCoursesMetadata,
   flatIBCourseMetadata,
   flatVisionAndChangeMetadata,
-  metadataForQuestionPage,
   objectCleaner,
   profileOptions,
   questionDataMapper,

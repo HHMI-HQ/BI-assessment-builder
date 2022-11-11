@@ -16,6 +16,7 @@ import { config } from '../wax/config'
 
 import Metadata from './Metadata'
 import ExportToWordButton from './ExportToWordButton'
+import ExportToScormButton from './ExportToScormButton'
 import {
   Button,
   Checkbox,
@@ -74,7 +75,12 @@ const StyledButton = styled(Button)`
   text-transform: uppercase;
 `
 
-const StyledExportButton = styled(ExportToWordButton)`
+const StyledWordExportButton = styled(ExportToWordButton)`
+  margin-right: ${grid(2)};
+  text-transform: uppercase;
+`
+
+const StyledScormExportButton = styled(ExportToScormButton)`
   margin-right: ${grid(2)};
   text-transform: uppercase;
 `
@@ -390,6 +396,7 @@ const Question = props => {
     onReject,
     questionAgreedTc,
     resources,
+    scormZipLoading,
     showAssignHEButton,
     showNextQuestionLink,
     submitting,
@@ -740,7 +747,7 @@ const Question = props => {
 
   const RightAreaEditor = (
     <>
-      <StyledExportButton
+      <StyledWordExportButton
         loading={wordFileLoading}
         onExport={onClickExportToWord}
         showMetadataOption
@@ -812,15 +819,16 @@ const Question = props => {
       </div>
 
       <div>
-        <StyledExportButton
+        <StyledWordExportButton
           loading={wordFileLoading}
           onExport={onClickExportToWord}
           showMetadataOption={isUserLoggedIn}
         />
 
-        <StyledButton onClick={onClickExportToScorm} type="primary">
-          Export to Scorm
-        </StyledButton>
+        <StyledScormExportButton
+          loading={scormZipLoading}
+          onExport={onClickExportToScorm}
+        />
 
         {isUserLoggedIn && (
           <StyledRadioToggle
@@ -841,7 +849,7 @@ const Question = props => {
   )
   // #endregion components
 
-  if (loading) return <Spin />
+  if (loading || !metadata || !resources?.length) return <Spin />
 
   return (
     <Wrapper>
@@ -1176,6 +1184,7 @@ Question.propTypes = {
   }),
   updated: PropTypes.string,
   wordFileLoading: PropTypes.bool.isRequired,
+  scormZipLoading: PropTypes.bool.isRequired,
 }
 
 Question.defaultProps = {

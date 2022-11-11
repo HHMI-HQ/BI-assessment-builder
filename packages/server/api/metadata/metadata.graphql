@@ -1,0 +1,86 @@
+type Metadata {
+  topics: [TopicsMetadata!]!
+  frameworks: [FrameworksMetadata!]!
+  blooms: BloomsType
+  questionTypes: [SimpleValueLabelPair]!
+}
+
+type SimpleValueLabelPair {
+  value: String!
+  label: String!
+}
+
+type TopicsMetadata {
+  value: String!
+  label: String!
+  subtopics: [SimpleValueLabelPair]!
+}
+
+type BloomsType {
+  cognitive: [CognitiveBloomsLevelMetadata!]!
+  affective: [SimpleValueLabelPair!]!
+  psychomotor: [SimpleValueLabelPair!]!
+}
+
+type CognitiveBloomsLevelMetadata {
+  label: String!
+  options: [SimpleValueLabelPair!]!
+}
+
+type FrameworksMetadata {
+  value: String
+  label: String
+  units: [SimpleValueLabelPair!]!
+  topics: [CourseTopic!]!
+  learningObjectives: [LearningObjective!]
+  essentialKnowledge: [EssentialKnowledge!]
+  applications: [Application!]
+  skills: [Skill!]
+  understandings: [Understanding!]
+}
+
+type CourseTopic {
+  value: String
+  label: String
+  unit: String
+}
+
+type LearningObjective {
+  value: String
+  label: String
+  unit: String
+  topic: String
+}
+
+type EssentialKnowledge {
+  value: String
+  label: String
+  unit: String
+  topic: String
+  learningObjective: String
+}
+
+type Application {
+  value: String
+  label: String
+  unit: String
+  topic: String
+}
+
+type Skill {
+  value: String
+  label: String
+  unit: String
+  topic: String
+}
+
+type Understanding {
+  value: String
+  label: String
+  unit: String
+  topic: String
+}
+
+extend type Query {
+  getMetadata: Metadata!
+}

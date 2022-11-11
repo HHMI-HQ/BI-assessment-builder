@@ -20,7 +20,7 @@ import {
 
 // import { NavigationBar } from './ui'
 import { Button /* Spin */ } from 'ui'
-import { hasGlobalRole } from './utilities'
+import { hasGlobalRole, MetadataProvider } from './utilities'
 // import { logout } from './utilities'
 
 import {
@@ -168,95 +168,98 @@ const Authenticated = ({ children }) => {
 const routes = (
   <Layout>
     <Header />
+    <MetadataProvider>
+      <StyledPage fadeInPages={false} padPages={false}>
+        <Switch>
+          <Route
+            exact
+            path="/signup-profile"
+            render={() => (
+              <Authenticated>
+                <UserProfile signup />
+              </Authenticated>
+            )}
+          />
 
-    <StyledPage fadeInPages={false} padPages={false}>
-      <Switch>
-        <Route
-          exact
-          path="/signup-profile"
-          render={() => (
-            <Authenticated>
-              <UserProfile signup />
-            </Authenticated>
-          )}
-        />
+          <Route
+            exact
+            path="/dashboard"
+            render={() => (
+              <Authenticated>
+                <Dashboard />
+              </Authenticated>
+            )}
+          />
 
-        <Route
-          exact
-          path="/dashboard"
-          render={() => (
-            <Authenticated>
-              <Dashboard />
-            </Authenticated>
-          )}
-        />
+          <Route component={Discover} exact path="/discover" />
 
-        <Route component={Discover} exact path="/discover" />
+          <Route
+            exact
+            path="/question/:id/test"
+            render={() => <Question testMode />}
+          />
 
-        <Route
-          exact
-          path="/question/:id/test"
-          render={() => <Question testMode />}
-        />
+          <Route
+            exact
+            path="/question/:id"
+            render={() => (
+              <Authenticated>
+                <Question />
+              </Authenticated>
+            )}
+          />
+          <Route
+            exact
+            path="/manage-users"
+            render={() => (
+              <Authenticated>
+                <ManageUsers />
+              </Authenticated>
+            )}
+          />
 
-        <Route
-          exact
-          path="/question/:id"
-          render={() => (
-            <Authenticated>
-              <Question />
-            </Authenticated>
-          )}
-        />
+          <Route
+            exact
+            path="/manage-teams"
+            render={() => (
+              <Authenticated>
+                <TeamManager />
+              </Authenticated>
+            )}
+          />
+          <Route
+            exact
+            path="/profile"
+            render={() => (
+              <Authenticated>
+                <UserProfile />
+              </Authenticated>
+            )}
+          />
 
-        <Route
-          exact
-          path="/manage-users"
-          render={() => (
-            <Authenticated>
-              <ManageUsers />
-            </Authenticated>
-          )}
-        />
+          <Route component={Login} exact path="/login" />
+          <Route component={Signup} exact path="/signup" />
+          <Route
+            component={VerifyEmail}
+            exact
+            path="/email-verification/:token"
+          />
+          <Route
+            component={RequestPasswordReset}
+            exact
+            path="/request-password-reset"
+          />
+          <Route
+            component={ResetPassword}
+            exact
+            path="/password-reset/:token"
+          />
+          <Route component={VerifyCheck} exact path="/ensure-verified-login" />
 
-        <Route
-          exact
-          path="/manage-teams"
-          render={() => (
-            <Authenticated>
-              <TeamManager />
-            </Authenticated>
-          )}
-        />
-        <Route
-          exact
-          path="/profile"
-          render={() => (
-            <Authenticated>
-              <UserProfile />
-            </Authenticated>
-          )}
-        />
-
-        <Route component={Login} exact path="/login" />
-        <Route component={Signup} exact path="/signup" />
-        <Route
-          component={VerifyEmail}
-          exact
-          path="/email-verification/:token"
-        />
-        <Route
-          component={RequestPasswordReset}
-          exact
-          path="/request-password-reset"
-        />
-        <Route component={ResetPassword} exact path="/password-reset/:token" />
-        <Route component={VerifyCheck} exact path="/ensure-verified-login" />
-
-        <Route component={() => <Redirect to="/dashboard" />} path="*" />
-      </Switch>
-    </StyledPage>
-
+          <Route component={() => <Redirect to="/dashboard" />} path="*" />
+        </Switch>
+      </StyledPage>
+    </MetadataProvider>
     <Footer />
   </Layout>
 )

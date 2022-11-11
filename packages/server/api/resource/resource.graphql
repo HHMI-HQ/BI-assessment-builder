@@ -1,0 +1,11 @@
+type Resource {
+  label: String!
+  value: String!
+  url: String!
+  topics: [String!]!
+  subtopics: [String!]!
+}
+
+extend type Query {
+  getResources: [Resource!]!
+}

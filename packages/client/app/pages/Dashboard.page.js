@@ -12,11 +12,11 @@ import { Dashboard, DateParser } from '../ui'
 import {
   hasGlobalRole,
   // dashboardDataMapper,
-  metadataForQuestionPage as metadataValues,
   extractDocumentText,
   extractCourseAndObjectives,
   extractTopicsAndSubtopics,
   extractBloomsLevel,
+  useMetadata,
 } from '../utilities'
 
 const defaultSearchOptions = {
@@ -25,7 +25,7 @@ const defaultSearchOptions = {
   pageSize: 10,
 }
 
-const transform = questions => {
+const transform = (questions, metadataValues) => {
   if (!questions) return null
 
   return questions.map(question => {
@@ -88,6 +88,8 @@ const DashboardPage = () => {
   const [currentTabKey, setCurrentTabKey] = useState(initialTabKey)
   const [currentPage, setCurrentPage] = useState(1)
   const [currentSearchQuery, setCurrentSearchQuery] = useState(null)
+
+  const { metadata } = useMetadata()
 
   const { data: currentUserResponse } = useQuery(CURRENT_USER)
 
@@ -178,7 +180,8 @@ const DashboardPage = () => {
     {
       label: 'Authored Questions',
       value: 'author',
-      questions: authorData && transform(authorData.result),
+      questions:
+        authorData && metadata ? transform(authorData.result, metadata) : [],
       totalCount: authorData && authorData.totalCount,
       showBulkActions: false,
       loading: authorLoading,
@@ -186,7 +189,8 @@ const DashboardPage = () => {
     isEditor && {
       label: 'Editor Questions',
       value: 'editor',
-      questions: editorData && transform(editorData.result),
+      questions:
+        editorData && metadata ? transform(editorData.result, metadata) : [],
       totalCount: editorData && editorData.totalCount,
       showBulkActions: false,
       loading: editorLoading,

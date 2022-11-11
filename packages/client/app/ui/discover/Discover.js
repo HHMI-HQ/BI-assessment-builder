@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Sidebar from './Sidebar'
-import QuestionList from '../common/QuestionList'
+import { QuestionList } from '../common'
 
 const Wrapper = styled.section`
   display: grid;
@@ -312,7 +312,7 @@ Discover.propTypes = {
         }),
       ]),
     ),
-  }).isRequired,
+  }),
   totalCount: PropTypes.number,
   sortOptions: PropTypes.arrayOf(PropTypes.shape()),
   showSort: PropTypes.bool,
@@ -322,6 +322,7 @@ Discover.defaultProps = {
   loading: false,
   pageSize: 10,
   questions: [],
+  sidebarMetadata: null,
   sidebarText: '',
   totalCount: 0,
   sortOptions: [],
