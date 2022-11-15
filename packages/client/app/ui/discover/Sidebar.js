@@ -152,30 +152,19 @@ const Sidebar = props => {
                   !!getFieldValue('course') && renderCourseFields(getFieldValue)
                 }
               </Form.Item>
-              <Form.Item dependencies={['course']} noStyle>
-                {({ getFieldValue }) =>
-                  !!getFieldValue('course') && (
-                    <>
-                      <Form.Item label="Question type" name="questionType">
-                        <Select
-                          mode="multiple"
-                          optionFilterProp="label"
-                          options={metadata.questionTypes}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label="Bloom's cognitive level"
-                        name="cognitiveLevel"
-                      >
-                        <Select
-                          mode="multiple"
-                          optionFilterProp="label"
-                          options={metadata.blooms.cognitive}
-                        />
-                      </Form.Item>
-                    </>
-                  )
-                }
+              <Form.Item label="Question type" name="questionType">
+                <Select
+                  mode="multiple"
+                  optionFilterProp="label"
+                  options={metadata.questionTypes}
+                />
+              </Form.Item>
+              <Form.Item label="Bloom's cognitive level" name="cognitiveLevel">
+                <Select
+                  mode="multiple"
+                  optionFilterProp="label"
+                  options={metadata.blooms.cognitive}
+                />
               </Form.Item>
             </>
           )}
