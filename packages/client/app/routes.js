@@ -46,13 +46,64 @@ const LayoutWrapper = styled.div`
   height: 100%;
 `
 
-const pathToPageNameMap = {
-  '/discover': 'Discover page',
-  '/dashboard': 'Dashboard page',
-  '/manage-users': 'User Manager page',
-  '/manage-teams': 'Team Manager page',
-  '/profile': 'User Profile page',
-}
+const regexPaths = [
+  {
+    path: /^\/question\/[A-Za-z0-9-]+\/test$/i,
+    name: 'Question page',
+  },
+  {
+    path: /^\/question\/[A-Za-z0-9-]+$/i,
+    name: 'Question Editor page',
+  },
+  {
+    path: /^\/discover$/,
+    name: 'Discover page',
+  },
+  {
+    path: /^\/dashboard$/,
+    name: 'Dashboard page',
+  },
+  {
+    path: /^\/manage-users$/,
+    name: 'User Manager page',
+  },
+  {
+    path: /^\/manage-teams$/,
+    name: 'Team Manager page',
+  },
+  {
+    path: /^\/profile$/,
+    name: 'User Profile page',
+  },
+  {
+    path: /^\/login+/,
+    name: 'Login page',
+  },
+  {
+    path: /^\/signup$/,
+    name: 'Signup page',
+  },
+  {
+    path: /^\/signup-profile$/,
+    name: 'Signup Questionnaire',
+  },
+  {
+    path: /^\/email-verification\/[A-Za-z0-9-]+$/,
+    name: 'Verify email',
+  },
+  {
+    path: /^\/request-password-reset$/,
+    name: 'Request Password Reset page',
+  },
+  {
+    path: /^\/password-reset\/[A-Za-z0-9-]+$/,
+    name: 'Reset Password page',
+  },
+  {
+    path: /^\/ensure-verified-login$/,
+    name: 'Email Not Verified page',
+  },
+]
 
 const Layout = props => {
   const { children } = props
@@ -60,18 +111,19 @@ const Layout = props => {
   const history = useHistory()
 
   useEffect(() => {
-    document.title = `${
-      pathToPageNameMap[history.location.pathname]
-    } - HHMI Assessment Builder`
+    const path = history.location.pathname
+    const title = regexPaths.find(p => p.path.test(path))
+
+    document.title = `${title?.name} - HHMI Assessment Builder`
   }, [])
 
   history.listen(val => {
-    document.getElementById('page-announcement').innerHTML =
-      pathToPageNameMap[val.pathname]
+    const path = history.location.pathname
+    const title = regexPaths.find(p => p.path.test(path))
 
-    document.title = `${
-      pathToPageNameMap[val.pathname]
-    } - HHMI Assessment Builder`
+    document.getElementById('page-announcement').innerHTML = title?.name
+
+    document.title = `${title?.name} - HHMI Assessment Builder`
   })
 
   return (
