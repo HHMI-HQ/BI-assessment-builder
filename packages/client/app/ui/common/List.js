@@ -35,9 +35,9 @@ const Wrapper = styled.div`
 
 const SearchWrapper = styled.div`
   align-self: center;
-  max-width: 100%;
+  max-width: 1170px;
   padding: 0 ${grid(2)};
-  width: 1170px;
+  width: 100%;
 `
 
 const InternalHeader = styled.div`

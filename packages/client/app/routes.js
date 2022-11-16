@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useApolloClient } from '@apollo/client'
 import {
   Route,
@@ -19,7 +19,7 @@ import {
 } from '@coko/client'
 
 // import { NavigationBar } from './ui'
-import { Button /* Spin */ } from 'ui'
+import { Button, VisuallyHiddenElement /* Spin */ } from 'ui'
 import { hasGlobalRole, MetadataProvider } from './utilities'
 // import { logout } from './utilities'
 
@@ -40,11 +40,104 @@ import {
 
 import { CURRENT_USER } from './graphql'
 
-const Layout = styled.div`
+const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
 `
+
+const regexPaths = [
+  {
+    path: /^\/question\/[A-Za-z0-9-]+\/test$/i,
+    name: 'Question page',
+  },
+  {
+    path: /^\/question\/[A-Za-z0-9-]+$/i,
+    name: 'Question Editor page',
+  },
+  {
+    path: /^\/discover$/,
+    name: 'Discover page',
+  },
+  {
+    path: /^\/dashboard$/,
+    name: 'Dashboard page',
+  },
+  {
+    path: /^\/manage-users$/,
+    name: 'User Manager page',
+  },
+  {
+    path: /^\/manage-teams$/,
+    name: 'Team Manager page',
+  },
+  {
+    path: /^\/profile$/,
+    name: 'User Profile page',
+  },
+  {
+    path: /^\/login+/,
+    name: 'Login page',
+  },
+  {
+    path: /^\/signup$/,
+    name: 'Signup page',
+  },
+  {
+    path: /^\/signup-profile$/,
+    name: 'Signup Questionnaire',
+  },
+  {
+    path: /^\/email-verification\/[A-Za-z0-9-]+$/,
+    name: 'Verify email',
+  },
+  {
+    path: /^\/request-password-reset$/,
+    name: 'Request Password Reset page',
+  },
+  {
+    path: /^\/password-reset\/[A-Za-z0-9-]+$/,
+    name: 'Reset Password page',
+  },
+  {
+    path: /^\/ensure-verified-login$/,
+    name: 'Email Not Verified page',
+  },
+]
+
+const Layout = props => {
+  const { children } = props
+
+  const history = useHistory()
+
+  useEffect(() => {
+    const path = history.location.pathname
+    const title = regexPaths.find(p => p.path.test(path))
+
+    document.title = `${title?.name} - HHMI Assessment Builder`
+  }, [])
+
+  history.listen(val => {
+    const path = history.location.pathname
+    const title = regexPaths.find(p => p.path.test(path))
+
+    document.getElementById('page-announcement').innerHTML = title?.name
+
+    document.title = `${title?.name} - HHMI Assessment Builder`
+  })
+
+  return (
+    <LayoutWrapper>
+      {children}
+      <VisuallyHiddenElement
+        aria-live="polite"
+        as="div"
+        id="page-announcement"
+        role="status"
+      />
+    </LayoutWrapper>
+  )
+}
 
 const HeaderFooter = styled.div`
   align-items: center;
@@ -140,6 +233,10 @@ const Footer = () => {
   )
 }
 
+const StyledMain = styled.main`
+  height: 100%;
+`
+
 const RequireProfile = ({ children }) => {
   const { pathname } = useLocation()
   const { currentUser } = useCurrentUser()
@@ -170,94 +267,100 @@ const routes = (
     <Header />
     <MetadataProvider>
       <StyledPage fadeInPages={false} padPages={false}>
-        <Switch>
-          <Route
-            exact
-            path="/signup-profile"
-            render={() => (
-              <Authenticated>
-                <UserProfile signup />
-              </Authenticated>
-            )}
-          />
+        <StyledMain>
+          <Switch>
+            <Route
+              exact
+              path="/signup-profile"
+              render={() => (
+                <Authenticated>
+                  <UserProfile signup />
+                </Authenticated>
+              )}
+            />
 
-          <Route
-            exact
-            path="/dashboard"
-            render={() => (
-              <Authenticated>
-                <Dashboard />
-              </Authenticated>
-            )}
-          />
+            <Route
+              exact
+              path="/dashboard"
+              render={() => (
+                <Authenticated>
+                  <Dashboard />
+                </Authenticated>
+              )}
+            />
 
-          <Route component={Discover} exact path="/discover" />
+            <Route component={Discover} exact path="/discover" />
 
-          <Route
-            exact
-            path="/question/:id/test"
-            render={() => <Question testMode />}
-          />
+            <Route
+              exact
+              path="/question/:id/test"
+              render={() => <Question testMode />}
+            />
 
-          <Route
-            exact
-            path="/question/:id"
-            render={() => (
-              <Authenticated>
-                <Question />
-              </Authenticated>
-            )}
-          />
-          <Route
-            exact
-            path="/manage-users"
-            render={() => (
-              <Authenticated>
-                <ManageUsers />
-              </Authenticated>
-            )}
-          />
+            <Route
+              exact
+              path="/question/:id"
+              render={() => (
+                <Authenticated>
+                  <Question />
+                </Authenticated>
+              )}
+            />
+            <Route
+              exact
+              path="/manage-users"
+              render={() => (
+                <Authenticated>
+                  <ManageUsers />
+                </Authenticated>
+              )}
+            />
 
-          <Route
-            exact
-            path="/manage-teams"
-            render={() => (
-              <Authenticated>
-                <TeamManager />
-              </Authenticated>
-            )}
-          />
-          <Route
-            exact
-            path="/profile"
-            render={() => (
-              <Authenticated>
-                <UserProfile />
-              </Authenticated>
-            )}
-          />
+            <Route
+              exact
+              path="/manage-teams"
+              render={() => (
+                <Authenticated>
+                  <TeamManager />
+                </Authenticated>
+              )}
+            />
+            <Route
+              exact
+              path="/profile"
+              render={() => (
+                <Authenticated>
+                  <UserProfile />
+                </Authenticated>
+              )}
+            />
 
-          <Route component={Login} exact path="/login" />
-          <Route component={Signup} exact path="/signup" />
-          <Route
-            component={VerifyEmail}
-            exact
-            path="/email-verification/:token"
-          />
-          <Route
-            component={RequestPasswordReset}
-            exact
-            path="/request-password-reset"
-          />
-          <Route
-            component={ResetPassword}
-            exact
-            path="/password-reset/:token"
-          />
-          <Route component={VerifyCheck} exact path="/ensure-verified-login" />
+            <Route component={Login} exact path="/login" />
+            <Route component={Signup} exact path="/signup" />
+            <Route
+              component={VerifyEmail}
+              exact
+              path="/email-verification/:token"
+            />
+            <Route
+              component={RequestPasswordReset}
+              exact
+              path="/request-password-reset"
+            />
+            <Route
+              component={ResetPassword}
+              exact
+              path="/password-reset/:token"
+            />
+            <Route
+              component={VerifyCheck}
+              exact
+              path="/ensure-verified-login"
+            />
 
-          <Route component={() => <Redirect to="/dashboard" />} path="*" />
-        </Switch>
+            <Route component={() => <Redirect to="/dashboard" />} path="*" />
+          </Switch>
+        </StyledMain>
       </StyledPage>
     </MetadataProvider>
     <Footer />

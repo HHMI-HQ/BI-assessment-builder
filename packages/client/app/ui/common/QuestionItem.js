@@ -10,7 +10,7 @@ import WaxWrapper from '../wax/Wax'
 import { DashLayout } from '../wax/layout'
 import { dashConfig } from '../wax/config'
 
-const Wrapper = styled.div`
+const Wrapper = styled.article`
   margin: ${grid(1)};
   padding: ${grid(4)} ${grid(3)};
   position: relative;

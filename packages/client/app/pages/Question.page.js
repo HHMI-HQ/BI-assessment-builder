@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce'
 
 import { serverUrl } from '@coko/client'
 
-import { Question, Result, Modal } from 'ui'
+import { Question, Result, Modal, VisuallyHiddenElement } from 'ui'
 
 import {
   CURRENT_USER,
@@ -467,43 +467,47 @@ const QuestionPage = props => {
   // #endregion handlers
 
   return (
-    <Question
-      editorContent={editorContent}
-      editorView={isEditor && !isAuthor}
-      facultyView={testMode}
-      initialMetadataValues={testMode ? version : metadataApiToUi(version)}
-      isInProduction={version.inProduction}
-      isPublished={version.published}
-      isRejected={question.rejected}
-      isSubmitted={version.submitted}
-      isUnderReview={version.underReview}
-      isUserLoggedIn={!!user}
-      loading={loading}
-      metadata={metadata}
-      onClickAssignHE={handleClickAssignHE}
-      onClickBackButton={handleClickBackButton}
-      onClickExportToScorm={testMode ? handleExportToScorm : null}
-      onClickExportToWord={handleExportToWord}
-      onClickNextButton={() => handleGetQuestionButton('NEXT')}
-      onClickPreviousButton={() => handleGetQuestionButton('PREV')}
-      onCreateNewVersion={handleCreateNewVersion}
-      onEditorContentAutoSave={handleEditorContentAutoSave}
-      onImageUpload={handleImageUpload}
-      onMetadataAutoSave={handleMetadataAutoSave}
-      onMoveToProduction={handleMoveToProduction}
-      onMoveToReview={handleMoveToReview}
-      onPublish={handlePublish}
-      onQuestionSubmit={handleQuestionSubmit}
-      onReject={handleReject}
-      questionAgreedTc={false} //
-      resources={resourcesData?.getResources}
-      scormZipLoading={generateScormZipLoading}
-      showAssignHEButton={false} //
-      showNextQuestionLink={false} //
-      submitting={false} //
-      updated={version.lastEdit}
-      wordFileLoading={generateWordFileLoading}
-    />
+    <>
+      {/* TODO: create more specific heading */}
+      <VisuallyHiddenElement as="h1">Question Page</VisuallyHiddenElement>
+      <Question
+        editorContent={editorContent}
+        editorView={isEditor && !isAuthor}
+        facultyView={testMode}
+        initialMetadataValues={testMode ? version : metadataApiToUi(version)}
+        isInProduction={version.inProduction}
+        isPublished={version.published}
+        isRejected={question.rejected}
+        isSubmitted={version.submitted}
+        isUnderReview={version.underReview}
+        isUserLoggedIn={!!user}
+        loading={loading}
+        metadata={metadata}
+        onClickAssignHE={handleClickAssignHE}
+        onClickBackButton={handleClickBackButton}
+        onClickExportToScorm={testMode ? handleExportToScorm : null}
+        onClickExportToWord={handleExportToWord}
+        onClickNextButton={() => handleGetQuestionButton('NEXT')}
+        onClickPreviousButton={() => handleGetQuestionButton('PREV')}
+        onCreateNewVersion={handleCreateNewVersion}
+        onEditorContentAutoSave={handleEditorContentAutoSave}
+        onImageUpload={handleImageUpload}
+        onMetadataAutoSave={handleMetadataAutoSave}
+        onMoveToProduction={handleMoveToProduction}
+        onMoveToReview={handleMoveToReview}
+        onPublish={handlePublish}
+        onQuestionSubmit={handleQuestionSubmit}
+        onReject={handleReject}
+        questionAgreedTc={false} //
+        resources={resourcesData?.getResources}
+        scormZipLoading={generateScormZipLoading}
+        showAssignHEButton={false} //
+        showNextQuestionLink={false} //
+        submitting={false} //
+        updated={version.lastEdit}
+        wordFileLoading={generateWordFileLoading}
+      />
+    </>
   )
 }
 

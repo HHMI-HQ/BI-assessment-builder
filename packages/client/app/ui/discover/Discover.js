@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Sidebar from './Sidebar'
-import { QuestionList } from '../common'
+import { QuestionList, VisuallyHiddenElement } from '../common'
 
-const Wrapper = styled.section`
+const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: minmax(100px, 25%) auto;
+  grid-template-columns: minmax(200px, 25%) auto;
+  grid-template-rows: 100%;
   height: 100%;
 
   > aside {
@@ -74,19 +75,24 @@ export const Discover = props => {
         setFilters={setFilters}
         text={sidebarText}
       />
-      <QuestionList
-        currentPage={searchParams.page}
-        key={listKey}
-        loading={loading}
-        onPageChange={setSearchPage}
-        onSearch={setSearchQuery}
-        onSortOptionChange={setSortOption}
-        questions={questions}
-        questionsPerPage={pageSize}
-        showSort={showSort}
-        sortOptions={sortOptions}
-        totalCount={totalCount}
-      />
+      <section>
+        <VisuallyHiddenElement as="h2">
+          Search results: questions list
+        </VisuallyHiddenElement>
+        <QuestionList
+          currentPage={searchParams.page}
+          key={listKey}
+          loading={loading}
+          onPageChange={setSearchPage}
+          onSearch={setSearchQuery}
+          onSortOptionChange={setSortOption}
+          questions={questions}
+          questionsPerPage={pageSize}
+          showSort={showSort}
+          sortOptions={sortOptions}
+          totalCount={totalCount}
+        />
+      </section>
     </Wrapper>
   )
 }
