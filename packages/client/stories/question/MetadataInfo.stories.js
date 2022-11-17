@@ -1,6 +1,7 @@
 import React from 'react'
-import { MetadataInfo, resources } from 'ui'
-import { metadataForQuestionPage } from '../../app/utilities'
+import { MetadataInfo } from 'ui'
+import metadataForQuestionPage from './_helpers/metadataValues'
+import resources from './_helpers/resourcesData'
 
 // console.log(metadata)
 
@@ -15,16 +16,13 @@ const metadataValues = {
       course: 'apEnvironmentalScience',
       units: [
         {
-          unit: 'populations',
-          courseTopic: 'generalistAndSpecialistSpecies',
-          learningObjective: 'ERT-3.A',
-          essentialKnowledge: 'ERT-3.A.1',
-        },
-        {
-          unit: 'theLivingWorldEcosystems',
-          courseTopic: 'terrestrialBiomes',
-          learningObjective: 'ERT-1.B',
-          essentialKnowledge: 'ERT-1.B.2',
+          application: null,
+          courseTopic: 'nuclearPower',
+          essentialKnowledge: 'ENG-3.H.1',
+          learningObjective: 'ENG-3.H',
+          skill: null,
+          understanding: null,
+          unit: 'energyResourcesAndConsumption',
         },
       ],
     },

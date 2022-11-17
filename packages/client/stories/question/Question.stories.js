@@ -11,7 +11,6 @@ import {
   flatIBCourseMetadata,
   flatVisionAndChangeMetadata,
   flatAAMCMetadata,
-  questionTypes,
 } from '../../app/utilities'
 
 import metadata from './_helpers/metadataValues'
@@ -256,7 +255,7 @@ const introToBioMeta = metadata.introToBioMeta.map(data => {
 })
 
 const flatMeta = {
-  questionTypes,
+  questionTypes: metadata.questionTypes,
   topics: metadata.topics,
   blooms: metadata.blooms,
   frameworks,
