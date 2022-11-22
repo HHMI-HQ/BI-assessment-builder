@@ -41,13 +41,14 @@ const EditorWrapper = styled.div`
 
 const EditorArea = styled.div`
   background-color: ${th('colorBackground')};
+  flex-grow: 1;
+  margin: 0 auto;
+  max-width: 100ch;
   position: relative;
 
   .ProseMirror {
     background-color: inherit;
     /* height: 100%; */
-    margin: 0 auto;
-    max-width: 100ch;
     padding: ${grid(12)} ${grid(5)};
   }
 `
