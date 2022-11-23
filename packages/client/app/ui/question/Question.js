@@ -81,6 +81,18 @@ const StyledButton = styled(Button)`
   text-transform: uppercase;
 `
 
+const StyledPrevNextButton = styled(StyledButton)`
+  > span:not([role='img']) {
+    display: none;
+  }
+
+  @media (min-width: ${th('mediaQueries.small')}) {
+    > span:not([role='img']) {
+      display: inline-block;
+    }
+  }
+`
+
 const StyledWordExportButton = styled(ExportToWordButton)`
   margin-right: ${grid(2)};
   text-transform: uppercase;
@@ -822,23 +834,27 @@ const Question = props => {
   const QuestionTab = <StyledTabItem>Question</StyledTabItem>
 
   const PreviousQuestion = (
-    <StyledButton
+    <StyledPrevNextButton
+      aria-label="Previous Question"
       icon={<LeftOutlined />}
       onClick={onClickPreviousButton}
+      title="Previous Question"
       type="primary"
     >
       Previous Question
-    </StyledButton>
+    </StyledPrevNextButton>
   )
 
   const NextQuestion = (
-    <StyledButton
+    <StyledPrevNextButton
+      aria-label="Next Question"
       icon={<RightOutlined />}
       onClick={onClickNextButton}
+      title="Next Question"
       type="primary"
     >
       Next Question
-    </StyledButton>
+    </StyledPrevNextButton>
   )
 
   const RightAreaAuthor = isSubmitted ? null : (
