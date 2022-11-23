@@ -9,7 +9,12 @@ import {
 } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { PageLayout as Page, RequireAuth, useCurrentUser } from '@coko/client'
+import {
+  PageLayout as Page,
+  RequireAuth,
+  useCurrentUser,
+  th,
+} from '@coko/client'
 
 import { Header, Footer, VisuallyHiddenElement } from 'ui'
 import GlobalStyles from './globalStyles'
@@ -133,7 +138,11 @@ const Layout = props => {
 }
 
 const StyledPage = styled(Page)`
-  height: calc(100% - 76px - 115px);
+  height: calc(100% - 76px - 170px);
+
+  @media screen and (min-width: ${th('mediaQueries.medium')}) {
+    height: calc(100% - 76px - 115px);
+  }
 `
 
 // const Loader = () => <Spin spinning />
