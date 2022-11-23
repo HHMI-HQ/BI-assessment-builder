@@ -65,11 +65,12 @@ const FooterList = styled.ul`
   li {
     font-size: ${th('fontSizeBaseSmall')};
     list-style: none;
-    margin: 0 ${grid(3)};
+    margin: 0 ${grid(2)};
     ${({ social }) => social && `display: inline-block;`}
 
     @media screen and (min-width: ${th('mediaQueries.medium')}) {
       display: inline-flex;
+      margin: 0 ${grid(3)};
     }
 
     a {
@@ -101,7 +102,7 @@ const Footer = props => {
           <Link to={termsOfUse}>Terms of Use</Link>
         </li>
         <li>
-          <Link to={privacyPolicy}>Private Policy</Link>
+          <Link to={privacyPolicy}>Privacy Policy</Link>
         </li>
       </FooterList>
       <SiteLogo rel="Home" title="Home" to={homepage}>
