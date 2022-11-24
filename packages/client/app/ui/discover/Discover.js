@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Sidebar from './Sidebar'
-import { QuestionList, VisuallyHiddenElement } from '../common'
+import { Collapse, QuestionList, VisuallyHiddenElement } from '../common'
+import useBreakpoint from '../_helpers/useBreakpoint'
 
 const Wrapper = styled.div`
   display: grid;
@@ -12,6 +13,15 @@ const Wrapper = styled.div`
 
   > aside {
     border-right: 1px solid ${props => props.theme.colorSecondary};
+  }
+
+  @media screen and (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+
+    > section {
+      flex-grow: 1;
+    }
   }
 `
 
@@ -65,17 +75,47 @@ export const Discover = props => {
     setSearchParams({ ...searchParams, orderBy, page: 1 })
   }
 
+  const [collapseKey, setCollapseKey] = useState(null)
+
   useEffect(() => {
     onSearch(searchParams)
+    setCollapseKey(null)
   }, [searchParams])
 
-  return (
-    <Wrapper className={className}>
+  const renderFilters = () => {
+    const isMobile = useBreakpoint() < 900
+
+    const toggleCollapse = () => {
+      if (collapseKey === 'filters') setCollapseKey(null)
+      else setCollapseKey('filters')
+    }
+
+    if (isMobile) {
+      return (
+        <Collapse activeKey={collapseKey} onChange={toggleCollapse}>
+          <Collapse.Panel header="Filters" key="filters">
+            <Sidebar
+              metadata={sidebarMetadata}
+              setFilters={setFilters}
+              text={sidebarText}
+            />
+          </Collapse.Panel>
+        </Collapse>
+      )
+    }
+
+    return (
       <Sidebar
         metadata={sidebarMetadata}
         setFilters={setFilters}
         text={sidebarText}
       />
+    )
+  }
+
+  return (
+    <Wrapper className={className}>
+      {renderFilters()}
       <section>
         <VisuallyHiddenElement as="h2">
           Search results: questions list
