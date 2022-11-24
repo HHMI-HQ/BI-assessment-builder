@@ -961,7 +961,7 @@ const Question = props => {
 
   const RightAreaEditor = (
     <>
-      <ActionsWrapper breakpoint={900}>
+      <ActionsWrapper>
         <StyledWordExportButton
           loading={wordFileLoading}
           onExport={onClickExportToWord}
@@ -1012,7 +1012,7 @@ const Question = props => {
         )}
         {showNextQuestionLink && NextQuestion}
       </ActionsWrapper>
-      <MobileDropdown breakpoint={900} overlay={editorMenu} trigger={['click']}>
+      <MobileDropdown overlay={editorMenu} trigger={['click']}>
         <DropdownButton
           aria-label="More actions"
           icon={<EllipsisOutlined />}
@@ -1073,7 +1073,7 @@ const Question = props => {
       </div>
 
       <div>
-        <ActionsWrapper breakpoint={1000}>
+        <ActionsWrapper>
           <StyledWordExportButton
             loading={wordFileLoading}
             onExport={onClickExportToWord}
@@ -1094,7 +1094,6 @@ const Question = props => {
         </ActionsWrapper>
 
         <MobileDropdown
-          breakpoint={1000}
           items={[
             { label: 'item 1', key: 'item-1' }, // remember to pass the key prop
             { label: 'item 2', key: 'item-2' },

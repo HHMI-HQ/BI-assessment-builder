@@ -10,9 +10,7 @@ const useBreakpoint = () => {
   useEffect(() => {
     window.addEventListener('resize', resize)
 
-    return () => {
-      window.removeEventListener('resize', resize)
-    }
+    return () => window.removeEventListener('resize', resize)
   }, [])
 
   return breakpoint
