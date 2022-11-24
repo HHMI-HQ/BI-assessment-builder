@@ -254,11 +254,18 @@ const MobileMenuToggle = styled.button`
   background-repeat: no-repeat;
   background-size: 31px 31px;
   border: none;
+  cursor: pointer;
   display: block;
   height: 35px;
   overflow: hidden;
   padding: 0;
+  transition: outline 200ms cubic-bezier(0.645, 0.045, 0.355, 1);
   width: 35px;
+
+  &:hover,
+  &:focus {
+    outline: 1px solid ${th('colorTextReverse')};
+  }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     display: none;
