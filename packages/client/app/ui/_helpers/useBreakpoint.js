@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react'
 
-const useBreakpoint = () => {
-  const [breakpoint, setBreakpoint] = useState(window.innerWidth)
+const useBreakpoint = mediaQuery => {
+  const mediaQueryList = window.matchMedia(mediaQuery)
+  const [isMobile, setIsMobile] = useState(mediaQueryList.matches)
 
-  const resize = () => {
-    setBreakpoint(window.innerWidth)
+  const matches = e => {
+    if (e.matches) {
+      setIsMobile(true)
+    } else {
+      setIsMobile(false)
+    }
   }
 
   useEffect(() => {
-    window.addEventListener('resize', resize)
+    mediaQueryList.addEventListener('change', matches)
 
-    return () => window.removeEventListener('resize', resize)
+    return () => mediaQueryList.removeEventListener('change', matches)
   }, [])
 
-  return breakpoint
+  return isMobile
 }
 
 export default useBreakpoint
