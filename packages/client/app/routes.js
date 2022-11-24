@@ -108,16 +108,18 @@ const Layout = props => {
     const title = regexPaths.find(p => p.path.test(path))
 
     document.title = `${title?.name} - HHMI Assessment Builder`
+
+    const unlisten = history.listen(val => {
+      const pathName = val.pathname
+      const pathTitle = regexPaths.find(p => p.path.test(pathName))
+
+      document.getElementById('page-announcement').innerHTML = pathTitle?.name
+
+      document.title = `${pathTitle?.name} - HHMI Assessment Builder`
+    })
+
+    return unlisten
   }, [])
-
-  history.listen(val => {
-    const path = history.location.pathname
-    const title = regexPaths.find(p => p.path.test(path))
-
-    document.getElementById('page-announcement').innerHTML = title?.name
-
-    document.title = `${title?.name} - HHMI Assessment Builder`
-  })
 
   return (
     <LayoutWrapper>
@@ -161,7 +163,11 @@ const SiteHeader = () => {
   const history = useHistory()
   const [currentPath, setCurrentPath] = useState(history.location.pathname)
 
-  history.listen(val => setCurrentPath(val.pathname))
+  useEffect(() => {
+    const unlisten = history.listen(val => setCurrentPath(val.pathname))
+
+    return unlisten
+  }, [])
 
   const logout = () => {
     setCurrentUser(null)
