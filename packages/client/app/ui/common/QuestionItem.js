@@ -67,7 +67,8 @@ const Status = styled.span`
         return th('colorBackground')
     }
   }};
-  flex: 0 0 110px;
+  flex: 0 0 120px;
+  font-weight: bold;
   padding: 0 ${grid(2)};
   text-align: right;
 `
