@@ -858,6 +858,7 @@ const Question = props => {
   const NextQuestion = (
     <StyledPrevNextButton
       aria-label="Next Question"
+      direction="rtl"
       icon={<RightOutlined />}
       onClick={onClickNextButton}
       title="Next Question"
