@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Sidebar from './Sidebar'
-import { QuestionList, VisuallyHiddenElement } from '../common'
+import { Collapse, QuestionList, VisuallyHiddenElement, Form } from '../common'
+import useBreakpoint from '../_helpers/useBreakpoint'
 
 const Wrapper = styled.div`
   display: grid;
@@ -12,6 +13,15 @@ const Wrapper = styled.div`
 
   > aside {
     border-right: 1px solid ${props => props.theme.colorSecondary};
+  }
+
+  @media screen and (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+
+    > section {
+      flex-grow: 1;
+    }
   }
 `
 
@@ -32,6 +42,8 @@ export const Discover = props => {
 
   // key to force list to rerender and empty search box when filters change
   const [listKey, setListKey] = useState(0)
+  // form control instance for Sidebar filters, here to preserve its state between Sidebar rerenders
+  const [filtersForm] = Form.useForm()
 
   const [searchParams, setSearchParams] = useState({
     query: '',
@@ -65,17 +77,42 @@ export const Discover = props => {
     setSearchParams({ ...searchParams, orderBy, page: 1 })
   }
 
+  const [collapseKey, setCollapseKey] = useState(null)
+
   useEffect(() => {
     onSearch(searchParams)
+    setCollapseKey(null)
   }, [searchParams])
+
+  const wrapFilters = filters => {
+    const isMobile = useBreakpoint('(max-width: 900px)')
+
+    const toggleCollapse = () => {
+      if (collapseKey === 'filters') setCollapseKey(null)
+      else setCollapseKey('filters')
+    }
+
+    return isMobile ? (
+      <Collapse activeKey={collapseKey} onChange={toggleCollapse}>
+        <Collapse.Panel forceRender header="Filters" key="filters">
+          {filters}
+        </Collapse.Panel>
+      </Collapse>
+    ) : (
+      filters
+    )
+  }
 
   return (
     <Wrapper className={className}>
-      <Sidebar
-        metadata={sidebarMetadata}
-        setFilters={setFilters}
-        text={sidebarText}
-      />
+      {wrapFilters(
+        <Sidebar
+          form={filtersForm}
+          metadata={sidebarMetadata}
+          setFilters={setFilters}
+          text={sidebarText}
+        />,
+      )}
       <section>
         <VisuallyHiddenElement as="h2">
           Search results: questions list

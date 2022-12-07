@@ -108,16 +108,18 @@ const Layout = props => {
     const title = regexPaths.find(p => p.path.test(path))
 
     document.title = `${title?.name} - HHMI Assessment Builder`
+
+    const unlisten = history.listen(val => {
+      const pathName = val.pathname
+      const pathTitle = regexPaths.find(p => p.path.test(pathName))
+
+      document.getElementById('page-announcement').innerHTML = pathTitle?.name
+
+      document.title = `${pathTitle?.name} - HHMI Assessment Builder`
+    })
+
+    return unlisten
   }, [])
-
-  history.listen(val => {
-    const path = history.location.pathname
-    const title = regexPaths.find(p => p.path.test(path))
-
-    document.getElementById('page-announcement').innerHTML = title?.name
-
-    document.title = `${title?.name} - HHMI Assessment Builder`
-  })
 
   return (
     <LayoutWrapper>
@@ -133,7 +135,11 @@ const Layout = props => {
 }
 
 const StyledPage = styled(Page)`
-  height: calc(100% - 76px - 115px);
+  height: calc(100% - 76px - 70px);
+
+  @media screen and (min-width: 720px) {
+    height: calc(100% - 76px - 60px);
+  }
 `
 
 // const Loader = () => <Spin spinning />
@@ -157,7 +163,11 @@ const SiteHeader = () => {
   const history = useHistory()
   const [currentPath, setCurrentPath] = useState(history.location.pathname)
 
-  history.listen(val => setCurrentPath(val.pathname))
+  useEffect(() => {
+    const unlisten = history.listen(val => setCurrentPath(val.pathname))
+
+    return unlisten
+  }, [])
 
   const logout = () => {
     setCurrentUser(null)
@@ -319,7 +329,16 @@ const routes = (
         </StyledMain>
       </StyledPage>
     </MetadataProvider>
-    <Footer />
+    <Footer
+      links={{
+        newsletter:
+          ' https://hhmi.us5.list-manage.com/subscribe?u=3c8034ebf5d74492b5c8ef8c9&id=8f2808e1d6',
+        hhmi: ' https://www.hhmi.org/',
+        termsOfUse: 'https://www.hhmi.org/terms-of-use',
+        privacyPolicy: 'https://www.hhmi.org/privacy-policy',
+        homepage: '/',
+      }}
+    />
   </Layout>
 )
 

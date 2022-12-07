@@ -580,7 +580,9 @@ const Header = props => {
                     </CollapsableMenu>
                   </UserMenuWrapper>
                 ) : (
-                  <StyledLogin to={login}>Login</StyledLogin>
+                  <StyledLogin onClick={() => setShowMenu(false)} to={login}>
+                    Loginzz
+                  </StyledLogin>
                 )}
               </li>
             </StyledList>
