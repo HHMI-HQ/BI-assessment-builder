@@ -52,7 +52,7 @@ const transform = (questions, metadataValues) => {
 
     let status = 'Not Submitted'
     if (latestVersion.submitted) status = 'Submitted'
-    if (latestVersion.underReview) status = 'Under review'
+    if (latestVersion.underReview) status = 'Under Review'
     if (latestVersion.inProduction) status = 'In Production'
     if (latestVersion.published) status = 'Published'
     if (question.rejected) status = 'Rejected'

@@ -9,6 +9,7 @@ import WaxWrapper from '../wax/Wax'
 import { DashLayout } from '../wax/layout'
 import { dashConfig } from '../wax/config'
 import Link from './HhmiLink'
+import Status from './Status'
 
 const Wrapper = styled.article`
   margin: ${grid(1)};
@@ -45,32 +46,6 @@ const WaxContainer = styled(Link)`
   * {
     overflow: hidden;
   }
-`
-
-const Status = styled.span`
-  border-radius: 20px;
-  color: ${({ status }) => {
-    switch (status) {
-      case 'Published':
-        return th('colorSuccess')
-      case 'Submitted':
-        return th('colorPrimary')
-      case 'Under review':
-        return th('colorWarning')
-      case 'In Production':
-        return th('colorWarning')
-      case 'Rejected':
-        return th('colorError')
-      case 'Not Submitted':
-        return th('colorText')
-      default:
-        return th('colorBackground')
-    }
-  }};
-  flex: 0 0 120px;
-  font-weight: bold;
-  padding: 0 ${grid(2)};
-  text-align: right;
 `
 
 const SecondRow = styled.div`
@@ -159,7 +134,8 @@ const QuestionItem = props => {
             readOnly
           />
         </WaxContainer>
-        {status ? <Status status={status}>{status}</Status> : null}
+
+        <div>{status ? <Status status={status} /> : null}</div>
       </FirstRow>
 
       <SecondRow>
