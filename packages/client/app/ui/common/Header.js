@@ -585,7 +585,15 @@ const Header = props => {
                         </StyledLink>
                       </li>
                       <li role="none">
-                        <StyledLink onClick={onLogout} role="menuitem" to="#">
+                        <StyledLink
+                          onClick={() => {
+                            setShowMenu(false)
+                            setOpenUserMenu(false)
+                            onLogout()
+                          }}
+                          role="menuitem"
+                          to="#"
+                        >
                           <span>Logout</span>
                         </StyledLink>
                       </li>
