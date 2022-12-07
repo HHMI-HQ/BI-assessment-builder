@@ -91,15 +91,19 @@ const Navigation = styled.nav`
 
 const StyledList = styled.ul`
   display: block;
+  list-style: none;
   margin: 0;
   padding: 0;
 
   > li {
-    align-items: center;
     color: ${th('colorTextDark')};
-    display: flex;
     font-size: ${th('fontSizeBase')};
     line-height: 2.5rem;
+
+    > a {
+      display: inline-flex;
+      width: 100%;
+    }
   }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
