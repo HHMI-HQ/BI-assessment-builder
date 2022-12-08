@@ -45,8 +45,6 @@ const StyledList = styled(List)`
   }
 
   .ant-list-items {
-    padding: 0 10px;
-
     > li:not(:last-child) {
       border-bottom: 1px solid ${th('colorSecondary')};
     }

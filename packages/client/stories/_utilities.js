@@ -211,7 +211,7 @@ const getRandomStatus = () =>
   [
     'Not Submitted',
     'Submitted',
-    'Under review',
+    'Under Review',
     'In Production',
     'Rejected',
     'Published',
