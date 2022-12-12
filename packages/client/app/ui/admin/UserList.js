@@ -226,7 +226,7 @@ const UserList = props => {
         />
         <FooterActionsWrapper>
           <Checkbox checked={showDeactivated} onChange={onClickShowDeactivated}>
-            Show deactivated users
+            Show inactive users
           </Checkbox>
           <ButtonGroup justify="right">
             {renderActivationButton(showDeactivated)}
