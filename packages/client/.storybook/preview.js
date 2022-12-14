@@ -2,4 +2,4 @@
 
 // addDecorator(Story => {})
 
-import 'antd/dist/antd.less'
+// import 'antd/dist/antd.less'
