@@ -3,15 +3,15 @@ variables:
   IMAGE_NAME: hhmi-ci-development
   WORKDIR: /home/node/hhmi
 stages:
-  - build
-  - lint
-  - deploy
+  - Build
+  - Lint & Test
+  - Deploy
   # - install
   # - deploy-storybook
 
 build development:
+  stage: Build
   image: docker:20.10.16
-  stage: build
   services:
     - docker:20.10.16-dind
   before_script:
@@ -22,20 +22,20 @@ build development:
     - docker build --tag $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA ./packages/server -f packages/server/Dockerfile-development
     - docker push $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
 
-# lint js:
-#   image: node:16-bullseye-slim
-#   stage: lint
-#   script:
-#     - apt-get update && apt-get install -y git
-#     - yarn install && cd packages/client && yarn install && cd ../.. && cd packages/server && yarn install && cd ../..
-#     - yarn eslint .
-
-lint js:
-  stage: lint
+server lint js:
+  stage: Lint & Test
   image: $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
   script:
     - cd $WORKDIR
     - yarn eslint .
+
+server unit test:
+  stage: Lint & Test
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - ls -la
 
 # deploy storybook static:
 #   image: debian:stable-slim
@@ -53,36 +53,36 @@ lint js:
 #   only:
 #     - master
 
-build storybook image:
-  stage: build
-  image: docker:19.03.12
-  services:
-    - docker:19.03.12-dind
-  before_script:
-    - docker info
-    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-  script:
-    - if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_PASSWORD" ]; then echo "Not pushing" && exit 0; fi
-    - cd ./packages/client
-    - docker pull $IMAGE_ORG/hhmi-storybook:latest || true
-    - docker build --cache-from $IMAGE_ORG/hhmi-storybook:latest --tag $IMAGE_ORG/hhmi-storybook:$CI_COMMIT_SHA --tag $IMAGE_ORG/hhmi-storybook:latest . -f Dockerfile-storybook-deploy
-    - docker push $IMAGE_ORG/hhmi-storybook:$CI_COMMIT_SHA
-    - docker push $IMAGE_ORG/hhmi-storybook:latest
-  only:
-    - master
+# build storybook image:
+#   stage: Build
+#   image: docker:19.03.12
+#   services:
+#     - docker:19.03.12-dind
+#   before_script:
+#     - docker info
+#     - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+#   script:
+#     - if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_PASSWORD" ]; then echo "Not pushing" && exit 0; fi
+#     - cd ./packages/client
+#     - docker pull $IMAGE_ORG/hhmi-storybook:latest || true
+#     - docker build --cache-from $IMAGE_ORG/hhmi-storybook:latest --tag $IMAGE_ORG/hhmi-storybook:$CI_COMMIT_SHA --tag $IMAGE_ORG/hhmi-storybook:latest . -f Dockerfile-storybook-deploy
+#     - docker push $IMAGE_ORG/hhmi-storybook:$CI_COMMIT_SHA
+#     - docker push $IMAGE_ORG/hhmi-storybook:latest
+#   only:
+#     - master
 
-deploy storybook:
-  image: debian:stable-slim
-  stage: deploy
-  before_script:
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "$STORYBOOK_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
-    - chmod 700 ~/.ssh
-    - echo "$STORYBOOK_SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-  script:
-    - ssh ${STORYBOOK_SSH_USER}@${STORYBOOK_SSH_URL} -p ${STORYBOOK_SSH_PORT} "docker pull cokoapps/hhmi-storybook:latest && docker stop hhmi-storybook && docker rm hhmi-storybook && docker run -d -p 5410:80 --name hhmi-storybook cokoapps/hhmi-storybook"
-  only:
-    - master
+# deploy storybook:
+#   image: debian:stable-slim
+#   stage: Deploy
+#   before_script:
+#     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+#     - eval $(ssh-agent -s)
+#     - echo "$STORYBOOK_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#     - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+#     - chmod 700 ~/.ssh
+#     - echo "$STORYBOOK_SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+#   script:
+#     - ssh ${STORYBOOK_SSH_USER}@${STORYBOOK_SSH_URL} -p ${STORYBOOK_SSH_PORT} "docker pull cokoapps/hhmi-storybook:latest && docker stop hhmi-storybook && docker rm hhmi-storybook && docker run -d -p 5410:80 --name hhmi-storybook cokoapps/hhmi-storybook"
+#   only:
+#     - master
