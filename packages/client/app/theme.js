@@ -18,16 +18,21 @@ module.exports = {
 
   fontInterface: 'Arial, sans-serif',
   // font sizes
+  // fontSize: '1rem', // actual antd font variable; break select icons and input paddings
   fontSizeBase: '16px',
   fontSizeBaseSmall: '14px',
-  fontSizeHeading1: '96px',
-  fontSizeHeading2: '81px',
-  fontSizeHeading3: '54px',
-  fontSizeHeading4: '36px',
+  fontSizeHeading1: '3.375rem',
+  fontSizeHeading2: '2.25rem',
+  fontSizeHeading3: '2.25rem',
+  fontSizeHeading4: '2.25em',
   fontSizeHeading5: '24px',
   fontSizeHeading6: '18px',
 
+  // outline width
+  lineWidth: '1',
+  lineWidthBold: '0.5',
   // line heights
+  // lineHeight: '24px',
   lineHeightBase: '30px',
   // lineHeightBaseSmall: '32px',
   // lineHeightHeading1: '96px',
@@ -42,8 +47,8 @@ module.exports = {
 
   gridUnit: '4px',
 
-  borderRadius: '3px',
-  borderWidth: '1px',
+  borderRadius: '0px',
+  borderWidth: '1px', // doesn't exist in new theme variables
   borderStyle: 'solid',
 
   // #region header variables

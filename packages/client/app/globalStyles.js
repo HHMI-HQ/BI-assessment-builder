@@ -15,7 +15,7 @@ export default createGlobalStyle`
     line-height: ${th('lineHeightBase')} !important;
     overflow: auto;
 
-    .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    /* .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
       color: rgb(0 0 0 / 50%);
     }
 
@@ -51,6 +51,6 @@ export default createGlobalStyle`
     .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper-focused {
       border-color: ${th('colorError')};
       box-shadow: 0 0 0 2px #d4313122;
-    }
+    } */
   }
 `
