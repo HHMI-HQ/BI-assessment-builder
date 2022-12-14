@@ -41,6 +41,7 @@ server unit test:
     - docker:20.10.16-dind
   before_script:
     - ls -la
+    - docker-compose --version
   script:
     - echo 'done'
 
