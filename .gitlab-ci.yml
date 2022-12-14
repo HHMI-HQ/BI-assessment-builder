@@ -2,6 +2,7 @@ variables:
   IMAGE_ORG: cokoapps
   IMAGE_NAME: hhmi-ci-development
   WORKDIR: /home/node/hhmi
+
 stages:
   - Build
   - Lint & Test
@@ -9,7 +10,7 @@ stages:
   # - install
   # - deploy-storybook
 
-build development:
+server build development:
   stage: Build
   image: docker:20.10.16
   services:
@@ -24,6 +25,8 @@ build development:
 
 server lint js:
   stage: Lint & Test
+  needs:
+    - server build development
   image: $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
   script:
     - cd $WORKDIR
@@ -31,11 +34,15 @@ server lint js:
 
 server unit test:
   stage: Lint & Test
+  needs: 
+    - server build development
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
   before_script:
     - ls -la
+  script:
+    - echo 'done'
 
 # deploy storybook static:
 #   image: debian:stable-slim
