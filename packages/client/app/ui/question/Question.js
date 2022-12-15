@@ -1039,7 +1039,7 @@ const Question = props => {
         )}
         {isSubmitted && !isUnderReview && !isInProduction && !isPublished && (
           <>
-            <StyledButton onClick={handleReject} type="danger">
+            <StyledButton onClick={handleReject} status="danger" type="primary">
               Do not accept
             </StyledButton>
 

@@ -117,7 +117,8 @@ const TeamManagerBlock = props => {
         <RemoveButton
           disabled={selectTeamMember.length === 0}
           onClick={handleRemove}
-          type="danger"
+          status="danger"
+          type="primary"
         >
           Remove Selected User{selectTeamMember.length > 1 ? 's' : ''} from Team
         </RemoveButton>
