@@ -26,6 +26,12 @@ module.exports = {
       testRegex: 'services/__tests__/.+test.js$',
       // globalSetup: '<rootDir>/models/__tests__/_setup.js',
     },
+    {
+      displayName: 'api',
+      testEnvironment: 'node',
+      testRegex: 'api/__tests__/.+test.js$',
+      globalSetup: '<rootDir>/models/__tests__/_setup.js',
+    },
   ],
   maxWorkers: 1,
 }

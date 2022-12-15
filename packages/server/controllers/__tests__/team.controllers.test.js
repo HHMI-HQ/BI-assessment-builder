@@ -8,7 +8,7 @@ const { Team, TeamMember } = require('../../models/index')
 
 const {
   createGlobalTeamWithUsers,
-  createGlobalAuthorTeamWithUsers,
+  createGlobalEditorTeamWithUsers,
   createGlobalReviewerTeamWithUsers,
 } = require('../../models/__tests__/__helpers__/teams')
 
@@ -192,7 +192,7 @@ describe('Team Controller', () => {
   })
 
   it('updateGlobalTeams updates multiple valid teams', async () => {
-    const { team: teamOne } = await createGlobalAuthorTeamWithUsers()
+    const { team: teamOne } = await createGlobalEditorTeamWithUsers()
     const { team: teamTwo } = await createGlobalReviewerTeamWithUsers()
 
     const userOne = await createUser()
@@ -241,7 +241,7 @@ describe('Team Controller', () => {
   })
 
   it('getNonTeamMemberUsers returns a defined array when getting a falsy searchValue', async () => {
-    const { team } = await createGlobalAuthorTeamWithUsers()
+    const { team } = await createGlobalEditorTeamWithUsers()
 
     const result = await getNonTeamMemberUsers(team.id, null)
 
@@ -249,7 +249,7 @@ describe('Team Controller', () => {
   })
 
   it('getNonTeamMemberUsers returns an empty array when getting a falsy searchValue', async () => {
-    const { team } = await createGlobalAuthorTeamWithUsers()
+    const { team } = await createGlobalEditorTeamWithUsers()
 
     const result = await getNonTeamMemberUsers(team.id, null)
 
@@ -257,7 +257,7 @@ describe('Team Controller', () => {
   })
 
   it('getNonTeamMemberUsers returns an empty array when getting a mismatching searchValue', async () => {
-    const { team } = await createGlobalAuthorTeamWithUsers()
+    const { team } = await createGlobalEditorTeamWithUsers()
 
     await createUser()
     await createUser()
@@ -269,7 +269,7 @@ describe('Team Controller', () => {
   })
 
   it('getNonTeamMemberUsers returns a non-empty array when getting a simple searchValue', async () => {
-    const { team } = await createGlobalAuthorTeamWithUsers()
+    const { team } = await createGlobalEditorTeamWithUsers()
 
     await createUser()
     await createUser()
