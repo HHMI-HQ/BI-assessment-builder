@@ -9,7 +9,7 @@ const {
 const {
   createEmptyQuestion,
   exampleQuestionVersion,
-  exampleQuestionVersionThree,
+  exampleQuestionVersionTwo,
 } = require('./__helpers__/questions')
 
 const clearDb = require('../../models/__tests__/_clearDb')
@@ -83,7 +83,7 @@ describe('Question Controller', () => {
     await updateQuestion(
       question.id,
       questionVersion.id,
-      exampleQuestionVersionThree,
+      exampleQuestionVersionTwo,
     )
 
     const exportFilename = await generateScormZip(questionVersion.id)
