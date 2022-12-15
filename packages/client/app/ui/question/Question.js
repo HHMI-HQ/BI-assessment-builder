@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { isEqual } from 'lodash'
 
-import { Dropdown, Menu } from 'antd'
+import { Dropdown } from 'antd'
 import {
   LeftOutlined,
   RightOutlined,
@@ -78,6 +78,7 @@ const Wrapper = styled.div`
 
 const StyledButton = styled(Button)`
   margin-right: ${grid(2)};
+  width: 100%;
 `
 
 const StyledPrevNextButton = styled(StyledButton)`
@@ -94,10 +95,12 @@ const StyledPrevNextButton = styled(StyledButton)`
 
 const StyledWordExportButton = styled(ExportToWordButton)`
   margin-right: ${grid(2)};
+  width: 100%;
 `
 
 const StyledScormExportButton = styled(ExportToScormButton)`
   margin-right: ${grid(2)};
+  width: 100%;
 `
 
 const RightAreaWrapper = styled.div`
@@ -214,12 +217,6 @@ const DropdownButton = styled(Button)`
   padding: 0;
   transform: rotate(90deg);
   width: 32px;
-`
-
-const StyledMenu = styled(Menu)`
-  .ant-dropdown-menu-title-content > * {
-    width: 100%;
-  }
 `
 
 // #endregion styled
@@ -896,73 +893,115 @@ const Question = props => {
     </>
   )
 
-  const editorMenu = (
-    <StyledMenu>
-      <Menu.Item>
+  const editorActionsDropdownMenu = [
+    {
+      key: 1,
+      label: (
         <StyledWordExportButton
           loading={wordFileLoading}
           onExport={onClickExportToWord}
           showMetadataOption
         />
-      </Menu.Item>
-      {showAssignHEButton && (
-        <Menu.Item>
-          <StyledButton
-            aria-label="Assign Handling Editor"
-            ghost
-            onClick={onClickAssignHE}
-            type="primary "
-          >
-            Assign HE
-          </StyledButton>
-        </Menu.Item>
-      )}
-      {isUnderReview && (
-        <>
-          <Menu.Item>
-            <StyledButton onClick={handleReject} type="danger">
-              Do not accept
-            </StyledButton>
-          </Menu.Item>
-          <Menu.Item>
-            <StyledButton onClick={handleMoveToProduction} type="primary">
-              Move to production
-            </StyledButton>
-          </Menu.Item>
-        </>
-      )}
-      {isInProduction && (
-        <Menu.Item>
-          <StyledButton onClick={handlePublish} type="primary">
-            Publish
-          </StyledButton>
-        </Menu.Item>
-      )}
-      {isSubmitted && !isUnderReview && !isInProduction && !isPublished && (
-        <>
-          <Menu.Item>
-            <StyledButton onClick={handleReject} type="danger">
-              Do not accept
-            </StyledButton>
-          </Menu.Item>
-          <Menu.Item>
-            <StyledButton onClick={handleMoveToReview} type="primary">
-              Move to Review
-            </StyledButton>
-          </Menu.Item>
-        </>
-      )}
-
-      {isPublished && (
-        <Menu.Item>
-          <StyledButton onClick={showNewVersionModal} type="primary">
-            Edit Question
-          </StyledButton>
-        </Menu.Item>
-      )}
-      {showNextQuestionLink && NextQuestion}
-    </StyledMenu>
-  )
+      ),
+    },
+    ...(showAssignHEButton
+      ? [
+          {
+            key: 'assignHE',
+            label: (
+              <StyledButton
+                aria-label="Assign Handling Editor"
+                ghost
+                onClick={onClickAssignHE}
+                type="primary "
+              >
+                Assign HE
+              </StyledButton>
+            ),
+          },
+        ]
+      : []),
+    ...(isUnderReview
+      ? [
+          {
+            key: 'reject',
+            label: (
+              <StyledButton
+                onClick={handleReject}
+                status="danger"
+                type="primary"
+              >
+                Do not accept
+              </StyledButton>
+            ),
+          },
+          {
+            key: 'moveToProduction',
+            label: (
+              <StyledButton onClick={handleMoveToProduction} type="primary">
+                Move to production
+              </StyledButton>
+            ),
+          },
+        ]
+      : []),
+    ...(isInProduction
+      ? [
+          {
+            key: 'publish',
+            label: (
+              <StyledButton onClick={handlePublish} type="primary">
+                Publish
+              </StyledButton>
+            ),
+          },
+        ]
+      : []),
+    ...(isSubmitted && !isUnderReview && !isInProduction && !isPublished
+      ? [
+          {
+            key: 'reject',
+            label: (
+              <StyledButton
+                onClick={handleReject}
+                status="danger"
+                type="primary"
+              >
+                Do not accept
+              </StyledButton>
+            ),
+          },
+          {
+            key: 'review',
+            label: (
+              <StyledButton onClick={handleMoveToReview} type="primary">
+                Move to Review
+              </StyledButton>
+            ),
+          },
+        ]
+      : []),
+    ...(isPublished
+      ? [
+          {
+            key: 'reviewOrReject',
+            label: (
+              <StyledButton onClick={showNewVersionModal} type="primary">
+                Edit Question
+              </StyledButton>
+            ),
+          },
+        ]
+      : []),
+    ...(showNextQuestionLink
+      ? [
+          {
+            key: 'nextQuestion',
+            label: NextQuestion,
+          },
+        ]
+      : []),
+  ]
 
   const RightAreaEditor = (
     <>
@@ -984,7 +1023,7 @@ const Question = props => {
         )}
         {isUnderReview && (
           <>
-            <StyledButton onClick={handleReject} type="danger">
+            <StyledButton onClick={handleReject} status="danger" type="primary">
               Do not accept
             </StyledButton>
 
@@ -1017,7 +1056,12 @@ const Question = props => {
         )}
         {showNextQuestionLink && NextQuestion}
       </ActionsWrapper>
-      <MobileDropdown overlay={editorMenu} trigger={['click']}>
+      <MobileDropdown
+        menu={{
+          items: editorActionsDropdownMenu,
+        }}
+        trigger={['click']}
+      >
         <DropdownButton
           aria-label="More actions"
           icon={<EllipsisOutlined />}
@@ -1040,35 +1084,42 @@ const Question = props => {
     </RightAreaWrapper>
   )
 
-  const publishedQuestionActions = (
-    <StyledMenu>
-      <Menu.Item>
-        {' '}
+  const publishedQuestionActions = [
+    {
+      label: (
         <StyledWordExportButton
           loading={wordFileLoading}
           onExport={onClickExportToWord}
           showMetadataOption={isUserLoggedIn}
         />
-      </Menu.Item>
-      <Menu.Item>
-        {' '}
+      ),
+      key: 'exportWord',
+    }, // remember to pass the key prop
+    {
+      label: (
         <StyledScormExportButton
           loading={scormZipLoading}
           onExport={onClickExportToScorm}
         />
-      </Menu.Item>
-      {isUserLoggedIn && (
-        <Menu.Item>
-          <StyledSwitch
-            checked={showMetadata}
-            checkedChildren="Show Metadata"
-            onChange={val => setShowMetadata(val)}
-            unCheckedChildren="Student view"
-          />
-        </Menu.Item>
-      )}
-    </StyledMenu>
-  )
+      ),
+      key: 'exportScorm',
+    },
+    ...(isUserLoggedIn
+      ? [
+          {
+            label: (
+              <StyledSwitch
+                checked={showMetadata}
+                checkedChildren="Show Metadata"
+                onChange={val => setShowMetadata(val)}
+                unCheckedChildren="Student view"
+              />
+            ),
+            key: 'toggleMetadata',
+          },
+        ]
+      : []),
+  ]
 
   const FacultyHeader = (
     <FacultyHeaderWrapper>
@@ -1099,11 +1150,9 @@ const Question = props => {
         </ActionsWrapper>
 
         <MobileDropdown
-          items={[
-            { label: 'item 1', key: 'item-1' }, // remember to pass the key prop
-            { label: 'item 2', key: 'item-2' },
-          ]}
-          overlay={publishedQuestionActions}
+          menu={{
+            items: publishedQuestionActions,
+          }}
           trigger={['click']}
         >
           <DropdownButton
