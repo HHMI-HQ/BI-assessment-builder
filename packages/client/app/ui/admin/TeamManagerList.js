@@ -2,10 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
-import { Layout, List, H1 } from '../common'
+import { List, H1 } from '../common'
 import TeamManagerBlock from './TeamManagerBlock'
 
 const Wrapper = styled.div``
+
+const StyledSection = styled.section`
+  background: ${th('colorBackground')};
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: ${grid(4)};
+`
 
 const TeamManagerBlockWrapper = styled.div`
   padding: ${grid(8)} 0;
@@ -39,38 +47,34 @@ const TeamManagerList = props => {
 
   return (
     <Wrapper className={className}>
-      <Layout>
-        <Layout.Header>
-          <TeamManagerListHeader>Team Manager</TeamManagerListHeader>
-        </Layout.Header>
+      <StyledSection>
+        <TeamManagerListHeader>Team Manager</TeamManagerListHeader>
 
-        <Layout.Content>
-          <StyledList
-            className={className}
-            dataSource={teams}
-            // footerContent={bulkAction}
-            loading={loading}
-            onSearch={onSearch}
-            renderItem={item => (
-              <TeamManagerBlockWrapper>
-                <TeamManagerBlock
-                  className={className}
-                  displayName={item.displayName}
-                  members={item.members}
-                  onAdd={onAdd}
-                  onRemove={onRemove}
-                  onRowSelectionChange={onRowSelectionChange}
-                  onSearch={onSearch}
-                  searchLoading={searchLoading}
-                  searchOptions={searchOptions}
-                  teamId={item.id}
-                />
-              </TeamManagerBlockWrapper>
-            )}
-            showPagination={false}
-          />
-        </Layout.Content>
-      </Layout>
+        <StyledList
+          className={className}
+          dataSource={teams}
+          // footerContent={bulkAction}
+          loading={loading}
+          onSearch={onSearch}
+          renderItem={item => (
+            <TeamManagerBlockWrapper>
+              <TeamManagerBlock
+                className={className}
+                displayName={item.displayName}
+                members={item.members}
+                onAdd={onAdd}
+                onRemove={onRemove}
+                onRowSelectionChange={onRowSelectionChange}
+                onSearch={onSearch}
+                searchLoading={searchLoading}
+                searchOptions={searchOptions}
+                teamId={item.id}
+              />
+            </TeamManagerBlockWrapper>
+          )}
+          showPagination={false}
+        />
+      </StyledSection>
     </Wrapper>
   )
 }

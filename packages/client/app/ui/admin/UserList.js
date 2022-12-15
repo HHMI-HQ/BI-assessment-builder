@@ -16,16 +16,6 @@ import { profileOptions } from '../../utilities'
 
 const Wrapper = styled.div`
   height: 100%;
-
-  > section {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-
-    > div:nth-child(2) {
-      flex-grow: 1;
-    }
-  }
 `
 
 const PageHeader = styled(H1)`
@@ -71,7 +61,14 @@ const columns = [
 
 const StyledSection = styled.section`
   background: ${th('colorBackground')};
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: ${grid(4)};
+
+  > div:nth-child(2) {
+    flex-grow: 1;
+  }
 `
 
 const FooterActionsWrapper = styled.div`
