@@ -241,6 +241,7 @@ const APCourseMetadata = props => {
           optionFilterProp="label"
           options={filterCourseUnitOptions()}
           showSearch
+          testId="course-unit-select"
           wrapOptionText
         />
       </Form.Item>
@@ -262,6 +263,7 @@ const APCourseMetadata = props => {
               optionFilterProp="label"
               options={filterCourseTopicOptions()}
               showSearch
+              testId="course-topic-select"
               wrapOptionText
             />
           </Form.Item>
@@ -286,6 +288,7 @@ const APCourseMetadata = props => {
               optionFilterProp="label"
               options={filterLearningObjectiveOptions()}
               showSearch
+              testId="learning-objective-select"
               wrapOptionText
             />
           </Form.Item>
@@ -315,6 +318,7 @@ const APCourseMetadata = props => {
               optionFilterProp="label"
               options={filterEssentialKnowledgeOptions()}
               showSearch
+              testId="essential-knowledge-select"
               wrapOptionText
             />
           </Form.Item>

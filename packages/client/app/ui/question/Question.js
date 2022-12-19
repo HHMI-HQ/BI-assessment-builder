@@ -958,6 +958,7 @@ const Question = props => {
       </StyledCheckbox>
 
       <SubmitButton
+        data-testid="submit-question-btn"
         disabled={
           // !formRef.current.isFieldsTouched(true) ||
           submitting ||

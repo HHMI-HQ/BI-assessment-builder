@@ -178,6 +178,8 @@ Select.propTypes = {
   notFoundContent: PropTypes.element,
   isOpen: PropTypes.bool,
   virtual: PropTypes.bool,
+  testId: PropTypes.string,
+
   wrapOptionText: PropTypes.bool,
 }
 
@@ -194,6 +196,8 @@ Select.defaultProps = {
   ),
   isOpen: false,
   virtual: false,
+  testId: 'select',
+
   wrapOptionText: false,
 }
 

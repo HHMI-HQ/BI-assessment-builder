@@ -353,6 +353,7 @@ const List = props => {
                   id="sortBy"
                   onChange={onSortOptionChange}
                   options={sanitizedSortOptions}
+                  testId="sort-select"
                 />
               </label>
             </SortWrapper>

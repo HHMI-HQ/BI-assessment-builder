@@ -220,6 +220,7 @@ const ProfileInfo = props => {
                   options={countries}
                   placeholder="Select the country where your institution is located"
                   showSearch
+                  testId="select-country"
                 />
               </Form.Item>
             </Col>
@@ -250,6 +251,7 @@ const ProfileInfo = props => {
                     options={states}
                     placeholder="Select the state where your institution is located"
                     showSearch
+                    testId="state-select"
                   />
                 </Form.Item>
               )}
@@ -345,6 +347,7 @@ const ProfileInfo = props => {
                 <Select
                   options={institutionalSetting}
                   placeholder="Select your type of institution"
+                  testId="institutional-setting-select"
                 />
               </Form.Item>
             </Col>
@@ -368,6 +371,7 @@ const ProfileInfo = props => {
                     { label: '> 5', value: 'moreThan5' },
                   ]}
                   placeholder="Select your years of teaching experience"
+                  testId="teaching-experience-select"
                 />
               </Form.Item>
             </Col>
@@ -383,6 +387,7 @@ const ProfileInfo = props => {
                 <Select
                   options={institutionLevels}
                   placeholder="What level do you primarily teach?"
+                  testId="primary-institution-select"
                 />
               </Form.Item>
             </Col>
@@ -455,6 +460,7 @@ const ProfileInfo = props => {
                   mode="multiple"
                   options={courses}
                   placeholder="Select courses"
+                  testId="course-taught-select"
                 />
               </Form.Item>
             </Col>
@@ -528,6 +534,7 @@ const ProfileInfo = props => {
                         mode="multiple"
                         options={topics}
                         placeholder="Select three topics"
+                        testId="three-course-select"
                       />
                     </Form.Item>
                   )

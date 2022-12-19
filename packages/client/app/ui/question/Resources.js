@@ -84,6 +84,7 @@ const Resources = props => {
           optionFilterProp="label"
           options={availableResourses}
           showSearch
+          testId="biointeractiveResources-select"
           wrapOptionText
         />
       </StyledFormItem>

@@ -81,6 +81,7 @@ const TopicAndSubtopic = props => {
             value: t.value,
           }))}
           showSearch
+          testId="topic-select"
         />
       </Form.Item>
       <Form.Item dependencies={[topicField]} noStyle>
@@ -100,6 +101,7 @@ const TopicAndSubtopic = props => {
               optionFilterProp="label"
               options={filterSubtopicOptions()}
               showSearch
+              testId="subtopic-select"
             />
           </Form.Item>
         )}

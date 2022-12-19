@@ -143,6 +143,7 @@ const QuestionItem = props => {
     <Wrapper className={className} id={id}>
       <FirstRow>
         <WaxContainer
+          data-testid="wax-container"
           to={{
             pathname: href,
             state,
@@ -158,7 +159,7 @@ const QuestionItem = props => {
         </WaxContainer>
         {status ? (
           <StatusContainer>
-            <Status status={status} />
+            <Status data-testid="question-status" status={status} />
           </StatusContainer>
         ) : null}
       </FirstRow>

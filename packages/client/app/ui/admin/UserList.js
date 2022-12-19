@@ -177,6 +177,7 @@ const UserList = props => {
   const renderActivationButton = deactivatedUsers =>
     deactivatedUsers ? (
       <Button
+        data-testid="activate-btn"
         disabled={selectedRows.length === 0}
         onClick={() => bulkAction(ACTIVATE_ACTION)}
         type="primary"
@@ -185,6 +186,7 @@ const UserList = props => {
       </Button>
     ) : (
       <Button
+        data-testid="deactivate-btn"
         disabled={selectedRows.length === 0}
         onClick={() => bulkAction(DEACTIVATE_ACTION)}
         type="primary"
