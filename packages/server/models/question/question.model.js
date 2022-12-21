@@ -251,7 +251,14 @@ class Question extends BaseModel {
           'questions.id',
           'question_versions.question_id',
         )
-        .select('questions.*', 'question_versions.publication_date')
+        .select(
+          'questions.*',
+          'question_versions.publication_date',
+          'question_versions.topics',
+          'question_versions.courses',
+          'question_versions.question_type',
+          'question_versions.cognitive_level',
+        )
         .distinctOn('questions.id')
         .where({
           published: true,
@@ -261,15 +268,15 @@ class Question extends BaseModel {
           { column: 'question_versions.created', order: 'desc' },
         ])
 
-      if (params.filters || params.searchQuery) {
-        this.applyFilters(params.filters, params.searchQuery, query)
-      }
-
       query.as('q1')
 
       // wrapped into a parent query so that the subsequent ordering is applied to unique question versions
       // and not between versions of the same question
       const parentQuery = Question.query(options.trx).select('*').from(query)
+
+      if (params.filters || params.searchQuery) {
+        this.applyFilters(params.filters, params.searchQuery, parentQuery)
+      }
 
       return applyListQueryOptions(parentQuery, options)
     } catch (e) {
