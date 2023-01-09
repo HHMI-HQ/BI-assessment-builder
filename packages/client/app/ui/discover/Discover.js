@@ -100,7 +100,12 @@ export const Discover = props => {
 
     return isMobile ? (
       <Collapse activeKey={collapseKey} onChange={toggleCollapse}>
-        <Collapse.Panel forceRender header="Filters" key="filters">
+        <Collapse.Panel
+          forceRender
+          header="Filters"
+          key="filters"
+          data-testid="filter-collapse"
+        >
           {filters}
         </Collapse.Panel>
       </Collapse>
