@@ -16,12 +16,11 @@ const StyledCheckbox = styled(AntCheckbox)`
 `
 
 const Checkbox = props => {
-  // eslint-disable-next-line react/prop-types
-  const { children, className, testId, ...rest } = props
+  const { children, className, ...rest } = props
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <StyledCheckbox className={className} data-testid={testId} {...rest}>
+    <StyledCheckbox className={className} {...rest}>
       {children}
     </StyledCheckbox>
   )

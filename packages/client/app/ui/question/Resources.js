@@ -78,13 +78,13 @@ const Resources = props => {
       >
         <Select
           // allowClear
+          data-testid="biointeractiveResources-select"
           disabled={readOnly}
           mode="multiple"
           onChange={setSelectedResources}
           optionFilterProp="label"
           options={availableResourses}
           showSearch
-          testId="biointeractiveResources-select"
           wrapOptionText
         />
       </StyledFormItem>

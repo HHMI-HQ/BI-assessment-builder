@@ -33,11 +33,10 @@ const Wrapper = styled.span`
 `
 
 const Status = props => {
-  // eslint-disable-next-line react/prop-types
-  const { className, status, testId } = props
+  const { className, status, ...rest } = props
 
   return (
-    <Wrapper className={className} data-testid={testId} variant={status}>
+    <Wrapper className={className} variant={status} {...rest}>
       {status}
     </Wrapper>
   )

@@ -73,6 +73,7 @@ const TopicAndSubtopic = props => {
       >
         <Select
           // allowClear
+          data-testid="topic-select"
           disabled={readOnly}
           onChange={handleTopicChange}
           optionFilterProp="label"
@@ -81,7 +82,6 @@ const TopicAndSubtopic = props => {
             value: t.value,
           }))}
           showSearch
-          testId="topic-select"
         />
       </Form.Item>
       <Form.Item dependencies={[topicField]} noStyle>
@@ -101,7 +101,7 @@ const TopicAndSubtopic = props => {
               optionFilterProp="label"
               options={filterSubtopicOptions()}
               showSearch
-              testId="subtopic-select"
+              data-testid="subtopic-select"
             />
           </Form.Item>
         )}

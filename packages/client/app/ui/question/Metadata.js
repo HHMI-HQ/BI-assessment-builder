@@ -256,9 +256,9 @@ const Metadata = React.forwardRef((props, ref) => {
         >
           <Select
             // allowClear
+            data-testid="questionType-select"
             disabled={readOnly}
             options={metadata.questionTypes}
-            testId="questionType-select"
           />
         </Form.Item>
         <Form.List name={topicsKey} noStyle>
@@ -335,7 +335,7 @@ const Metadata = React.forwardRef((props, ref) => {
                           label: i.label,
                           value: i.value,
                         }))}
-                        testId="course-select"
+                        data-testid="course-select"
                       />
                     </Form.Item>
 
@@ -396,7 +396,7 @@ const Metadata = React.forwardRef((props, ref) => {
             disabled={readOnly}
             mode="tags"
             open={false}
-            testId="keywords-select"
+            data-testid="keywords-select"
           />
         </Form.Item>
         <Form.Item
@@ -434,7 +434,7 @@ const Metadata = React.forwardRef((props, ref) => {
           <Select
             disabled={readOnly}
             options={metadata.blooms.cognitive}
-            testId="cognitive-select"
+            data-testid="cognitive-select"
           />
         </Form.Item>
 
@@ -450,7 +450,7 @@ const Metadata = React.forwardRef((props, ref) => {
           <Select
             disabled={readOnly}
             options={metadata.blooms.affective}
-            testId="affective-select"
+            data-testid="affective-select"
           />
         </Form.Item>
 
@@ -466,7 +466,7 @@ const Metadata = React.forwardRef((props, ref) => {
           <Select
             disabled={readOnly}
             options={metadata.blooms.psychomotor}
-            testId="psychomotor-select"
+            data-testid="psychomotor-select"
           />
         </Form.Item>
 
