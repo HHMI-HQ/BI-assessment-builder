@@ -1,3 +1,10 @@
+import React from 'react'
 import { Modal as AntModal } from 'antd'
 
-export default AntModal
+const Modal = () => {
+  return <div>Customized modal</div>
+}
+
+Modal.default = AntModal
+
+export default Modal
