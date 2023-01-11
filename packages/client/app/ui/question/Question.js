@@ -420,16 +420,16 @@ const PanelWrapper = ({ editor, metadata, showMetadata }) => {
   return (
     <StyledCollapse accordion defaultActiveKey="editor">
       <Collapse.Panel
+        data-testid="editor-collapse"
         header="Editor"
         key="editor"
-        data-testid="editor-collapse"
       >
         {editor}
       </Collapse.Panel>
       <Collapse.Panel
+        data-testid="metadata-collapse"
         header="Metadata"
         key="metadata"
-        data-testid="metadata-collapse"
       >
         {metadata}
       </Collapse.Panel>

@@ -258,12 +258,12 @@ const APCourseMetadata = props => {
           >
             <Select
               // allowClear
+              data-testid="course-topic-select"
               disabled={readOnly || (!filterMode && !getFieldValue(unitField))}
               onChange={handleFrameworkTopicChange}
               optionFilterProp="label"
               options={filterCourseTopicOptions()}
               showSearch
-              data-testid="course-topic-select"
               wrapOptionText
             />
           </Form.Item>
@@ -283,12 +283,12 @@ const APCourseMetadata = props => {
           >
             <Select
               // allowClear
+              data-testid="learning-objective-select"
               disabled={readOnly || (!filterMode && !getFieldValue(topicField))}
               onChange={handleFrameworkLearningObjectiveChange}
               optionFilterProp="label"
               options={filterLearningObjectiveOptions()}
               showSearch
-              data-testid="learning-objective-select"
               wrapOptionText
             />
           </Form.Item>
@@ -311,6 +311,7 @@ const APCourseMetadata = props => {
           >
             <Select
               // allowClear
+              data-testid="essential-knowledge-select"
               disabled={
                 readOnly ||
                 (!filterMode && !getFieldValue(learningObjectiveField))
@@ -318,7 +319,6 @@ const APCourseMetadata = props => {
               optionFilterProp="label"
               options={filterEssentialKnowledgeOptions()}
               showSearch
-              data-testid="essential-knowledge-select"
               wrapOptionText
             />
           </Form.Item>

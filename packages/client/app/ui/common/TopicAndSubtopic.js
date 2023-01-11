@@ -97,11 +97,11 @@ const TopicAndSubtopic = props => {
           >
             <Select
               // allowClear
+              data-testid="subtopic-select"
               disabled={readOnly || (!filterMode && !getFieldValue(topicField))}
               optionFilterProp="label"
               options={filterSubtopicOptions()}
               showSearch
-              data-testid="subtopic-select"
             />
           </Form.Item>
         )}

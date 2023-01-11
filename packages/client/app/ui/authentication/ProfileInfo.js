@@ -240,6 +240,7 @@ const ProfileInfo = props => {
                   ]}
                 >
                   <Select
+                    data-testid="state-select"
                     filterOption={(inputValue, option) => {
                       return (
                         option.label
@@ -251,7 +252,6 @@ const ProfileInfo = props => {
                     options={states}
                     placeholder="Select the state where your institution is located"
                     showSearch
-                    data-testid="state-select"
                   />
                 </Form.Item>
               )}
@@ -345,9 +345,9 @@ const ProfileInfo = props => {
                 ]}
               >
                 <Select
+                  data-testid="institutional-setting-select"
                   options={institutionalSetting}
                   placeholder="Select your type of institution"
-                  data-testid="institutional-setting-select"
                 />
               </Form.Item>
             </Col>
@@ -366,12 +366,12 @@ const ProfileInfo = props => {
                 ]}
               >
                 <Select
+                  data-testid="teaching-experience-select"
                   options={[
                     { label: '< 5', value: 'lessThan5' },
                     { label: '> 5', value: 'moreThan5' },
                   ]}
                   placeholder="Select your years of teaching experience"
-                  data-testid="teaching-experience-select"
                 />
               </Form.Item>
             </Col>
@@ -385,9 +385,9 @@ const ProfileInfo = props => {
                 name="typeOfInstitution"
               >
                 <Select
+                  data-testid="primary-institution-select"
                   options={institutionLevels}
                   placeholder="What level do you primarily teach?"
-                  data-testid="primary-institution-select"
                 />
               </Form.Item>
             </Col>
@@ -457,10 +457,10 @@ const ProfileInfo = props => {
             <Col span={24}>
               <Form.Item label="What course(s) do you teach?" name="courses">
                 <Select
+                  data-testid="course-taught-select"
                   mode="multiple"
                   options={courses}
                   placeholder="Select courses"
-                  data-testid="course-taught-select"
                 />
               </Form.Item>
             </Col>
@@ -531,10 +531,10 @@ const ProfileInfo = props => {
                       ]}
                     >
                       <Select
+                        data-testid="three-course-select"
                         mode="multiple"
                         options={topics}
                         placeholder="Select three topics"
-                        data-testid="three-course-select"
                       />
                     </Form.Item>
                   )
