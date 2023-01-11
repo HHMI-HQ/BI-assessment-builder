@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import { Empty } from 'antd'
 import { useCurrentUser } from '@coko/client'
-import { UserList, Modal, Result } from 'ui'
+import { UserList, Result } from 'ui'
 import { Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/client'
 import {
@@ -12,8 +11,6 @@ import {
   ACTIVATE_USERS,
 } from '../graphql'
 import { hasGlobalRole } from '../utilities'
-
-const ModalContext = React.createContext(null)
 
 const usersApiToUi = users => {
   if (!users) return []
@@ -39,18 +36,12 @@ const usersApiToUi = users => {
 }
 
 const PAGE_SIZE = 10
-const DELETE_ACTION = 'delete'
-const DEACTIVATE_ACTION = 'deactivate'
-const ACTIVATE_ACTION = 'activate'
 
 const ManageUsers = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [selectedRows, setSelectedRows] = useState([])
   const [search, setSearch] = useState('')
   const [showDeactivated, setShowDeactivated] = useState(false)
-
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm, error } = modal
 
   const { currentUser } = useCurrentUser()
 
@@ -151,107 +142,6 @@ const ManageUsers = () => {
     setShowDeactivated(!showDeactivated)
   }
 
-  const bulkAction = action => {
-    if (selectedRows.indexOf(currentUser.id) !== -1) {
-      showErrorModal(
-        'Cannot delete or deactivate current user',
-        'You cannot delete or deactivate the user you are currently logged in as. Please deselect your current user and try again',
-      )
-    } else if (action === DEACTIVATE_ACTION) {
-      showDeactivateModal()
-    } else if (action === DELETE_ACTION) {
-      showDeleteModal()
-    } else if (action === ACTIVATE_ACTION) {
-      showActivateModal()
-    }
-  }
-
-  const showActivateModal = () => {
-    confirm({
-      title: `Activate User${selectedRows.length > 1 ? 's' : ''}`,
-      content: `Are you sure you want to activate the selected user${
-        selectedRows.length > 1 ? 's' : ''
-      }?`,
-      okText: 'Activate',
-      okType: 'primary',
-      onOk() {
-        return activateUsersMutation({
-          variables: { ids: selectedRows },
-        })
-          .then(() => {
-            setSelectedRows([])
-          })
-          .catch(() => {
-            showErrorModal(
-              'Activation error',
-              'There was an error trying to activate the user(s)',
-            )
-          })
-      },
-      onCancel() {},
-    })
-  }
-
-  const showDeactivateModal = () => {
-    confirm({
-      title: `Deactivate User${selectedRows.length > 1 ? 's' : ''}`,
-      content: `Are you sure you want to deactivate the selected user${
-        selectedRows.length > 1 ? 's' : ''
-      }?`,
-
-      okText: 'Deactivate',
-      okType: 'danger',
-      onOk() {
-        return deactivateUsersMutation({
-          variables: { ids: selectedRows },
-        })
-          .then(() => {
-            setSelectedRows([])
-          })
-          .catch(() => {
-            showErrorModal(
-              'Deactivate error',
-              'There was an error trying to deactivate the user(s)',
-            )
-          })
-      },
-      onCancel() {},
-    })
-  }
-
-  const showDeleteModal = () => {
-    confirm({
-      title: `Delete User${selectedRows.length > 1 ? 's' : ''}`,
-      content: `Are you sure you want to delete the selected user${
-        selectedRows.length > 1 ? 's' : ''
-      }?`,
-      okText: 'Delete',
-      okType: 'danger',
-      onOk() {
-        return deleteUsersMutation({
-          variables: { ids: selectedRows },
-        })
-          .then(() => {
-            setSelectedRows([])
-          })
-          .catch(() => {
-            showErrorModal(
-              'Delete error',
-              'There was an error trying to delete the user(s)',
-            )
-          })
-      },
-      onCancel() {},
-    })
-  }
-
-  const showErrorModal = (title, content) => {
-    error({
-      title,
-      content,
-    })
-  }
-
   if (!hasGlobalRole(currentUser, 'admin')) {
     return (
       <Result
@@ -265,34 +155,32 @@ const ManageUsers = () => {
   }
 
   return (
-    <ModalContext.Provider>
-      <UserList
-        currentPage={currentPage + 1}
-        data={usersApiToUi(usersData?.filterUsers.result)}
-        loading={usersLoading}
-        // table can be empty only for deactivated users, hence the wording
-        locale={{
-          emptyText: (
-            <Empty
-              description="No Deactivated Users"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          ),
-        }}
-        onBulkActivate={() => bulkAction(ACTIVATE_ACTION)}
-        onBulkDeactivate={() => bulkAction(DEACTIVATE_ACTION)}
-        onBulkDelete={() => bulkAction(DELETE_ACTION)}
-        onClickShowDeactivated={handleShowDeactivatedChange}
-        onPageChange={handlePageChange}
-        onSearch={handleSearch}
-        pageSize={PAGE_SIZE}
-        selectedRows={selectedRows}
-        setSelectedRows={setSelectedRows}
-        showDeactivated={showDeactivated}
-        totalUserCount={usersData?.filterUsers.totalCount}
-      />
-      {contextHolder}
-    </ModalContext.Provider>
+    <UserList
+      currentPage={currentPage + 1}
+      currentUserId={currentUser.id}
+      data={usersApiToUi(usersData?.filterUsers.result)}
+      loading={usersLoading}
+      // table can be empty only for deactivated users, hence the wording
+      locale={{
+        emptyText: (
+          <Empty
+            description="No Deactivated Users"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+          />
+        ),
+      }}
+      onBulkActivate={activateUsersMutation}
+      onBulkDeactivate={deactivateUsersMutation}
+      onBulkDelete={deleteUsersMutation}
+      onClickShowDeactivated={handleShowDeactivatedChange}
+      onPageChange={handlePageChange}
+      onSearch={handleSearch}
+      pageSize={PAGE_SIZE}
+      selectedRows={selectedRows}
+      setSelectedRows={setSelectedRows}
+      showDeactivated={showDeactivated}
+      totalUserCount={usersData?.filterUsers.totalCount}
+    />
   )
 }
 
