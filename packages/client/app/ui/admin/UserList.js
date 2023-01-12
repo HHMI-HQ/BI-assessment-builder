@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { ExclamationCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 
 import { uuid, grid, th } from '@coko/client'
 import {
@@ -92,17 +91,15 @@ const ButtonWithoutStyles = styled.button`
   }
 `
 
-const ModalGrid = styled.div`
-  display: grid;
-  grid-template-columns: 30px 1fr;
-`
+const ModalContext = React.createContext(null)
 
-const WarningIcon = styled(ExclamationCircleFilled)`
-  color: ${th('colorWarning')};
-`
+const ModalFooter = styled.div`
+  margin-top: ${grid(3)};
+  text-align: right;
 
-const ErrorIcon = styled(CloseCircleFilled)`
-  color: ${th('colorError')};
+  > button:not(:last-of-type) {
+    margin-right: ${grid(2)};
+  }
 `
 
 const DELETE_ACTION = 'delete'
@@ -132,8 +129,8 @@ const UserList = props => {
     onClickShowDeactivated,
   } = props
 
-  const [openModal, setOpenModal] = useState(false)
-  const [modalContent, setModalContent] = useState(null)
+  const [modal, contextHolder] = Modal.useModal()
+  const { confirm, error } = modal
 
   const dataSource = data.map(i => {
     const { id, ...rest } = i
@@ -223,151 +220,145 @@ const UserList = props => {
 
   // #region modals
   const confirmActivate = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon />
-          Activate User{selectedRows.length > 1 ? 's' : ''}
-        </ModalGrid>
-      ),
+    const confirmDialog = confirm()
+    confirmDialog.update({
+      title: `Activate User${selectedRows.length > 1 ? 's' : ''}`,
       content: `Are you sure you want to activate the selected user${
         selectedRows.length > 1 ? 's' : ''
       }?`,
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="activate"
-          onClick={() => {
-            return onBulkActivate({
-              variables: { ids: selectedRows },
-            })
-              .then(() => {
-                setSelectedRows([])
-                setOpenModal(false)
+        <ModalFooter key="footer">
+          <Button key="cancel" onClick={() => confirmDialog.destroy()}>
+            Cancel
+          </Button>
+          <Button
+            key="activate"
+            onClick={() => {
+              return onBulkActivate({
+                variables: { ids: selectedRows },
               })
-              .catch(() => {
-                setOpenModal(false)
-                showErrorModal(
-                  'Activation error',
-                  'There was an error trying to activate the user(s)',
-                )
-              })
-          }}
-          type="primary"
-        >
-          Activate
-        </Button>,
+                .then(() => {
+                  setSelectedRows([])
+                  confirmDialog.destroy()
+                })
+                .catch(() => {
+                  confirmDialog.destroy()
+                  showErrorModal(
+                    'Activation error',
+                    'There was an error trying to activate the user(s)',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Activate
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const confirmDeactivate = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon />
-          Deactivate User{selectedRows.length > 1 ? 's' : ''}
-        </ModalGrid>
-      ),
+    const confirmDialog = confirm()
+    confirmDialog.update({
+      title: `Deactivate User${selectedRows.length > 1 ? 's' : ''}`,
       content: `Are you sure you want to deactivate the selected user${
         selectedRows.length > 1 ? 's' : ''
       }?`,
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="deactivate"
-          onClick={() => {
-            return onBulkDeactivate({
-              variables: { ids: selectedRows },
-            })
-              .then(() => {
-                setSelectedRows([])
-                setOpenModal(false)
+        <ModalFooter key="footer">
+          <Button key="cancel" onClick={() => confirmDialog.destroy()}>
+            Cancel
+          </Button>
+          <Button
+            key="deactivate"
+            onClick={() => {
+              return onBulkDeactivate({
+                variables: { ids: selectedRows },
               })
-              .catch(() => {
-                setOpenModal(false)
-                showErrorModal(
-                  'Deactivate error',
-                  'There was an error trying to deactivate the user(s)',
-                )
-              })
-          }}
-          status="danger"
-        >
-          Deactivate
-        </Button>,
+                .then(() => {
+                  setSelectedRows([])
+                  confirmDialog.destroy()
+                })
+                .catch(() => {
+                  confirmDialog.destroy()
+                  showErrorModal(
+                    'Deactivate error',
+                    'There was an error trying to deactivate the user(s)',
+                  )
+                })
+            }}
+            status="danger"
+          >
+            Deactivate
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const confirmDelete = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon />
-          Delete User{selectedRows.length > 1 ? 's' : ''}
-        </ModalGrid>
-      ),
+    const confirmDialog = confirm()
+    confirmDialog.update({
+      title: `Delete User${selectedRows.length > 1 ? 's' : ''}`,
       content: `Are you sure you want to delete the selected user${
         selectedRows.length > 1 ? 's' : ''
       }?`,
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="delete"
-          onClick={() => {
-            return onBulkDelete({
-              variables: { ids: selectedRows },
-            })
-              .then(() => {
-                setSelectedRows([])
-                setOpenModal(false)
+        <ModalFooter key="footer">
+          <Button key="cancel" onClick={() => confirmDialog.destroy()}>
+            Cancel
+          </Button>
+          ,
+          <Button
+            key="delete"
+            onClick={() => {
+              return onBulkDelete({
+                variables: { ids: selectedRows },
               })
-              .catch(() => {
-                setOpenModal(false)
-                showErrorModal(
-                  'Delete error',
-                  'There was an error trying to delete the user(s)',
-                )
-              })
-          }}
-          status="danger"
-        >
-          Delete
-        </Button>,
+                .then(() => {
+                  setSelectedRows([])
+                  confirmDialog.destroy()
+                })
+                .catch(() => {
+                  confirmDialog.destroy()
+                  showErrorModal(
+                    'Delete error',
+                    'There was an error trying to delete the user(s)',
+                  )
+                })
+            }}
+            status="danger"
+          >
+            Delete
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const showErrorModal = (title, content) => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <ErrorIcon /> {title}
-        </ModalGrid>
-      ),
+    const errorModal = error()
+    errorModal.update({
+      title,
       content,
       footer: [
-        <Button key="close" onClick={() => setOpenModal(false)} type="primary">
-          Close
-        </Button>,
+        <ModalFooter key="footer">
+          <Button
+            key="close"
+            onClick={() => errorModal.destroy()}
+            type="primary"
+          >
+            Close
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
   // #endregion modals
 
   return (
-    <>
+    <ModalContext.Provider>
       <Wrapper className={className}>
         <StyledSection>
           <PageHeader>User Manager</PageHeader>
@@ -432,19 +423,8 @@ const UserList = props => {
           </FooterActionsWrapper>
         </StyledSection>
       </Wrapper>
-      <Modal
-        footer={modalContent?.footer}
-        onCancel={() => setOpenModal(null)}
-        open={openModal}
-        title={modalContent?.title}
-        width={416}
-      >
-        <ModalGrid>
-          <span />
-          {modalContent?.content}
-        </ModalGrid>
-      </Modal>
-    </>
+      {contextHolder}
+    </ModalContext.Provider>
   )
 }
 
