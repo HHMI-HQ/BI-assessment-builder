@@ -1,7 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { grid } from '@coko/client'
-import styled from 'styled-components'
 
 import AuthenticationForm from './AuthenticationForm'
 import AuthenticationHeader from './AuthenticationHeader'
@@ -12,20 +10,15 @@ import {
   Form,
   Input,
   Link,
-  Modal as AntModal,
+  Modal,
   Result,
   Checkbox,
   Paragraph,
   Page,
 } from '../common'
 
-const Modal = AntModal.default
 const ModalContext = React.createContext(null)
-
-const ModalFooter = styled.div`
-  margin-top: ${grid(3)};
-  text-align: right;
-`
+const ModalFooter = Modal.footer
 
 const Signup = props => {
   const {

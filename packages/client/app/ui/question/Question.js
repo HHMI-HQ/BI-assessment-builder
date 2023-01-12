@@ -27,7 +27,7 @@ import {
   Collapse,
   DateParser,
   Link,
-  Modal as AntModal,
+  Modal,
   Paragraph,
   Ribbon,
   Spin,
@@ -37,7 +37,7 @@ import {
 import WaxWrapper from '../wax/Wax'
 
 const ModalContext = React.createContext(null)
-const Modal = AntModal.default
+const ModalFooter = Modal.footer
 
 // #region styled
 const Wrapper = styled.div`
@@ -233,15 +233,6 @@ const DropdownButton = styled(Button)`
   padding: 0;
   transform: rotate(90deg);
   width: 32px;
-`
-
-const ModalFooter = styled.div`
-  margin-top: ${grid(3)};
-  text-align: right;
-
-  > button:not(:last-of-type) {
-    margin-right: ${grid(2)};
-  }
 `
 
 // #endregion styled
@@ -686,14 +677,14 @@ const Question = props => {
       emptyEditorErrorModal.update({
         title: 'Question text cannot be empty',
         content: 'Please provide some content for your question',
-        onOk: () => {
-          /* focus the editor */
-          document.querySelector('.ProseMirror').focus()
-        },
         footer: [
           <ModalFooter key="footer">
             <Button
-              onClick={() => emptyEditorErrorModal.destroy()}
+              onClick={() => {
+                emptyEditorErrorModal.destroy()
+                /* focus the editor */
+                document.querySelector('.ProseMirror').focus()
+              }}
               type="primary"
             >
               Ok

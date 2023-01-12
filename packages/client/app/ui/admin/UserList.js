@@ -11,11 +11,9 @@ import {
   Tag,
   Table,
   DateParser,
-  Modal as AntModal,
+  Modal,
 } from '../common'
 import { profileOptions } from '../../utilities'
-
-const Modal = AntModal.default
 
 const Wrapper = styled.div`
   height: 100%;
@@ -93,14 +91,7 @@ const ButtonWithoutStyles = styled.button`
 
 const ModalContext = React.createContext(null)
 
-const ModalFooter = styled.div`
-  margin-top: ${grid(3)};
-  text-align: right;
-
-  > button:not(:last-of-type) {
-    margin-right: ${grid(2)};
-  }
-`
+const ModalFooter = Modal.footer
 
 const DELETE_ACTION = 'delete'
 const DEACTIVATE_ACTION = 'deactivate'
