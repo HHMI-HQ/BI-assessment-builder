@@ -11,9 +11,6 @@ import {
   LoadingOutlined,
   CheckOutlined,
   EllipsisOutlined,
-  ExclamationCircleFilled,
-  CloseCircleFilled,
-  CheckCircleFilled,
 } from '@ant-design/icons'
 
 import { grid, th } from '@coko/client'
@@ -39,6 +36,7 @@ import {
 } from '../common'
 import WaxWrapper from '../wax/Wax'
 
+const ModalContext = React.createContext(null)
 const Modal = AntModal.default
 
 // #region styled
@@ -237,25 +235,13 @@ const DropdownButton = styled(Button)`
   width: 32px;
 `
 
-const InfoIcon = styled(ExclamationCircleFilled)`
-  color: ${th('colorPrimary')};
-`
+const ModalFooter = styled.div`
+  margin-top: ${grid(3)};
+  text-align: right;
 
-const WarningIcon = styled(ExclamationCircleFilled)`
-  color: ${th('colorWarning')};
-`
-
-const ErrorIcon = styled(CloseCircleFilled)`
-  color: ${th('colorError')};
-`
-
-const SuccessIcon = styled(CheckCircleFilled)`
-  color: ${th('colorSuccess')};
-`
-
-const ModalGrid = styled.div`
-  display: grid;
-  grid-template-columns: 30px 1fr;
+  > button:not(:last-of-type) {
+    margin-right: ${grid(2)};
+  }
 `
 
 // #endregion styled
@@ -595,8 +581,8 @@ const Question = props => {
     wordFileLoading,
   } = props
 
-  const [openModal, setOpenModal] = useState(false)
-  const [modalContent, setModalContent] = useState(null)
+  const [modal, contextHolder] = Modal.useModal()
+  const { confirm, info, success, error } = modal
 
   const formRef = useRef()
   const waxRef = useRef()
@@ -632,14 +618,9 @@ const Question = props => {
 
   const showTermsAndConditions = e => {
     e.preventDefault()
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <InfoIcon />
-          Accept Terms and Conditions
-        </ModalGrid>
-      ),
+    const infoModal = info()
+    infoModal.update({
+      title: 'Accept Terms and Conditions',
       content: (
         <Paragraph>
           By submitting information via the form below (the “Question
@@ -672,10 +653,20 @@ const Question = props => {
         </Paragraph>
       ),
       footer: [
-        <Button key="ok" onClick={() => setOpenModal(false)} type="primary">
-          Ok
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => infoModal.destroy()} type="primary">
+            Ok
+          </Button>
+        </ModalFooter>,
       ],
+      maskClosable: true,
+      afterClose: () =>
+        document.body.querySelector('#termsAndConditions').focus(),
+      width: '570px',
+      bodyStyle: {
+        marginRight: 38,
+        textAlign: 'justify',
+      },
     })
   }
 
@@ -692,232 +683,214 @@ const Question = props => {
     const isEditorEmpty = questionText.trim().length === 0
 
     if (isEditorEmpty) {
-      setOpenModal(true)
-      setModalContent({
-        title: (
-          <ModalGrid>
-            <ErrorIcon /> Question text cannot be empty
-          </ModalGrid>
-        ),
+      const emptyEditorErrorModal = error()
+      emptyEditorErrorModal.update({
+        title: 'Question text cannot be empty',
         content: 'Please provide some content for your question',
+        onOk: () => {
+          /* focus the editor */
+          document.querySelector('.ProseMirror').focus()
+        },
         footer: [
-          <Button
-            key="close"
-            onClick={() => setOpenModal(false)}
-            type="primary"
-          >
-            Close
-          </Button>,
+          <ModalFooter key="footer">
+            <Button
+              onClick={() => emptyEditorErrorModal.destroy()}
+              type="primary"
+            >
+              Ok
+            </Button>
+          </ModalFooter>,
         ],
       })
 
       return
     }
 
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon /> Are you sure you want to submit the question?
-        </ModalGrid>
-      ),
+    const confirmSubmitModal = confirm()
+    confirmSubmitModal.update({
+      title: 'Are you sure you want to submit the question?',
       content:
         'This will make the question visible to editors an reviewers, and after a successful review it will be published for all users.',
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="cancel"
-          onClick={() => formRef.current.submit()}
-          type="primary"
-        >
-          Submit
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmSubmitModal.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              formRef.current.submit()
+              confirmSubmitModal.destroy()
+            }}
+            type="primary"
+          >
+            Submit
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const handleMoveToReview = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon /> You are about to move the question to review
-        </ModalGrid>
-      ),
+    const confirmMoveToReview = confirm()
+    confirmMoveToReview.update({
+      title: 'You are about to move the question to review',
       content:
         'Question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="ok"
-          onClick={() =>
-            onMoveToReview()
-              .then(() => {
-                showDialog(
-                  'success',
-                  'Question moved to review',
-                  'Question was moved to review successfully',
-                )
-              })
-              .catch(() => {
-                showDialog(
-                  'error',
-                  'Problem moving the question to review',
-                  'There was an error while moving this question to review. Please try again!',
-                )
-              })
-          }
-          type="primary"
-        >
-          Move to review
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmMoveToReview.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmMoveToReview.destroy()
+              onMoveToReview()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question moved to review',
+                    'Question was moved to review successfully',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem moving the question to review',
+                    'There was an error while moving this question to review. Please try again!',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Move to review
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const handleMoveToProduction = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon /> You are about to move the question to production
-        </ModalGrid>
-      ),
+    const confirmMoveToProduction = confirm()
+    confirmMoveToProduction.update({
+      title: 'You are about to move the question to production',
       content:
         'Question will become editable and editors can apply the feedback from the reviewer. Are you sure?',
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="ok"
-          onClick={() =>
-            onMoveToProduction()
-              .then(() => {
-                showDialog(
-                  'success',
-                  'Question moved to production',
-                  'Question was moved to production successfully',
-                )
-              })
-              .catch(() => {
-                showDialog(
-                  'error',
-                  'Problem moving the question to produciton',
-                  'There was an error while moving this question to production. Please try again!',
-                )
-              })
-          }
-          type="primary"
-        >
-          Move to production
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmMoveToProduction.destroy()}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              confirmMoveToProduction.destroy()
+              onMoveToProduction()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question moved to production',
+                    'Question was moved to production successfully',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem moving the question to produciton',
+                    'There was an error while moving this question to production. Please try again!',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Move to production
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const handlePublish = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon /> Are you sure you want to publish this question
-          version?
-        </ModalGrid>
-      ),
+    const confirmPublish = confirm()
+    confirmPublish.update({
+      title: 'Are you sure you want to publish this question version?',
       content:
-        'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Discover page.',
+        'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Discover page',
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="ok"
-          onClick={() =>
-            onPublish()
-              .then(() => {
-                showDialog(
-                  'success',
-                  'Question published successfully',
-                  'Question was published and is now available in the Discover page',
-                )
-              })
-              .catch(() => {
-                showDialog(
-                  'error',
-                  'Problem publishing the question',
-                  'There was an error while publishin the question. Please try again',
-                )
-              })
-          }
-          type="primary"
-        >
-          Yes, publish
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmPublish.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmPublish.destroy()
+              onPublish()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question published successfully',
+                    'Question was published and is now available in the Discover page',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem publishing the question',
+                    'There was an error while publishin the question. Please try again',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Yes, publish
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const handleReject = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon /> Are you sure you want to reject this question?
-        </ModalGrid>
-      ),
+    const confirmReject = confirm()
+    confirmReject.update({
+      title: 'Are you sure you want to reject this question?',
       content: 'By rejecting, the question will not be reviewed or published.',
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="ok"
-          onClick={() =>
-            onReject()
-              .then(() => {
-                showDialog(
-                  'success',
-                  'Question rejected',
-                  'The question was rejected',
-                )
-              })
-              .catch(() => {
-                showDialog(
-                  'error',
-                  'Problem rejecting the questions',
-                  'There was an error while rejecting this question. Please try again!',
-                )
-              })
-          }
-          status="danger"
-          type="primary"
-        >
-          Reject
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmReject.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmReject.destroy()
+              onReject()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question rejected',
+                    'The question was rejected',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem rejecting the questions',
+                    'There was an error while rejecting this question. Please try again!',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Reject
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
 
   const showDialog = (type, title, content) => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          {type === 'success' ? <SuccessIcon /> : <ErrorIcon />}
-          {title}
-        </ModalGrid>
-      ),
+    const dialogType = type === 'success' ? success() : error()
+
+    dialogType.update({
+      title,
       content,
       footer: [
-        <Button key="ok" onClick={() => setOpenModal(false)} type="primary">
-          Ok
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => dialogType.destroy()} type="primary">
+            Ok
+          </Button>
+        </ModalFooter>,
       ],
+      maskClosable: true,
     })
   }
 
@@ -944,22 +917,26 @@ const Question = props => {
   }
 
   const showNewVersionModal = () => {
-    setOpenModal(true)
-    setModalContent({
-      title: (
-        <ModalGrid>
-          <WarningIcon /> Warning!
-        </ModalGrid>
-      ),
-      content:
-        'You are editing a published question. Any changes you make will be automatically saved, but not automatically published. You will need to publish the question again for the edits to be reflected in the Discover page. After the edited question is published, the old one will not be available anymore in the Discover page. Do you wish to continue?',
+    const confirmNewVersion = confirm()
+    confirmNewVersion.update({
+      title: `Warning!`,
+      content: `You are editing a published question. Any changes you make will be automatically saved, but not automatically published. 
+      You will need to publish the question again for the edits to be reflected in the Discover page.
+      After the edited question is published, the old one will not be available anymore in the Discover page. 
+      Do you wish to continue?`,
       footer: [
-        <Button key="cancel" onClick={() => setOpenModal(false)}>
-          Cancel
-        </Button>,
-        <Button key="ok" onClick={onCreateNewVersion} status="danger">
-          Create new version
-        </Button>,
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmNewVersion.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmNewVersion.destroy()
+              onCreateNewVersion()
+            }}
+            status="danger"
+          >
+            Create new version
+          </Button>
+        </ModalFooter>,
       ],
     })
   }
@@ -1304,77 +1281,79 @@ const Question = props => {
   if (loading || !metadata || !resources?.length) return <Spin spinning />
 
   return (
-    <Wrapper>
-      <Spin renderBackground={false} spinning={loading}>
-        <StyledTabs
-          items={[
-            {
-              label: QuestionTab,
-              key: 0,
-              children: (
-                <>
-                  {isRejected && (
-                    <Ribbon status="error">
-                      This question has been rejected by the editors
-                    </Ribbon>
-                  )}
-                  <PanelWrapper
-                    condition={false}
-                    editor={
-                      <MemoizedWax
-                        content={editorContent}
-                        innerRef={waxRef}
-                        layout={facultyView ? TestModeLayout : HhmiLayout}
-                        onContentChange={handleQuestionContentChange}
-                        onImageUpload={onImageUpload}
-                        published={isPublished}
-                        readOnly={readOnly}
-                        withMetadata={showMetadata}
-                      />
-                    }
-                    metadata={
-                      <MetadataWrapper>
-                        <Metadata
-                          editorView={editorView}
-                          initialValues={initialMetadataValues}
-                          innerRef={formRef}
-                          metadata={metadata}
-                          onAutoSave={handleMetadataAutoSave}
-                          onFormFinish={onFormFinish}
-                          presentationMode={facultyView}
+    <ModalContext.Provider>
+      <Wrapper>
+        <Spin renderBackground={false} spinning={loading}>
+          <StyledTabs
+            items={[
+              {
+                label: QuestionTab,
+                key: 0,
+                children: (
+                  <>
+                    {isRejected && (
+                      <Ribbon status="error">
+                        This question has been rejected by the editors
+                      </Ribbon>
+                    )}
+                    <PanelWrapper
+                      condition={false}
+                      editor={
+                        <MemoizedWax
+                          content={editorContent}
+                          innerRef={waxRef}
+                          layout={facultyView ? TestModeLayout : HhmiLayout}
+                          onContentChange={handleQuestionContentChange}
+                          onImageUpload={onImageUpload}
+                          published={isPublished}
                           readOnly={readOnly}
-                          resources={resources}
+                          withMetadata={showMetadata}
                         />
-                      </MetadataWrapper>
-                    }
-                    showMetadata={showMetadata}
-                  />
-                </>
-              ),
-            },
-          ]}
-          renderTabBar={(tabProps, DefaultTabBar) => {
-            return facultyView ? FacultyHeader : <DefaultTabBar {...tabProps} />
-          }}
-          tabBarExtraContent={{
-            // left: BackButton,
-            right: RightArea,
-          }}
-        />
-      </Spin>
-      <Modal
-        footer={modalContent?.footer}
-        onCancel={() => setOpenModal(null)}
-        open={openModal}
-        title={modalContent?.title}
-        width={416}
-      >
-        <ModalGrid>
-          <span />
-          {modalContent?.content}
-        </ModalGrid>
-      </Modal>
-    </Wrapper>
+                      }
+                      metadata={
+                        <MetadataWrapper>
+                          <Metadata
+                            editorView={editorView}
+                            initialValues={initialMetadataValues}
+                            innerRef={formRef}
+                            metadata={metadata}
+                            onAutoSave={handleMetadataAutoSave}
+                            onFormFinish={onFormFinish}
+                            presentationMode={facultyView}
+                            readOnly={readOnly}
+                            resources={resources}
+                          />
+                        </MetadataWrapper>
+                      }
+                      showMetadata={showMetadata}
+                    />
+                    {/* <QuestionWrapper showMetadata={showMetadata}>
+                    
+
+                    {showMetadata && (
+
+                    )}
+                  </QuestionWrapper> */}
+                  </>
+                ),
+              },
+            ]}
+            renderTabBar={(tabProps, DefaultTabBar) => {
+              return facultyView ? (
+                FacultyHeader
+              ) : (
+                <DefaultTabBar {...tabProps} />
+              )
+            }}
+            tabBarExtraContent={{
+              // left: BackButton,
+              right: RightArea,
+            }}
+          />
+        </Spin>
+      </Wrapper>
+      {contextHolder}
+    </ModalContext.Provider>
   )
 }
 
