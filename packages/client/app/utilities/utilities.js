@@ -177,10 +177,6 @@ const questionDataMapper = ({
 }
 
 const extractDocumentText = data => {
-  if (data === null) return null
-  let allContent = ''
-  const incoming = JSON.parse(data)
-
   const extract = obj => {
     const { content } = obj
     if (!Array.isArray(content)) return
@@ -201,7 +197,12 @@ const extractDocumentText = data => {
     })
   }
 
-  extract(incoming)
+  let allContent = ''
+
+  if (data !== null) {
+    const incoming = JSON.parse(data)
+    extract(incoming)
+  }
 
   const maxLength = 300
   allContent = allContent.substring(0, maxLength + 1).trim()
