@@ -362,7 +362,7 @@ const UserList = props => {
   // #endregion modals
 
   return (
-    <ModalContext.Provider>
+    <ModalContext.Provider value={null}>
       <Wrapper className={className}>
         <StyledSection>
           <PageHeader>User Manager</PageHeader>

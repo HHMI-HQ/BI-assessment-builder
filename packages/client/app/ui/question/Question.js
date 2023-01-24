@@ -1322,7 +1322,7 @@ const Question = props => {
   if (loading || !metadata || !resources?.length) return <Spin spinning />
 
   return (
-    <ModalContext.Provider>
+    <ModalContext.Provider value={null}>
       <Wrapper>
         <Spin renderBackground={false} spinning={loading}>
           <StyledTabs

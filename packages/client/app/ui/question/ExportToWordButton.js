@@ -40,7 +40,7 @@ const ExportToWordButton = props => {
   }
 
   return (
-    <ModalContext.Provider>
+    <ModalContext.Provider value={null}>
       <Button
         className={className}
         loading={loading}

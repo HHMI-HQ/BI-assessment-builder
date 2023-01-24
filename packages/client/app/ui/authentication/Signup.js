@@ -190,7 +190,7 @@ const Signup = props => {
                 type="password"
               />
             </Form.Item>
-            <ModalContext.Provider>
+            <ModalContext.Provider value={null}>
               <Form.Item
                 name="agreedTc"
                 rules={[

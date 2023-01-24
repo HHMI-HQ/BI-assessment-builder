@@ -65,7 +65,7 @@ export const AntModalHooks = () => {
     })
 
   return (
-    <ModalContext.Provider>
+    <ModalContext.Provider value={null}>
       <Button onClick={infoDialog}>Info</Button>{' '}
       <Button onClick={confirmationDialog}>Confirm</Button>{' '}
       <Button onClick={errorDialog}>Error (custom footer)</Button>{' '}
