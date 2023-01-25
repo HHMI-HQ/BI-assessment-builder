@@ -36,6 +36,8 @@ import {
 import Wax from '../wax/Wax'
 
 const ModalContext = React.createContext(null)
+const ModalFooter = Modal.footer
+const ModalHeader = Modal.header
 
 // #region styled
 const Wrapper = styled.div`
@@ -613,8 +615,9 @@ const Question = props => {
 
   const showTermsAndConditions = e => {
     e.preventDefault()
-    info({
-      title: 'Accept Terms and Conditions',
+    const infoModal = info()
+    infoModal.update({
+      title: <ModalHeader>Accept Terms and Conditions</ModalHeader>,
       content: (
         <Paragraph>
           By submitting information via the form below (the “Question
@@ -623,7 +626,6 @@ const Question = props => {
             as="a"
             href="https://www.hhmi.org/terms-of-use"
             rel="noreferrer"
-            style={{ color: '#3F3F3F' }}
             target="_blank"
           >
             HHMI’s Terms of Use
@@ -646,6 +648,13 @@ const Question = props => {
           common law right of any third party.
         </Paragraph>
       ),
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => infoModal.destroy()} type="primary">
+            Ok
+          </Button>
+        </ModalFooter>,
+      ],
       maskClosable: true,
       afterClose: () =>
         document.body.querySelector('#termsAndConditions').focus(),
@@ -670,148 +679,229 @@ const Question = props => {
     const isEditorEmpty = questionText.trim().length === 0
 
     if (isEditorEmpty) {
-      error({
-        title: 'Question text cannot be empty',
+      const emptyEditorErrorModal = error()
+      emptyEditorErrorModal.update({
+        title: <ModalHeader>Question text cannot be empty</ModalHeader>,
         content: 'Please provide some content for your question',
-        onOk: () => {
-          /* focus the editor */
-          document.querySelector('.ProseMirror').focus()
-        },
+        footer: [
+          <ModalFooter key="footer">
+            <Button
+              onClick={() => {
+                emptyEditorErrorModal.destroy()
+                /* focus the editor */
+                document.querySelector('.ProseMirror').focus()
+              }}
+              type="primary"
+            >
+              Ok
+            </Button>
+          </ModalFooter>,
+        ],
       })
 
       return
     }
 
-    confirm({
-      title: 'Are you sure you want to submit the question?',
+    const confirmSubmitModal = confirm()
+    confirmSubmitModal.update({
+      title: (
+        <ModalHeader>Are you sure you want to submit the question?</ModalHeader>
+      ),
       content:
         'This will make the question visible to editors an reviewers, and after a successful review it will be published for all users.',
-      okText: 'Submit',
-      okType: 'primary',
-      onOk() {
-        formRef.current.submit()
-      },
-      onCancel() {},
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmSubmitModal.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              formRef.current.submit()
+              confirmSubmitModal.destroy()
+            }}
+            type="primary"
+          >
+            Submit
+          </Button>
+        </ModalFooter>,
+      ],
     })
   }
 
   const handleMoveToReview = () => {
-    confirm({
-      title: 'You are about to move the question to review',
+    const confirmMoveToReview = confirm()
+    confirmMoveToReview.update({
+      title: (
+        <ModalHeader>You are about to move the question to review</ModalHeader>
+      ),
       content:
         'Question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
-      okText: 'Move to review',
-      okType: 'primary',
-      onOk() {
-        onMoveToReview()
-          .then(() => {
-            showDialog(
-              'success',
-              'Question moved to review',
-              'Question was moved to review successfully',
-            )
-          })
-          .catch(() => {
-            showDialog(
-              'error',
-              'Problem moving the question to review',
-              'There was an error while moving this question to review. Please try again!',
-            )
-          })
-      },
-      onCancel() {},
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmMoveToReview.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmMoveToReview.destroy()
+              onMoveToReview()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question moved to review',
+                    'Question was moved to review successfully',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem moving the question to review',
+                    'There was an error while moving this question to review. Please try again!',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Move to review
+          </Button>
+        </ModalFooter>,
+      ],
     })
   }
 
   const handleMoveToProduction = () => {
-    confirm({
-      title: 'You are about to move the question to production',
+    const confirmMoveToProduction = confirm()
+    confirmMoveToProduction.update({
+      title: (
+        <ModalHeader>
+          You are about to move the question to production
+        </ModalHeader>
+      ),
       content:
         'Question will become editable and editors can apply the feedback from the reviewer. Are you sure?',
-      okText: 'Move to production',
-      okType: 'primary',
-      onOk() {
-        onMoveToProduction()
-          .then(() => {
-            showDialog(
-              'success',
-              'Question moved to production',
-              'Question was moved to production successfully',
-            )
-          })
-          .catch(() => {
-            showDialog(
-              'error',
-              'Problem moving the question to produciton',
-              'There was an error while moving this question to production. Please try again!',
-            )
-          })
-      },
-      onCancel() {},
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmMoveToProduction.destroy()}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              confirmMoveToProduction.destroy()
+              onMoveToProduction()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question moved to production',
+                    'Question was moved to production successfully',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem moving the question to produciton',
+                    'There was an error while moving this question to production. Please try again!',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Move to production
+          </Button>
+        </ModalFooter>,
+      ],
     })
   }
 
   const handlePublish = () => {
-    confirm({
-      title: 'Are you sure you want to publish this question version?',
+    const confirmPublish = confirm()
+    confirmPublish.update({
+      title: (
+        <ModalHeader>
+          Are you sure you want to publish this question version?
+        </ModalHeader>
+      ),
       content:
         'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Discover page',
-      okText: 'Yes, publish',
-      okType: 'primary',
-      onOk() {
-        onPublish()
-          .then(() => {
-            showDialog(
-              'success',
-              'Question published successfully',
-              'Question was published and is now available in the Discover page',
-            )
-          })
-          .catch(() => {
-            showDialog(
-              'error',
-              'Problem publishing the question',
-              'There was an error while publishin the question. Please try again',
-            )
-          })
-      },
-      onCancel() {},
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmPublish.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmPublish.destroy()
+              onPublish()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question published successfully',
+                    'Question was published and is now available in the Discover page',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem publishing the question',
+                    'There was an error while publishin the question. Please try again',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Yes, publish
+          </Button>
+        </ModalFooter>,
+      ],
     })
   }
 
   const handleReject = () => {
-    confirm({
-      title: 'Are you sure you want to reject this question?',
+    const confirmReject = confirm()
+    confirmReject.update({
+      title: (
+        <ModalHeader>
+          Are you sure you want to reject this question?
+        </ModalHeader>
+      ),
       content: 'By rejecting, the question will not be reviewed or published.',
-      okText: 'Reject',
-      okType: 'primary',
-      onOk() {
-        onReject()
-          .then(() => {
-            showDialog(
-              'success',
-              'Question rejected',
-              'The question was rejected',
-            )
-          })
-          .catch(() => {
-            showDialog(
-              'error',
-              'Problem rejecting the questions',
-              'There was an error while rejecting this question. Please try again!',
-            )
-          })
-      },
-      onCancel() {},
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmReject.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmReject.destroy()
+              onReject()
+                .then(() => {
+                  showDialog(
+                    'success',
+                    'Question rejected',
+                    'The question was rejected',
+                  )
+                })
+                .catch(() => {
+                  showDialog(
+                    'error',
+                    'Problem rejecting the questions',
+                    'There was an error while rejecting this question. Please try again!',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Reject
+          </Button>
+        </ModalFooter>,
+      ],
     })
   }
 
   const showDialog = (type, title, content) => {
-    const dialogType = type === 'success' ? success : error
+    const dialogType = type === 'success' ? success() : error()
 
-    dialogType({
-      title,
+    dialogType.update({
+      title: <ModalHeader>{title}</ModalHeader>,
       content,
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => dialogType.destroy()} type="primary">
+            Ok
+          </Button>
+        </ModalFooter>,
+      ],
       maskClosable: true,
     })
   }
@@ -839,18 +929,27 @@ const Question = props => {
   }
 
   const showNewVersionModal = () => {
-    confirm({
-      title: `Warning!`,
+    const confirmNewVersion = confirm()
+    confirmNewVersion.update({
+      title: <ModalHeader>Warning!</ModalHeader>,
       content: `You are editing a published question. Any changes you make will be automatically saved, but not automatically published. 
       You will need to publish the question again for the edits to be reflected in the Discover page.
       After the edited question is published, the old one will not be available anymore in the Discover page. 
       Do you wish to continue?`,
-      okText: 'Create new version',
-      okType: 'danger',
-      onOk() {
-        onCreateNewVersion()
-      },
-      onCancel() {},
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmNewVersion.destroy()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              confirmNewVersion.destroy()
+              onCreateNewVersion()
+            }}
+            status="danger"
+          >
+            Create new version
+          </Button>
+        </ModalFooter>,
+      ],
     })
   }
   // #endregion handlers
@@ -862,7 +961,24 @@ const Question = props => {
     <StyledPrevNextButton
       aria-label="Previous Question"
       icon={<LeftOutlined />}
-      onClick={onClickPreviousButton}
+      onClick={() =>
+        onClickPreviousButton()
+          .then()
+          .catch(() => {
+            const infoModal = modal.info()
+            infoModal.update({
+              title: <ModalHeader>No previous question</ModalHeader>,
+              content: 'There are no more questions in this direction',
+              footer: [
+                <ModalFooter key="footer">
+                  <Button onClick={infoModal.destroy} type="primary">
+                    Ok
+                  </Button>
+                </ModalFooter>,
+              ],
+            })
+          })
+      }
       title="Previous Question"
       type="primary"
     >
@@ -875,7 +991,24 @@ const Question = props => {
       aria-label="Next Question"
       direction="rtl"
       icon={<RightOutlined />}
-      onClick={onClickNextButton}
+      onClick={() =>
+        onClickNextButton()
+          .then()
+          .catch(() => {
+            const infoModal = modal.info()
+            infoModal.update({
+              title: <ModalHeader>No next question</ModalHeader>,
+              content: 'There are no more questions in this direction',
+              footer: [
+                <ModalFooter key="footer">
+                  <Button onClick={infoModal.destroy} type="primary">
+                    Ok
+                  </Button>
+                </ModalFooter>,
+              ],
+            })
+          })
+      }
       title="Next Question"
       type="primary"
     >
@@ -1196,7 +1329,7 @@ const Question = props => {
   if (loading || !metadata || !resources?.length) return <Spin spinning />
 
   return (
-    <ModalContext.Provider>
+    <ModalContext.Provider value={null}>
       <Wrapper>
         <Spin renderBackground={false} spinning={loading}>
           <StyledTabs

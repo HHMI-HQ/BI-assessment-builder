@@ -11,6 +11,7 @@ import {
   Tag,
   Table,
   DateParser,
+  Modal,
 } from '../common'
 import { profileOptions } from '../../utilities'
 
@@ -88,11 +89,21 @@ const ButtonWithoutStyles = styled.button`
   }
 `
 
+const ModalContext = React.createContext(null)
+
+const ModalFooter = Modal.footer
+const ModalHeader = Modal.header
+
+const DELETE_ACTION = 'delete'
+const DEACTIVATE_ACTION = 'deactivate'
+const ACTIVATE_ACTION = 'activate'
+
 // QUESTION results placement seems a bit odd here
 const UserList = props => {
   const {
     className,
     currentPage,
+    currentUserId,
     data,
     loading,
     locale,
@@ -109,6 +120,9 @@ const UserList = props => {
     showDeactivated,
     onClickShowDeactivated,
   } = props
+
+  const [modal, contextHolder] = Modal.useModal()
+  const { confirm, error } = modal
 
   const dataSource = data.map(i => {
     const { id, ...rest } = i
@@ -146,7 +160,7 @@ const UserList = props => {
     deactivatedUsers ? (
       <Button
         disabled={selectedRows.length === 0}
-        onClick={onBulkActivate}
+        onClick={() => bulkAction(ACTIVATE_ACTION)}
         type="primary"
       >
         Activate
@@ -154,7 +168,7 @@ const UserList = props => {
     ) : (
       <Button
         disabled={selectedRows.length === 0}
-        onClick={onBulkDeactivate}
+        onClick={() => bulkAction(DEACTIVATE_ACTION)}
         type="primary"
       >
         Deactivate
@@ -181,73 +195,246 @@ const UserList = props => {
     return originalElement
   }
 
-  return (
-    <Wrapper className={className}>
-      <StyledSection>
-        <PageHeader>User Manager</PageHeader>
-        <Table
-          columns={columns}
-          dataSource={dataSource}
-          loading={loading}
-          locale={locale}
-          onSearch={onSearch}
-          pagination={{
-            current: currentPage,
-            onChange: handlePageChange,
-            pageSize,
-            showSizeChanger: false,
-            total: totalUserCount,
-            itemRender: paginationItemRender,
-          }}
-          rowSelection={{
-            onChange: handleSelectionChange,
-            selectedRowKeys: selectedRows,
-            columnTitle: (
-              <Checkbox
-                aria-checked={isCheckboxChecked()}
-                aria-label="Select all users"
-                checked={selectedRows.length}
-                indeterminate={
-                  selectedRows.length > 0 && selectedRows.length < data.length
-                  // or typeof isCheckboxChecked() === string
-                }
-                onChange={toggleSelectAll}
-              />
-            ),
-            renderCell: (_checked, record, _index, originNode) => {
-              return React.cloneElement(originNode, {
-                'aria-label': `Select user ${record.displayName}`,
-              })
-            },
-          }}
-          searchLoading={searchLoading}
-          searchPlaceholder="Search for users"
-          showSearch
-        />
-        <FooterActionsWrapper>
-          <Checkbox checked={showDeactivated} onChange={onClickShowDeactivated}>
-            Show inactive users
-          </Checkbox>
-          <ButtonGroup justify="right">
-            {renderActivationButton(showDeactivated)}
+  const bulkAction = action => {
+    if (selectedRows.indexOf(currentUserId) !== -1) {
+      showErrorModal(
+        'Cannot delete or deactivate current user',
+        'You cannot delete or deactivate the user you are currently logged in as. Please deselect your current user and try again',
+      )
+    } else if (action === DEACTIVATE_ACTION) {
+      confirmDeactivate()
+    } else if (action === DELETE_ACTION) {
+      confirmDelete()
+    } else if (action === ACTIVATE_ACTION) {
+      confirmActivate()
+    }
+  }
 
-            <Button
-              disabled={selectedRows.length === 0}
-              onClick={onBulkDelete}
-              status="error"
-              type="primary"
+  // #region modals
+  const confirmActivate = () => {
+    const confirmDialog = confirm()
+    confirmDialog.update({
+      title: (
+        <ModalHeader>
+          Activate User{selectedRows.length > 1 ? 's' : ''}
+        </ModalHeader>
+      ),
+      content: `Are you sure you want to activate the selected user${
+        selectedRows.length > 1 ? 's' : ''
+      }?`,
+      footer: [
+        <ModalFooter key="footer">
+          <Button key="cancel" onClick={() => confirmDialog.destroy()}>
+            Cancel
+          </Button>
+          <Button
+            key="activate"
+            onClick={() => {
+              return onBulkActivate({
+                variables: { ids: selectedRows },
+              })
+                .then(() => {
+                  setSelectedRows([])
+                  confirmDialog.destroy()
+                })
+                .catch(() => {
+                  confirmDialog.destroy()
+                  showErrorModal(
+                    'Activation error',
+                    'There was an error trying to activate the user(s)',
+                  )
+                })
+            }}
+            type="primary"
+          >
+            Activate
+          </Button>
+        </ModalFooter>,
+      ],
+    })
+  }
+
+  const confirmDeactivate = () => {
+    const confirmDialog = confirm()
+    confirmDialog.update({
+      title: (
+        <ModalHeader>
+          Deactivate User{selectedRows.length > 1 ? 's' : ''}
+        </ModalHeader>
+      ),
+      content: `Are you sure you want to deactivate the selected user${
+        selectedRows.length > 1 ? 's' : ''
+      }?`,
+      footer: [
+        <ModalFooter key="footer">
+          <Button key="cancel" onClick={() => confirmDialog.destroy()}>
+            Cancel
+          </Button>
+          <Button
+            key="deactivate"
+            onClick={() => {
+              return onBulkDeactivate({
+                variables: { ids: selectedRows },
+              })
+                .then(() => {
+                  setSelectedRows([])
+                  confirmDialog.destroy()
+                })
+                .catch(() => {
+                  confirmDialog.destroy()
+                  showErrorModal(
+                    'Deactivate error',
+                    'There was an error trying to deactivate the user(s)',
+                  )
+                })
+            }}
+            status="danger"
+          >
+            Deactivate
+          </Button>
+        </ModalFooter>,
+      ],
+    })
+  }
+
+  const confirmDelete = () => {
+    const confirmDialog = confirm()
+    confirmDialog.update({
+      title: (
+        <ModalHeader>
+          Delete User{selectedRows.length > 1 ? 's' : ''}
+        </ModalHeader>
+      ),
+      content: `Are you sure you want to delete the selected user${
+        selectedRows.length > 1 ? 's' : ''
+      }?`,
+      footer: [
+        <ModalFooter key="footer">
+          <Button key="cancel" onClick={() => confirmDialog.destroy()}>
+            Cancel
+          </Button>
+          ,
+          <Button
+            key="delete"
+            onClick={() => {
+              return onBulkDelete({
+                variables: { ids: selectedRows },
+              })
+                .then(() => {
+                  setSelectedRows([])
+                  confirmDialog.destroy()
+                })
+                .catch(() => {
+                  confirmDialog.destroy()
+                  showErrorModal(
+                    'Delete error',
+                    'There was an error trying to delete the user(s)',
+                  )
+                })
+            }}
+            status="danger"
+          >
+            Delete
+          </Button>
+        </ModalFooter>,
+      ],
+    })
+  }
+
+  const showErrorModal = (title, content) => {
+    const errorModal = error()
+    errorModal.update({
+      title: <ModalHeader>{title}</ModalHeader>,
+      content,
+      footer: [
+        <ModalFooter key="footer">
+          <Button
+            key="close"
+            onClick={() => errorModal.destroy()}
+            type="primary"
+          >
+            Close
+          </Button>
+        </ModalFooter>,
+      ],
+    })
+  }
+  // #endregion modals
+
+  return (
+    <ModalContext.Provider value={null}>
+      <Wrapper className={className}>
+        <StyledSection>
+          <PageHeader>User Manager</PageHeader>
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            loading={loading}
+            locale={locale}
+            onSearch={onSearch}
+            pagination={{
+              current: currentPage,
+              onChange: handlePageChange,
+              pageSize,
+              showSizeChanger: false,
+              total: totalUserCount,
+              itemRender: paginationItemRender,
+            }}
+            rowSelection={{
+              onChange: handleSelectionChange,
+              selectedRowKeys: selectedRows,
+              columnTitle: (
+                <Checkbox
+                  aria-checked={isCheckboxChecked()}
+                  aria-label="Select all users"
+                  checked={selectedRows.length}
+                  indeterminate={
+                    selectedRows.length > 0 && selectedRows.length < data.length
+                    // or typeof isCheckboxChecked() === string
+                  }
+                  onChange={toggleSelectAll}
+                />
+              ),
+              renderCell: (_checked, record, _index, originNode) => {
+                return React.cloneElement(originNode, {
+                  'aria-label': `Select user ${record.displayName}`,
+                })
+              },
+            }}
+            searchLoading={searchLoading}
+            searchPlaceholder="Search for users"
+            showSearch
+          />
+          <FooterActionsWrapper>
+            <Checkbox
+              checked={showDeactivated}
+              onChange={onClickShowDeactivated}
             >
-              Delete
-            </Button>
-          </ButtonGroup>
-        </FooterActionsWrapper>
-      </StyledSection>
-    </Wrapper>
+              Show inactive users
+            </Checkbox>
+            <ButtonGroup justify="right">
+              {renderActivationButton(showDeactivated)}
+
+              <Button
+                disabled={selectedRows.length === 0}
+                onClick={() => bulkAction(DELETE_ACTION)}
+                status="error"
+                type="primary"
+              >
+                Delete
+              </Button>
+            </ButtonGroup>
+          </FooterActionsWrapper>
+        </StyledSection>
+      </Wrapper>
+      {contextHolder}
+    </ModalContext.Provider>
   )
 }
 
 UserList.propTypes = {
   currentPage: PropTypes.number.isRequired,
+  currentUserId: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

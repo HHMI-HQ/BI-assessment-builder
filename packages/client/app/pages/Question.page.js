@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce'
 
 import { serverUrl } from '@coko/client'
 
-import { Question, Result, Modal, VisuallyHiddenElement } from 'ui'
+import { Question, Result, VisuallyHiddenElement } from 'ui'
 
 import {
   CURRENT_USER,
@@ -27,11 +27,7 @@ import {
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
-const ModalContext = React.createContext(null)
-
 const AUTOSAVE_DELAY = 500
-
-const { info } = Modal
 
 // #region transformations
 const metadataApiToUi = values => {
@@ -119,8 +115,6 @@ const QuestionPage = props => {
   const { id } = useParams()
   const history = useHistory()
   const { metadata } = useMetadata()
-
-  const [modal, contextHolder] = Modal.useModal()
 
   const { data, loading, error } = useQuery(QUESTION, {
     variables: {
@@ -321,7 +315,7 @@ const QuestionPage = props => {
       },
     }
 
-    getQuestion({
+    return getQuestion({
       variables,
     }).then(response => {
       const {
@@ -330,17 +324,17 @@ const QuestionPage = props => {
         },
       } = response
 
-      if (questionId === '0') {
-        info({
-          title: `No ${which === 'NEXT' ? 'next' : 'previous'} question`,
-          content: 'There are no more questions in this direction',
-        })
-      } else {
-        history.push({
-          pathname: `/question/${questionId}/test`,
-          state: searchParams,
-        })
-      }
+      return new Promise((resolve, reject) => {
+        if (questionId !== '0') {
+          history.push({
+            pathname: `/question/${questionId}/test`,
+            state: searchParams,
+          })
+          resolve()
+        } else {
+          reject()
+        }
+      })
     })
   }
 
@@ -383,7 +377,7 @@ const QuestionPage = props => {
       questionVersionId: version.id,
     }
 
-    generateScormZipMutation({ variables: mutationVariables })
+    return generateScormZipMutation({ variables: mutationVariables })
       .then(res => {
         const filename = res.data.generateScormZip
         const url = `${serverUrl}/api/download/${filename}`
@@ -391,10 +385,8 @@ const QuestionPage = props => {
       })
       .catch(e => {
         console.error(e)
-        modal.error({
-          title: 'Conversion error',
-          content:
-            'Something went wrong with your conversion! Please contact your system administrator.',
+        return new Promise((_resolve, reject) => {
+          reject()
         })
       })
   }
@@ -410,7 +402,7 @@ const QuestionPage = props => {
       },
     }
 
-    generateWordFileMutation({ variables: mutationVariables })
+    return generateWordFileMutation({ variables: mutationVariables })
       .then(res => {
         const filename = res.data.generateWordFile
         const url = `${serverUrl}/api/download/${filename}`
@@ -418,10 +410,8 @@ const QuestionPage = props => {
       })
       .catch(e => {
         console.error(e)
-        modal.error({
-          title: 'Conversion error',
-          content:
-            'Something went wrong with your conversion! Please contact your system administrator.',
+        return new Promise((_resolve, reject) => {
+          reject()
         })
       })
   }
@@ -474,46 +464,43 @@ const QuestionPage = props => {
     <>
       {/* TODO: create more specific heading */}
       <VisuallyHiddenElement as="h1">Question Page</VisuallyHiddenElement>
-      <ModalContext.Provider>
-        <Question
-          editorContent={editorContent}
-          editorView={isEditor && !isAuthor}
-          facultyView={testMode}
-          initialMetadataValues={testMode ? version : metadataApiToUi(version)}
-          isInProduction={version.inProduction}
-          isPublished={version.published}
-          isRejected={question.rejected}
-          isSubmitted={version.submitted}
-          isUnderReview={version.underReview}
-          isUserLoggedIn={!!user}
-          loading={loading}
-          metadata={metadata}
-          onClickAssignHE={handleClickAssignHE}
-          onClickBackButton={handleClickBackButton}
-          onClickExportToScorm={testMode ? handleExportToScorm : null}
-          onClickExportToWord={handleExportToWord}
-          onClickNextButton={() => handleGetQuestionButton('NEXT')}
-          onClickPreviousButton={() => handleGetQuestionButton('PREV')}
-          onCreateNewVersion={handleCreateNewVersion}
-          onEditorContentAutoSave={handleEditorContentAutoSave}
-          onImageUpload={handleImageUpload}
-          onMetadataAutoSave={handleMetadataAutoSave}
-          onMoveToProduction={handleMoveToProduction}
-          onMoveToReview={handleMoveToReview}
-          onPublish={handlePublish}
-          onQuestionSubmit={handleQuestionSubmit}
-          onReject={handleReject}
-          questionAgreedTc={false} //
-          resources={resourcesData?.getResources}
-          scormZipLoading={generateScormZipLoading}
-          showAssignHEButton={false} //
-          showNextQuestionLink={false} //
-          submitting={false} //
-          updated={version.lastEdit}
-          wordFileLoading={generateWordFileLoading}
-        />
-        {contextHolder}
-      </ModalContext.Provider>
+      <Question
+        editorContent={editorContent}
+        editorView={isEditor && !isAuthor}
+        facultyView={testMode}
+        initialMetadataValues={testMode ? version : metadataApiToUi(version)}
+        isInProduction={version.inProduction}
+        isPublished={version.published}
+        isRejected={question.rejected}
+        isSubmitted={version.submitted}
+        isUnderReview={version.underReview}
+        isUserLoggedIn={!!user}
+        loading={loading}
+        metadata={metadata}
+        onClickAssignHE={handleClickAssignHE}
+        onClickBackButton={handleClickBackButton}
+        onClickExportToScorm={testMode ? handleExportToScorm : null}
+        onClickExportToWord={handleExportToWord}
+        onClickNextButton={() => handleGetQuestionButton('NEXT')}
+        onClickPreviousButton={() => handleGetQuestionButton('PREV')}
+        onCreateNewVersion={handleCreateNewVersion}
+        onEditorContentAutoSave={handleEditorContentAutoSave}
+        onImageUpload={handleImageUpload}
+        onMetadataAutoSave={handleMetadataAutoSave}
+        onMoveToProduction={handleMoveToProduction}
+        onMoveToReview={handleMoveToReview}
+        onPublish={handlePublish}
+        onQuestionSubmit={handleQuestionSubmit}
+        onReject={handleReject}
+        questionAgreedTc={false} //
+        resources={resourcesData?.getResources}
+        scormZipLoading={generateScormZipLoading}
+        showAssignHEButton={false} //
+        showNextQuestionLink={false} //
+        submitting={false} //
+        updated={version.lastEdit}
+        wordFileLoading={generateWordFileLoading}
+      />
     </>
   )
 }

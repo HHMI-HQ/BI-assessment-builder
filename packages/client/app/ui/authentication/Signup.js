@@ -6,6 +6,7 @@ import AuthenticationHeader from './AuthenticationHeader'
 import AuthenticationWrapper from './AuthenticationWrapper'
 // import SuccessSubTitle from './SuccessSubTitle'
 import {
+  Button,
   Form,
   Input,
   Link,
@@ -17,6 +18,8 @@ import {
 } from '../common'
 
 const ModalContext = React.createContext(null)
+const ModalHeader = Modal.header
+const ModalFooter = Modal.footer
 
 const Signup = props => {
   const {
@@ -30,12 +33,12 @@ const Signup = props => {
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
-  const { info } = modal
 
   const showTermsAndConditions = e => {
     e.preventDefault()
-    info({
-      title: 'Agreeing to Terms and Conditions',
+    const termsAndConditionsModal = modal.info()
+    termsAndConditionsModal.update({
+      title: <ModalHeader>Agreeing to Terms and Conditions</ModalHeader>,
       content: (
         <Paragraph>
           By checking “I agree” and selecting “Sign up” below, I accept the{' '}
@@ -43,7 +46,6 @@ const Signup = props => {
             as="a"
             href="https://www.biointeractive.org/hhmi-biointeractive-online-community-terms-use"
             rel="noreferrer"
-            style={{ color: '#3F3F3F' }}
             target="_blank"
           >
             HHMI BioInteractive Online Community Terms of Use
@@ -53,7 +55,6 @@ const Signup = props => {
             as="a"
             href="https://www.hhmi.org/terms-of-use"
             rel="noreferrer"
-            style={{ color: '#3F3F3F' }}
             target="_blank"
           >
             HHMI Terms of Use
@@ -63,7 +64,6 @@ const Signup = props => {
             as="a"
             href="https://www.hhmi.org/privacy-policy"
             rel="noreferrer"
-            style={{ color: '#3F3F3F' }}
             target="_blank"
           >
             HHMI Privacy Policy and Cookie Notice
@@ -71,9 +71,14 @@ const Signup = props => {
           .
         </Paragraph>
       ),
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={termsAndConditionsModal.destroy} type="primary">
+            Ok
+          </Button>
+        </ModalFooter>,
+      ],
       maskClosable: true,
-      afterClose: () =>
-        document.body.querySelector('#termsAndConditions').focus(),
       width: 570,
       bodyStyle: {
         marginRight: 38,
@@ -185,7 +190,7 @@ const Signup = props => {
                 type="password"
               />
             </Form.Item>
-            <ModalContext.Provider>
+            <ModalContext.Provider value={null}>
               <Form.Item
                 name="agreedTc"
                 rules={[
