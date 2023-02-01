@@ -289,10 +289,7 @@ const QuestionPage = props => {
         questionVersionId: version.id,
         input: {
           agreedTc: true,
-          content: JSON.stringify({
-            type: 'doc',
-            content: latestContent,
-          }),
+          content: JSON.stringify(latestContent),
         },
       },
     }

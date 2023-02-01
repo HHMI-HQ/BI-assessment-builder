@@ -34,6 +34,7 @@ import {
   TabsStyled as Tabs,
 } from '../common'
 import Wax from '../wax/Wax'
+import { extractDocumentText } from '../../utilities'
 
 const ModalContext = React.createContext(null)
 const ModalFooter = Modal.footer
@@ -634,12 +635,11 @@ const Question = props => {
   }
 
   const isEmptyEditor = () => {
-    const questionText = waxRef.current
-      .getContent()
-      .content.map(content => content.textContent)
-      .join('')
+    const questionText = extractDocumentText(
+      JSON.stringify(waxRef.current.getContent()),
+    )
 
-    const isEditorEmpty = questionText.trim().length === 0
+    const isEditorEmpty = questionText.content[0].content[0].text === '(empty)'
 
     if (isEditorEmpty) {
       const emptyEditorErrorModal = error()
