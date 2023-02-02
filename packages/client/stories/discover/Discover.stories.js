@@ -1,16 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { range } from 'lodash'
 import { lorem } from 'faker'
 import { uuid } from '@coko/client'
-import { Discover, metadata } from 'ui'
-import {
-  flatAPCoursesMetadata,
-  flatIBCourseMetadata,
-  flatVisionAndChangeMetadata,
-  flatAAMCMetadata,
-} from '../../app/utilities'
+import { Discover } from 'ui'
+import metadata from '../question/_helpers/metadataValues'
+import { metadataTransformer } from '../question/_helpers/metadataTransformations'
 
 import {
   generateMetadata,
@@ -98,68 +94,6 @@ export const DiscoverPage = () => {
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const [flatMetadata, setFlatMetadata] = useState(metadata)
-
-  useEffect(() => {
-    const frameworks = metadata.frameworks.map(framework => {
-      const frameworkData = {
-        label: framework.label,
-        value: framework.value,
-      }
-
-      // const additionalMetadata = flatten(framework, {}, [])
-      let additionalMetadata
-
-      if (
-        framework.value === 'apBiology' ||
-        framework.value === 'apEnvironmentalScience'
-      ) {
-        additionalMetadata = flatAPCoursesMetadata(framework)
-      }
-
-      if (
-        framework.value === 'biBiology' ||
-        framework.value === 'biEnvironmentalScience'
-      ) {
-        additionalMetadata = flatIBCourseMetadata(framework)
-      }
-
-      return {
-        ...frameworkData,
-        ...additionalMetadata,
-      }
-    })
-
-    const introToBioMeta = metadata.introToBioMeta.map(data => {
-      const meta = {
-        label: data.label,
-        value: data.value,
-      }
-
-      let additionalMetadata
-
-      if (data.value === 'visionAndChange') {
-        additionalMetadata = flatVisionAndChangeMetadata(data)
-      }
-
-      if (data.value === 'aamcFuturePhysicians') {
-        additionalMetadata = flatAAMCMetadata(data)
-      }
-
-      return {
-        ...meta,
-        ...additionalMetadata,
-      }
-    })
-
-    setFlatMetadata({
-      topics: metadata.topics,
-      blooms: metadata.blooms,
-      frameworks,
-      introToBioMeta,
-    })
-  }, [])
-
   const handleSearch = async params => {
     setLoading(true)
 
@@ -178,7 +112,7 @@ export const DiscoverPage = () => {
         pageSize={PAGE_SIZE}
         questions={searchResults}
         showSort
-        sidebarMetadata={flatMetadata}
+        sidebarMetadata={metadataTransformer(metadata)}
         sidebarText={sidebarText}
         sortOptions={sortOptions}
         totalCount={TOTAL_COUNT}
@@ -188,73 +122,11 @@ export const DiscoverPage = () => {
 }
 
 const DiscoveryCustom = args => {
-  const [flatMetadata, setFlatMetadata] = useState(metadata)
-
-  useEffect(() => {
-    const frameworks = metadata.frameworks.map(framework => {
-      const frameworkData = {
-        label: framework.label,
-        value: framework.value,
-      }
-
-      // const additionalMetadata = flatten(framework, {}, [])
-      let additionalMetadata
-
-      if (
-        framework.value === 'apBiology' ||
-        framework.value === 'apEnvironmentalScience'
-      ) {
-        additionalMetadata = flatAPCoursesMetadata(framework)
-      }
-
-      if (
-        framework.value === 'biBiology' ||
-        framework.value === 'biEnvironmentalScience'
-      ) {
-        additionalMetadata = flatIBCourseMetadata(framework)
-      }
-
-      return {
-        ...frameworkData,
-        ...additionalMetadata,
-      }
-    })
-
-    const introToBioMeta = metadata.introToBioMeta.map(data => {
-      const meta = {
-        label: data.label,
-        value: data.value,
-      }
-
-      let additionalMetadata
-
-      if (data.value === 'visionAndChange') {
-        additionalMetadata = flatVisionAndChangeMetadata(data)
-      }
-
-      if (data.value === 'aamcFuturePhysicians') {
-        additionalMetadata = flatAAMCMetadata(data)
-      }
-
-      return {
-        ...meta,
-        ...additionalMetadata,
-      }
-    })
-
-    setFlatMetadata({
-      topics: metadata.topics,
-      blooms: metadata.blooms,
-      frameworks,
-      introToBioMeta,
-    })
-  }, [])
-
   return (
     <Wrapper>
       <Discover
         {...args}
-        sidebarMetadata={flatMetadata}
+        sidebarMetadata={metadataTransformer(metadata)}
         sortOptions={sortOptions}
       />
     </Wrapper>

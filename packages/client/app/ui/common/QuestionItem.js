@@ -12,17 +12,13 @@ import Link from './HhmiLink'
 import Status from './Status'
 
 const Wrapper = styled.article`
-  border-color: transparent;
-  border-style: solid;
-  border-width: 0 0 0 5px;
   padding: ${grid(4)} ${grid(3)};
   position: relative;
-  transition: all 0.15s ease-in-out;
   width: 100%;
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     background-color: ${th('colorBackgroundHue')};
-    border-color: ${th('colorPrimary')};
 
     .ProseMirror {
       background-color: ${th('colorBackgroundHue')};
