@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Sidebar, metadata } from 'ui'
+import { Sidebar, Form } from 'ui'
 import { lorem } from 'faker'
-import {
-  flatAPCoursesMetadata,
-  flatIBCourseMetadata,
-  flatVisionAndChangeMetadata,
-  flatAAMCMetadata,
-} from '../../app/utilities'
+import metadata from '../question/_helpers/metadataValues'
+import { metadataTransformer } from '../question/_helpers/metadataTransformations'
 
 const Wrapper = styled.section``
 
@@ -19,72 +15,13 @@ export const Base = () => {
     console.log(filters)
   }
 
-  const [flatMetadata, setFlatMetadata] = useState(metadata)
-
-  useEffect(() => {
-    const frameworks = metadata.frameworks.map(framework => {
-      const frameworkData = {
-        label: framework.label,
-        value: framework.value,
-      }
-
-      // const additionalMetadata = flatten(framework, {}, [])
-      let additionalMetadata
-
-      if (
-        framework.value === 'apBiology' ||
-        framework.value === 'apEnvironmentalScience'
-      ) {
-        additionalMetadata = flatAPCoursesMetadata(framework)
-      }
-
-      if (
-        framework.value === 'biBiology' ||
-        framework.value === 'biEnvironmentalScience'
-      ) {
-        additionalMetadata = flatIBCourseMetadata(framework)
-      }
-
-      return {
-        ...frameworkData,
-        ...additionalMetadata,
-      }
-    })
-
-    const introToBioMeta = metadata.introToBioMeta.map(data => {
-      const meta = {
-        label: data.label,
-        value: data.value,
-      }
-
-      let additionalMetadata
-
-      if (data.value === 'visionAndChange') {
-        additionalMetadata = flatVisionAndChangeMetadata(data)
-      }
-
-      if (data.value === 'aamcFuturePhysicians') {
-        additionalMetadata = flatAAMCMetadata(data)
-      }
-
-      return {
-        ...meta,
-        ...additionalMetadata,
-      }
-    })
-
-    setFlatMetadata({
-      topics: metadata.topics,
-      blooms: metadata.blooms,
-      frameworks,
-      introToBioMeta,
-    })
-  }, [])
+  const [filtersForm] = Form.useForm()
 
   return (
     <Wrapper>
       <Sidebar
-        metadata={flatMetadata}
+        form={filtersForm}
+        metadata={metadataTransformer(metadata)}
         setFilters={applyFilters}
         text={sidebarText}
       />

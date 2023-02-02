@@ -45,8 +45,18 @@ const StyledList = styled(List)`
   }
 
   .ant-list-items {
-    > li:not(:last-child) {
-      border-bottom: 1px solid ${th('colorSecondary')};
+    > li {
+      border-left: 5px solid transparent;
+      transition: border-left-color 0.15s ease-in-out;
+
+      &:hover,
+      &:focus-within {
+        border-left-color: ${th('colorPrimary')};
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid ${th('colorSecondary')};
+      }
     }
   }
 `
