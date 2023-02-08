@@ -461,6 +461,7 @@ const UserList = props => {
               {renderActivationButton(showDeactivated)}
 
               <Button
+                data-testid="delete-btn"
                 disabled={selectedRows.length === 0}
                 onClick={() => bulkAction(DELETE_ACTION)}
                 status="error"
