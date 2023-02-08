@@ -953,6 +953,7 @@ const Question = props => {
       <StyledCheckbox
         aria-label="I accept the terms and conditions"
         checked={agreedTc}
+        data-testid="accept-tnc"
         onChange={handleAgreeTcChange}
       >
         Accept{' '}
