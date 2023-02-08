@@ -192,7 +192,9 @@ const QuestionItem = props => {
                 <th>
                   <MetadataLabel>{item.label}</MetadataLabel>
                 </th>
-                <MetadataValue>{item.value || '-'}</MetadataValue>
+                <MetadataValue data-testid={`${item.label}-value`}>
+                  {item.value || '-'}
+                </MetadataValue>
               </tr>
             ))}
         </tbody>
