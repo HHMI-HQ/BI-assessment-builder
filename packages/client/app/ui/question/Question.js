@@ -1102,7 +1102,11 @@ const Question = props => {
           {
             key: 'publish',
             label: (
-              <StyledButton onClick={handlePublish} type="primary">
+              <StyledButton
+                data-testid="publish-question-btn"
+                onClick={handlePublish}
+                type="primary"
+              >
                 Publish
               </StyledButton>
             ),
@@ -1190,7 +1194,11 @@ const Question = props => {
           </>
         )}
         {isInProduction && (
-          <StyledButton onClick={handlePublish} type="primary">
+          <StyledButton
+            data-testid="publish-question-btn"
+            onClick={handlePublish}
+            type="primary"
+          >
             Publish
           </StyledButton>
         )}
