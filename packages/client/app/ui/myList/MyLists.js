@@ -191,7 +191,12 @@ const MyLists = props => {
               type="text"
               value={newListName}
             />
-            <Button onClick={handleCreateNewList} size="middle" type="primary">
+            <Button
+              data-testid="create-btn"
+              onClick={handleCreateNewList}
+              size="middle"
+              type="primary"
+            >
               Create
             </Button>
           </HeaderActions>
