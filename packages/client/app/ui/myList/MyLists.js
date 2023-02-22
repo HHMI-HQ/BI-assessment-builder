@@ -101,6 +101,7 @@ const MyLists = props => {
             Cancel
           </Button>
           <Button
+            data-testid="confirm-delete-btn"
             key="delete"
             onClick={() => {
               handleDeleteRows()
@@ -246,6 +247,7 @@ const MyLists = props => {
             Export
           </Button>
           <Button
+            data-testid="delete-btn"
             disabled={selectedRows.length === 0}
             onClick={showConfirmModal}
             status="danger"
