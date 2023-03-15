@@ -37,9 +37,9 @@ const PaginationNav = styled.nav`
 `
 
 const Pagination = React.forwardRef((props, forwardRef) => {
-  const { pagination, onChange, ...rest } = props
+  const { pagination, onChange, onShowSizeChange, ...rest } = props
 
-  const { current, pageSize } = pagination
+  const { current, pageSize, total } = pagination
 
   const paginationRef = useRef(null)
 
@@ -81,7 +81,7 @@ const Pagination = React.forwardRef((props, forwardRef) => {
           }
         })
     }
-  }, [current, pageSize])
+  }, [current, pageSize, total])
 
   const paginationLinkClick = e => {
     e.preventDefault()
@@ -148,6 +148,7 @@ const Pagination = React.forwardRef((props, forwardRef) => {
         {...pagination}
         itemRender={itemRender}
         onChange={onChange}
+        onShowSizeChange={onShowSizeChange}
       />
     </PaginationNav>
   )
@@ -160,9 +161,9 @@ Pagination.propTypes = {
     pageSize: PropTypes.number,
     itemRender: PropTypes.func,
     showSizeChanger: PropTypes.bool,
-    onShowSizeChange: PropTypes.func,
   }),
   onChange: PropTypes.func,
+  onShowSizeChange: PropTypes.func,
 }
 
 Pagination.defaultProps = {
@@ -171,9 +172,9 @@ Pagination.defaultProps = {
     pageSize: 10,
     itemRender: null,
     showSizeChanger: false,
-    onShowSizeChange: () => {},
   },
   onChange: () => {},
+  onShowSizeChange: () => {},
 }
 
 export default Pagination
