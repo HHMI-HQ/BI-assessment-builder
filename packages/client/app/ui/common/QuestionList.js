@@ -88,6 +88,7 @@ const QuestionList = props => {
     }
 
     paginationConfig.current = currentPage
+    paginationConfig.showSizeChanger = false
 
     return paginationConfig
   }
