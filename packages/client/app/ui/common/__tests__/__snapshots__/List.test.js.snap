@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list matches snapshot 1`] = `
+<div
+  className="sc-eDWCr cFsFTB"
+>
+  <div
+    className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+  >
+    <div
+      className="ant-spin-container"
+    >
+      <div
+        className="ant-list ant-list-split sc-dIfARi uZpFA css-dev-only-do-not-override-ixblex"
+        searchPlaceHolder=""
+      >
+        <div
+          className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+        >
+          <div
+            className="ant-spin-container"
+          >
+            <ul
+              className="ant-list-items"
+            >
+              <li
+                className="sc-bjfHbI eVGVbn"
+              >
+                <div>
+                  Eaque laboriosam magnam perspiciatis delectus sunt et voluptatum et fugiat. Architecto molestias iure.
+                </div>
+              </li>
+              <li
+                className="sc-bjfHbI eVGVbn"
+              >
+                <div>
+                  Autem eaque temporibus rerum vero consequuntur modi incidunt. Quis facere et saepe consequatur dignissimos ipsa adipisci eos.
+                </div>
+              </li>
+              <li
+                className="sc-bjfHbI eVGVbn"
+              >
+                <div>
+                  Vel non aperiam nam quos perspiciatis temporibus. Nam ex quasi beatae cum est nesciunt.
+                </div>
+              </li>
+              <li
+                className="sc-bjfHbI eVGVbn"
+              >
+                <div>
+                  Rem culpa nostrum quia non sed quod. Et est nesciunt aliquam non adipisci aut error qui.
+                </div>
+              </li>
+              <li
+                className="sc-bjfHbI eVGVbn"
+              >
+                <div>
+                  Possimus dicta earum. Placeat mollitia doloribus nisi.
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div
+        className="sc-hHTYSt hVoRyR"
+      >
+        <div />
+        <nav
+          aria-label="Pagination"
+          className="sc-csuSiG ddEXlA"
+          onShowSizeChange={[Function]}
+          role="navigation"
+        >
+          <ul
+            className="ant-pagination css-dev-only-do-not-override-ixblex"
+            style={{}}
+          >
+            <li
+              aria-disabled={true}
+              className="ant-pagination-prev ant-pagination-disabled"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex={null}
+              title="Previous Page"
+            >
+              <a
+                disabled={true}
+                href="/previous/page"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+              >
+                Previous
+              </a>
+            </li>
+            <li
+              className="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex="0"
+              title={1}
+            >
+              <a
+                href="/page/1"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+              >
+                1
+              </a>
+            </li>
+            <li
+              className="ant-pagination-item ant-pagination-item-2"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex="0"
+              title={2}
+            >
+              <a
+                href="/page/2"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+              >
+                2
+              </a>
+            </li>
+            <li
+              aria-disabled={false}
+              className="ant-pagination-next"
+              onClick={[Function]}
+              onKeyPress={[Function]}
+              tabIndex={0}
+              title="Next Page"
+            >
+              <a
+                disabled={false}
+                href="/next/page"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+              >
+                Next
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+`;

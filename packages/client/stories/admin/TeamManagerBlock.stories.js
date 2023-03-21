@@ -4,7 +4,7 @@ import { uniqBy } from 'lodash'
 
 import { TeamManagerBlock } from 'ui'
 import { uuid } from '@coko/client'
-import { createData } from '../_helpers'
+import { createData } from '../../app/utilities/_helpers'
 
 const makeUsers = n =>
   createData(n, i => ({

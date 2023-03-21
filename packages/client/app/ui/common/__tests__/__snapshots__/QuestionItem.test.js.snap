@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionItem matches snapshot 1`] = `
+<article
+  className="sc-erbdlo jbcpLw"
+  id="1"
+>
+  <div
+    className="sc-yUtDh iEhdKA"
+  >
+    <a
+      className="sc-eYGnOm islRLZ sc-eoOUpm liTbtw"
+      data-testid="wax-container"
+      href="#"
+      onClick={[Function]}
+    />
+  </div>
+  <div
+    className="sc-dovKpQ buxwYq"
+    data-testid="courses"
+  />
+  <table
+    className="sc-kLKKgF hvJHrO"
+  >
+    <tbody />
+  </table>
+</article>
+`;

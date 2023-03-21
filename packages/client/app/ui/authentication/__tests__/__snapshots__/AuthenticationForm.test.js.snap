@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthenticationForm matches snapshot 1`] = `
+<div
+  className="sc-jYECHi"
+>
+  <div
+    className="sc-kDvujY hfHsLZ"
+  >
+    <div
+      className="sc-jrcTuL nJKYm sc-ipEyDJ cayYcg"
+      data-testid="feedback-element"
+      role="alert"
+    >
+      The error message
+    </div>
+    <form
+      className="ant-form ant-form-vertical css-dev-only-do-not-override-ixblex"
+      data-testid="form-content"
+      onReset={[Function]}
+      onSubmit={[Function]}
+    >
+      <button
+        className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP gDEpHH sc-ggxSZb jKBBne"
+        data-testid="button"
+        disabled={false}
+        onClick={[Function]}
+        status={null}
+        type="submit"
+      >
+        <span>
+          submit form
+        </span>
+      </button>
+    </form>
+  </div>
+  <div
+    className="sc-cVKHio bkmlpt"
+  >
+    <div
+      className="sc-eHzXwO dTpziJ"
+    >
+      <a
+        className="sc-cegXJL hOBEeF"
+        href="/alt-link"
+        onClick={[Function]}
+      >
+        do you want to click the alt link?
+      </a>
+    </div>
+  </div>
+</div>
+`;

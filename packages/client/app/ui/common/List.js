@@ -349,6 +349,7 @@ const List = props => {
               <label>
                 Sort by
                 <Select
+                  data-testid="sort-select"
                   defaultValue={defaultSortOption && defaultSortOption.value}
                   id="sortBy"
                   onChange={onSortOptionChange}

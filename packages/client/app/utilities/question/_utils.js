@@ -1,10 +1,11 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { name } from 'faker'
 import {
   topics as topicsMetadata,
   frameworks as frameworksMeta,
-} from './question/_helpers/metadataValues'
-import flatMetadataValues from './question/_helpers/flatMetadataValues'
-import { flatAPCoursesMetadata, flatIBCourseMetadata } from '../app/utilities'
+} from './metadataValues'
+import flatMetadataValues from './flatMetadataValues'
+import { flatAPCoursesMetadata, flatIBCourseMetadata } from '../utilities'
 
 const generateMetadata = () => {
   const questionTypes = [

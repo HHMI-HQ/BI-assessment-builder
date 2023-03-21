@@ -5,13 +5,13 @@ import { lorem } from 'faker'
 import { uuid } from '@coko/client'
 import { Dashboard, Button } from 'ui'
 import styled from 'styled-components'
-import { createData } from '../_helpers'
+import { createData } from '../../app/utilities/_helpers'
 import {
   generateMetadata,
   getRandomCourse,
   getRandomObjectivesForCourse,
   getRandomStatus,
-} from '../_utilities'
+} from '../../app/utilities/question/_utils'
 
 const generateCoursesForQuestion = () => {
   const courses = []

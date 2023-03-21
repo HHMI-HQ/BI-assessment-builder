@@ -1,0 +1,349 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TeamManagerBlock matches snapshot 1`] = `
+<div
+  className="sc-jYECHi kYQobz"
+>
+  <h2
+    className="ant-typography sc-ggxSZb cFTpja css-dev-only-do-not-override-ixblex"
+    style={
+      {
+        "WebkitLineClamp": undefined,
+      }
+    }
+  >
+    <span
+      id="team-editor"
+    >
+      editor
+    </span>
+  </h2>
+  <div
+    className="sc-kDvujY hfHsLZ"
+  >
+    <form
+      className="ant-form ant-form-vertical css-dev-only-do-not-override-ixblex sc-cVKHio bVatwj"
+      data-testid="form-content"
+      onReset={[Function]}
+      onSubmit={[Function]}
+    >
+      <div
+        className="ant-form-item css-dev-only-do-not-override-ixblex"
+      >
+        <div
+          className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+          onBlur={[Function]}
+          style={{}}
+        >
+          <div
+            className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+            style={{}}
+          >
+            <label
+              className=""
+              htmlFor="addeditor"
+              title="Find users to add to the editor team"
+            >
+              Find users to add to the editor team
+            </label>
+          </div>
+          <div
+            className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+            style={{}}
+          >
+            <div
+              className="ant-form-item-control-input"
+            >
+              <div
+                className="ant-form-item-control-input-content"
+              >
+                <span
+                  className="sc-idXgbr"
+                >
+                  <div
+                    className="ant-select ant-select-in-form-item sc-dIfARi gDSmIE css-dev-only-do-not-override-ixblex ant-select-multiple ant-select-show-search"
+                    data-testid="select-editor"
+                    onBlur={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                  >
+                    <div
+                      className="ant-select-selector"
+                      onClick={[Function]}
+                      onMouseDown={[Function]}
+                    >
+                      <div
+                        className="ant-select-selection-overflow"
+                      >
+                        <div
+                          className="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                          style={
+                            {
+                              "height": undefined,
+                              "opacity": 1,
+                              "order": undefined,
+                              "overflowY": undefined,
+                              "pointerEvents": undefined,
+                              "position": undefined,
+                            }
+                          }
+                        >
+                          <div
+                            className="ant-select-selection-search"
+                            onBlur={[Function]}
+                            onFocus={[Function]}
+                            style={
+                              {
+                                "width": 100,
+                              }
+                            }
+                          >
+                            <input
+                              aria-activedescendant="addeditor_list_0"
+                              aria-autocomplete="list"
+                              aria-controls="addeditor_list"
+                              aria-expanded={false}
+                              aria-haspopup="listbox"
+                              aria-owns="addeditor_list"
+                              autoComplete="off"
+                              className="ant-select-selection-search-input"
+                              disabled={false}
+                              id="addeditor"
+                              onChange={[Function]}
+                              onCompositionEnd={[Function]}
+                              onCompositionStart={[Function]}
+                              onKeyDown={[Function]}
+                              onMouseDown={[Function]}
+                              onPaste={[Function]}
+                              readOnly={true}
+                              role="combobox"
+                              style={
+                                {
+                                  "opacity": 0,
+                                }
+                              }
+                              type="search"
+                              unselectable="on"
+                              value=""
+                            />
+                            <span
+                              aria-hidden={true}
+                              className="ant-select-selection-search-mirror"
+                            >
+                              
+                               
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <span
+                        className="ant-select-selection-placeholder"
+                      >
+                        Search for a user
+                      </span>
+                    </div>
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-labelledby="editor-team"
+        className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP eGTsMV sc-ksZGZd"
+        data-testid="button"
+        disabled={true}
+        onClick={[Function]}
+        status={null}
+        type="button"
+      >
+        <span>
+          Add User
+        </span>
+      </button>
+    </form>
+  </div>
+  <div
+    className="sc-lllmON cUAfcq sc-vKiki gxWxGS"
+  >
+    <div
+      className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+    >
+      <div
+        className="ant-spin-container"
+      >
+        <div
+          aria-labelledby="team-editor"
+          className="ant-list ant-list-split sc-hhOBVt dGXaLK css-dev-only-do-not-override-ixblex"
+          data-testid="editor-list"
+          role="group"
+        >
+          <div
+            className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+          >
+            <div
+              className="ant-spin-container"
+            >
+              <ul
+                className="ant-list-items"
+              >
+                <li
+                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                >
+                  <label
+                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
+                  >
+                    <span
+                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
+                      style={{}}
+                    >
+                      <input
+                        aria-label="Select user user1"
+                        checked={false}
+                        className="ant-checkbox-input"
+                        disabled={false}
+                        onBlur={[Function]}
+                        onChange={[Function]}
+                        onFocus={[Function]}
+                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
+                        onKeyUp={[Function]}
+                        type="checkbox"
+                      />
+                      <span
+                        className="ant-checkbox-inner"
+                      />
+                    </span>
+                  </label>
+                  <div
+                    className="sc-PtnOH"
+                  >
+                    user1
+                  </div>
+                </li>
+                <li
+                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                >
+                  <label
+                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
+                  >
+                    <span
+                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
+                      style={{}}
+                    >
+                      <input
+                        aria-label="Select user user2"
+                        checked={false}
+                        className="ant-checkbox-input"
+                        disabled={false}
+                        onBlur={[Function]}
+                        onChange={[Function]}
+                        onFocus={[Function]}
+                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
+                        onKeyUp={[Function]}
+                        type="checkbox"
+                      />
+                      <span
+                        className="ant-checkbox-inner"
+                      />
+                    </span>
+                  </label>
+                  <div
+                    className="sc-PtnOH"
+                  >
+                    user2
+                  </div>
+                </li>
+                <li
+                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                >
+                  <label
+                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
+                  >
+                    <span
+                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
+                      style={{}}
+                    >
+                      <input
+                        aria-label="Select user user3"
+                        checked={false}
+                        className="ant-checkbox-input"
+                        disabled={false}
+                        onBlur={[Function]}
+                        onChange={[Function]}
+                        onFocus={[Function]}
+                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
+                        onKeyUp={[Function]}
+                        type="checkbox"
+                      />
+                      <span
+                        className="ant-checkbox-inner"
+                      />
+                    </span>
+                  </label>
+                  <div
+                    className="sc-PtnOH"
+                  >
+                    user3
+                  </div>
+                </li>
+                <li
+                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                >
+                  <label
+                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
+                  >
+                    <span
+                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
+                      style={{}}
+                    >
+                      <input
+                        aria-label="Select user user4"
+                        checked={false}
+                        className="ant-checkbox-input"
+                        disabled={false}
+                        onBlur={[Function]}
+                        onChange={[Function]}
+                        onFocus={[Function]}
+                        onKeyDown={[Function]}
+                        onKeyPress={[Function]}
+                        onKeyUp={[Function]}
+                        type="checkbox"
+                      />
+                      <span
+                        className="ant-checkbox-inner"
+                      />
+                    </span>
+                  </label>
+                  <div
+                    className="sc-PtnOH"
+                  >
+                    user4
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button
+    className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP eGTsMV sc-eHzXwO"
+    data-testid="remove-editor"
+    disabled={true}
+    onClick={[Function]}
+    status="danger"
+    type="button"
+  >
+    <span>
+      Remove Selected User from Team
+    </span>
+  </button>
+</div>
+`;

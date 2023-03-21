@@ -2,7 +2,7 @@ import React from 'react'
 import { lorem, name } from 'faker'
 
 import { ChatMessageList } from 'ui'
-import { createData, randomPick } from '../_helpers'
+import { createData, randomPick } from '../../app/utilities/_helpers'
 
 const createMessages = n =>
   createData(n, i => ({

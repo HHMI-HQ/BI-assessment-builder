@@ -4,7 +4,7 @@ import { datatype, lorem, name } from 'faker'
 import { cloneDeep, without } from 'lodash'
 
 import { TaskManager } from 'ui'
-import { createData, randomBool } from '../_helpers'
+import { createData, randomBool } from '../../app/utilities/_helpers'
 
 const Wrapper = styled.div`
   display: flex;

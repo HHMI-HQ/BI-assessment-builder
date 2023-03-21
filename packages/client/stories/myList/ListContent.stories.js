@@ -7,8 +7,8 @@ import {
   getRandomCourse,
   getRandomObjectivesForCourse,
   getRandomStatus,
-} from '../_utilities'
-import { createData } from '../_helpers'
+} from '../../app/utilities/question/_utils'
+import { createData } from '../../app/utilities/_helpers'
 
 const courseData = () => {
   const courses = []

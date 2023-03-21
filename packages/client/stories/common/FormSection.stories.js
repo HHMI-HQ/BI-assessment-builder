@@ -2,7 +2,7 @@ import React from 'react'
 import { lorem } from 'faker'
 
 import { FormSection } from 'ui'
-import { Filler } from '../_helpers'
+import { Filler } from '../../app/utilities/_helpers'
 
 export const Base = () => (
   <FormSection label={lorem.words(2)}>

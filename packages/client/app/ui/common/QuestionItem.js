@@ -140,6 +140,7 @@ const QuestionItem = props => {
     <Wrapper className={className} id={id}>
       <FirstRow>
         <WaxContainer
+          data-testid="wax-container"
           to={{
             pathname: href,
             state,
@@ -155,12 +156,12 @@ const QuestionItem = props => {
         </WaxContainer>
         {status ? (
           <StatusContainer>
-            <Status status={status} />
+            <Status data-testid="question-status" status={status} />
           </StatusContainer>
         ) : null}
       </FirstRow>
 
-      <SecondRow>
+      <SecondRow data-testid="courses">
         {courses.sort(sortFunction).map(c => {
           return !c.course ? (
             <span key={uuid()}>Unknown course</span>
@@ -188,7 +189,9 @@ const QuestionItem = props => {
                 <th>
                   <MetadataLabel>{item.label}</MetadataLabel>
                 </th>
-                <MetadataValue>{item.value || '-'}</MetadataValue>
+                <MetadataValue data-testid={`${item.label}-value`}>
+                  {item.value || '-'}
+                </MetadataValue>
               </tr>
             ))}
         </tbody>

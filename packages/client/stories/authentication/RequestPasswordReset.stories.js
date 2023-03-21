@@ -4,7 +4,7 @@ import React from 'react'
 import { internet } from 'faker'
 
 import { RequestPasswordReset } from 'ui'
-import { Background } from '../_helpers'
+import { Background } from '../../app/utilities/_helpers'
 
 const dummyArgs = {
   onSubmit: () => {},

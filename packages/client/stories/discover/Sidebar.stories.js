@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Sidebar, Form } from 'ui'
 import { lorem } from 'faker'
-import metadata from '../question/_helpers/metadataValues'
-import { metadataTransformer } from '../question/_helpers/metadataTransformations'
+import metadata from '../../app/utilities/question/metadataValues'
+import { metadataTransformer } from '../../app/utilities/question/metadataTransformations'
 
 const Wrapper = styled.section``
 

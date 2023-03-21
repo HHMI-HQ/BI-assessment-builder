@@ -78,6 +78,7 @@ const Resources = props => {
       >
         <Select
           // allowClear
+          data-testid="biointeractiveResources-select"
           disabled={readOnly}
           mode="multiple"
           onChange={setSelectedResources}

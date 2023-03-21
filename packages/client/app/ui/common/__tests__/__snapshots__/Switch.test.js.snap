@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Switch matches snapshot 1`] = `
+<span
+  className="sc-dkrFOg"
+>
+  <button
+    aria-checked={true}
+    className="ant-switch css-dev-only-do-not-override-ixblex ant-switch-checked"
+    data-testid="metadata-toggle"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    role="switch"
+    type="button"
+  >
+    <div
+      className="ant-switch-handle"
+    />
+    <span
+      className="ant-switch-inner"
+    >
+      <span
+        className="ant-switch-inner-checked"
+      >
+        Show
+      </span>
+      <span
+        className="ant-switch-inner-unchecked"
+      >
+        Hide
+      </span>
+    </span>
+  </button>
+</span>
+`;

@@ -5,14 +5,14 @@ import { range } from 'lodash'
 import { lorem } from 'faker'
 import { uuid } from '@coko/client'
 import { Discover } from 'ui'
-import metadata from '../question/_helpers/metadataValues'
-import { metadataTransformer } from '../question/_helpers/metadataTransformations'
+import metadata from '../../app/utilities/question/metadataValues'
+import { metadataTransformer } from '../../app/utilities/question/metadataTransformations'
 
 import {
   generateMetadata,
   getRandomCourse,
   getRandomObjectivesForCourse,
-} from '../_utilities'
+} from '../../app/utilities/question/_utils'
 
 const sortOptions = [
   {

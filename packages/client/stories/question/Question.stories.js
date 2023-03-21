@@ -7,17 +7,17 @@ import { th } from '@coko/client'
 
 import { Question, Checkbox } from 'ui'
 
-import metadata from './_helpers/metadataValues'
-import resources from './_helpers/resourcesData'
+import metadata from '../../app/utilities/question/metadataValues'
+import resources from '../../app/utilities/question/resourcesData'
 import {
   metadataTransformer,
   metadataApiToUi,
-} from './_helpers/metadataTransformations'
+} from '../../app/utilities/question/metadataTransformations'
 import {
   initialContent,
   editorInitialContent,
   initialMetadataValues,
-} from './_helpers/initialValues'
+} from '../../app/utilities/question/initialValues'
 
 const Wrapper = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};

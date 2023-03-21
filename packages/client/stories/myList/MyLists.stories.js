@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { uniqueId } from 'lodash'
 import { lorem, date } from 'faker'
 import MyLists from '../../app/ui/myList/MyLists'
-import { createData } from '../_helpers'
+import { createData } from '../../app/utilities/_helpers'
 import { Empty } from '../../app/ui/common'
 
 const TOTAL = 20

@@ -107,6 +107,7 @@ const TeamManagerBlock = props => {
           <Select
             // https://github.com/ant-design/ant-design/issues/19970#issuecomment-763139893
             async
+            data-testid={`select-${displayName.toLowerCase()}`}
             defaultOpen={false}
             labelInValue
             loading={searchLoading}
@@ -130,6 +131,7 @@ const TeamManagerBlock = props => {
 
       <StyledList
         aria-labelledby={`team-${displayName}`}
+        data-testid={`${displayName.toLowerCase()}-list`}
         dataSource={members}
         itemSelection={{
           onChange: handleRowSelectionChange,
@@ -141,6 +143,7 @@ const TeamManagerBlock = props => {
 
       {!!members?.length && (
         <RemoveButton
+          data-testid={`remove-${displayName.toLowerCase()}`}
           disabled={selectTeamMember.length === 0}
           onClick={handleRemove}
           status="danger"

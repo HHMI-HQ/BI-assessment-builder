@@ -208,6 +208,7 @@ const ProfileInfo = props => {
                 ]}
               >
                 <Select
+                  data-testid="select-country"
                   filterOption={(inputValue, option) => {
                     return (
                       option.label
@@ -239,6 +240,7 @@ const ProfileInfo = props => {
                   ]}
                 >
                   <Select
+                    data-testid="state-select"
                     filterOption={(inputValue, option) => {
                       return (
                         option.label
@@ -343,6 +345,7 @@ const ProfileInfo = props => {
                 ]}
               >
                 <Select
+                  data-testid="institutional-setting-select"
                   options={institutionalSetting}
                   placeholder="Select your type of institution"
                 />
@@ -363,6 +366,7 @@ const ProfileInfo = props => {
                 ]}
               >
                 <Select
+                  data-testid="teaching-experience-select"
                   options={[
                     { label: '< 5', value: 'lessThan5' },
                     { label: '> 5', value: 'moreThan5' },
@@ -381,6 +385,7 @@ const ProfileInfo = props => {
                 name="typeOfInstitution"
               >
                 <Select
+                  data-testid="primary-institution-select"
                   options={institutionLevels}
                   placeholder="What level do you primarily teach?"
                 />
@@ -452,6 +457,7 @@ const ProfileInfo = props => {
             <Col span={24}>
               <Form.Item label="What course(s) do you teach?" name="courses">
                 <Select
+                  data-testid="course-taught-select"
                   mode="multiple"
                   options={courses}
                   placeholder="Select courses"
@@ -525,6 +531,7 @@ const ProfileInfo = props => {
                       ]}
                     >
                       <Select
+                        data-testid="three-course-select"
                         mode="multiple"
                         options={topics}
                         placeholder="Select three topics"
