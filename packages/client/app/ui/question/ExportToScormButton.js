@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Button, Modal } from 'ui'
+import { Button, Modal } from '../common'
 
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer

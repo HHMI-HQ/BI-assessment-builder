@@ -8,7 +8,7 @@ import {
   questionContentExample3,
   getRandomCourse,
   getRandomObjectivesForCourse,
-} from '../_utilities'
+} from '../../app/utilities/question/_utils'
 
 const meta = generateMetadata()
 

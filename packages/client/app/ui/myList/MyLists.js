@@ -1,11 +1,16 @@
 import React, { createContext, useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { CaretDownFilled, CaretUpFilled } from '@ant-design/icons'
 import { Button, Input, Table, Modal, Checkbox, Empty } from '../common'
 
 const MyListWrapper = styled.div`
   .ant-table-cell {
     border: 0;
+  }
+
+  .ant-table-column-sorter {
+    display: none;
   }
 `
 
@@ -48,6 +53,72 @@ const ModalContext = createContext(null)
 
 const ModalFooter = Modal.footer
 const ModalHeader = Modal.header
+
+const columns = [
+  {
+    title: ({ sortColumns }) => {
+      const sortedColumn = sortColumns?.find(
+        ({ column }) => column.key === 'name',
+      )
+
+      let icon
+
+      if (sortedColumn) {
+        icon =
+          sortedColumn.order === 'ascend'
+            ? (icon = <CaretUpFilled aria-hidden="true" />)
+            : (icon = <CaretDownFilled aria-hidden="true" />)
+      } else {
+        icon = <CaretUpFilled aria-hidden="true" />
+      }
+
+      return (
+        <div>
+          Name
+          {icon}
+        </div>
+      )
+    },
+    dataIndex: 'name',
+    key: 'name',
+    width: '60%',
+    style: {
+      border: 0,
+    },
+    sorter: true,
+  },
+  {
+    title: ({ sortColumns }) => {
+      const sortedColumn = sortColumns?.find(
+        ({ column }) => column.key === 'createdAt',
+      )
+
+      let icon
+
+      if (sortedColumn) {
+        icon =
+          sortedColumn.order === 'ascend'
+            ? (icon = <CaretUpFilled aria-hidden="true" />)
+            : (icon = <CaretDownFilled aria-hidden="true" />)
+      } else {
+        icon = <CaretDownFilled aria-hidden="true" />
+      }
+
+      return (
+        <div>
+          Creation Date
+          {icon}
+        </div>
+      )
+    },
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+    style: {
+      border: 0,
+    },
+    sorter: true,
+  },
+]
 
 const MyLists = props => {
   const {
@@ -102,6 +173,7 @@ const MyLists = props => {
           </Button>
           <Button
             autoFocus
+            data-testid="confirm-delete-btn"
             key="delete"
             onClick={() => {
               handleDeleteRows()
@@ -160,26 +232,6 @@ const MyLists = props => {
     onSort(orderBy, order === 'ascend')
   }
 
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      width: '60%',
-      style: {
-        border: 0,
-      },
-      sorter: true,
-    },
-    {
-      title: 'Creation date',
-      dataIndex: 'createdAt',
-      style: {
-        border: 0,
-      },
-      sorter: true,
-    },
-  ]
-
   return (
     <ModalContext.Provider value={null}>
       <MyListWrapper>
@@ -192,7 +244,12 @@ const MyLists = props => {
               type="text"
               value={newListName}
             />
-            <Button onClick={handleCreateNewList} size="middle" type="primary">
+            <Button
+              data-testid="create-btn"
+              onClick={handleCreateNewList}
+              size="middle"
+              type="primary"
+            >
               Create
             </Button>
           </HeaderActions>
@@ -229,6 +286,11 @@ const MyLists = props => {
                 Select all
               </StyledCheckBox>
             ),
+            renderCell: (_, record, __, originNode) => {
+              return React.cloneElement(originNode, {
+                'aria-label': `Select list ${record.name}`,
+              })
+            },
           }}
           searchPlaceholder="Search for list"
           showSearch
@@ -242,6 +304,7 @@ const MyLists = props => {
             Export
           </Button>
           <Button
+            data-testid="delete-btn"
             disabled={selectedRows.length === 0}
             onClick={showConfirmModal}
             status="danger"

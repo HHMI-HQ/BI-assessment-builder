@@ -73,6 +73,7 @@ const TopicAndSubtopic = props => {
       >
         <Select
           // allowClear
+          data-testid="topic-select"
           disabled={readOnly}
           onChange={handleTopicChange}
           optionFilterProp="label"
@@ -96,6 +97,7 @@ const TopicAndSubtopic = props => {
           >
             <Select
               // allowClear
+              data-testid="subtopic-select"
               disabled={readOnly || (!filterMode && !getFieldValue(topicField))}
               optionFilterProp="label"
               options={filterSubtopicOptions()}

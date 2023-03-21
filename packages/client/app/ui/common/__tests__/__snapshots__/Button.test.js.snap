@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button matches snapshot 1`] = `
+<button
+  className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-default sc-dkrFOg bpyQTm"
+  data-testid="button"
+  disabled={false}
+  onClick={[Function]}
+  status={null}
+  type="button"
+/>
+`;

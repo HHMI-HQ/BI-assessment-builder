@@ -7,7 +7,7 @@ import { range } from 'lodash'
 
 import { List, Button } from 'ui'
 // import { Avatar } from 'antd'
-import { createData } from '../_helpers'
+import { createData } from '../../app/utilities/_helpers'
 
 const Item = styled.div`
   background: ${props => props.theme.colorBackgroundHue};

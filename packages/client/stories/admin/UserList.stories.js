@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { datatype, internet, name } from 'faker'
 import { UserList, Modal } from 'ui'
 import styled from 'styled-components'
-import { createData, randomArray } from '../_helpers'
+import { createData, randomArray } from '../../app/utilities/_helpers'
 
 const { confirm } = Modal
 

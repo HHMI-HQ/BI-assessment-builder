@@ -4,7 +4,7 @@ import React from 'react'
 import { lorem } from 'faker'
 
 import { AuthenticationForm } from 'ui'
-import { Filler } from '../_helpers'
+import { Filler } from '../../app/utilities/_helpers'
 
 const Template = args => {
   return (

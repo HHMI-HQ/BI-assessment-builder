@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Switch } from 'ui'
+import { Switch } from '../common'
 
 const StyledSwitch = styled(Switch)`
   display: flex;

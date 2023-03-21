@@ -1,8 +1,5 @@
 // import metadata from "./metadataValues"
-import {
-  flatAPCoursesMetadata,
-  flatIBCourseMetadata,
-} from '../../../app/utilities'
+import { flatAPCoursesMetadata, flatIBCourseMetadata } from '../index'
 
 const metadataTransformer = metadata => {
   const frameworks = metadata.frameworks

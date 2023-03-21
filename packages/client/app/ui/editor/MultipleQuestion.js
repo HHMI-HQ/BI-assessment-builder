@@ -116,6 +116,7 @@ const MultipleQuestion = props => {
         <IconsWrapper>
           {showAddIcon && !readOnly && (
             <Button
+              data-testid="add-option"
               icon={
                 <PlusSquareOutlined onClick={addOption} title="Add Option" />
               }
@@ -123,6 +124,7 @@ const MultipleQuestion = props => {
           )}
           {showRemoveIcon && !readOnly && (
             <Button
+              data-testid="remove-option"
               icon={
                 <DeleteOutlined onClick={removeOption} title="Delete Option" />
               }

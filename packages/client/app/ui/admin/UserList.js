@@ -177,6 +177,7 @@ const UserList = props => {
   const renderActivationButton = deactivatedUsers =>
     deactivatedUsers ? (
       <Button
+        data-testid="activate-btn"
         disabled={selectedRows.length === 0}
         onClick={() => bulkAction(ACTIVATE_ACTION)}
         type="primary"
@@ -185,6 +186,7 @@ const UserList = props => {
       </Button>
     ) : (
       <Button
+        data-testid="deactivate-btn"
         disabled={selectedRows.length === 0}
         onClick={() => bulkAction(DEACTIVATE_ACTION)}
         type="primary"
@@ -453,6 +455,7 @@ const UserList = props => {
           <FooterActionsWrapper>
             <Checkbox
               checked={showDeactivated}
+              data-testid="show-inactive-users"
               onChange={onClickShowDeactivated}
             >
               Show inactive users
@@ -461,6 +464,7 @@ const UserList = props => {
               {renderActivationButton(showDeactivated)}
 
               <Button
+                data-testid="delete-btn"
                 disabled={selectedRows.length === 0}
                 onClick={() => bulkAction(DELETE_ACTION)}
                 status="error"

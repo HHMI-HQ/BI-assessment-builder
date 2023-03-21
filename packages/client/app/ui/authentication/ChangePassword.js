@@ -52,7 +52,7 @@ const ChangePassword = props => {
                   },
                 ]}
               >
-                <Input type="password" />
+                <Input data-testid="currentPassword" type="password" />
               </Form.Item>
             </Col>
           </Row>
@@ -85,7 +85,7 @@ const ChangePassword = props => {
                   }),
                 ]}
               >
-                <Input type="password" />
+                <Input data-testid="newPassword" type="password" />
               </Form.Item>
             </Col>
             <Col sm={12} xs={24}>
@@ -113,7 +113,7 @@ const ChangePassword = props => {
                   }),
                 ]}
               >
-                <Input type="password" />
+                <Input data-testid="newPasswordConfirmation" type="password" />
               </Form.Item>
             </Col>
           </Row>

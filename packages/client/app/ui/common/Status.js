@@ -33,10 +33,10 @@ const Wrapper = styled.span`
 `
 
 const Status = props => {
-  const { className, status } = props
+  const { className, status, ...rest } = props
 
   return (
-    <Wrapper className={className} variant={status}>
+    <Wrapper className={className} variant={status} {...rest}>
       {status}
     </Wrapper>
   )

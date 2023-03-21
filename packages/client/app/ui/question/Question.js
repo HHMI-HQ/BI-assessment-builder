@@ -419,10 +419,18 @@ const PanelWrapper = ({ editor, metadata, showMetadata }) => {
 
   return (
     <StyledCollapse accordion defaultActiveKey="editor">
-      <Collapse.Panel header="Editor" key="editor">
+      <Collapse.Panel
+        data-testid="editor-collapse"
+        header="Editor"
+        key="editor"
+      >
         {editor}
       </Collapse.Panel>
-      <Collapse.Panel header="Metadata" key="metadata">
+      <Collapse.Panel
+        data-testid="metadata-collapse"
+        header="Metadata"
+        key="metadata"
+      >
         {metadata}
       </Collapse.Panel>
     </StyledCollapse>
@@ -952,6 +960,7 @@ const Question = props => {
       <StyledCheckbox
         aria-label="I accept the terms and conditions"
         checked={agreedTc}
+        data-testid="accept-tnc"
         onChange={handleAgreeTcChange}
       >
         Accept{' '}
@@ -965,6 +974,7 @@ const Question = props => {
       </StyledCheckbox>
 
       <SubmitButton
+        data-testid="submit-question-btn"
         disabled={
           // !formRef.current.isFieldsTouched(true) ||
           submitting ||
@@ -1100,7 +1110,11 @@ const Question = props => {
           {
             key: 'publish',
             label: (
-              <StyledButton onClick={handlePublish} type="primary">
+              <StyledButton
+                data-testid="publish-question-btn"
+                onClick={handlePublish}
+                type="primary"
+              >
                 Publish
               </StyledButton>
             ),
@@ -1188,7 +1202,11 @@ const Question = props => {
           </>
         )}
         {isInProduction && (
-          <StyledButton onClick={handlePublish} type="primary">
+          <StyledButton
+            data-testid="publish-question-btn"
+            onClick={handlePublish}
+            type="primary"
+          >
             Publish
           </StyledButton>
         )}

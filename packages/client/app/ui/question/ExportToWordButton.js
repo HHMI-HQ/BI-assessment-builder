@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import { Button, Checkbox, Modal } from 'ui'
+import { Button, Checkbox, Modal } from '../common'
 
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer

@@ -6,11 +6,11 @@ import styled from 'styled-components'
 import { grid } from '@coko/client'
 
 import {
+  APCourseMetadata,
   Select,
   Form,
   Button,
   TopicAndSubtopic,
-  APCourseMetadata,
   IBCourseMetadata,
   VisuallyHiddenElement,
   // VisionAndChangeMetadata,
@@ -256,6 +256,7 @@ const Metadata = React.forwardRef((props, ref) => {
         >
           <Select
             // allowClear
+            data-testid="questionType-select"
             disabled={readOnly}
             options={metadata.questionTypes}
           />
@@ -291,6 +292,7 @@ const Metadata = React.forwardRef((props, ref) => {
                   )}
                   {topicsIndexes.length > 1 && (
                     <Button
+                      data-testid="remove-second-topic"
                       disabled={readOnly}
                       onClick={() => {
                         handleSupplementaryRemove(remove, topicsKey)
@@ -325,6 +327,7 @@ const Metadata = React.forwardRef((props, ref) => {
                     >
                       <Select
                         allowClear
+                        data-testid="course-select"
                         disabled={readOnly}
                         onChange={value =>
                           resetCourseFields(value, index, coursesKey, remove)
@@ -389,7 +392,12 @@ const Metadata = React.forwardRef((props, ref) => {
         </Form.List>
 
         <Form.Item label="Keywords" name="keywords">
-          <Select disabled={readOnly} mode="tags" open={false} />
+          <Select
+            data-testid="keywords-select"
+            disabled={readOnly}
+            mode="tags"
+            open={false}
+          />
         </Form.Item>
         <Form.Item
           dependencies={[
@@ -423,7 +431,11 @@ const Metadata = React.forwardRef((props, ref) => {
             },
           ]}
         >
-          <Select disabled={readOnly} options={metadata.blooms.cognitive} />
+          <Select
+            data-testid="cognitive-select"
+            disabled={readOnly}
+            options={metadata.blooms.cognitive}
+          />
         </Form.Item>
 
         <Form.Item
@@ -435,7 +447,11 @@ const Metadata = React.forwardRef((props, ref) => {
             },
           ]}
         >
-          <Select disabled={readOnly} options={metadata.blooms.affective} />
+          <Select
+            data-testid="affective-select"
+            disabled={readOnly}
+            options={metadata.blooms.affective}
+          />
         </Form.Item>
 
         <Form.Item
@@ -447,7 +463,11 @@ const Metadata = React.forwardRef((props, ref) => {
             },
           ]}
         >
-          <Select disabled={readOnly} options={metadata.blooms.psychomotor} />
+          <Select
+            data-testid="psychomotor-select"
+            disabled={readOnly}
+            options={metadata.blooms.psychomotor}
+          />
         </Form.Item>
 
         {/* <Form.Item label="Reading level" name="readingLevel">

@@ -2,7 +2,7 @@ import React from 'react'
 import { lorem, name } from 'faker'
 
 import { ChatThread } from 'ui'
-import { createData, noop, randomPick } from '../_helpers'
+import { createData, noop, randomPick } from '../../app/utilities/_helpers'
 
 const createMessages = n =>
   createData(n, i => ({

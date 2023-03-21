@@ -3,7 +3,7 @@ import styled from 'styled-components'
 // import { lorem } from 'faker'
 
 import { Spin, Switch as UISwitch, Text } from 'ui'
-import { Filler } from '../_helpers'
+import { Filler } from '../../app/utilities/_helpers'
 
 const Top = styled.div`
   margin-bottom: 16px;

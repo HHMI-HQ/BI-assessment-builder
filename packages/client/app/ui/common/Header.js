@@ -473,6 +473,7 @@ const Header = props => {
           aria-controls="main-nav"
           aria-expanded={showMenu}
           aria-label="Menu"
+          data-testid="nav-toggle"
           onClick={() => setShowMenu(!showMenu)}
         />
         <NavLinks id="main-nav">
@@ -529,6 +530,7 @@ const Header = props => {
                       aria-controls="user-menu"
                       aria-expanded={openUserMenu}
                       aria-haspopup="true"
+                      data-testid="usermenu-btn"
                       icon={
                         openUserMenu ? (
                           <UpOutlined aria-hidden="true" />

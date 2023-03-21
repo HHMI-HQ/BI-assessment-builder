@@ -5,7 +5,7 @@ import { name } from 'faker'
 import { uniqBy } from 'lodash'
 import { uuid } from '@coko/client'
 import styled from 'styled-components'
-import { createData } from '../_helpers'
+import { createData } from '../../app/utilities/_helpers'
 
 const makeUser = n =>
   createData(n, i => ({

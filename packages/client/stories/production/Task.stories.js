@@ -2,7 +2,7 @@ import React from 'react'
 import { lorem, name } from 'faker'
 
 import { Task } from 'ui'
-import { noop } from '../_helpers'
+import { noop } from '../../app/utilities/_helpers'
 
 const created = new Date('03.01.2021')
 const due = new Date('04.01.2021')

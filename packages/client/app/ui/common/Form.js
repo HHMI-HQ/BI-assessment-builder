@@ -86,7 +86,11 @@ const Form = props => {
   }
 
   const FeedbackElement = showRibbon && (
-    <FeedbackComponent role="alert" status={submissionStatus}>
+    <FeedbackComponent
+      data-testid="feedback-element"
+      role="alert"
+      status={submissionStatus}
+    >
       {ribbonMessage}
     </FeedbackComponent>
   )
@@ -162,6 +166,7 @@ const Form = props => {
       {ribbonPosition === 'top' && FeedbackElement}
 
       <AntForm
+        data-testid="form-content"
         form={form}
         onFinishFailed={handleFinishFailed}
         onValuesChange={handleValuesChange}
