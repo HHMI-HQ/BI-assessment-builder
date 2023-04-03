@@ -1,8 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState, memo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import without from 'lodash/without'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import { List as AntList } from 'antd'
 
@@ -11,8 +11,8 @@ import { grid, th } from '@coko/client'
 import UICheckBox from './Checkbox'
 import Search from './Search'
 import UISelect from './Select'
-import Spin from './Spin'
 import Pagination from './Pagination'
+import VisuallyHiddenElement from './VisuallyHiddenElement'
 
 // #region styled
 const Wrapper = styled.div`
@@ -21,17 +21,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+`
 
-  > .ant-spin-nested-loading {
-    flex-grow: 1;
-    overflow: hidden;
-
-    > .ant-spin-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-  }
+const DroppableWrapper = styled.div`
+  flex-grow: 1;
+  overflow: auto;
 `
 
 const SearchWrapper = styled.div`
@@ -66,11 +60,15 @@ const ListItemWrapper = styled.li`
   align-items: center;
   display: flex;
   justify-content: stretch;
-`
 
-const SelectableWrapper = styled(ListItemWrapper)`
-  > :last-child {
-    flex-grow: 1;
+  &:focus {
+    outline: 2px solid ${th('colorPrimary')};
+    outline-offset: -2px;
+  }
+
+  &&&& {
+    background-color: ${({ isDragging }) =>
+      isDragging ? th('colorSelection') : 'transparent'};
   }
 `
 
@@ -118,23 +116,20 @@ const SelectableItem = memo(props => {
     }
   }
 
-  return (
-    <SelectableWrapper key={id}>
-      {checkboxLabel !== '' ? (
-        <>
-          <CheckBox
-            aria-label={checkboxLabel}
-            checked={selected}
-            onChange={handleChange}
-          />
-          {renderItem({ id, ...rest }, index)}
-        </>
-      ) : (
-        <CheckBox checked={selected} onChange={handleChange}>
-          {renderItem({ id, ...rest }, index)}
-        </CheckBox>
-      )}
-    </SelectableWrapper>
+  return checkboxLabel !== '' ? (
+    <>
+      <CheckBox
+        aria-label={checkboxLabel}
+        checked={selected}
+        onChange={handleChange}
+      />
+      {renderItem({ id, ...rest }, index)}
+    </>
+  ) : (
+    <CheckBox checked={selected} onChange={handleChange}>
+      <VisuallyHiddenElement>Select item: </VisuallyHiddenElement>
+      {renderItem({ id, ...rest }, index)}
+    </CheckBox>
   )
 }, compareItem)
 
@@ -198,7 +193,8 @@ const List = props => {
     showTotalCount,
     sortOptions,
     totalCount,
-
+    draggable,
+    onDragEnd,
     ...rest
   } = props
 
@@ -227,18 +223,59 @@ const List = props => {
   })
 
   const listItemToRender = itemSelection
-    ? (itemProps, i) => (
-        <SelectableItem
-          index={i}
-          onDeselect={handleDeselect}
-          onSelect={handleSelect}
-          renderItem={renderItem}
-          selected={selectedItems.includes(itemProps.id)}
-          {...itemProps}
-        />
-      )
+    ? (itemProps, i) => {
+        return draggable ? (
+          <Draggable draggableId={`draggable-${i}`} index={i}>
+            {(provided, snapshot) => (
+              <ListItemWrapper
+                key={itemProps?.id}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                isDragging={snapshot.isDragging}
+                ref={provided.innerRef}
+              >
+                <SelectableItem
+                  index={i}
+                  onDeselect={handleDeselect}
+                  onSelect={handleSelect}
+                  renderItem={renderItem}
+                  selected={selectedItems.includes(itemProps?.id)}
+                  {...itemProps}
+                />
+              </ListItemWrapper>
+            )}
+          </Draggable>
+        ) : (
+          <ListItemWrapper key={itemProps?.id}>
+            <SelectableItem
+              index={i}
+              onDeselect={handleDeselect}
+              onSelect={handleSelect}
+              renderItem={renderItem}
+              selected={selectedItems.includes(itemProps?.id)}
+              {...itemProps}
+            />
+          </ListItemWrapper>
+        )
+      }
     : (itemProps, i) => {
-        return <ListItemWrapper>{renderItem(itemProps, i)}</ListItemWrapper>
+        return draggable ? (
+          <ListItemWrapper>
+            <Draggable draggableId={`draggable-${i}`} index={i}>
+              {provided => (
+                <div
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  ref={provided.innerRef}
+                >
+                  {renderItem(itemProps, i)}
+                </div>
+              )}
+            </Draggable>
+          </ListItemWrapper>
+        ) : (
+          <ListItemWrapper>{renderItem(itemProps, i)}</ListItemWrapper>
+        )
       }
 
   const paginationObj = {
@@ -258,12 +295,6 @@ const List = props => {
     setPaginationSize(paginationObj.pageSize)
   }, [pagination])
 
-  const passedPagination = {
-    ...paginationObj,
-    current: paginationCurrent,
-    pageSize: paginationSize,
-  }
-
   const triggerPaginationEvent = eventName => (page, pageSize) => {
     setPaginationCurrent(page)
     setPaginationSize(pageSize)
@@ -276,6 +307,13 @@ const List = props => {
   const onPaginationChange = triggerPaginationEvent('onChange')
 
   const onPaginationShowSizeChange = triggerPaginationEvent('onShowSizeChange')
+
+  const passedPagination = {
+    ...paginationObj,
+    current: paginationCurrent,
+    pageSize: paginationSize,
+    onShowSizeChange: onPaginationShowSizeChange,
+  }
 
   let splitDataSource = [...dataSource]
 
@@ -320,6 +358,36 @@ const List = props => {
     value,
   }))
 
+  const ListToRender = draggable ? (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <DroppableWrapper>
+        <Droppable droppableId="dropable-list">
+          {provided => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              <AntList
+                dataSource={splitDataSource}
+                loading={loading}
+                locale={locale}
+                renderItem={listItemToRender}
+                {...rest}
+                pagination={false}
+              />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DroppableWrapper>
+    </DragDropContext>
+  ) : (
+    <StyledList
+      dataSource={splitDataSource}
+      loading={loading}
+      locale={locale}
+      renderItem={listItemToRender}
+      {...rest}
+    />
+  )
+
   return (
     <Wrapper className={className}>
       {showSearch && (
@@ -361,31 +429,20 @@ const List = props => {
         </InternalHeader>
       )}
 
-      <Spin spinning={loading}>
-        {/* <ConfigProvider renderEmpty={EmptyList}> */}
+      {ListToRender}
 
-        <StyledList
-          dataSource={splitDataSource}
-          locale={locale}
-          renderItem={listItemToRender}
-          {...rest}
-        />
+      {(footerContent || showPagination) && (
+        <FooterWrapper>
+          {footerContent || <div />}
 
-        {(footerContent || showPagination) && (
-          <FooterWrapper>
-            {footerContent || <div />}
-
-            {showPagination && (
-              <Pagination
-                onChange={onPaginationChange}
-                onShowSizeChange={onPaginationShowSizeChange}
-                pagination={passedPagination}
-              />
-            )}
-          </FooterWrapper>
-        )}
-        {/* </ConfigProvider> */}
-      </Spin>
+          {showPagination && (
+            <Pagination
+              onChange={onPaginationChange}
+              pagination={passedPagination}
+            />
+          )}
+        </FooterWrapper>
+      )}
     </Wrapper>
   )
 }
@@ -412,6 +469,8 @@ List.propTypes = {
     }),
   ),
   totalCount: PropTypes.number,
+  onDragEnd: PropTypes.func,
+  draggable: PropTypes.bool,
 }
 
 List.defaultProps = {
@@ -428,6 +487,8 @@ List.defaultProps = {
   showTotalCount: false,
   sortOptions: [],
   totalCount: null,
+  onDragEnd: () => {},
+  draggable: false,
 }
 
 List.Item = AntList.Item

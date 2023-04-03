@@ -3,7 +3,7 @@
 import React, { useContext } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { WaxContext, ComponentPlugin } from 'wax-prosemirror-core'
-import { grid, th } from '@coko/client'
+import { grid } from '@coko/client'
 import theme from '../../../theme'
 import EditorElements from './DashboardEditorElements'
 import commonStyles from './commonWaxStyles'
@@ -30,7 +30,7 @@ const Main = styled.div`
 `
 
 const EditorArea = styled.div`
-  background: white;
+  background: inherit;
   display: flex;
   flex-grow: 1;
   height: 100%;
@@ -48,7 +48,7 @@ const WaxSurfaceScroll = styled.div`
   ${EditorElements}
 
   &:hover {
-    background-color: ${th('colorBackgroundHue')};
+    background-color: inherit;
   }
 `
 
@@ -62,7 +62,7 @@ const EditorContainer = styled.div`
   }
 
   .ProseMirror {
-    /* background: palegreen; */
+    background-color: inherit;
     /* box-shadow: 0 0 8px #ecedf1; */
     margin-right: 0;
     min-height: 100%;

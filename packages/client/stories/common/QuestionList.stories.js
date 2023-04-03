@@ -97,7 +97,27 @@ export const Base = args => {
     </Button>
   )
 
-  const { showRowCheckboxes } = args
+  const handleDragEnd = result => {
+    const { destination, source /* draggableId */ } = result
+
+    // check if no destination, or if no rearrangement happened
+    if (!destination) return
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return
+
+    // reorder the elements (depends on how we want to persist data, this is just a demo)
+    const newDataSource = [...data]
+    const draggedElement = newDataSource.splice(source.index, 1)
+    newDataSource.splice(destination.index, 0, ...draggedElement)
+
+    setData(newDataSource)
+  }
+
+  const { showRowCheckboxes, draggable } = args
 
   return (
     <Wrapper>
@@ -105,6 +125,7 @@ export const Base = args => {
         {...args}
         bulkAction={showRowCheckboxes ? BulkAction : undefined}
         currentPage={currentPage}
+        onDragEnd={draggable ? handleDragEnd : null}
         onPageChange={handlePageChange}
         questions={data}
         sortOptions={sortOptions}
