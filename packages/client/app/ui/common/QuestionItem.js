@@ -12,16 +12,12 @@ import Link from './HhmiLink'
 import Status from './Status'
 
 const Wrapper = styled.article`
+  background-color: inherit;
+  line-height: ${th('lineHeight')};
   padding: ${grid(4)} ${grid(3)};
   position: relative;
+  text-align: left;
   width: 100%;
-
-  &:hover,
-  &:focus-within {
-    .ProseMirror {
-      background-color: ${th('colorBackgroundHue')};
-    }
-  }
 `
 
 const FirstRow = styled.div`
@@ -86,6 +82,7 @@ const SecondRow = styled.div`
 
 const BottomRow = styled.table`
   border: none;
+  /* text-align: left; */
   width: 100%;
 
   th,

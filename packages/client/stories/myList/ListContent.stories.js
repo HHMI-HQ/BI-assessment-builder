@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { lorem } from 'faker'
+import styled from 'styled-components'
 import { uuid } from '@coko/client'
-import ListContent from '../../app/ui/myList/ListContent'
+import { ListContent } from 'ui'
 import {
   generateMetadata,
   getRandomCourse,
@@ -40,7 +41,7 @@ const makeData = n =>
           content: [
             {
               type: 'text',
-              text: lorem.sentences(8),
+              text: lorem.sentences(5),
             },
           ],
         },
@@ -51,32 +52,72 @@ const makeData = n =>
     status: getRandomStatus(),
   }))
 
-export const Base = args => {
-  const [data, setData] = useState(makeData(5))
-  const [currentPage, setCurrentPage] = useState(1)
+const Wrapper = styled.div`
+  height: 900px;
+`
 
-  const handlePageChange = p => {
-    setData(makeData(5))
-    setCurrentPage(p)
+export const Base = args => {
+  const { questionsPerPage, totalCount } = args
+  const [data, setData] = useState(makeData(questionsPerPage))
+  const [loading, setLoading] = useState(false)
+
+  const handleSearch = params => {
+    // eslint-disable-next-line no-console
+    console.log(params)
+    setLoading(true)
+    setTimeout(() => {
+      setData(
+        makeData(
+          Math.min(
+            params.pageSize,
+            totalCount,
+            totalCount - params.pageSize * (params.page - 1),
+          ),
+        ),
+      )
+      setLoading(false)
+    }, 500)
+  }
+
+  const handleDragEnd = result => {
+    const { destination, source /* draggableId */ } = result
+
+    // check if no destination, or if no rearrangement happened
+    if (!destination) return
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return
+
+    // reorder the elements (depends on how we want to persist data, this is just a demo)
+    const newDataSource = [...data]
+    const draggedElement = newDataSource.splice(source.index, 1)
+    newDataSource.splice(destination.index, 0, ...draggedElement)
+
+    setData(newDataSource)
   }
 
   return (
-    <ListContent
-      {...args}
-      currentPage={currentPage}
-      onPageChange={handlePageChange}
-      questions={data}
-      showRowCheckboxes={false}
-      showSearch={false}
-      title="list 1"
-    />
+    <Wrapper>
+      <ListContent
+        {...args}
+        loading={loading}
+        onDragEnd={handleDragEnd}
+        onSearch={handleSearch}
+        questions={data}
+        showSearch={false}
+        title="list name"
+      />
+    </Wrapper>
   )
 }
 
 Base.args = {
-  totalCount: 15,
+  totalCount: 21,
   showRowCheckboxes: true,
-  questionsPerPage: 5,
+  questionsPerPage: 10,
 }
 
 export default {

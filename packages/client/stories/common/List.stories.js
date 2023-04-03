@@ -25,6 +25,7 @@ const makeData = n =>
   range(n).map(i => ({
     id: String(i + 1),
     value: lorem.sentence(),
+    index: i,
   }))
 
 const data = makeData(33)
@@ -108,7 +109,7 @@ export const TotalCount = () => {
         pageSize: 10,
         showSizeChanger: false,
       }}
-      renderItem={item => <Item>{item.value}</Item>}
+      renderItem={(item, i) => <Item>{item.value}</Item>}
       showTotalCount
       totalCount={N}
     />
@@ -329,6 +330,51 @@ export const HidePaginationButUseAction = () => {
       showPagination={false}
       showTotalCount
       totalCount={N}
+    />
+  )
+}
+
+export const DraggableItems = () => {
+  const [dataSource, setDataSource] = useState(makeData(10))
+
+  // console.log(dataSource)
+
+  const handleDragEnd = result => {
+    const { destination, source /* draggableId */ } = result
+
+    // check if no destination, or if no rearrangement happened
+    if (!destination) return
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return
+
+    // reorder the elements (depends on how we want to persist data, this is just a demo)
+    const newDataSource = [...dataSource]
+    const draggedElement = newDataSource.splice(source.index, 1)
+    newDataSource.splice(destination.index, 0, ...draggedElement)
+
+    setDataSource(newDataSource)
+  }
+
+  return (
+    <List
+      dataSource={dataSource}
+      draggable
+      onDragEnd={handleDragEnd}
+      pagination={{
+        pageSize: 10,
+        showSizeChanger: false,
+      }}
+      renderItem={item => (
+        <Item>
+          {item.id} - {item.value}
+        </Item>
+      )}
+      showTotalCount
+      totalCount={dataSource.length}
     />
   )
 }

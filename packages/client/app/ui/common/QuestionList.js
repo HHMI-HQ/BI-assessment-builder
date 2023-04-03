@@ -38,7 +38,7 @@ const StyledList = styled(List)`
     > li {
       border-left: 5px solid transparent;
       transition: border-left-color 0.15s ease-in-out,
-        background-color 0.3s ease-in-out;
+        background-color 0.15s ease-in-out;
 
       &:hover,
       &:focus-within {
@@ -73,6 +73,8 @@ const QuestionList = props => {
     totalCount,
     onQuestionSelected,
     onClickRow,
+    draggable,
+    onDragEnd,
   } = props
 
   const itemSelection = showRowCheckboxes
@@ -99,10 +101,12 @@ const QuestionList = props => {
     <StyledList
       className={className}
       dataSource={questions}
+      draggable={draggable}
       footerContent={bulkAction}
       itemSelection={itemSelection}
       loading={loading}
       locale={locale}
+      onDragEnd={onDragEnd}
       onSearch={onSearch}
       onSortOptionChange={onSortOptionChange}
       pagination={pagination()}
@@ -167,6 +171,8 @@ QuestionList.propTypes = {
   showSort: PropTypes.bool,
   showTotalCount: PropTypes.bool,
   totalCount: PropTypes.number,
+  draggable: PropTypes.bool,
+  onDragEnd: PropTypes.func,
 }
 
 QuestionList.defaultProps = {
@@ -187,6 +193,8 @@ QuestionList.defaultProps = {
   showSort: true,
   showTotalCount: true,
   totalCount: 0,
+  draggable: false,
+  onDragEnd: () => {},
 }
 
 export default QuestionList
