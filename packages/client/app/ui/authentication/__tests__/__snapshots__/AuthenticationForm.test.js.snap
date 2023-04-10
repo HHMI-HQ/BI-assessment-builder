@@ -2,27 +2,45 @@
 
 exports[`AuthenticationForm matches snapshot 1`] = `
 <div
-  className="sc-jYECHi"
+  className="sc-gohhfD"
 >
   <div
-    className="sc-kDvujY hfHsLZ"
+    className="sc-kFuwaP eKsANT"
   >
     <div
-      className="sc-jrcTuL nJKYm sc-ipEyDJ cayYcg"
+      className="sc-jsMahE gIRyYT sc-irTswW ixRkEE"
       data-testid="feedback-element"
       role="alert"
     >
       The error message
     </div>
     <form
-      className="ant-form ant-form-vertical css-dev-only-do-not-override-ixblex"
+      className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y"
       data-testid="form-content"
       onReset={[Function]}
       onSubmit={[Function]}
     >
+      <p>
+        Test form
+      </p>
+      <div
+        className="sc-fbJfA"
+      >
+        <input
+          className="ant-input css-dev-only-do-not-override-1vtf12y sc-brKeYL cNoMrz"
+          disabled={false}
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          placeholder="type your text here"
+          style={{}}
+          type="text"
+          value=""
+        />
+      </div>
       <button
-        className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP gDEpHH sc-ggxSZb jKBBne"
-        data-testid="button"
+        className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU iQloaX sc-jMLGdu kGUdUr"
         disabled={false}
         onClick={[Function]}
         status={null}
@@ -35,13 +53,13 @@ exports[`AuthenticationForm matches snapshot 1`] = `
     </form>
   </div>
   <div
-    className="sc-cVKHio bkmlpt"
+    className="sc-glpldh BqCB"
   >
     <div
-      className="sc-eHzXwO dTpziJ"
+      className="sc-fDetwT cWgMyB"
     >
       <a
-        className="sc-cegXJL hOBEeF"
+        className="sc-kRQdhH ginInV"
         href="/alt-link"
         onClick={[Function]}
       >

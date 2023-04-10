@@ -50,7 +50,7 @@ const MockMyLists = props => (
     loading={loading}
     locale={locale}
     onCreateNewList={onCreateNewList}
-    onDeletRows={onDeleteRows}
+    onDeleteRows={onDeleteRows}
     onExport={onExport}
     onPageChange={onPageChange}
     onSearch={onSearch}
@@ -72,6 +72,7 @@ describe('MyList', () => {
     const MyListsComponent = renderer.create(<MockMyLists />, options).toJSON()
     expect(MyListsComponent).toMatchSnapshot()
   })
+
   it('displays custom locale', () => {
     const customLocale = {
       emptyText: <Empty description="custom locale text" role="status" />,
@@ -84,6 +85,7 @@ describe('MyList', () => {
     const localeText = getByText('custom locale text')
     expect(localeText).toBeTruthy()
   })
+
   it('onCreateNewList is called', () => {
     const { getByPlaceholderText, getByTestId } = render(<MockMyLists />)
 
@@ -100,9 +102,10 @@ describe('MyList', () => {
     fireEvent.click(creationDateHeaderCell)
     expect(onSort).toBeCalled()
   })
+
   it('renders without any accessibility errors', async () => {
     const { container } = render(<MockMyLists />)
     const result = await axe(container)
     expect(result).toHaveNoViolations()
-  })
+  }, 10000)
 })

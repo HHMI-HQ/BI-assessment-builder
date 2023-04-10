@@ -1,7 +1,7 @@
 ################
 # IMAGE TO BUILD
 
-FROM node:12-alpine as build
+FROM node:16.19.0-bullseye-slim as build
 
 WORKDIR /home/node/app
 
@@ -10,8 +10,9 @@ COPY yarn.lock .
 
 RUN yarn install  --frozen-lockfile
 
-COPY ./.storybook ./.storybook
+# COPY ./.storybook ./.storybook
 COPY ./app ./app
+COPY ./static ./static
 COPY ./stories ./stories
 
 RUN yarn build-storybook \

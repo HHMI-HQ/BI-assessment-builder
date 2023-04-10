@@ -2,13 +2,13 @@
 
 exports[`UserList matches snapshot 1`] = `
 <div
-  className="sc-jYECHi kpfCyg"
+  className="sc-gohhfD fWxEWx"
 >
   <section
-    className="sc-cVKHio fhFLMf"
+    className="sc-glpldh eyLwAH"
   >
     <h1
-      className="ant-typography sc-ggxSZb msjae css-dev-only-do-not-override-ixblex"
+      className="ant-typography sc-jMLGdu fBXxTH css-dev-only-do-not-override-1vtf12y"
       style={
         {
           "WebkitLineClamp": undefined,
@@ -18,19 +18,19 @@ exports[`UserList matches snapshot 1`] = `
       User Manager
     </h1>
     <div
-      className="sc-eBOGjE gZNIXp sc-ksZGZd iQvorS"
+      className="sc-fWRKtz cncskI sc-jJTKaY jhhCqZ"
     >
       <div
-        className="sc-keVmGr eEBmli"
+        className="sc-hsfzap fHrHFH"
       >
         <span
-          className="ant-input-group-wrapper ant-input-search sc-bjfHbI fsyjGe css-dev-only-do-not-override-ixblex"
+          className="ant-input-group-wrapper ant-input-search sc-blLsxD dtbdnh css-dev-only-do-not-override-1vtf12y"
         >
           <span
-            className="ant-input-wrapper ant-input-group css-dev-only-do-not-override-ixblex"
+            className="ant-input-wrapper ant-input-group css-dev-only-do-not-override-1vtf12y"
           >
             <input
-              className="ant-input css-dev-only-do-not-override-ixblex"
+              className="ant-input css-dev-only-do-not-override-1vtf12y"
               disabled={false}
               hidden={null}
               onBlur={[Function]}
@@ -40,7 +40,7 @@ exports[`UserList matches snapshot 1`] = `
               onFocus={[Function]}
               onKeyDown={[Function]}
               placeholder="Search for users"
-              style={null}
+              style={{}}
               type="text"
               value=""
             />
@@ -48,7 +48,7 @@ exports[`UserList matches snapshot 1`] = `
               className="ant-input-group-addon"
             >
               <button
-                className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-default ant-btn-icon-only ant-input-search-button"
+                className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-default ant-btn-icon-only ant-input-search-button"
                 disabled={false}
                 onClick={[Function]}
                 onMouseDown={[Function]}
@@ -79,16 +79,16 @@ exports[`UserList matches snapshot 1`] = `
         </span>
       </div>
       <div
-        className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+        className="ant-spin-nested-loading css-dev-only-do-not-override-1vtf12y"
       >
         <div
           className="ant-spin-container"
         >
           <div
-            className="ant-table-wrapper css-dev-only-do-not-override-ixblex"
+            className="ant-table-wrapper css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+              className="ant-spin-nested-loading css-dev-only-do-not-override-1vtf12y"
             >
               <div
                 className="ant-spin-container"
@@ -135,23 +135,17 @@ exports[`UserList matches snapshot 1`] = `
                               style={{}}
                             >
                               <label
-                                className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-eHzXwO gjDLNZ css-dev-only-do-not-override-ixblex"
+                                className="ant-checkbox-wrapper sc-jTrPJq fhnEky sc-fDetwT petfZ css-dev-only-do-not-override-1vtf12y"
                               >
                                 <span
-                                  className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                                  style={{}}
+                                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                                 >
                                   <input
                                     aria-checked={false}
                                     checked={false}
                                     className="ant-checkbox-input"
                                     disabled={false}
-                                    onBlur={[Function]}
                                     onChange={[Function]}
-                                    onFocus={[Function]}
-                                    onKeyDown={[Function]}
-                                    onKeyPress={[Function]}
-                                    onKeyUp={[Function]}
                                     type="checkbox"
                                   />
                                   <span
@@ -238,24 +232,18 @@ exports[`UserList matches snapshot 1`] = `
                               style={{}}
                             >
                               <label
-                                className="ant-checkbox-wrapper css-dev-only-do-not-override-ixblex"
+                                className="ant-checkbox-wrapper css-dev-only-do-not-override-1vtf12y"
                               >
                                 <span
-                                  className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                                  style={{}}
+                                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                                 >
                                   <input
                                     aria-label="Select user user1"
                                     checked={false}
                                     className="ant-checkbox-input"
                                     disabled={false}
-                                    onBlur={[Function]}
                                     onChange={[Function]}
                                     onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onKeyDown={[Function]}
-                                    onKeyPress={[Function]}
-                                    onKeyUp={[Function]}
                                     type="checkbox"
                                   />
                                   <span
@@ -328,24 +316,18 @@ exports[`UserList matches snapshot 1`] = `
                               style={{}}
                             >
                               <label
-                                className="ant-checkbox-wrapper css-dev-only-do-not-override-ixblex"
+                                className="ant-checkbox-wrapper css-dev-only-do-not-override-1vtf12y"
                               >
                                 <span
-                                  className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                                  style={{}}
+                                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                                 >
                                   <input
                                     aria-label="Select user user1"
                                     checked={false}
                                     className="ant-checkbox-input"
                                     disabled={false}
-                                    onBlur={[Function]}
                                     onChange={[Function]}
                                     onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onKeyDown={[Function]}
-                                    onKeyPress={[Function]}
-                                    onKeyUp={[Function]}
                                     type="checkbox"
                                   />
                                   <span
@@ -418,24 +400,18 @@ exports[`UserList matches snapshot 1`] = `
                               style={{}}
                             >
                               <label
-                                className="ant-checkbox-wrapper css-dev-only-do-not-override-ixblex"
+                                className="ant-checkbox-wrapper css-dev-only-do-not-override-1vtf12y"
                               >
                                 <span
-                                  className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                                  style={{}}
+                                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                                 >
                                   <input
                                     aria-label="Select user deactivedUser"
                                     checked={false}
                                     className="ant-checkbox-input"
                                     disabled={false}
-                                    onBlur={[Function]}
                                     onChange={[Function]}
                                     onClick={[Function]}
-                                    onFocus={[Function]}
-                                    onKeyDown={[Function]}
-                                    onKeyPress={[Function]}
-                                    onKeyUp={[Function]}
                                     type="checkbox"
                                   />
                                   <span
@@ -505,12 +481,11 @@ exports[`UserList matches snapshot 1`] = `
       </div>
       <nav
         aria-label="Pagination"
-        className="sc-cwSeag isiaCQ sc-eMOcrC kkTWki"
-        onShowSizeChange={[Function]}
+        className="sc-dnwKUv kKzMli sc-hdoUXQ dYObif"
         role="navigation"
       >
         <ul
-          className="ant-pagination css-dev-only-do-not-override-ixblex"
+          className="ant-pagination css-dev-only-do-not-override-1vtf12y"
           style={{}}
         >
           <li
@@ -534,8 +509,8 @@ exports[`UserList matches snapshot 1`] = `
             className="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
             onClick={[Function]}
             onKeyPress={[Function]}
-            tabIndex="0"
-            title={1}
+            tabIndex={0}
+            title="1"
           >
             <a
               href="/page/1"
@@ -566,26 +541,20 @@ exports[`UserList matches snapshot 1`] = `
       </nav>
     </div>
     <div
-      className="sc-PtnOH kXEMQF"
+      className="sc-jbISuK bWrQJT"
     >
       <label
-        className="ant-checkbox-wrapper sc-jSUZER blZqQb css-dev-only-do-not-override-ixblex"
+        className="ant-checkbox-wrapper sc-jTrPJq fhnEky css-dev-only-do-not-override-1vtf12y"
       >
         <span
-          className="ant-checkbox css-dev-only-do-not-override-ixblex"
-          style={{}}
+          className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
         >
           <input
             checked={false}
             className="ant-checkbox-input"
             data-testid="show-inactive-users"
             disabled={false}
-            onBlur={[Function]}
             onChange={[Function]}
-            onFocus={[Function]}
-            onKeyDown={[Function]}
-            onKeyPress={[Function]}
-            onKeyUp={[Function]}
             type="checkbox"
           />
           <span
@@ -597,10 +566,10 @@ exports[`UserList matches snapshot 1`] = `
         </span>
       </label>
       <div
-        className="sc-eDvSVe bkdEri"
+        className="sc-eDDNvR jGthFV"
       >
         <button
-          className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP eGTsMV"
+          className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ"
           data-testid="deactivate-btn"
           disabled={true}
           onClick={[Function]}
@@ -612,7 +581,7 @@ exports[`UserList matches snapshot 1`] = `
           </span>
         </button>
         <button
-          className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP eGTsMV"
+          className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ"
           data-testid="delete-btn"
           disabled={true}
           onClick={[Function]}
@@ -626,7 +595,7 @@ exports[`UserList matches snapshot 1`] = `
       </div>
     </div>
     <span
-      className="sc-bTTELM kCybF"
+      className="sc-kgKVFY elvehO"
       id="action-status"
       role="status"
     />

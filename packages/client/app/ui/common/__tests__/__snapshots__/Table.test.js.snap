@@ -2,19 +2,19 @@
 
 exports[`Table matches snapshot 1`] = `
 <div
-  className="sc-pyfCe cFyVKk"
+  className="sc-qRumB diFlUT"
 >
   <div
-    className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+    className="ant-spin-nested-loading css-dev-only-do-not-override-1vtf12y"
   >
     <div
       className="ant-spin-container"
     >
       <div
-        className="ant-table-wrapper css-dev-only-do-not-override-ixblex"
+        className="ant-table-wrapper css-dev-only-do-not-override-1vtf12y"
       >
         <div
-          className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+          className="ant-spin-nested-loading css-dev-only-do-not-override-1vtf12y"
         >
           <div
             className="ant-spin-container"

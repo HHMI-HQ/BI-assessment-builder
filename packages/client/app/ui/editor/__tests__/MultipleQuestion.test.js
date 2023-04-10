@@ -28,6 +28,7 @@ describe('MultipleQuestion', () => {
 
     expect(multipleChoiceComponent).toMatchSnapshot()
   })
+
   it('displays addOption, removeOption', () => {
     const { getByTestId } = render(<MockMultipleQuestion />)
     const addOptionBtn = getByTestId('add-option')
@@ -35,6 +36,7 @@ describe('MultipleQuestion', () => {
     expect(addOptionBtn).toBeInTheDocument()
     expect(removeOptionBtn).toBeInTheDocument()
   })
+
   it('displays correct questionText and feedbackText', () => {
     const { getByText, getByPlaceholderText } = render(<MockMultipleQuestion />)
     const questionTxt = getByText(questionText)
@@ -42,6 +44,8 @@ describe('MultipleQuestion', () => {
     expect(questionTxt).toBeInTheDocument()
     expect(feedbackTxt.value).toBe(feedBackText)
   })
+
+  /* eslint-disable-next-line jest/no-commented-out-tests */
   // it('calls addOption and removeOption onClick', async () => {
   //   const newAddOption = jest.fn()
   //   const newRemoveOption = jest.fn()
@@ -58,11 +62,13 @@ describe('MultipleQuestion', () => {
   //   userEvent.click(removeOptionBtn)
   //   await waitFor(() => expect(newRemoveOption).toHaveBeenCalled())
   // })
+
   it('disables Wax when readOnly props is passed', () => {
     const { container } = render(<MockMultipleQuestion readOnly />)
     const proseMirror = container.getElementsByClassName('ProseMirror')[0]
     expect(proseMirror).toHaveAttribute('contenteditable', 'false')
   })
+
   it('renders without any accessibility errors', async () => {
     const { container } = render(<MockMultipleQuestion />)
     const result = await axe(container)

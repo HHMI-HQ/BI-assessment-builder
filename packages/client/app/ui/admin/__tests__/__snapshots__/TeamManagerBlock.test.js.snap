@@ -2,10 +2,10 @@
 
 exports[`TeamManagerBlock matches snapshot 1`] = `
 <div
-  className="sc-jYECHi kYQobz"
+  className="sc-gohhfD dBmcgK"
 >
   <h2
-    className="ant-typography sc-ggxSZb cFTpja css-dev-only-do-not-override-ixblex"
+    className="ant-typography sc-jMLGdu boXIpz css-dev-only-do-not-override-1vtf12y"
     style={
       {
         "WebkitLineClamp": undefined,
@@ -19,24 +19,24 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
     </span>
   </h2>
   <div
-    className="sc-kDvujY hfHsLZ"
+    className="sc-kFuwaP eKsANT"
   >
     <form
-      className="ant-form ant-form-vertical css-dev-only-do-not-override-ixblex sc-cVKHio bVatwj"
+      className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y sc-glpldh lfNpJP"
       data-testid="form-content"
       onReset={[Function]}
       onSubmit={[Function]}
     >
       <div
-        className="ant-form-item css-dev-only-do-not-override-ixblex"
+        className="ant-form-item css-dev-only-do-not-override-1vtf12y"
       >
         <div
-          className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+          className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
           onBlur={[Function]}
           style={{}}
         >
           <div
-            className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+            className="ant-col ant-form-item-label css-dev-only-do-not-override-1vtf12y"
             style={{}}
           >
             <label
@@ -48,7 +48,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
             </label>
           </div>
           <div
-            className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+            className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
             style={{}}
           >
             <div
@@ -58,10 +58,10 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
                 className="ant-form-item-control-input-content"
               >
                 <span
-                  className="sc-idXgbr"
+                  className="sc-ieZDjg"
                 >
                   <div
-                    className="ant-select ant-select-in-form-item sc-dIfARi gDSmIE css-dev-only-do-not-override-ixblex ant-select-multiple ant-select-show-search"
+                    className="ant-select ant-select-in-form-item sc-dKfzgJ eWzhco css-dev-only-do-not-override-1vtf12y ant-select-multiple ant-select-show-arrow ant-select-show-search"
                     data-testid="select-editor"
                     onBlur={[Function]}
                     onFocus={[Function]}
@@ -144,6 +144,38 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
                         Search for a user
                       </span>
                     </div>
+                    <span
+                      aria-hidden={true}
+                      className="ant-select-arrow"
+                      onMouseDown={[Function]}
+                      style={
+                        {
+                          "WebkitUserSelect": "none",
+                          "userSelect": "none",
+                        }
+                      }
+                      unselectable="on"
+                    >
+                      <span
+                        aria-label="down"
+                        className="anticon anticon-down ant-select-suffix"
+                        role="img"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          data-icon="down"
+                          fill="currentColor"
+                          focusable="false"
+                          height="1em"
+                          viewBox="64 64 896 896"
+                          width="1em"
+                        >
+                          <path
+                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                          />
+                        </svg>
+                      </span>
+                    </span>
                   </div>
                 </span>
               </div>
@@ -153,8 +185,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
       </div>
       <button
         aria-labelledby="editor-team"
-        className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP eGTsMV sc-ksZGZd"
-        data-testid="button"
+        className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ sc-jJTKaY"
         disabled={true}
         onClick={[Function]}
         status={null}
@@ -167,174 +198,142 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
     </form>
   </div>
   <div
-    className="sc-lllmON cUAfcq sc-vKiki gxWxGS"
+    className="sc-fLQRDB eRQoQv sc-fAmxux bNdJTM"
   >
     <div
-      className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+      aria-labelledby="team-editor"
+      className="ant-list ant-list-split sc-bZPPFW dBaxhf css-dev-only-do-not-override-1vtf12y"
+      data-testid="editor-list"
+      role="group"
     >
       <div
-        className="ant-spin-container"
+        className="ant-spin-nested-loading css-dev-only-do-not-override-1vtf12y"
       >
         <div
-          aria-labelledby="team-editor"
-          className="ant-list ant-list-split sc-hhOBVt dGXaLK css-dev-only-do-not-override-ixblex"
-          data-testid="editor-list"
-          role="group"
+          className="ant-spin-container"
         >
-          <div
-            className="ant-spin-nested-loading css-dev-only-do-not-override-ixblex"
+          <ul
+            className="ant-list-items"
           >
-            <div
-              className="ant-spin-container"
+            <li
+              className="sc-eACynP ceZVnW"
             >
-              <ul
-                className="ant-list-items"
+              <label
+                className="ant-checkbox-wrapper sc-jTrPJq fhnEky sc-ilEZps jxppfF css-dev-only-do-not-override-1vtf12y"
               >
-                <li
-                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                <span
+                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                 >
-                  <label
-                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
-                  >
-                    <span
-                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                      style={{}}
-                    >
-                      <input
-                        aria-label="Select user user1"
-                        checked={false}
-                        className="ant-checkbox-input"
-                        disabled={false}
-                        onBlur={[Function]}
-                        onChange={[Function]}
-                        onFocus={[Function]}
-                        onKeyDown={[Function]}
-                        onKeyPress={[Function]}
-                        onKeyUp={[Function]}
-                        type="checkbox"
-                      />
-                      <span
-                        className="ant-checkbox-inner"
-                      />
-                    </span>
-                  </label>
-                  <div
-                    className="sc-PtnOH"
-                  >
-                    user1
-                  </div>
-                </li>
-                <li
-                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                  <input
+                    aria-label="Select user user1"
+                    checked={false}
+                    className="ant-checkbox-input"
+                    disabled={false}
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                  <span
+                    className="ant-checkbox-inner"
+                  />
+                </span>
+              </label>
+              <div
+                className="sc-jbISuK"
+              >
+                user1
+              </div>
+            </li>
+            <li
+              className="sc-eACynP ceZVnW"
+            >
+              <label
+                className="ant-checkbox-wrapper sc-jTrPJq fhnEky sc-ilEZps jxppfF css-dev-only-do-not-override-1vtf12y"
+              >
+                <span
+                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                 >
-                  <label
-                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
-                  >
-                    <span
-                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                      style={{}}
-                    >
-                      <input
-                        aria-label="Select user user2"
-                        checked={false}
-                        className="ant-checkbox-input"
-                        disabled={false}
-                        onBlur={[Function]}
-                        onChange={[Function]}
-                        onFocus={[Function]}
-                        onKeyDown={[Function]}
-                        onKeyPress={[Function]}
-                        onKeyUp={[Function]}
-                        type="checkbox"
-                      />
-                      <span
-                        className="ant-checkbox-inner"
-                      />
-                    </span>
-                  </label>
-                  <div
-                    className="sc-PtnOH"
-                  >
-                    user2
-                  </div>
-                </li>
-                <li
-                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                  <input
+                    aria-label="Select user user2"
+                    checked={false}
+                    className="ant-checkbox-input"
+                    disabled={false}
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                  <span
+                    className="ant-checkbox-inner"
+                  />
+                </span>
+              </label>
+              <div
+                className="sc-jbISuK"
+              >
+                user2
+              </div>
+            </li>
+            <li
+              className="sc-eACynP ceZVnW"
+            >
+              <label
+                className="ant-checkbox-wrapper sc-jTrPJq fhnEky sc-ilEZps jxppfF css-dev-only-do-not-override-1vtf12y"
+              >
+                <span
+                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                 >
-                  <label
-                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
-                  >
-                    <span
-                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                      style={{}}
-                    >
-                      <input
-                        aria-label="Select user user3"
-                        checked={false}
-                        className="ant-checkbox-input"
-                        disabled={false}
-                        onBlur={[Function]}
-                        onChange={[Function]}
-                        onFocus={[Function]}
-                        onKeyDown={[Function]}
-                        onKeyPress={[Function]}
-                        onKeyUp={[Function]}
-                        type="checkbox"
-                      />
-                      <span
-                        className="ant-checkbox-inner"
-                      />
-                    </span>
-                  </label>
-                  <div
-                    className="sc-PtnOH"
-                  >
-                    user3
-                  </div>
-                </li>
-                <li
-                  className="sc-ilhmMj sc-jIRcFI kgnnhF lbPyan"
+                  <input
+                    aria-label="Select user user3"
+                    checked={false}
+                    className="ant-checkbox-input"
+                    disabled={false}
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                  <span
+                    className="ant-checkbox-inner"
+                  />
+                </span>
+              </label>
+              <div
+                className="sc-jbISuK"
+              >
+                user3
+              </div>
+            </li>
+            <li
+              className="sc-eACynP ceZVnW"
+            >
+              <label
+                className="ant-checkbox-wrapper sc-jTrPJq fhnEky sc-ilEZps jxppfF css-dev-only-do-not-override-1vtf12y"
+              >
+                <span
+                  className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                 >
-                  <label
-                    className="ant-checkbox-wrapper sc-jSUZER blZqQb sc-cCjUiG bgagJy css-dev-only-do-not-override-ixblex"
-                  >
-                    <span
-                      className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                      style={{}}
-                    >
-                      <input
-                        aria-label="Select user user4"
-                        checked={false}
-                        className="ant-checkbox-input"
-                        disabled={false}
-                        onBlur={[Function]}
-                        onChange={[Function]}
-                        onFocus={[Function]}
-                        onKeyDown={[Function]}
-                        onKeyPress={[Function]}
-                        onKeyUp={[Function]}
-                        type="checkbox"
-                      />
-                      <span
-                        className="ant-checkbox-inner"
-                      />
-                    </span>
-                  </label>
-                  <div
-                    className="sc-PtnOH"
-                  >
-                    user4
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
+                  <input
+                    aria-label="Select user user4"
+                    checked={false}
+                    className="ant-checkbox-input"
+                    disabled={false}
+                    onChange={[Function]}
+                    type="checkbox"
+                  />
+                  <span
+                    className="ant-checkbox-inner"
+                  />
+                </span>
+              </label>
+              <div
+                className="sc-jbISuK"
+              >
+                user4
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
   <button
-    className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP eGTsMV sc-eHzXwO"
+    className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ sc-fDetwT"
     data-testid="remove-editor"
     disabled={true}
     onClick={[Function]}

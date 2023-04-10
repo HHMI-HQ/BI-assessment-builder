@@ -3,12 +3,11 @@
 exports[`Pagination matches snapshot 1`] = `
 <nav
   aria-label="Pagination"
-  className="sc-dkrFOg kSaOQL"
-  onShowSizeChange={[MockFunction]}
+  className="sc-dmqHEX kwLviS"
   role="navigation"
 >
   <ul
-    className="ant-pagination css-dev-only-do-not-override-ixblex"
+    className="ant-pagination css-dev-only-do-not-override-1vtf12y"
     style={{}}
   >
     <li
@@ -32,8 +31,8 @@ exports[`Pagination matches snapshot 1`] = `
       className="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
       onClick={[Function]}
       onKeyPress={[Function]}
-      tabIndex="0"
-      title={1}
+      tabIndex={0}
+      title="1"
     >
       <a
         href="/page/1"
@@ -47,8 +46,8 @@ exports[`Pagination matches snapshot 1`] = `
       className="ant-pagination-item ant-pagination-item-2"
       onClick={[Function]}
       onKeyPress={[Function]}
-      tabIndex="0"
-      title={2}
+      tabIndex={0}
+      title="2"
     >
       <a
         href="/page/2"
@@ -62,8 +61,8 @@ exports[`Pagination matches snapshot 1`] = `
       className="ant-pagination-item ant-pagination-item-3"
       onClick={[Function]}
       onKeyPress={[Function]}
-      tabIndex="0"
-      title={3}
+      tabIndex={0}
+      title="3"
     >
       <a
         href="/page/3"
@@ -77,8 +76,8 @@ exports[`Pagination matches snapshot 1`] = `
       className="ant-pagination-item ant-pagination-item-4"
       onClick={[Function]}
       onKeyPress={[Function]}
-      tabIndex="0"
-      title={4}
+      tabIndex={0}
+      title="4"
     >
       <a
         href="/page/4"
@@ -92,8 +91,8 @@ exports[`Pagination matches snapshot 1`] = `
       className="ant-pagination-item ant-pagination-item-5"
       onClick={[Function]}
       onKeyPress={[Function]}
-      tabIndex="0"
-      title={5}
+      tabIndex={0}
+      title="5"
     >
       <a
         href="/page/5"

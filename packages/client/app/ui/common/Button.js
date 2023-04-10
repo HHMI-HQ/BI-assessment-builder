@@ -19,6 +19,7 @@ const StyledButton = styled(AntButton)`
   /* let lineHeight expand the button height */
   height: unset;
   line-height: ${th('lineHeightBase')};
+
   ${props =>
     props.direction === 'rtl' &&
     css`

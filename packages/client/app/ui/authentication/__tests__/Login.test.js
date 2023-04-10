@@ -9,17 +9,17 @@ import {
   fireEvent,
   waitFor,
 } from '../../../testUtils'
-import Signup from '../Signup'
+import Login from '../Login'
 
 const onSubmit = jest.fn()
 
-const MockSignup = props => (
+const MockLogin = props => (
   <BrowserRouter>
-    <Signup {...props} />
+    <Login onSubmit={() => {}} {...props} />
   </BrowserRouter>
 )
 
-describe('Signup', () => {
+describe('Login', () => {
   beforeEach(() => {
     const intersectionObserverMock = () => ({
       observe: () => null,
@@ -29,56 +29,38 @@ describe('Signup', () => {
       .fn()
       .mockImplementation(intersectionObserverMock)
   })
+
   it('matches snapshot', () => {
-    const loginComponent = renderer.create(<MockSignup />).toJSON()
+    const loginComponent = renderer.create(<MockLogin />).toJSON()
     expect(loginComponent).toMatchSnapshot()
   })
   it('calls onSubmit once when submit button is clicked', async () => {
-    render(<MockSignup onSubmit={onSubmit} />)
+    render(<MockLogin onSubmit={onSubmit} />)
     onSubmit.mockClear()
-    const firstName = screen.getByPlaceholderText('Fill in your first name')
-    const lastName = screen.getByPlaceholderText('Fill in your last name')
-    const email = screen.getByPlaceholderText('Fill in your email')
-    const password = screen.getByPlaceholderText('Fill in your password')
-
-    const confirmPassword = screen.getByPlaceholderText(
-      'Fill in your password again',
-    )
-
-    const checkBox = screen.getByLabelText(
-      'I agree to the terms and conditions',
-    )
-
+    const email = screen.getByPlaceholderText('Please enter your email')
+    const password = screen.getByPlaceholderText('Please enter your password')
     const submit = screen.getByRole('button')
-    fireEvent.change(firstName, { target: { value: 'user' } })
-    fireEvent.change(lastName, { target: { value: '12' } })
     fireEvent.change(email, { target: { value: 'user@gmail.com' } })
-
     fireEvent.change(password, {
       target: { value: 'Password@123' },
     })
-
-    fireEvent.change(confirmPassword, {
-      target: { value: 'Password@123' },
-    })
-    fireEvent.click(checkBox)
 
     fireEvent.click(submit)
     await waitFor(() => expect(onSubmit).toBeCalledTimes(1))
   })
   it('displays correct error message that is passed', () => {
     const errorMessage = "User doesn't exist"
-    render(<MockSignup errorMessage={errorMessage} hasError />)
+    render(<MockLogin errorMessage={errorMessage} hasError />)
     const errText = screen.getByText(errorMessage)
     expect(errText.innerHTML).toBe(errorMessage)
   })
   it('displays spinner on loading', () => {
-    render(<MockSignup loading />)
+    render(<MockLogin loading />)
     const spinner = screen.getByRole('img', { name: 'loading' })
     expect(spinner).toBeTruthy()
   })
-  it('renders without accessibility errors', async () => {
-    const { container } = render(<MockSignup />)
+  it('renders with no accessibility error', async () => {
+    const { container } = render(<MockLogin />)
     const result = await axe(container)
     expect(result).toHaveNoViolations()
   })

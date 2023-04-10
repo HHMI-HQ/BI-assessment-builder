@@ -11,7 +11,7 @@ import {
 import ChangePassword from '../ChangePassword'
 
 const MockChangePassword = props => {
-  return <ChangePassword {...props} />
+  return <ChangePassword onSubmit={() => {}} {...props} />
 }
 
 describe('ChangePassword', () => {
@@ -43,23 +43,25 @@ describe('ChangePassword', () => {
     const currentPassword = getByTestId('currentPassword')
     const newPassword = getByTestId('newPassword')
     const newPasswordConfirmation = getByTestId('newPasswordConfirmation')
-    const submitButton = getByTestId('button')
-    fireEvent.change(currentPassword, { target: { value: 'password' } })
-    fireEvent.change(newPassword, { target: { value: 'newpassword' } })
-    fireEvent.change(newPasswordConfirmation, {
+    const submitButton = getByTestId('profile-form-submit-button')
+
+    await fireEvent.change(currentPassword, { target: { value: 'password' } })
+    await fireEvent.change(newPassword, { target: { value: 'newpassword' } })
+    await fireEvent.change(newPasswordConfirmation, {
       target: { value: 'newpassword' },
     })
-    fireEvent.click(submitButton)
+    await fireEvent.click(submitButton)
 
     await waitFor(() => expect(onSubmit).toBeCalledTimes(1))
     await waitFor(() => getByText('Password changed successfully'))
     expect(getByText('Password changed successfully')).toBeInTheDocument()
   })
+
   it('shows error message', () => {
     const { getByText } = render(
       <MockChangePassword
-        submissionStatus="error"
         message="An error occurred"
+        submissionStatus="error"
       />,
     )
 
