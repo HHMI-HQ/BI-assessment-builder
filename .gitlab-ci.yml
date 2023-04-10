@@ -1,73 +1,94 @@
 variables:
   IMAGE_ORG: cokoapps
-  IMAGE_NAME: hhmi-server-ci-development
-  WORKDIR: /home/node/hhmi
+  IMAGE_NAME_SERVER_DEVELOPMENT: hhmi-server-ci-development
+  IMAGE_NAME_CLIENT_DEVELOPMENT: hhmi-client-ci-development
+  IMAGE_NAME_STORYBOOK: hhmi-storybook
+  WORKDIR_SERVER: /home/node/hhmi
+  WORKDIR_CLIENT: /home/node/app
 
 stages:
   - Build
   - Lint & Test
+  - Build production
   - Deploy
   # - install
   # - deploy-storybook
 
-server build development:
+# BUILD DEVELOPMENT IMAGES
+
+client build development:
   stage: Build
-  image: docker:20.10.16
+  image: docker:23
   services:
-    - docker:20.10.16-dind
+    - docker:23-dind
   before_script:
-    - docker info
     - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
   script:
     - if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_PASSWORD" ]; then echo "Not pushing" && exit 0; fi
-    - docker build --tag $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA ./packages/server -f packages/server/Dockerfile-development
-    - docker push $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
+    - docker build --tag $IMAGE_ORG/$IMAGE_NAME_CLIENT_DEVELOPMENT:$CI_COMMIT_SHA ./packages/client -f packages/client/Dockerfile-development
+    - docker push $IMAGE_ORG/$IMAGE_NAME_CLIENT_DEVELOPMENT:$CI_COMMIT_SHA
 
-server lint js:
+server build development:
+  stage: Build
+  image: docker:23
+  services:
+    - docker:23-dind
+  before_script:
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+  script:
+    - if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_PASSWORD" ]; then echo "Not pushing" && exit 0; fi
+    - docker build --tag $IMAGE_ORG/$IMAGE_NAME_SERVER_DEVELOPMENT:$CI_COMMIT_SHA ./packages/server -f packages/server/Dockerfile-development
+    - docker push $IMAGE_ORG/$IMAGE_NAME_SERVER_DEVELOPMENT:$CI_COMMIT_SHA
+
+# LINT & UNIT TEST
+
+client lint:
+  stage: Lint & Test
+  needs:
+    - client build development
+  image: $IMAGE_ORG/$IMAGE_NAME_CLIENT_DEVELOPMENT:$CI_COMMIT_SHA
+  script:
+    - cd $WORKDIR_CLIENT
+    - yarn eslint .
+    - yarn prettier --check .
+    - yarn stylelint "**/*.js"
+
+client unit test:
+  stage: Lint & Test
+  needs:
+    - client build development
+  image: $IMAGE_ORG/$IMAGE_NAME_CLIENT_DEVELOPMENT:$CI_COMMIT_SHA
+  script:
+    - cd $WORKDIR_CLIENT
+    - yarn jest
+
+server lint:
   stage: Lint & Test
   needs:
     - server build development
-  image: $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
+  image: $IMAGE_ORG/$IMAGE_NAME_SERVER_DEVELOPMENT:$CI_COMMIT_SHA
   script:
-    - cd $WORKDIR
+    - cd $WORKDIR_SERVER
     - yarn eslint .
+    - yarn prettier --check .
 
 server unit test:
   stage: Lint & Test
   needs:
     - server build development
-  image: docker:20.10.16
+  image: docker:23
   services:
-    - docker:20.10.16-dind
-  before_script:
-    - ls -la
-    - docker-compose --version
+    - docker:23-dind
   script:
     - docker-compose up -d db
-    - docker pull $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA
+    - docker pull $IMAGE_ORG/$IMAGE_NAME_SERVER_DEVELOPMENT:$CI_COMMIT_SHA
     - |
       docker run \
       --network hhmi_default \
       -e NODE_ENV=test \
       -e POSTGRES_HOST=db -e POSTGRES_PORT=5432 -e POSTGRES_DB=hhmi_dev -e POSTGRES_USER=hhmi_dev_user -e POSTGRES_PASSWORD=hhmi_dev_user_password \
-      $IMAGE_ORG/$IMAGE_NAME:$CI_COMMIT_SHA \
+      $IMAGE_ORG/$IMAGE_NAME_SERVER_DEVELOPMENT:$CI_COMMIT_SHA \
       yarn jest --verbose
-
-    # NODE_ENV=test
-    #   POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_DB=hhmi_dev POSTGRES_USER=hhmi_dev_user POSTGRES_PASSWORD=hhmi_dev_user_password
-    #   PUBSWEET_SECRET=superSecretThing
-    #   S3_PROTOCOL=http S3_HOST=localhost S3_PORT=9000 S3_ACCESS_KEY_ID=nonRootUser S3_SECRET_ACCESS_KEY=nonRootPassword S3_BUCKET=uploads
-
-    # SERVER_PORT=${SERVER_PORT:-3000}
-    # CLIENT_PROTOCOL=${CLIENT_PROTOCOL:-http}
-    # CLIENT_HOST=${CLIENT_HOST:-0.0.0.0}
-    # CLIENT_PORT=${CLIENT_PORT:-4000}
-    # MAILER_SENDER=${MAILER_SENDER:-dev@example.com}
-    # MAILER_HOSTNAME=${MAILER_HOSTNAME}
-    # MAILER_PORT=${MAILER_PORT}
-    # MAILER_USER=${MAILER_USER}
-    # MAILER_PASSWORD=${MAILER_PASSWORD}
-    # PASSWORD_RESET_PATH=${PASSWORD_RESET_PATH:-password-reset}
 
 # deploy storybook static:
 #   image: debian:stable-slim
@@ -85,6 +106,38 @@ server unit test:
 #   only:
 #     - master
 
+build_storybook:
+  stage: Build production
+  image: docker:23
+  services:
+    - docker:23-dind
+  before_script:
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+  script:
+    - if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_PASSWORD" ]; then echo "Not pushing" && exit 0; fi
+    - cd ./packages/client
+    - docker pull $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:latest || true
+    - docker build --cache-from $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:latest --tag $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:$CI_COMMIT_SHA --tag $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:latest . -f Dockerfile-storybook-deploy
+    - docker push $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:$CI_COMMIT_SHA
+    - docker push $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:latest
+  only:
+    - master
+
+deploy storybook:
+  image: debian:bullseye-slim
+  stage: Deploy
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$STORYBOOK_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -p $STORYBOOK_SSH_PORT $STORYBOOK_SSH_URL >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh ${STORYBOOK_SSH_USER}@${STORYBOOK_SSH_URL} -p ${STORYBOOK_SSH_PORT} "docker pull cokoapps/$IMAGE_NAME_STORYBOOK:latest && docker stop $IMAGE_NAME_STORYBOOK && docker rm $IMAGE_NAME_STORYBOOK && docker run -d -p 5410:80 --name $IMAGE_NAME_STORYBOOK $IMAGE_ORG/$IMAGE_NAME_STORYBOOK"
+  only:
+    - master
 # build storybook image:
 #   stage: Build
 #   image: docker:19.03.12

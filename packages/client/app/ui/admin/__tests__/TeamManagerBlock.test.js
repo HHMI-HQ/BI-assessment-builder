@@ -75,6 +75,7 @@ describe('TeamManagerBlock', () => {
 
   // Accessibility tests fails because of antd select
 
+  /* eslint-disable-next-line jest/no-commented-out-tests */
   // it('Accessibility check', async () => {
   //   const { container } = render(
   //     <TeamManagerBlock

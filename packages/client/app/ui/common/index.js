@@ -46,4 +46,5 @@ export * from './Typography'
 
 export { Tag } from 'antd'
 
-export { DateParser } from '@pubsweet/ui'
+export { default as DateParser } from './DateParser'
+// export { DateParser } from '@pubsweet/ui'

@@ -7,14 +7,17 @@ import AuthenticationForm from '../AuthenticationForm'
 
 const Form = () => (
   <>
-    <p>Test form</p> <Input placeholder="type your text here" />
+    <p>Test form</p>
+    <Input placeholder="type your text here" />
   </>
 )
 
 const MockAuthenticationForm = props => {
   return (
     <BrowserRouter>
-      <AuthenticationForm {...props}>{Form}</AuthenticationForm>
+      <AuthenticationForm onSubmit={() => {}} {...props}>
+        <Form />
+      </AuthenticationForm>
     </BrowserRouter>
   )
 }
@@ -42,6 +45,7 @@ describe('AuthenticationForm', () => {
 
     expect(AuthenticationFormComponent).toMatchSnapshot()
   })
+
   it('displays error message', () => {
     const { getByText } = render(
       <MockAuthenticationForm errorMessage="The error message" hasError />,
@@ -50,6 +54,7 @@ describe('AuthenticationForm', () => {
     const error = getByText('The error message')
     expect(error).toBeInTheDocument()
   })
+
   it('displays forgot password and alternative action', () => {
     const { getByText } = render(
       <MockAuthenticationForm
@@ -68,6 +73,7 @@ describe('AuthenticationForm', () => {
       `http://localhost${alternativeActionLink}`,
     )
   })
+
   it('displays submit button label and calls onSubmit', async () => {
     const { getByText } = render(
       <MockAuthenticationForm
@@ -78,14 +84,16 @@ describe('AuthenticationForm', () => {
 
     const submitBtn = getByText('submit form')
     expect(submitBtn).toBeInTheDocument()
-    userEvent.click(submitBtn)
+    await userEvent.click(submitBtn)
     await waitFor(() => expect(onSubmit).toHaveBeenCalled())
   })
+
   it('displays spinner on loading', () => {
     const { getByRole } = render(<MockAuthenticationForm loading />)
     const spinner = getByRole('img')
     expect(spinner).toBeInTheDocument()
   })
+
   it('renders without accessibility error', async () => {
     const { container } = render(
       <MockAuthenticationForm

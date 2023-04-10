@@ -2,8 +2,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-
 import { Row as AntRow, Col as AntCol } from 'antd'
+
 import { Form, FormSection, Input } from '../common'
 import ProfileForm from './ProfileForm'
 
@@ -56,6 +56,7 @@ const ChangePassword = props => {
               </Form.Item>
             </Col>
           </Row>
+
           <Row>
             <Col sm={12} xs={24}>
               <Form.Item
@@ -88,6 +89,7 @@ const ChangePassword = props => {
                 <Input data-testid="newPassword" type="password" />
               </Form.Item>
             </Col>
+
             <Col sm={12} xs={24}>
               <Form.Item
                 dependencies={['newPassword']}

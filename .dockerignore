@@ -1,5 +1,5 @@
 # docker
-Dockerfile*
+# Dockerfile*
 docker-compose*
 
 # git
@@ -42,11 +42,11 @@ CONTRIBUTING.md
 _build-storybook
 
 # development config files
-.eslintrc.js
+# .eslintrc.js
 .commitlintrc.js
 .cz-config.js
 .gitlab-ci.yml
 .linstagedrc.js
-.prettierrc.js
-.stylelintrc.js
+# .prettierrc.js
+# .stylelintrc.js
 cypress.json

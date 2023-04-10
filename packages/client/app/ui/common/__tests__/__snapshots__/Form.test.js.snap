@@ -2,38 +2,39 @@
 
 exports[`Form matches snapshot 1`] = `
 <div
-  className="sc-hLBbgP ekGBOR"
+  className="sc-hLseeU gTQpGv"
 >
   <form
-    className="ant-form ant-form-horizontal css-dev-only-do-not-override-ixblex"
+    className="ant-form ant-form-horizontal css-dev-only-do-not-override-1vtf12y"
     data-testid="form-content"
     onReset={[Function]}
     onSubmit={[Function]}
   >
     <div
-      className="sc-jSUZER"
+      className="sc-jTrPJq"
     >
       <input
-        className="ant-input css-dev-only-do-not-override-ixblex sc-gKPRtg SRLOK"
+        className="ant-input css-dev-only-do-not-override-1vtf12y sc-gLDzan lhFuEK"
         disabled={false}
         onBlur={[Function]}
         onChange={[Function]}
         onFocus={[Function]}
         onKeyDown={[Function]}
         placeholder="enter your email"
+        style={{}}
         type="text"
         value=""
       />
     </div>
     <div
-      className="sc-jSUZER"
+      className="sc-jTrPJq"
     >
       <span
-        className="ant-input-affix-wrapper ant-input-password sc-ftTHYK kjDUsd css-dev-only-do-not-override-ixblex"
+        className="ant-input-affix-wrapper ant-input-password sc-fsQiph cqilML css-dev-only-do-not-override-1vtf12y"
         onClick={[Function]}
       >
         <input
-          className="ant-input css-dev-only-do-not-override-ixblex"
+          className="ant-input css-dev-only-do-not-override-1vtf12y"
           disabled={false}
           hidden={null}
           onBlur={[Function]}
@@ -41,7 +42,6 @@ exports[`Form matches snapshot 1`] = `
           onFocus={[Function]}
           onKeyDown={[Function]}
           placeholder="enter your password"
-          style={null}
           type="password"
           value=""
         />
@@ -51,7 +51,7 @@ exports[`Form matches snapshot 1`] = `
           <button
             aria-checked={false}
             aria-label="Show password"
-            className="sc-iBYQkv kbyPSo ant-input-password-icon"
+            className="sc-iAEyYk jwtKJD ant-input-password-icon"
             onClick={[Function]}
             onMouseDown={[Function]}
             onMouseUp={[Function]}
@@ -85,7 +85,7 @@ exports[`Form matches snapshot 1`] = `
       </span>
     </div>
     <button
-      className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-button sc-pyfCe klevlE"
+      className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-button sc-qRumB egCkMh"
       data-testid="submit-btn"
       disabled={false}
       onClick={[Function]}

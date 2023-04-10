@@ -42,16 +42,24 @@ const ProfileForm = props => {
         {...rest}
       >
         {children}
+
         <FormButtonsContainer>
           {showSecondaryButton && (
             <Button disabled={loading} onClick={secondaryButtonAction}>
               {secondaryButtonLabel}
             </Button>
           )}
-          <Button htmlType="submit" loading={loading} type="primary">
+
+          <Button
+            data-testid="profile-form-submit-button"
+            htmlType="submit"
+            loading={loading}
+            type="primary"
+          >
             {submitButtonLabel}
           </Button>
         </FormButtonsContainer>
+
         {loading && (
           <VisuallyHiddenElement role="status">
             Saving profile

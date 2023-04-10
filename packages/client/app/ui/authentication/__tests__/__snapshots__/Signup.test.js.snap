@@ -2,13 +2,13 @@
 
 exports[`Signup matches snapshot 1`] = `
 <div
-  className="sc-cabOPr fKroxn"
+  className="sc-gXSCqU kijXUi"
 >
   <div
-    className="sc-vKiki fGtSLm"
+    className="sc-fAmxux oVhTI"
   >
     <h1
-      className="ant-typography sc-PtnOH jHnQSs css-dev-only-do-not-override-ixblex"
+      className="ant-typography sc-jbISuK cHgzBa css-dev-only-do-not-override-1vtf12y"
       style={
         {
           "WebkitLineClamp": undefined,
@@ -18,27 +18,27 @@ exports[`Signup matches snapshot 1`] = `
       Sign up
     </h1>
     <div
-      className="sc-jYECHi"
+      className="sc-gohhfD"
     >
       <div
-        className="sc-kDvujY hfHsLZ"
+        className="sc-kFuwaP eKsANT"
       >
         <form
-          className="ant-form ant-form-vertical css-dev-only-do-not-override-ixblex"
+          className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y"
           data-testid="form-content"
           onReset={[Function]}
           onSubmit={[Function]}
         >
           <div
-            className="ant-form-item css-dev-only-do-not-override-ixblex"
+            className="ant-form-item css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+              className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
               onBlur={[Function]}
               style={{}}
             >
               <div
-                className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-label css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <label
@@ -50,7 +50,7 @@ exports[`Signup matches snapshot 1`] = `
                 </label>
               </div>
               <div
-                className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <div
@@ -60,11 +60,11 @@ exports[`Signup matches snapshot 1`] = `
                     className="ant-form-item-control-input-content"
                   >
                     <div
-                      className="sc-eDWCr"
+                      className="sc-fbJfA"
                     >
                       <input
                         aria-required="true"
-                        className="ant-input css-dev-only-do-not-override-ixblex sc-bqWxrE iIWXNM"
+                        className="ant-input css-dev-only-do-not-override-1vtf12y sc-brKeYL cNoMrz"
                         disabled={false}
                         id="firstName"
                         onBlur={[Function]}
@@ -72,6 +72,7 @@ exports[`Signup matches snapshot 1`] = `
                         onFocus={[Function]}
                         onKeyDown={[Function]}
                         placeholder="Fill in your first name"
+                        style={{}}
                         type="text"
                         value=""
                       />
@@ -82,15 +83,15 @@ exports[`Signup matches snapshot 1`] = `
             </div>
           </div>
           <div
-            className="ant-form-item css-dev-only-do-not-override-ixblex"
+            className="ant-form-item css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+              className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
               onBlur={[Function]}
               style={{}}
             >
               <div
-                className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-label css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <label
@@ -102,7 +103,7 @@ exports[`Signup matches snapshot 1`] = `
                 </label>
               </div>
               <div
-                className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <div
@@ -112,11 +113,11 @@ exports[`Signup matches snapshot 1`] = `
                     className="ant-form-item-control-input-content"
                   >
                     <div
-                      className="sc-eDWCr"
+                      className="sc-fbJfA"
                     >
                       <input
                         aria-required="true"
-                        className="ant-input css-dev-only-do-not-override-ixblex sc-bqWxrE iIWXNM"
+                        className="ant-input css-dev-only-do-not-override-1vtf12y sc-brKeYL cNoMrz"
                         disabled={false}
                         id="lastName"
                         onBlur={[Function]}
@@ -124,6 +125,7 @@ exports[`Signup matches snapshot 1`] = `
                         onFocus={[Function]}
                         onKeyDown={[Function]}
                         placeholder="Fill in your last name"
+                        style={{}}
                         type="text"
                         value=""
                       />
@@ -134,15 +136,15 @@ exports[`Signup matches snapshot 1`] = `
             </div>
           </div>
           <div
-            className="ant-form-item css-dev-only-do-not-override-ixblex"
+            className="ant-form-item css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+              className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
               onBlur={[Function]}
               style={{}}
             >
               <div
-                className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-label css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <label
@@ -154,7 +156,7 @@ exports[`Signup matches snapshot 1`] = `
                 </label>
               </div>
               <div
-                className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <div
@@ -164,11 +166,11 @@ exports[`Signup matches snapshot 1`] = `
                     className="ant-form-item-control-input-content"
                   >
                     <div
-                      className="sc-eDWCr"
+                      className="sc-fbJfA"
                     >
                       <input
                         aria-required="true"
-                        className="ant-input css-dev-only-do-not-override-ixblex sc-bqWxrE iIWXNM"
+                        className="ant-input css-dev-only-do-not-override-1vtf12y sc-brKeYL cNoMrz"
                         disabled={false}
                         id="email"
                         onBlur={[Function]}
@@ -176,6 +178,7 @@ exports[`Signup matches snapshot 1`] = `
                         onFocus={[Function]}
                         onKeyDown={[Function]}
                         placeholder="Fill in your email"
+                        style={{}}
                         type="text"
                         value=""
                       />
@@ -186,15 +189,15 @@ exports[`Signup matches snapshot 1`] = `
             </div>
           </div>
           <div
-            className="ant-form-item css-dev-only-do-not-override-ixblex"
+            className="ant-form-item css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+              className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
               onBlur={[Function]}
               style={{}}
             >
               <div
-                className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-label css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <label
@@ -206,7 +209,7 @@ exports[`Signup matches snapshot 1`] = `
                 </label>
               </div>
               <div
-                className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <div
@@ -216,15 +219,15 @@ exports[`Signup matches snapshot 1`] = `
                     className="ant-form-item-control-input-content"
                   >
                     <div
-                      className="sc-eDWCr"
+                      className="sc-fbJfA"
                     >
                       <span
-                        className="ant-input-affix-wrapper ant-input-password sc-hBxehG feBcIN css-dev-only-do-not-override-ixblex"
+                        className="ant-input-affix-wrapper ant-input-password sc-hAtEyd ilIxVb css-dev-only-do-not-override-1vtf12y"
                         onClick={[Function]}
                       >
                         <input
                           aria-required="true"
-                          className="ant-input css-dev-only-do-not-override-ixblex"
+                          className="ant-input css-dev-only-do-not-override-1vtf12y"
                           disabled={false}
                           hidden={null}
                           id="password"
@@ -233,7 +236,6 @@ exports[`Signup matches snapshot 1`] = `
                           onFocus={[Function]}
                           onKeyDown={[Function]}
                           placeholder="Fill in your password"
-                          style={null}
                           type="password"
                           value=""
                         />
@@ -243,7 +245,7 @@ exports[`Signup matches snapshot 1`] = `
                           <button
                             aria-checked={false}
                             aria-label="Show password"
-                            className="sc-ksBlkl bKBwoP ant-input-password-icon"
+                            className="sc-ktEKTO dINknX ant-input-password-icon"
                             onClick={[Function]}
                             onMouseDown={[Function]}
                             onMouseUp={[Function]}
@@ -282,15 +284,15 @@ exports[`Signup matches snapshot 1`] = `
             </div>
           </div>
           <div
-            className="ant-form-item css-dev-only-do-not-override-ixblex"
+            className="ant-form-item css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+              className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
               onBlur={[Function]}
               style={{}}
             >
               <div
-                className="ant-col ant-form-item-label css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-label css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <label
@@ -302,7 +304,7 @@ exports[`Signup matches snapshot 1`] = `
                 </label>
               </div>
               <div
-                className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <div
@@ -312,15 +314,15 @@ exports[`Signup matches snapshot 1`] = `
                     className="ant-form-item-control-input-content"
                   >
                     <div
-                      className="sc-eDWCr"
+                      className="sc-fbJfA"
                     >
                       <span
-                        className="ant-input-affix-wrapper ant-input-password sc-hBxehG feBcIN css-dev-only-do-not-override-ixblex"
+                        className="ant-input-affix-wrapper ant-input-password sc-hAtEyd ilIxVb css-dev-only-do-not-override-1vtf12y"
                         onClick={[Function]}
                       >
                         <input
                           aria-required="true"
-                          className="ant-input css-dev-only-do-not-override-ixblex"
+                          className="ant-input css-dev-only-do-not-override-1vtf12y"
                           disabled={false}
                           hidden={null}
                           id="confirmPassword"
@@ -329,7 +331,6 @@ exports[`Signup matches snapshot 1`] = `
                           onFocus={[Function]}
                           onKeyDown={[Function]}
                           placeholder="Fill in your password again"
-                          style={null}
                           type="password"
                           value=""
                         />
@@ -339,7 +340,7 @@ exports[`Signup matches snapshot 1`] = `
                           <button
                             aria-checked={false}
                             aria-label="Show password"
-                            className="sc-ksBlkl bKBwoP ant-input-password-icon"
+                            className="sc-ktEKTO dINknX ant-input-password-icon"
                             onClick={[Function]}
                             onMouseDown={[Function]}
                             onMouseUp={[Function]}
@@ -378,15 +379,15 @@ exports[`Signup matches snapshot 1`] = `
             </div>
           </div>
           <div
-            className="ant-form-item css-dev-only-do-not-override-ixblex"
+            className="ant-form-item css-dev-only-do-not-override-1vtf12y"
           >
             <div
-              className="ant-row ant-form-item-row css-dev-only-do-not-override-ixblex"
+              className="ant-row ant-form-item-row css-dev-only-do-not-override-1vtf12y"
               onBlur={[Function]}
               style={{}}
             >
               <div
-                className="ant-col ant-form-item-control css-dev-only-do-not-override-ixblex"
+                className="ant-col ant-form-item-control css-dev-only-do-not-override-1vtf12y"
                 style={{}}
               >
                 <div
@@ -396,11 +397,10 @@ exports[`Signup matches snapshot 1`] = `
                     className="ant-form-item-control-input-content"
                   >
                     <label
-                      className="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item sc-jSUZER blZqQb css-dev-only-do-not-override-ixblex"
+                      className="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item sc-jTrPJq fhnEky css-dev-only-do-not-override-1vtf12y"
                     >
                       <span
-                        className="ant-checkbox css-dev-only-do-not-override-ixblex"
-                        style={{}}
+                        className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
                       >
                         <input
                           aria-label="I agree to the terms and conditions"
@@ -410,10 +410,6 @@ exports[`Signup matches snapshot 1`] = `
                           id="agreedTc"
                           onBlur={[Function]}
                           onChange={[Function]}
-                          onFocus={[Function]}
-                          onKeyDown={[Function]}
-                          onKeyPress={[Function]}
-                          onKeyUp={[Function]}
                           type="checkbox"
                         />
                         <span
@@ -424,7 +420,7 @@ exports[`Signup matches snapshot 1`] = `
                         I agree to the
                          
                         <a
-                          className="sc-cegXJL hOBEeF"
+                          className="sc-kRQdhH ginInV"
                           href="#termsAndCondition"
                           id="termsAndConditions"
                           onClick={[Function]}
@@ -439,8 +435,7 @@ exports[`Signup matches snapshot 1`] = `
             </div>
           </div>
           <button
-            className="ant-btn css-dev-only-do-not-override-ixblex ant-btn-primary sc-hLBbgP gDEpHH sc-ggxSZb jKBBne"
-            data-testid="button"
+            className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU iQloaX sc-jMLGdu kGUdUr"
             disabled={false}
             onClick={[Function]}
             status={null}
@@ -453,13 +448,13 @@ exports[`Signup matches snapshot 1`] = `
         </form>
       </div>
       <div
-        className="sc-cVKHio bkmlpt"
+        className="sc-glpldh BqCB"
       >
         <div
-          className="sc-eHzXwO dTpziJ"
+          className="sc-fDetwT cWgMyB"
         >
           <a
-            className="sc-cegXJL hOBEeF"
+            className="sc-kRQdhH ginInV"
             href="/login"
             onClick={[Function]}
           >

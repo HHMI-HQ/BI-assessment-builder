@@ -1,4 +1,5 @@
 import React from 'react'
+import { uuid } from '@coko/client'
 
 import { axe, fireEvent, render, renderer, screen } from '../../../testUtils'
 
@@ -38,6 +39,7 @@ const MockUserList = props => {
   return (
     <UserList
       currentPage={1}
+      currentUserId={uuid()}
       data={data}
       onBulkActivate={jest.fn()}
       onBulkDeactivate={jest.fn()}
@@ -84,6 +86,7 @@ describe('UserList', () => {
     getElementByIdMock.mockRestore()
     // jest.clearAllMocks()
   })
+
   it('renders correct number of users', () => {
     render(<MockUserList />)
 
@@ -95,6 +98,7 @@ describe('UserList', () => {
     const tableRows = screen.getAllByRole('row')
     expect(tableRows.length).toBe(4)
   })
+
   it('checking show deactivated users', async () => {
     let showDeactivated = false
 
@@ -120,6 +124,7 @@ describe('UserList', () => {
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
+
   it('renders with no accessibility errors with empty data array', async () => {
     const { container } = render(<MockUserList data={[]} />)
     const results = await axe(container)

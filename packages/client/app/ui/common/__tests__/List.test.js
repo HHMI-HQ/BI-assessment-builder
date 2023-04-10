@@ -70,6 +70,9 @@ const sortOptions = [
 ]
 
 const MockList = props => {
+  /* eslint-disable-next-line react/prop-types */
+  const { searchPlaceholder } = props
+
   return (
     <List
       dataSource={data}
@@ -82,7 +85,7 @@ const MockList = props => {
         total: TOTAL_COUNT,
       }}
       renderItem={item => <div>{item.value}</div>}
-      searchPlaceHolder=""
+      searchPlaceholder={searchPlaceholder || ''}
       sortOptions={sortOptions}
       {...props}
     />
@@ -103,6 +106,7 @@ describe('list', () => {
 
     expect(listComponent).toMatchSnapshot()
   })
+
   it('handles showSearch, showSort, showTotalCount, showPagination', () => {
     const { getByPlaceholderText, getByText, getByTestId, getByLabelText } =
       render(
@@ -125,6 +129,7 @@ describe('list', () => {
     expect(totalCount).toBeInTheDocument()
     expect(pagination).toBeInTheDocument()
   })
+
   it('renders correct footerContent', () => {
     const footerContent = (
       <button data-testid="footer-btn" type="button">
@@ -136,10 +141,12 @@ describe('list', () => {
     const footerBtn = getByTestId('footer-btn')
     expect(footerBtn).toBeInTheDocument()
   })
+
   it('renders spinner on loading', () => {
     const { container } = render(<MockList loading />)
     expect(container.getElementsByClassName('ant-spin ')).toBeTruthy()
   })
+
   it('calls onSearch', async () => {
     const onSearch = jest.fn()
 
@@ -152,11 +159,16 @@ describe('list', () => {
     )
 
     const searchBox = getByPlaceholderText('Test Search...')
-    userEvent.type(searchBox, 'src{enter}')
+
+    await renderer.act(async () => {
+      await userEvent.type(searchBox, 'src{enter}')
+    })
+
     await waitFor(() => {
       expect(onSearch).toHaveBeenCalled() // Check that the onClick function has been called
     })
   })
+
   it('renders without any accessibility error', async () => {
     const { container } = render(<MockList />)
     const result = await axe(container)
