@@ -1,0 +1,23 @@
+FROM node:16.19.0-buster-slim as server
+
+RUN apt-get update \ 
+    && apt-get upgrade -y \
+    && apt-get install -y \
+    git \
+    make \
+    g++ \
+    python3
+
+WORKDIR /home/node/hhmi
+
+COPY package.json .
+COPY yarn.lock .
+
+RUN chown -R node:node .
+USER node
+
+RUN yarn install --frozen-lockfile --production
+COPY --chown=node:node . .
+
+ENTRYPOINT ["sh", "scripts/setupDevServer.sh"]
+CMD ["node", "startServer.js"]

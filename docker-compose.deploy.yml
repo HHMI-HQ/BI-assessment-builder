@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  client:
+    image: cokoapps/hhmi-client
+    ports:
+      - ${CLIENT_PORT}:8080
+    environment:
+      - SERVER_URL=${SERVER_URL}
+
+  server:
+    image: cokoapps/hhmi-server
+    ports:
+      - ${SERVER_PORT}:3000
+    environment:
+      - NODE_ENV=production
+      - PUBSWEET_SECRET=${PUBSWEET_SECRET}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CLIENT_URL=${CLIENT_URL}
+      - MAILER_SENDER=${MAILER_SENDER}
+      - MAILER_HOSTNAME=${MAILER_HOSTNAME}
+      - MAILER_PORT=${MAILER_PORT}
+      - MAILER_USER=${MAILER_USER}
+      - MAILER_PASSWORD=${MAILER_PASSWORD}
+      - S3_PROTOCOL=${S3_PROTOCOL}
+      - S3_HOST=${S3_HOST}
+      - S3_PORT=${S3_PORT}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_BUCKET=${S3_BUCKET}
