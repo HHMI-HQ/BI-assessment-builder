@@ -1,18 +1,28 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid } from '@coko/client'
+import { grid, th } from '@coko/client'
 import { TabsStyled as Tabs } from '../common'
 import ProfileInfo from './ProfileInfo'
 import ChangePassword from './ChangePassword'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  height: 100%;
+`
 
 const StyledTabs = styled(Tabs)`
-  .ant-tabs-tabpane {
-    margin: ${grid(4)} auto 0;
-    max-width: 100%;
-    width: 900px;
+  height: 100%;
+
+  .ant-tabs-content-holder {
+    border-top: 1px solid ${th('colorBorder')};
+    height: 100%;
+    overflow: auto;
+
+    .ant-tabs-tabpane {
+      margin: ${grid(4)} auto 0;
+      max-width: 100%;
+      width: 900px;
+    }
   }
 `
 
@@ -119,6 +129,7 @@ const Profile = props => {
         activeKey={activeKey}
         items={items}
         onTabClick={checkForUnsavedChanges}
+        type="card"
       />
     </Wrapper>
   )

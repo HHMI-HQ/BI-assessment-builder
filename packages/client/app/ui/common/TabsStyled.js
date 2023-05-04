@@ -18,6 +18,8 @@ const TabsStyled = styled(AntTabs)`
   .ant-tabs-nav-list {
     .ant-tabs-tab {
       background: ${th('colorBackgroundHue')};
+      border: 1px solid ${th('colorBorder')};
+      border-bottom: none;
       font-weight: 700;
       margin: 0;
       padding: ${grid(0.5)};
@@ -29,6 +31,10 @@ const TabsStyled = styled(AntTabs)`
 
       &.ant-tabs-tab-active {
         background-color: ${th('colorBackground')};
+
+        &:hover {
+          color: ${th('colorPrimary')};
+        }
       }
 
       [role='tab'] {

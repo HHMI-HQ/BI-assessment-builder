@@ -1350,6 +1350,7 @@ const Question = props => {
               // left: BackButton,
               right: RightArea,
             }}
+            type="card"
           />
         </Spin>
       </Wrapper>

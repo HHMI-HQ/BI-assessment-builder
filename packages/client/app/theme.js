@@ -14,7 +14,7 @@ module.exports = {
   colorError: '#d43131',
   colorWarning: '#a65b00',
 
-  colorText: '#3F3F3F',
+  colorText: '#555',
   colorTextDark: '#222222',
   colorTextReverse: 'white',
   colorTextPlaceholder: '#777',
@@ -52,7 +52,7 @@ module.exports = {
 
   gridUnit: '4px',
 
-  borderRadius: '0px',
+  borderRadius: '4px',
   borderWidth: '1px',
   borderStyle: 'solid',
 

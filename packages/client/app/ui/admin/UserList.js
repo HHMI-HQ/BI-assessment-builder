@@ -91,6 +91,10 @@ const StyledCheckbox = styled(Checkbox)`
   flex-direction: column-reverse;
   white-space: nowrap;
 
+  .ant-checkbox {
+    align-self: auto;
+  }
+
   &::after {
     display: none;
   }
@@ -216,7 +220,9 @@ const UserList = props => {
         ? `Loaded inactive users`
         : `Loaded active users`
       setTimeout(() => {
-        document.getElementById('action-status').innerHTML = ''
+        if (document.getElementById('action-status')) {
+          document.getElementById('action-status').innerHTML = ''
+        }
       }, 3000)
     }
   }, [JSON.stringify(dataSource)])
@@ -250,8 +256,11 @@ const UserList = props => {
                     selectedRows.length > 1 ? 's' : ''
                   } activated`
                   setTimeout(() => {
-                    document.getElementById('action-status').innerHTML = ''
+                    if (document.getElementById('action-status')) {
+                      document.getElementById('action-status').innerHTML = ''
+                    }
                   }, 3000)
+
                   setSelectedRows([])
                   confirmDialog.destroy()
                 })
@@ -300,8 +309,11 @@ const UserList = props => {
                     selectedRows.length > 1 ? 's' : ''
                   } deactivated`
                   setTimeout(() => {
-                    document.getElementById('action-status').innerHTML = ''
+                    if (document.getElementById('action-status')) {
+                      document.getElementById('action-status').innerHTML = ''
+                    }
                   }, 3000)
+
                   setSelectedRows([])
                   confirmDialog.destroy()
                 })
@@ -350,7 +362,9 @@ const UserList = props => {
                     selectedRows.length > 1 ? 's' : ''
                   } deleted`
                   setTimeout(() => {
-                    document.getElementById('action-status').innerHTML = ''
+                    if (document.getElementById('action-status')) {
+                      document.getElementById('action-status').innerHTML = ''
+                    }
                   }, 3000)
                   setSelectedRows([])
                   confirmDialog.destroy()

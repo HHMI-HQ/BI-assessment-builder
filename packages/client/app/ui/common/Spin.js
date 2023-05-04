@@ -27,20 +27,22 @@ const StyledSpin = styled(({ isNested, renderBackground, ...rest }) => (
 `
 
 const bounce = keyframes`
-  0%,
-  100% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1);
-  }
-`
+   0%,
+   100% {
+     transform: scale(0);
+   }
+ 
+   50% {
+     transform: scale(1);
+   }
+ `
 
 const IndicatorWrapper = styled.div`
-  height: ${props => grid(props.size)};
-  position: relative;
-  width: ${props => grid(props.size)};
+  &&& {
+    height: ${props => grid(props.size)};
+    position: relative;
+    width: ${props => grid(props.size)};
+  }
 `
 
 const BounceOne = styled.div`
@@ -75,13 +77,20 @@ const NestedWrapper = styled.div`
   }
 `
 
-/* eslint-disable-next-line react/prop-types */
-const Indicator = ({ size }) => (
-  <IndicatorWrapper size={size}>
+export const Indicator = ({ size, className }) => (
+  <IndicatorWrapper className={className} size={size}>
     <BounceOne />
     <BounceTwo />
   </IndicatorWrapper>
 )
+
+Indicator.propTypes = {
+  size: PropTypes.number,
+}
+
+Indicator.defaultProps = {
+  size: 10,
+}
 
 const Spin = props => {
   const { className, children, renderBackground, size, spinning, ...rest } =
@@ -96,7 +105,6 @@ const Spin = props => {
       isNested={!!children}
       renderBackground={renderBackground}
       spinning={spinning}
-      // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
     >
       {showChildren && children}

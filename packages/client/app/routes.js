@@ -14,6 +14,8 @@ import {
   PageLayout as Page,
   RequireAuth,
   useCurrentUser,
+  th,
+  grid,
 } from '@coko/client'
 
 import { Header, Footer, VisuallyHiddenElement, Spin } from 'ui'
@@ -193,7 +195,15 @@ const Wrapper = props => {
 }
 
 const StyledPage = styled(Page)`
-  height: calc(100% - 64px - 40px);
+  /* height: calc(100% - 64px - 40px); */
+  /* background: rgb(44 157 124); */
+  background: linear-gradient(90deg, #2c9d7c, #8ac342);
+
+  flex-grow: 1;
+
+  > div {
+    position: relative;
+  }
 `
 
 const StyledSpin = styled(Spin)`
@@ -255,7 +265,20 @@ const SiteHeader = () => {
 }
 
 const StyledMain = styled.main`
-  height: 100%;
+  background: ${th('colorBackground')};
+  border-radius: ${grid(1)};
+  height: auto;
+  inset: ${grid(2)} ${grid(4)};
+  /* outline: 2px solid ${th('colorTertiary')}; */
+  outline: 1px solid ${th('colorBorder  ')};
+  padding: ${grid(2)};
+
+  position: absolute;
+
+  &:focus-visible {
+    outline: ${grid(1)} solid ${th('colorPrimary')};
+    outline-offset: -2px;
+  }
 `
 
 const RequireProfile = ({ children }) => {
@@ -287,9 +310,13 @@ const routes = (
   <Authenticate currentUserQuery={CURRENT_USER} loadingComponent={<Loader />}>
     <Wrapper>
       <GlobalStyles />
-      <SiteHeader />
+      {/* <SiteHeader /> */}
       <MetadataProvider>
-        <StyledPage fadeInPages={false} padPages={false}>
+        <StyledPage
+          fadeInPages={false}
+          navComponent={SiteHeader}
+          padPages={false}
+        >
           <StyledMain id="main-content" tabIndex="-1">
             <Switch>
               <Route

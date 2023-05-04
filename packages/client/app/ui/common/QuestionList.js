@@ -87,7 +87,7 @@ const QuestionList = props => {
     const paginationConfig = {}
     paginationConfig.pageSize = questionsPerPage
 
-    if (totalCount > questions.length) {
+    if (totalCount > questions?.length) {
       paginationConfig.onChange = onPageChange
     }
 

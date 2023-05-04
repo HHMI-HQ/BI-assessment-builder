@@ -203,7 +203,7 @@ const StyledLogin = styled(Link)`
   align-items: center;
   background-color: ${th('colorPrimary')};
   border-color: ${th('colorPrimary')};
-  border-radius: 0;
+  border-radius: ${th('borderRadius')};
   color: ${th('colorTextReverse')};
   display: flex;
   font-size: ${th('fontSizeBase')};
@@ -466,7 +466,9 @@ const Header = props => {
         Skip to main content
       </SkipLink>
       <Branding to={homepage}>
-        <h1>HHMI BioInterctive Assessment Builder</h1>
+        <h1 style={{ color: 'white' }}>
+          HHMI BioInterctive Assessment Builder
+        </h1>
       </Branding>
       <Navigation role="navigation">
         <MobileMenuToggle

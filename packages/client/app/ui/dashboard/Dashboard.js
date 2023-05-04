@@ -164,6 +164,7 @@ const Dashboard = props => {
           )}
           onChange={setRole}
           tabBarExtraContent={CreateQuestionButton}
+          type="card"
         />
       </Spin>
     </Wrapper>

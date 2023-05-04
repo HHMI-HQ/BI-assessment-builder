@@ -13,6 +13,7 @@ import Search from './Search'
 import UISelect from './Select'
 import Pagination from './Pagination'
 import VisuallyHiddenElement from './VisuallyHiddenElement'
+import { Indicator } from './Spin'
 
 // #region styled
 const Wrapper = styled.div`
@@ -75,6 +76,20 @@ const ListItemWrapper = styled.li`
 const StyledList = styled(AntList)`
   flex-grow: 1;
   overflow: auto;
+
+  .ant-spin-nested-loading {
+    height: 100%;
+
+    .ant-spin {
+      display: grid;
+      max-height: unset;
+      place-content: center;
+    }
+  }
+`
+
+const StyledLoader = styled(Indicator)`
+  transform: translateY(-100%);
 `
 
 const FooterWrapper = styled.div`
@@ -366,7 +381,7 @@ const List = props => {
             <div {...provided.droppableProps} ref={provided.innerRef}>
               <AntList
                 dataSource={splitDataSource}
-                loading={loading}
+                loading={{ spinning: loading, indicator: <StyledLoader /> }}
                 locale={locale}
                 renderItem={listItemToRender}
                 {...rest}
@@ -381,7 +396,7 @@ const List = props => {
   ) : (
     <StyledList
       dataSource={splitDataSource}
-      loading={loading}
+      loading={{ spinning: loading, indicator: <StyledLoader /> }}
       locale={locale}
       renderItem={listItemToRender}
       {...rest}
