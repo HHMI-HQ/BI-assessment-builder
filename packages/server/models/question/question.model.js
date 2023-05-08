@@ -412,6 +412,11 @@ class Question extends BaseModel {
           'question_versions.question_id',
           'questions.id',
         )
+        .distinctOn('questions.id')
+        .orderBy([
+          'questions.id',
+          { column: 'question_versions.created', order: 'desc' },
+        ])
         .where('content_text', 'ilike', `%${options.searchQuery}%`)
 
       const queryStrings = options.searchQuery.split(' ')
@@ -427,7 +432,44 @@ class Question extends BaseModel {
   static async findByExcludingRole(userId, role, options = {}) {
     const { submittedOnly } = options
 
-    let query = Question.query(options.trx)
+    const query = Question.query(options.trx).leftJoin(
+      'question_versions',
+      'questions.id',
+      'question_versions.question_id',
+    )
+
+    // if searchQuery, we need the author's display name
+    if (options.searchQuery) {
+      query
+        .leftJoin('teams', 'teams.object_id', 'questions.id')
+        .leftJoin('team_members', 'team_members.team_id', 'teams.id')
+        .leftJoin('users', 'users.id', 'team_members.user_id')
+    }
+
+    const selectFields = ['questions.*', 'question_versions.submitted']
+
+    if (options.searchQuery) {
+      selectFields.push(
+        ...[
+          'question_versions.content_text',
+          'question_versions.keywords',
+          'users.display_name as author',
+        ],
+      )
+    }
+
+    query.select(selectFields)
+
+    if (submittedOnly) {
+      query.where({ submitted: true })
+    }
+
+    query
+      .distinctOn('questions.id')
+      .orderBy([
+        'questions.id',
+        { column: 'question_versions.created', order: 'desc' },
+      ])
       .whereNotIn('questions.id', builder => {
         return builder
           .select('questions.id')
@@ -439,65 +481,47 @@ class Question extends BaseModel {
             userId,
           })
       })
-      .distinctOn('questions.id')
-      .select('questions.*')
-      .orderBy(['questions.id'])
 
-    if (submittedOnly) {
-      query = query.whereIn('questions.id', builder => {
-        return builder
-          .select('questions.id')
-          .from('questions')
-          .leftJoin(
-            'question_versions',
-            'questions.id',
-            'question_versions.question_id',
-          )
-          .where({
-            submitted: true,
-          })
-      })
-    }
+    query.as('q1')
+
+    const parentQuery = Question.query(options.trx).select('*').from(query)
 
     if (options.searchQuery) {
-      query
-        .leftJoin(
-          'question_versions',
-          'question_versions.question_id',
-          'questions.id',
-        )
-        .leftJoin('teams', 'teams.objectId', 'questions.id')
-        .leftJoin('team_members', 'team_members.team_id', 'teams.id')
-        .leftJoin('users', 'users.id', 'team_members.user_id')
-        .where(builder => {
-          return builder
-            .where('content_text', 'ilike', `%${options.searchQuery}%`)
-            .orWhere('users.displayName', 'ilike', `%${options.searchQuery}%`)
-        })
+      parentQuery
+        .where('content_text', 'ilike', `%${options.searchQuery}%`)
+        .orWhere('author', 'ilike', `%${options.searchQuery}%`)
 
       const queryStrings = options.searchQuery.split(' ')
       queryStrings.forEach(queryString => {
-        query.orWhereJsonSupersetOf('keywords', [queryString])
+        parentQuery.orWhereJsonSupersetOf('keywords', [queryString])
       })
     }
 
-    return applyListQueryOptions(query, options)
+    return applyListQueryOptions(parentQuery, options)
   }
 
   static async getAuthor(id, options = {}) {
     const { trx } = options
 
-    const author = await Question.query(trx)
-      .leftJoin('teams', 'questions.id', 'teams.object_id')
-      .leftJoin('team_members', 'teams.id', 'team_members.team_id')
-      .select('team_members.user_id')
-      .findOne({ 'teams.role': 'author', 'teams.objectId': id })
+    try {
+      const author = await Question.query(trx)
+        .leftJoin('teams', 'questions.id', 'teams.object_id')
+        .leftJoin('team_members', 'teams.id', 'team_members.team_id')
+        .select('team_members.user_id')
+        .findOne({ 'teams.role': 'author', 'teams.objectId': id })
 
-    if (author.userId) {
-      return User.findById(author.userId)
+      if (author.userId) {
+        const user = await User.findById(author.userId)
+        return user
+      }
+
+      return null
+    } catch (e) {
+      console.error('Question model: getAuthor failed', e)
+      // throw new Error(e)
+      // return null to show question even when user does not exist
+      return null
     }
-
-    return null
   }
 }
 
