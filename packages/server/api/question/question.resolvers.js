@@ -23,6 +23,8 @@ const {
   generateScormZip,
   createNewQuestionVersion,
 
+  assignHandlingEditor,
+
   uploadFiles,
   getImageUrls,
 } = require('../../controllers/question.controllers')
@@ -153,6 +155,10 @@ const leadingContentResolver = async version => {
   return getLeadingContentForQuestion(version)
 }
 
+const assignHandlingEditorResolver = async (_, { questionId, userId }) => {
+  return assignHandlingEditor(questionId, userId)
+}
+
 module.exports = {
   Query: {
     question: questionResolver,
@@ -177,6 +183,7 @@ module.exports = {
     generateScormZip: generateScormZipResolver,
     createNewQuestionVersion: createNewQuestionVersionResolver,
     uploadFiles: uploadFilesResolver,
+    assignHandlingEditor: assignHandlingEditorResolver,
   },
   Question: {
     versions: versionsResolver,

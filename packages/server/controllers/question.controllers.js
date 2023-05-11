@@ -13,6 +13,7 @@ const resources = require('./resourcesData')
 const { getImageUrls, findImages } = require('./utils')
 
 const AUTHOR_TEAM = config.teams.nonGlobal.author
+const HE_TEAM = config.teams.global.handlingEditor
 const BASE_MESSAGE = `${labels.QUESTION_CONTROLLERS}:`
 
 const getQuestion = async (questionId, options = {}) => {
@@ -581,6 +582,32 @@ const generateWordFile = async (questionVersionId, options = {}) => {
 
 const resourceResolver = async () => resources
 
+const assignHandlingEditor = async (questionId, userId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} assignHandlingEditor:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} assigning user ${userId} as handling editor for question ${questionId}`,
+  )
+
+  const { trx } = options
+
+  try {
+    const heTeam = await Team.insert(
+      {
+        objectId: questionId,
+        objectType: 'question',
+        role: HE_TEAM.role,
+        displayName: HE_TEAM.displayName,
+      },
+      { trx },
+    )
+
+    return Team.addMember(heTeam.id, userId, { trx })
+  } catch (error) {
+    logger.error(`${CONTROLLER_MESSAGE} ${error}`)
+    throw new Error(error)
+  }
+}
+
 const uploadFiles = async files => {
   const filesData = await Promise.all(files)
 
@@ -622,6 +649,8 @@ module.exports = {
   resourceResolver,
   generateScormZip,
   generateWordFile,
+
+  assignHandlingEditor,
 
   uploadFiles,
   getImageUrls,
