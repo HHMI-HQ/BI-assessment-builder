@@ -186,6 +186,14 @@ extend type Query {
     pageSize: Int
     searchQuery: String
   ): QuestionsResponse!
+
+  getHandlingEditorDashboard(
+    orderBy: String
+    ascending: Boolean
+    page: Int
+    pageSize: Int
+    searchQuery: String
+  ): QuestionsResponse!
 }
 
 extend type Mutation {

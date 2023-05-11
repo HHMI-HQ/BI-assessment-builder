@@ -9,6 +9,7 @@ const {
   getManagingEditorDashboard,
   getPublishedQuestionsIds,
   assignAuthorship,
+  getHandlingEditorDashboard,
 
   createQuestion,
   updateQuestion,
@@ -52,6 +53,10 @@ const getManagingEditorDashboardResolver = async (_, args, ctx) => {
 
 const createQuestionResolver = async (_, { input }, ctx) => {
   return createQuestion(ctx.user, input)
+}
+
+const getHandlingEditorDashboardResolver = async (_, args, ctx) => {
+  return getHandlingEditorDashboard(ctx.user, args)
 }
 
 const duplicateQuestionResolver = async (_, { questionId }, ctx) => {
@@ -156,6 +161,7 @@ module.exports = {
     getReviewerDashboard: getReviewerDashboardResolver,
     getManagingEditorDashboard: getManagingEditorDashboardResolver,
     getPublishedQuestionsIds: getPublishedQuestionsIdsResolver,
+    getHandlingEditorDashboard: getHandlingEditorDashboardResolver,
   },
   Mutation: {
     createQuestion: createQuestionResolver,
