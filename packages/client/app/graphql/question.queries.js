@@ -118,6 +118,73 @@ export const GET_EDITOR_DASHBOARD = gql`
   }
 `
 
+export const GET_HANDLING_EDITOR_DASHBOARD = gql`
+  query GetHandlingEditorDashboard(
+    $orderBy: String
+    $ascending: Boolean
+    $page: Int
+    $pageSize: Int
+    $searchQuery: String
+  ) {
+    getHandlingEditorDashboard(
+      orderBy: $orderBy
+      ascending: $ascending
+      page: $page
+      pageSize: $pageSize
+      searchQuery: $searchQuery
+    ) {
+      result {
+        id
+        rejected
+        author {
+          displayName
+        }
+        versions(latestOnly: true) {
+          id
+          content
+
+          submitted
+          underReview
+          inProduction
+          published
+          publicationDate
+
+          topics {
+            topic
+            subtopic
+          }
+
+          courses {
+            course
+            units {
+              # application
+              # courseTopic
+              # essentialKnowledge
+              learningObjective
+              # skill
+              understanding
+              # unit
+            }
+          }
+
+          cognitiveLevel
+          # affectiveLevel
+          # psychomotorLevel
+        }
+      }
+      totalCount
+    }
+  }
+`
+
+export const ASSING_HANDLING_EDITOR = gql`
+  mutation assignHandlingEditor($questionId: ID!, $userId: ID!) {
+    assignHandlingEditor(questionId: $questionId, userId: $userId) {
+      id
+    }
+  }
+`
+
 export const CREATE_QUESTION = gql`
   mutation CreateQuestion($input: UpdateQuestionInput) {
     createQuestion(input: $input) {
