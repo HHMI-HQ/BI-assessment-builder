@@ -76,6 +76,10 @@ module.exports = {
         displayName: 'Admin',
         role: 'admin',
       },
+      handlingEditors: {
+        displayName: 'Handling Editor',
+        role: 'handlingEditors',
+      },
       production: {
         displayName: 'Production',
         role: 'production',
