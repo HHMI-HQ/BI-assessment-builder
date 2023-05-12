@@ -1,3 +1,4 @@
+const { logger } = require('@coko/server')
 const TeamModel = require('@coko/server/src/models/team/team.model')
 const TeamMember = require('@coko/server/src/models/teamMember/teamMember.model')
 
@@ -44,6 +45,24 @@ class Team extends TeamModel {
       return affecetedRows === 1
     } catch (e) {
       throw new Error(e)
+    }
+  }
+
+  static async filterGlobalTeamMembers(role, query = '', options = {}) {
+    try {
+      return User.query(options.trx)
+        .whereIn('id', builder => {
+          return builder
+            .select('users.id')
+            .from('users')
+            .leftJoin('team_members', 'team_members.user_id', 'users.id')
+            .leftJoin('teams', 'team_members.team_id', 'teams.id')
+            .where('teams.role', role)
+        })
+        .where('users.displayName', 'ilike', `%${query}%`)
+    } catch (error) {
+      logger.error('Team model: filterGlobalTeamMembers failed', error)
+      throw new Error(error)
     }
   }
 }
