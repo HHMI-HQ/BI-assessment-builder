@@ -109,8 +109,8 @@ const UPDATE_GLOBAL_TEAMS = gql`
 const FILTER_GLOBAL_TEAM_MEMBERS = gql`
   query FilterTeamMembers($role: String!, $query: String) {
     filterGlobalTeamMembers(role: $role, query: $query) {
-      id
-      displayName
+      value: id
+      label: displayName
     }
   }
 `

@@ -27,6 +27,7 @@ import {
   FILTER_USERS_OPTIONS,
   ASSIGN_QUESTION_AUTHOR,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
+  FILTER_GLOBAL_TEAM_MEMBERS,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -177,6 +178,14 @@ const QuestionPage = props => {
       history.push(`/question/${id}/`)
     },
   })
+
+  const [
+    filterGlobalTeamMembers,
+    {
+      loading: loadingSearchHE,
+      data: { filterGlobalTeamMembers: handlingEditors } = {},
+    },
+  ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS)
 
   /* setup Prev/Next question functions */
   // read state from location to get filter values, if any
@@ -535,6 +544,15 @@ const QuestionPage = props => {
     return assignAuthorship(mutationData)
   }
 
+  const handleSearchHE = async query => {
+    const variables = {
+      role: 'handlingEditor',
+      query,
+    }
+
+    filterGlobalTeamMembers({ variables })
+  }
+
   // #endregion handlers
 
   if (error) {
@@ -583,6 +601,7 @@ const QuestionPage = props => {
         // admins have editorial rights (publishing rights) on their own questions
         editorView={(isEditor && !isAuthor) || isAdmin}
         facultyView={testMode}
+        handlingEditors={handlingEditors || []}
         initialMetadataValues={metadataApiToUi(version, testMode)}
         isInProduction={
           version?.inProduction || (isAdmin && isAuthor && !version?.published)
@@ -626,11 +645,13 @@ const QuestionPage = props => {
         onPublish={handlePublish}
         onQuestionSubmit={handleQuestionSubmit}
         onReject={handleReject}
+        onSearchHE={handleSearchHE}
         questionAgreedTc={false} //
         refetchUser={refetchCurrentUser}
         resources={getResources}
         scormZipLoading={generateScormZipLoading}
-        showAssignHEButton={false} //
+        searchHELoading={loadingSearchHE}
+        showAssignHEButton //
         showNextQuestionLink={false} //
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
