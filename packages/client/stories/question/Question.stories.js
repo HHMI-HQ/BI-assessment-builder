@@ -2,8 +2,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react'
 import styled from 'styled-components'
-
-import { th } from '@coko/client'
+import { name } from 'faker'
+import { th, uuid } from '@coko/client'
 
 import { Question, Checkbox } from 'ui'
 
@@ -19,11 +19,18 @@ import {
   initialMetadataValues,
 } from '../../app/utilities/question/initialValues'
 import complexItemSet from '../../app/utilities/question/complexItemSets'
+import { createData } from '../../app/utilities/_helpers'
 
 const Wrapper = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
   height: 800px;
 `
+
+const makeUser = n =>
+  createData(n, i => ({
+    value: uuid(),
+    label: name.findName(),
+  }))
 
 export const Base = args => {
   const [submitted, setSubmitted] = useState(false)
@@ -221,15 +228,38 @@ export const EditorView = () => {
     console.log(newContent)
   }
 
+  const [handlingEditors, setHandlingEditors] = useState([])
+  const [searchHELoading, setSearchHELoading] = useState(false)
+  const [assignHELoading, setAssignHELoading] = useState(false)
+
+  const handleSearchHE = query => {
+    console.log(`searching editors by query ${query}`)
+    setSearchHELoading(true)
+    setTimeout(() => {
+      setHandlingEditors(makeUser(5))
+      setSearchHELoading(false)
+    }, 2000)
+  }
+
+  const handleAssignHE = () => {
+    console.log(`assigning HE`)
+    setAssignHELoading(true)
+    setTimeout(() => {
+      setAssignHELoading(false)
+    }, 2000)
+  }
+
   return (
     <Wrapper>
       <Checkbox onChange={e => setError(e.target.checked)}>
         Will have error on move to review/publish/reject
       </Checkbox>
       <Question
+        assignHELoading={assignHELoading}
         complexItemSetOptions={complexItemSet}
         editorContent={editorInitialContent}
         editorView
+        handlingEditors={handlingEditors}
         initialMetadataValues={metadataApiToUi(initialMetadataValues)}
         isInProduction={inProduction}
         isPublished={published}
@@ -238,6 +268,7 @@ export const EditorView = () => {
         isUnderReview={reviewing}
         loading={false}
         metadata={metadataTransformer(metadata)}
+        onClickAssignHE={handleAssignHE}
         onClickBackButton={() => console.log('go back to dashboard')}
         onClickExportToWord={() => {}}
         onEditorContentAutoSave={handleEditorContentChanged}
@@ -247,9 +278,11 @@ export const EditorView = () => {
         onPublish={publish}
         onQuestionSubmit={data => console.log(data)}
         onReject={rejectQuestion}
+        onSearchHE={handleSearchHE}
         questionAgreedTc={false}
         resources={resources}
-        showAssignHEButton={false}
+        searchHELoading={searchHELoading}
+        showAssignHEButton
         submitting={false}
         wordFileLoading={false}
       />

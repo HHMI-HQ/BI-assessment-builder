@@ -17,6 +17,7 @@ import Metadata from './Metadata'
 import QuestionEditor from './QuestionEditor'
 import ExportToWordButton from './ExportToWordButton'
 // import ExportToScormButton from './ExportToScormButton'
+import AssignHEButton from './AssignHEButton'
 import AutoSaving from './AutoSaveIndicator'
 import {
   Button,
@@ -122,6 +123,11 @@ const StyledWordExportButton = styled(ExportToWordButton)`
 //   margin-right: ${grid(2)};
 //   width: 100%;
 // `
+
+const StyledAssignHEButton = styled(AssignHEButton)`
+  margin-right: ${grid(2)};
+  width: 100%;
+`
 
 const RightAreaWrapper = styled.div`
   align-items: center;
@@ -369,6 +375,10 @@ const Question = props => {
     updated,
     wordFileLoading,
     canCreateNewVersion,
+    handlingEditors,
+    onSearchHE,
+    searchHELoading,
+    assignHELoading,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1048,14 +1058,13 @@ const Question = props => {
           showMetadataOption
         />
         {showAssignHEButton && (
-          <StyledButton
-            aria-label="Assign Handling Editor"
-            ghost
-            onClick={onClickAssignHE}
-            type="primary "
-          >
-            Assign HE
-          </StyledButton>
+          <StyledAssignHEButton
+            handlingEditors={handlingEditors}
+            loading={assignHELoading}
+            onAssign={onClickAssignHE}
+            onSearchHE={onSearchHE}
+            searchLoading={searchHELoading}
+          />
         )}
         {canAssignAuthor && isPublished && (
           <StyledAssignAuthorButton
@@ -1621,6 +1630,15 @@ Question.propTypes = {
   wordFileLoading: PropTypes.bool.isRequired,
   scormZipLoading: PropTypes.bool.isRequired,
   complexSetEditLink: PropTypes.string,
+  handlingEditors: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string,
+    }),
+  ),
+  onSearchHE: PropTypes.func,
+  searchHELoading: PropTypes.bool,
+  assignHELoading: PropTypes.bool,
 }
 
 Question.defaultProps = {
@@ -1662,6 +1680,10 @@ Question.defaultProps = {
   isUserLoggedIn: true,
   canCreateNewVersion: false,
   complexSetEditLink: null,
+  handlingEditors: [],
+  onSearchHE: () => {},
+  searchHELoading: false,
+  assignHELoading: false,
 }
 
 export default Question
