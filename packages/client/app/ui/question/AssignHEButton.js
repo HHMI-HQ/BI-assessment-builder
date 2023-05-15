@@ -28,9 +28,9 @@ const AssignHEButton = props => {
       .catch(() => {
         const conversionErrorModal = modal.error()
         conversionErrorModal.update({
-          title: <ModalHeader>Conversion error</ModalHeader>,
+          title: <ModalHeader>Assignment error</ModalHeader>,
           content:
-            'Something went wrong with your conversion! Please contact your system administrator.',
+            'Something went wrong while assigning the handling editor! Please try again or contact your system administrator.',
           footer: [
             <ModalFooter key="footer">
               <Button onClick={conversionErrorModal.destroy} type="primary">
@@ -74,7 +74,7 @@ const AssignHEButton = props => {
         open={showModal}
         title={<ModalHeader>Assign Handling Editor</ModalHeader>}
       >
-        <Form.Item label="Select a user to assign as handling editor for this question">
+        <Form.Item label="Find a user to assign as handling editor for this question">
           <Select
             // https://github.com/ant-design/ant-design/issues/19970#issuecomment-763139893
             async

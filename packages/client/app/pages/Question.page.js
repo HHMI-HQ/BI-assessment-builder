@@ -28,6 +28,7 @@ import {
   ASSIGN_QUESTION_AUTHOR,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
   FILTER_GLOBAL_TEAM_MEMBERS,
+  ASSING_HANDLING_EDITOR,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -276,6 +277,10 @@ const QuestionPage = props => {
     useMutation(GENERATE_SCORM_ZIP)
 
   const [upload] = useMutation(UPLOAD_FILES)
+
+  const [assignHandlingEditor, { loading: assignHELoading }] = useMutation(
+    ASSING_HANDLING_EDITOR,
+  )
   // #endregion hooks
 
   // #region user roles
@@ -347,7 +352,16 @@ const QuestionPage = props => {
     return submitQuestionMutation(mutationData)
   }
 
-  const handleClickAssignHE = () => {}
+  const handleClickAssignHE = user => {
+    const mutationData = {
+      variables: {
+        questionId: id,
+        userId: user.value,
+      },
+    }
+
+    return assignHandlingEditor(mutationData)
+  }
 
   const handleGetQuestionButton = which => {
     if (relatedQuestionIds) {
@@ -590,6 +604,7 @@ const QuestionPage = props => {
     <>
       <VisuallyHiddenElement as="h1">{pageTitle}</VisuallyHiddenElement>
       <Question
+        assignHELoading={assignHELoading}
         authors={possibleAuthors}
         canAssignAuthor={isAdmin && isAuthor}
         canCreateNewVersion={isAdmin}
