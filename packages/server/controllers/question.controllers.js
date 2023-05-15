@@ -13,7 +13,7 @@ const resources = require('./resourcesData')
 const { getImageUrls, findImages } = require('./utils')
 
 const AUTHOR_TEAM = config.teams.nonGlobal.author
-const HE_TEAM = config.teams.global.handlingEditor
+const HE_TEAM = config.teams.nonGlobal.handlingEditor
 const BASE_MESSAGE = `${labels.QUESTION_CONTROLLERS}:`
 
 const getQuestion = async (questionId, options = {}) => {

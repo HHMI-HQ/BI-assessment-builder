@@ -90,6 +90,10 @@ module.exports = {
         displayName: 'Editor',
         role: 'editor',
       },
+      handlingEditor: {
+        displayName: 'Handling Editor',
+        role: 'handlingEditor',
+      },
       author: {
         displayName: 'Author',
         role: 'author',
