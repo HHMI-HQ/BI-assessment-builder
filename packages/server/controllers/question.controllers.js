@@ -608,6 +608,20 @@ const assignHandlingEditor = async (questionId, userId, options = {}) => {
   }
 }
 
+const getQuestionsHandlingEditors = async (questionId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} assignHandlingEditor:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} getting handling editors for question ${questionId}`,
+  )
+
+  try {
+    return Question.getHandlingEditors(questionId, options)
+  } catch (error) {
+    logger.error(`${CONTROLLER_MESSAGE} ${error}`)
+    throw new Error(error)
+  }
+}
+
 const uploadFiles = async files => {
   const filesData = await Promise.all(files)
 
@@ -651,6 +665,7 @@ module.exports = {
   generateWordFile,
 
   assignHandlingEditor,
+  getQuestionsHandlingEditors,
 
   uploadFiles,
   getImageUrls,

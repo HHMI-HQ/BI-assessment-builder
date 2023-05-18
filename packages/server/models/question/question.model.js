@@ -533,6 +533,21 @@ class Question extends BaseModel {
       return null
     }
   }
+
+  static async getHandlingEditors(questionId, options = {}) {
+    const { trx } = options
+
+    try {
+      return User.query(trx)
+        .leftJoin('team_members', 'users.id', 'team_members.user_id')
+        .leftJoin('teams', 'team_members.team_id', 'teams.id')
+        .select('users.*', 'teams.object_id')
+        .where({ 'teams.role': 'handlingEditor', 'teams.objectId': questionId })
+    } catch (e) {
+      console.error('Question model: getHandlingEditors failed', e)
+      throw new Error(e)
+    }
+  }
 }
 
 module.exports = Question

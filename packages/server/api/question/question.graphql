@@ -194,6 +194,8 @@ extend type Query {
     pageSize: Int
     searchQuery: String
   ): QuestionsResponse!
+
+  getQuestionsHandlingEditors(questionId: ID!): [User!]!
 }
 
 extend type Mutation {
