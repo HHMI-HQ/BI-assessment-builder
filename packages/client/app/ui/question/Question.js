@@ -379,6 +379,8 @@ const Question = props => {
     onSearchHE,
     searchHELoading,
     assignHELoading,
+    currentHandlingEditors,
+    loadAssignedHEs,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1059,7 +1061,9 @@ const Question = props => {
         />
         {showAssignHEButton && (
           <StyledAssignHEButton
+            currentHandlingEditors={currentHandlingEditors}
             handlingEditors={handlingEditors}
+            loadAssignedHEs={loadAssignedHEs}
             loading={assignHELoading}
             onAssign={onClickAssignHE}
             onSearchHE={onSearchHE}
@@ -1639,6 +1643,13 @@ Question.propTypes = {
   onSearchHE: PropTypes.func,
   searchHELoading: PropTypes.bool,
   assignHELoading: PropTypes.bool,
+  currentHandlingEditors: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      displayName: PropTypes.string,
+    }),
+  ),
+  loadAssignedHEs: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -1684,6 +1695,8 @@ Question.defaultProps = {
   onSearchHE: () => {},
   searchHELoading: false,
   assignHELoading: false,
+  currentHandlingEditors: [],
+  loadAssignedHEs: () => {},
 }
 
 export default Question

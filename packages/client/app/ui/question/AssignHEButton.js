@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import { Button, Form, Select, Modal } from '../common'
@@ -15,11 +15,20 @@ const AssignHEButton = props => {
     onSearchHE,
     handlingEditors,
     searchLoading,
+    loadAssignedHEs,
+    currentHandlingEditors,
   } = props
 
   const [showModal, setShowModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+  // const [assignedHEs, setAssignedHEs] = useState(currentHandlingEditors)
   const [modal, contextHolder] = Modal.useModal()
+
+  useEffect(async () => {
+    if (showModal) {
+      loadAssignedHEs()
+    }
+  }, [showModal])
 
   const handleOk = () => {
     setShowModal(false)
@@ -74,6 +83,16 @@ const AssignHEButton = props => {
         open={showModal}
         title={<ModalHeader>Assign Handling Editor</ModalHeader>}
       >
+        {currentHandlingEditors.length > 0 ? (
+          <>
+            <h3>Current assigned handling editors:</h3>
+            <ul>
+              {currentHandlingEditors.map(he => (
+                <li key={he.id}>{he.displayName}</li>
+              ))}
+            </ul>
+          </>
+        ) : null}
         <Form.Item label="Find a user to assign as handling editor for this question">
           <Select
             // https://github.com/ant-design/ant-design/issues/19970#issuecomment-763139893
@@ -103,8 +122,15 @@ AssignHEButton.propTypes = {
       value: PropTypes.string,
     }),
   ),
+  currentHandlingEditors: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      displayName: PropTypes.string,
+    }),
+  ),
   onSearchHE: PropTypes.func,
   searchLoading: PropTypes.bool,
+  loadAssignedHEs: PropTypes.func,
 }
 
 AssignHEButton.defaultProps = {
@@ -113,6 +139,8 @@ AssignHEButton.defaultProps = {
   onSearchHE: () => {},
   searchLoading: false,
   handlingEditors: [],
+  loadAssignedHEs: () => {},
+  currentHandlingEditors: [],
 }
 
 export default AssignHEButton
