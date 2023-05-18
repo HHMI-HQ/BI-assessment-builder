@@ -185,6 +185,15 @@ export const ASSING_HANDLING_EDITOR = gql`
   }
 `
 
+export const GET_QUESTION_HANDLING_EDITORS = gql`
+  query getQuestionsHandlingEditors($questionId: ID!) {
+    getQuestionsHandlingEditors(questionId: $questionId) {
+      id
+      displayName
+    }
+  }
+`
+
 export const CREATE_QUESTION = gql`
   mutation CreateQuestion($input: UpdateQuestionInput) {
     createQuestion(input: $input) {

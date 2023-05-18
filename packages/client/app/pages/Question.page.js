@@ -29,6 +29,7 @@ import {
   GET_COMPLEX_ITEM_SETS_OPTIONS,
   FILTER_GLOBAL_TEAM_MEMBERS,
   ASSING_HANDLING_EDITOR,
+  GET_QUESTION_HANDLING_EDITORS,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -187,6 +188,15 @@ const QuestionPage = props => {
       data: { filterGlobalTeamMembers: handlingEditors } = {},
     },
   ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS)
+
+  const [
+    getQuestionsHandlingEditors,
+    { data: { getQuestionsHandlingEditors: currentHandlingEditors } = {} },
+  ] = useLazyQuery(GET_QUESTION_HANDLING_EDITORS, {
+    variables: {
+      questionId: id,
+    },
+  })
 
   /* setup Prev/Next question functions */
   // read state from location to get filter values, if any
@@ -612,6 +622,7 @@ const QuestionPage = props => {
         complexSetEditLink={
           version?.inProduction ? `/set/${version?.complexItemSetId}` : ''
         }
+        currentHandlingEditors={currentHandlingEditors}
         editorContent={version && JSON.parse(version.content)}
         // admins have editorial rights (publishing rights) on their own questions
         editorView={(isEditor && !isAuthor) || isAdmin}
@@ -635,6 +646,7 @@ const QuestionPage = props => {
             ? JSON.parse(version.leadingContent)
             : null
         }
+        loadAssignedHEs={getQuestionsHandlingEditors}
         loadAuthors={getUsers}
         loading={
           loading ||
