@@ -24,6 +24,7 @@ const {
   createNewQuestionVersion,
 
   assignHandlingEditor,
+  unassignHandlingEditor,
   getQuestionsHandlingEditors,
 
   uploadFiles,
@@ -164,6 +165,10 @@ const getQuestionsHandlingEditorsResolver = async (_, { questionId }) => {
   return getQuestionsHandlingEditors(questionId)
 }
 
+const unassignHandlingEditorResolver = async (_, { questionId, userId }) => {
+  return unassignHandlingEditor(questionId, userId)
+}
+
 module.exports = {
   Query: {
     question: questionResolver,
@@ -190,6 +195,7 @@ module.exports = {
     createNewQuestionVersion: createNewQuestionVersionResolver,
     uploadFiles: uploadFilesResolver,
     assignHandlingEditor: assignHandlingEditorResolver,
+    unassignHandlingEditor: unassignHandlingEditorResolver,
   },
   Question: {
     versions: versionsResolver,

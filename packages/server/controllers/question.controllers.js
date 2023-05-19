@@ -622,6 +622,25 @@ const getQuestionsHandlingEditors = async (questionId, options = {}) => {
   }
 }
 
+const unassignHandlingEditor = async (questionId, userId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} unassignHandlingEditor:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} removing user ${userId} as handling editor for question ${questionId}`,
+  )
+
+  try {
+    return useTransaction(
+      async trx => {
+        return Team.removeNonGlobalTeam(questionId, userId, { trx })
+      },
+      { trx: options.trx, passedTrxOnly: true },
+    )
+  } catch (error) {
+    logger.error(`${CONTROLLER_MESSAGE} ${error}`)
+    throw new Error(error)
+  }
+}
+
 const uploadFiles = async files => {
   const filesData = await Promise.all(files)
 
@@ -666,6 +685,7 @@ module.exports = {
 
   assignHandlingEditor,
   getQuestionsHandlingEditors,
+  unassignHandlingEditor,
 
   uploadFiles,
   getImageUrls,

@@ -65,6 +65,30 @@ class Team extends TeamModel {
       throw new Error(error)
     }
   }
+
+  static async removeNonGlobalTeam(objectId, userId, options = {}) {
+    try {
+      const teamMember = await TeamMember.query(options.trx)
+        .leftJoin('teams', 'teams.id', 'team_members.team_id')
+        .select('team_members.id as teamMemberId', 'teams.id as teamId')
+        // .del()
+        .findOne({
+          'teams.object_id': objectId,
+          'team_members.userId': userId,
+          'teams.role': 'handlingEditor',
+        })
+
+      await TeamMember.deleteById(teamMember.teamMemberId)
+      await Team.deleteById(teamMember.teamId)
+
+      return true
+    } catch (e) {
+      logger.error(
+        'Team model: removeNonGlobalTeam: Transaction failed! Rolling back...',
+      )
+      throw new Error(e)
+    }
+  }
 }
 
 module.exports = Team

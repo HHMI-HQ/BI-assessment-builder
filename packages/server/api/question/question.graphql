@@ -230,4 +230,5 @@ extend type Mutation {
   uploadFiles(files: [Upload!]!): [File!]!
 
   assignHandlingEditor(questionId: ID!, userId: ID!): TeamMember!
+  unassignHandlingEditor(questionId: ID!, userId: ID!): Boolean
 }
