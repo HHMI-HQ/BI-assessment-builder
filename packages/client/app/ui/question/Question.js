@@ -381,6 +381,7 @@ const Question = props => {
     assignHELoading,
     currentHandlingEditors,
     loadAssignedHEs,
+    onUnassignHandlingEditor,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -972,14 +973,16 @@ const Question = props => {
         showMetadataOption
       />
       {showAssignHEButton && (
-        <StyledButton
-          aria-label="Assign Handling Editor"
-          ghost
-          onClick={onClickAssignHE}
-          type="primary "
-        >
-          Assign HE
-        </StyledButton>
+        <StyledAssignHEButton
+          currentHandlingEditors={currentHandlingEditors}
+          handlingEditors={handlingEditors}
+          loadAssignedHEs={loadAssignedHEs}
+          loading={assignHELoading}
+          onAssign={onClickAssignHE}
+          onSearchHE={onSearchHE}
+          onUnassign={onUnassignHandlingEditor}
+          searchLoading={searchHELoading}
+        />
       )}
       {canAssignAuthor && isPublished && (
         <StyledAssignAuthorButton
@@ -1067,6 +1070,7 @@ const Question = props => {
             loading={assignHELoading}
             onAssign={onClickAssignHE}
             onSearchHE={onSearchHE}
+            onUnassign={onUnassignHandlingEditor}
             searchLoading={searchHELoading}
           />
         )}
@@ -1650,6 +1654,7 @@ Question.propTypes = {
     }),
   ),
   loadAssignedHEs: PropTypes.func,
+  onUnassignHandlingEditor: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -1697,6 +1702,7 @@ Question.defaultProps = {
   assignHELoading: false,
   currentHandlingEditors: [],
   loadAssignedHEs: () => {},
+  onUnassignHandlingEditor: () => {},
 }
 
 export default Question
