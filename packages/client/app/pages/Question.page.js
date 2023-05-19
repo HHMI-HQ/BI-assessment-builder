@@ -29,6 +29,7 @@ import {
   GET_COMPLEX_ITEM_SETS_OPTIONS,
   FILTER_GLOBAL_TEAM_MEMBERS,
   ASSING_HANDLING_EDITOR,
+  UNASSING_HANDLING_EDITOR,
   GET_QUESTION_HANDLING_EDITORS,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
@@ -196,6 +197,7 @@ const QuestionPage = props => {
     variables: {
       questionId: id,
     },
+    fetchPolicy: 'network-only',
   })
 
   /* setup Prev/Next question functions */
@@ -290,7 +292,30 @@ const QuestionPage = props => {
 
   const [assignHandlingEditor, { loading: assignHELoading }] = useMutation(
     ASSING_HANDLING_EDITOR,
+    {
+      refetchQueries: [
+        {
+          query: GET_QUESTION_HANDLING_EDITORS,
+          variables: {
+            questionId: id,
+          },
+          fetchPolicy: 'network-only',
+        },
+      ],
+    },
   )
+
+  const [unassignHandlingEditor] = useMutation(UNASSING_HANDLING_EDITOR, {
+    refetchQueries: [
+      {
+        query: GET_QUESTION_HANDLING_EDITORS,
+        variables: {
+          questionId: id,
+        },
+        fetchPolicy: 'network-only',
+      },
+    ],
+  })
   // #endregion hooks
 
   // #region user roles
@@ -371,6 +396,17 @@ const QuestionPage = props => {
     }
 
     return assignHandlingEditor(mutationData)
+  }
+
+  const handleUnassignHE = userId => {
+    const mutationData = {
+      variables: {
+        questionId: id,
+        userId,
+      },
+    }
+
+    return unassignHandlingEditor(mutationData)
   }
 
   const handleGetQuestionButton = which => {
@@ -673,6 +709,7 @@ const QuestionPage = props => {
         onQuestionSubmit={handleQuestionSubmit}
         onReject={handleReject}
         onSearchHE={handleSearchHE}
+        onUnassignHandlingEditor={handleUnassignHE}
         questionAgreedTc={false} //
         refetchUser={refetchCurrentUser}
         resources={getResources}

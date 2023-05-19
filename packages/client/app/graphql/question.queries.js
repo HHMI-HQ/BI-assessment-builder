@@ -185,6 +185,12 @@ export const ASSING_HANDLING_EDITOR = gql`
   }
 `
 
+export const UNASSING_HANDLING_EDITOR = gql`
+  mutation unassignHandlingEditor($questionId: ID!, $userId: ID!) {
+    unassignHandlingEditor(questionId: $questionId, userId: $userId)
+  }
+`
+
 export const GET_QUESTION_HANDLING_EDITORS = gql`
   query getQuestionsHandlingEditors($questionId: ID!) {
     getQuestionsHandlingEditors(questionId: $questionId) {
