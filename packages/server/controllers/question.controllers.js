@@ -591,7 +591,16 @@ const assignHandlingEditor = async (questionId, userId, options = {}) => {
   const { trx } = options
 
   try {
-    const heTeam = await Team.insert(
+    const existingTeam = await Team.findOne({
+      objectId: questionId,
+      role: HE_TEAM.role,
+    })
+
+    if (existingTeam) {
+      return Team.addMember(existingTeam.id, userId, { trx })
+    }
+
+    const newTeam = await Team.insert(
       {
         objectId: questionId,
         objectType: 'question',
@@ -601,7 +610,7 @@ const assignHandlingEditor = async (questionId, userId, options = {}) => {
       { trx },
     )
 
-    return Team.addMember(heTeam.id, userId, { trx })
+    return Team.addMember(newTeam.id, userId, { trx })
   } catch (error) {
     logger.error(`${CONTROLLER_MESSAGE} ${error}`)
     throw new Error(error)
