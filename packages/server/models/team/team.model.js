@@ -70,16 +70,14 @@ class Team extends TeamModel {
     try {
       const teamMember = await TeamMember.query(options.trx)
         .leftJoin('teams', 'teams.id', 'team_members.team_id')
-        .select('team_members.id as teamMemberId', 'teams.id as teamId')
-        // .del()
+        .select('team_members.id')
         .findOne({
           'teams.object_id': objectId,
           'team_members.userId': userId,
           'teams.role': 'handlingEditor',
         })
 
-      await TeamMember.deleteById(teamMember.teamMemberId)
-      await Team.deleteById(teamMember.teamId)
+      await TeamMember.deleteById(teamMember.id)
 
       return true
     } catch (e) {
