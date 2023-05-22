@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Button, Form, Select, Modal } from '../common'
+import { Button, Form, Select, Modal, VisuallyHiddenElement } from '../common'
 
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer
@@ -20,6 +20,13 @@ const StyledButton = styled(Button)`
   background-color: transparent;
   border: none;
   cursor: pointer;
+`
+
+const StyledFormItem = styled(Form.Item)`
+  label.ant-form-item-required::before {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
 `
 
 const AssignHEButton = props => {
@@ -49,6 +56,9 @@ const AssignHEButton = props => {
     onAssign(newHandlingEditor)
       .then(() => {
         assingHeForm.resetFields()
+        document.getElementById(
+          'he-update',
+        ).innerHTML = `${newHandlingEditor.label} assigned as handling editor`
       })
       .catch(() => {
         const conversionErrorModal = modal.error()
@@ -67,8 +77,12 @@ const AssignHEButton = props => {
       })
   }
 
-  const handleUnassignHE = userId => {
-    onUnassign(userId)
+  const handleUnassignHE = user => {
+    onUnassign(user.id).then(() => {
+      document.getElementById(
+        'he-update',
+      ).innerHTML = `${user.displayName} removed from this question's handling editors`
+    })
   }
 
   return (
@@ -114,12 +128,13 @@ const AssignHEButton = props => {
                     <StyledButton
                       aria-label={`Unassign handling editor ${he.displayName}`}
                       icon={<DeleteOutlined />}
-                      onClick={() => handleUnassignHE(he.id)}
+                      onClick={() => handleUnassignHE(he)}
                     />
                   </HeContainer>
                 </li>
               ))}
             </ol>
+            <VisuallyHiddenElement id="he-update" role="status" />
           </>
         ) : null}
         <Form
@@ -130,13 +145,32 @@ const AssignHEButton = props => {
             assingHeForm.validateFields(['newHandlingEditor'])
           }
         >
-          <Form.Item
+          <StyledFormItem
             label="Find a user to assign as handling editor for this question"
             name="newHandlingEditor"
             rules={[
               {
                 required: true,
                 message: 'Please select a user to assign',
+              },
+              {
+                validator(_, value) {
+                  if (
+                    (value &&
+                      currentHandlingEditors
+                        .map(e => e.id)
+                        .indexOf(value.value) === -1) ||
+                    !value
+                  ) {
+                    return Promise.resolve()
+                  }
+
+                  return Promise.reject(
+                    new Error(
+                      'This user is already a handling editor for this question.',
+                    ),
+                  )
+                },
               },
             ]}
             validateTrigger="onSubmit"
@@ -151,7 +185,7 @@ const AssignHEButton = props => {
               options={handlingEditors}
               placeholder="Search for a handling editor"
             />
-          </Form.Item>
+          </StyledFormItem>
         </Form>
       </Modal>
       {contextHolder}
