@@ -715,7 +715,7 @@ const QuestionPage = props => {
         resources={getResources}
         scormZipLoading={generateScormZipLoading}
         searchHELoading={loadingSearchHE}
-        showAssignHEButton //
+        showAssignHEButton={version?.submitted && !version?.published} //
         showNextQuestionLink={false} //
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
