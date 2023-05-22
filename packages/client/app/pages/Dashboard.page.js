@@ -6,6 +6,7 @@ import { Dashboard, VisuallyHiddenElement } from 'ui'
 import {
   GET_AUTHOR_DASHBOARD,
   GET_EDITOR_DASHBOARD,
+  GET_HANDLING_EDITOR_DASHBOARD,
   CREATE_QUESTION,
   CURRENT_USER,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
@@ -104,17 +105,58 @@ const DashboardPage = () => {
     },
   })
 
+  const [
+    handlingEditorQuery,
+    {
+      data: heResponse,
+      loading: heLoading,
+      called: heCalled,
+      // fetchMore: fetchMoreHandlingEditor,
+    },
+  ] = useLazyQuery(GET_HANDLING_EDITOR_DASHBOARD, {
+    fetchPolicy: 'network-only',
+    variables: {
+      ...defaultSearchOptions,
+      page: 0,
+    },
+    onCompleted: data => {
+      // run only on update, not on first render
+      if (initialRender.current) initialRender.current = false
+      else {
+        const nrOfQuestions = data.getHandlingEditorDashboard.result.length
+        const total = data.getHandlingEditorDashboard.totalCount
+        let announcement = 'Results updated.'
+
+        if (total === 0) {
+          announcement = `${announcement} No results for your search query`
+        } else if (total <= 10) {
+          announcement = `${announcement} ${nrOfQuestions} questions`
+        } else {
+          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
+            total / 10,
+          )} with ${nrOfQuestions} questions from a total of ${total}`
+        }
+
+        document.querySelector('#search-results-update').innerHTML =
+          announcement
+      }
+    },
+  })
+
   const authorData = authorResponse && authorResponse.getAuthorDashboard
   const editorData = editorResponse && editorResponse.getManagingEditorDashboard
+  const handlingEditorData = heResponse && heResponse.getHandlingEditorDashboard
 
   const queryMapper = {
     query: {
       author: authorQuery,
       editor: editorQuery,
+      handlingEditor: handlingEditorQuery,
     },
     called: {
       author: authorCalled,
       editor: editorCalled,
+      handlingEditor: heCalled,
     },
   }
 
@@ -165,6 +207,11 @@ const DashboardPage = () => {
   const loading = !currentUserResponse?.currentUser // question list loading is inside the tab
   const isEditor = hasGlobalRole(currentUserResponse?.currentUser, 'editor')
 
+  const isHandlingEditor = hasGlobalRole(
+    currentUserResponse?.currentUser,
+    'handlingEditor',
+  )
+
   const tabs = [
     {
       label: 'Authored Questions',
@@ -199,6 +246,17 @@ const DashboardPage = () => {
       totalCount: editorData && editorData.totalCount,
       showBulkActions: false,
       loading: editorLoading,
+    },
+    isHandlingEditor && {
+      label: 'Handling Editor Questions',
+      value: 'handlingEditor',
+      questions:
+        handlingEditorData && metadata
+          ? transform(handlingEditorData.result, metadata, 'editor')
+          : [],
+      totalCount: handlingEditorData && handlingEditorData.totalCount,
+      showBulkActions: false,
+      loading: heLoading,
     },
   ].filter(Boolean)
 
