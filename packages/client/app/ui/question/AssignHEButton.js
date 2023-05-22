@@ -134,9 +134,9 @@ const AssignHEButton = props => {
                 </li>
               ))}
             </ol>
-            <VisuallyHiddenElement id="he-update" role="status" />
           </>
         ) : null}
+        <VisuallyHiddenElement id="he-update" role="status" />
         <Form
           form={assingHeForm}
           layout="vertical"

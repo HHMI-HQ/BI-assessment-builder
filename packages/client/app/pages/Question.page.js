@@ -320,6 +320,7 @@ const QuestionPage = props => {
 
   // #region user roles
   const isEditor = hasGlobalRole(currentUser, 'editor')
+  const isHandlingEditor = hasGlobalRole(currentUser, 'handlingEditor')
   const isAuthor = hasRole(currentUser, 'author', id)
   const isAdmin = hasGlobalRole(currentUser, 'admin')
   // #endregion user roles
@@ -661,7 +662,11 @@ const QuestionPage = props => {
         currentHandlingEditors={currentHandlingEditors}
         editorContent={version && JSON.parse(version.content)}
         // admins have editorial rights (publishing rights) on their own questions
-        editorView={(isEditor && !isAuthor) || isAdmin}
+        editorView={
+          (isEditor && !isAuthor) ||
+          (isHandlingEditor && !isAuthor) ||
+          (isAdmin && isAuthor)
+        }
         facultyView={testMode}
         handlingEditors={handlingEditors || []}
         initialMetadataValues={metadataApiToUi(version, testMode)}
@@ -715,8 +720,10 @@ const QuestionPage = props => {
         resources={getResources}
         scormZipLoading={generateScormZipLoading}
         searchHELoading={loadingSearchHE}
-        showAssignHEButton={version?.submitted && !version?.published} //
-        showNextQuestionLink={false} //
+        showAssignHEButton={
+          version?.submitted && !version?.published && isEditor
+        }
+        showNextQuestionLink={false}
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
       />
