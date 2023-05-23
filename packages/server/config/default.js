@@ -65,24 +65,24 @@ module.exports = {
   teams: {
     global: {
       editor: {
-        displayName: 'Editor',
+        displayName: 'Managing Editor',
         role: 'editor',
-      },
-      reviewer: {
-        displayName: 'Reviewer',
-        role: 'reviewer',
-      },
-      admin: {
-        displayName: 'Admin',
-        role: 'admin',
       },
       handlingEditor: {
         displayName: 'Handling Editor',
         role: 'handlingEditor',
       },
+      reviewer: {
+        displayName: 'Reviewer',
+        role: 'reviewer',
+      },
       production: {
         displayName: 'Production',
         role: 'production',
+      },
+      admin: {
+        displayName: 'Admin',
+        role: 'admin',
       },
     },
     nonGlobal: {
