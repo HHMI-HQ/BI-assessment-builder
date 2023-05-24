@@ -2,10 +2,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { name } from 'faker'
+import { lorem, name } from 'faker'
 import { th, uuid } from '@coko/client'
 
-import { Question, Checkbox } from 'ui'
+import { Question, Checkbox, Button } from 'ui'
 
 import metadata from '../../app/utilities/question/metadataValues'
 import resources from '../../app/utilities/question/resourcesData'
@@ -19,7 +19,15 @@ import {
   initialMetadataValues,
 } from '../../app/utilities/question/initialValues'
 import complexItemSet from '../../app/utilities/question/complexItemSets'
-import { createData } from '../../app/utilities/_helpers'
+import { createData, randomPick } from '../../app/utilities/_helpers'
+
+const createMessages = n =>
+  createData(n, i => ({
+    content: lorem.sentences(2),
+    date: new Date().toISOString(),
+    own: randomPick([true, false]),
+    user: name.findName(),
+  }))
 
 const Wrapper = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
@@ -32,7 +40,7 @@ const makeUser = n =>
     label: name.findName(),
   }))
 
-export const Base = args => {
+export const Author = args => {
   const [submitted, setSubmitted] = useState(false)
   const [editorContent, setEditorContent] = useState(initialContent)
   const [lastUpdated, setLastUpdated] = useState(new Date().toISOString())
@@ -150,7 +158,7 @@ export const Base = args => {
   )
 }
 
-Base.args = {
+Author.args = {
   isSubmitted: false,
   isUnderReview: false,
   isPublished: false,
@@ -163,6 +171,9 @@ export const EditorView = () => {
   const [inProduction, setInProduction] = useState(false)
   const [published, setPublished] = useState(false)
   const [rejected, setRejected] = useState(false)
+  const [messages, setMessages] = useState(createMessages(20))
+  const [announcementText, setAnnouncementText] = useState(null)
+
   const [error, setError] = useState(false)
 
   const rejectQuestion = () => {
@@ -249,17 +260,66 @@ export const EditorView = () => {
     }, 2000)
   }
 
+  const mockSubscription = msg => {
+    setAnnouncementText(
+      msg.own
+        ? `you said ${msg.content}`
+        : `new message: ${msg.user} said ${msg.content}`,
+    )
+  }
+
+  const handleSendMessage = async content => {
+    setAnnouncementText(null)
+
+    const msg = {
+      content,
+      date: new Date().toISOString(),
+      own: true,
+      user: name.findName(),
+    }
+
+    setMessages(curMessages => [...curMessages, msg])
+    mockSubscription(msg)
+  }
+
+  const handleFetchMoreMessage = async () => {
+    setAnnouncementText(null)
+    // eslint-disable-next-line no-promise-executor-return
+    const mockDelay = time => new Promise(resolve => setTimeout(resolve, time))
+    await mockDelay(1000)
+    const prevMessages = createMessages(10)
+    setMessages(curMessages => [...prevMessages, ...curMessages])
+
+    setAnnouncementText(`Loaded ${prevMessages.length}  previous messages`)
+  }
+
+  const mockAuthorMessage = () => {
+    const msg = {
+      content: lorem.sentences(2),
+      date: new Date().toISOString(),
+      own: false,
+      user: name.findName(),
+    }
+
+    setMessages(curMessages => [...curMessages, msg])
+    mockSubscription(msg)
+  }
+
   return (
     <Wrapper>
       <Checkbox onChange={e => setError(e.target.checked)}>
         Will have error on move to review/publish/reject
       </Checkbox>
+      <Button onClick={mockAuthorMessage}>Recieve author message</Button>
+
       <Question
+        announcementText={announcementText}
         assignHELoading={assignHELoading}
         complexItemSetOptions={complexItemSet}
         editorContent={editorInitialContent}
         editorView
         handlingEditors={handlingEditors}
+        hasMoreMessages={messages.length > 0}
         initialMetadataValues={metadataApiToUi(initialMetadataValues)}
         isInProduction={inProduction}
         isPublished={published}
@@ -267,11 +327,13 @@ export const EditorView = () => {
         isSubmitted
         isUnderReview={reviewing}
         loading={false}
+        messages={messages}
         metadata={metadataTransformer(metadata)}
         onClickAssignHE={handleAssignHE}
         onClickBackButton={() => console.log('go back to dashboard')}
         onClickExportToWord={() => {}}
         onEditorContentAutoSave={handleEditorContentChanged}
+        onFetchMoreMessages={handleFetchMoreMessage}
         onMetadataAutoSave={() => console.log('metadata auto save')}
         onMoveToProduction={moveToProduction}
         onMoveToReview={moveToReview}
@@ -279,6 +341,7 @@ export const EditorView = () => {
         onQuestionSubmit={data => console.log(data)}
         onReject={rejectQuestion}
         onSearchHE={handleSearchHE}
+        onSendMessage={handleSendMessage}
         questionAgreedTc={false}
         resources={resources}
         searchHELoading={searchHELoading}

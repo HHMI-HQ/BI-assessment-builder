@@ -15,6 +15,8 @@ import { HhmiLayout, TestModeLayout } from '../wax/layout'
 
 import Metadata from './Metadata'
 import QuestionEditor from './QuestionEditor'
+import { ChatThread } from '../chat'
+
 import ExportToWordButton from './ExportToWordButton'
 // import ExportToScormButton from './ExportToScormButton'
 import AssignHEButton from './AssignHEButton'
@@ -334,13 +336,17 @@ const Question = props => {
   const {
     authors,
     complexItemSetOptions,
+    announcementText,
+    messages,
     editorContent,
     leadingContent,
     complexSetEditLink,
     editorView,
     facultyView,
+    hasMoreMessages,
     onClickExportToWord,
     // onClickExportToScorm,
+    onFetchMoreMessages,
     initialMetadataValues,
     isUserLoggedIn,
     isPublished,
@@ -364,6 +370,7 @@ const Question = props => {
     onPublish,
     onQuestionSubmit,
     onReject,
+    onSendMessage,
     questionAgreedTc,
     refetchUser,
     resources,
@@ -393,6 +400,7 @@ const Question = props => {
   const [agreedTc, setAgreedTc] = useState(questionAgreedTc)
   const [autoSaving, setAutoSaving] = useState(false)
   const [showMetadata, setShowMetadata] = useState(isUserLoggedIn)
+  const [activeKey, setActiveKey] = useState(0)
 
   const readOnly =
     (editorView && !isInProduction) ||
@@ -804,6 +812,7 @@ const Question = props => {
 
   // #region components
   const QuestionTab = <StyledTabItem>Question</StyledTabItem>
+  const AuthorChatTab = <StyledTabItem>Chat to Author</StyledTabItem>
 
   const PreviousQuestion = (
     <StyledPrevNextButton
@@ -1263,11 +1272,16 @@ const Question = props => {
     return 'Jump to action buttons'
   }
 
+  const handleTabChange = activeTab => {
+    setActiveKey(activeTab)
+  }
+
   return (
     <ModalContext.Provider value={contextValue}>
       <Wrapper>
         <Spin renderBackground={false} spinning={loading}>
           <StyledTabs
+            activeKey={activeKey}
             items={[
               {
                 label: QuestionTab,
@@ -1327,7 +1341,22 @@ const Question = props => {
                   </>
                 ),
               },
+              isSubmitted && {
+                label: AuthorChatTab,
+                key: 1,
+                children: (
+                  <ChatThread
+                    announcementText={announcementText}
+                    hasMore={hasMoreMessages}
+                    isActive={activeKey === 1}
+                    messages={messages}
+                    onFetchMore={onFetchMoreMessages}
+                    onSendMessage={onSendMessage}
+                  />
+                ),
+              },
             ]}
+            onChange={handleTabChange}
             renderTabBar={(tabProps, DefaultTabBar) => {
               return facultyView ? (
                 FacultyHeader
@@ -1361,10 +1390,14 @@ Question.propTypes = {
     }),
   ),
   leadingContent: PropTypes.shape(),
+  announcementText: PropTypes.string,
+  messages: PropTypes.arrayOf({}),
+  hasMoreMessages: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   loadAuthors: PropTypes.func,
   onAssignAuthor: PropTypes.func,
   onClickPreviousButton: PropTypes.func,
+  onChangeAnnouncement: PropTypes.func,
   onClickNextButton: PropTypes.func,
   onCreateNewVersion: PropTypes.func,
   onEditorContentAutoSave: PropTypes.func,
@@ -1375,10 +1408,12 @@ Question.propTypes = {
   onMoveToProduction: PropTypes.func,
   onPublish: PropTypes.func,
   onReject: PropTypes.func,
+  onSendMessage: PropTypes.func,
   onClickAssignHE: PropTypes.func,
   onClickExportToScorm: PropTypes.func,
   onClickExportToWord: PropTypes.func,
   canCreateNewVersion: PropTypes.bool,
+  onFetchMoreMessages: PropTypes.func,
   editorContent: PropTypes.shape(),
   questionAgreedTc: PropTypes.bool,
   submitting: PropTypes.bool,
@@ -1660,11 +1695,17 @@ Question.propTypes = {
 Question.defaultProps = {
   authors: [],
   complexItemSetOptions: [],
+  announcementText: '',
+  hasMoreMessages: false,
+  messages: [],
+  onChangeAnnouncement: () => {},
   onCreateNewVersion: () => {},
+  onFetchMoreMessages: () => {},
   onMoveToReview: () => {},
   onMoveToProduction: () => {},
   onPublish: () => {},
   onReject: () => {},
+  onSendMessage: () => {},
   onClickAssignHE: () => {},
   editorContent: {},
   leadingContent: null,

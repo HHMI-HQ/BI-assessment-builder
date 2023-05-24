@@ -252,7 +252,7 @@ const DashboardPage = () => {
       value: 'handlingEditor',
       questions:
         handlingEditorData && metadata
-          ? transform(handlingEditorData.result, metadata, 'editor')
+          ? dashboardDataMapper(handlingEditorData.result, metadata, 'editor')
           : [],
       totalCount: handlingEditorData && handlingEditorData.totalCount,
       showBulkActions: false,
