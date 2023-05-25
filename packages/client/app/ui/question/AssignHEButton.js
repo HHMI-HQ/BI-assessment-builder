@@ -91,7 +91,6 @@ const AssignHEButton = props => {
         aria-label="Assign Handling Editor"
         className={className}
         id="assignHE"
-        loading={loading}
         onClick={() => setShowModal(true)}
         type="primary"
       >
@@ -106,6 +105,7 @@ const AssignHEButton = props => {
             <Button onClick={() => setShowModal(false)}>Cancel</Button>
             <Button
               autoFocus
+              loading={loading}
               onClick={() => assingHeForm.submit()}
               type="primary"
             >
