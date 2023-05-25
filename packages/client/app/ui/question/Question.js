@@ -812,7 +812,7 @@ const Question = props => {
 
   // #region components
   const QuestionTab = <StyledTabItem>Question</StyledTabItem>
-  const AuthorChatTab = <StyledTabItem>Chat to Author</StyledTabItem>
+  const AuthorChatTab = <StyledTabItem>Chat</StyledTabItem>
 
   const PreviousQuestion = (
     <StyledPrevNextButton
