@@ -31,6 +31,7 @@ const ChatThread = props => {
     messages,
     onFetchMore,
     onSendMessage,
+    infiniteScroll,
     ...rest
   } = props
 
@@ -83,6 +84,7 @@ const ChatThread = props => {
     <Wrapper onKeyDown={handleKeyDown} ref={wrapperRef}>
       <StyledChatMessageList
         hasMore={hasMore}
+        infiniteScroll={infiniteScroll}
         messages={messages}
         onFetchMore={onFetchMore}
         {...rest}
@@ -108,6 +110,7 @@ ChatThread.propTypes = {
   onFetchMore: PropTypes.func,
   onSendMessage: PropTypes.func,
   hasMore: PropTypes.bool,
+  infiniteScroll: PropTypes.bool,
 }
 
 ChatThread.defaultProps = {
@@ -117,6 +120,7 @@ ChatThread.defaultProps = {
   onFetchMore: () => {},
   hasMore: false,
   onSendMessage: () => {},
+  infiniteScroll: false,
 }
 
 export default ChatThread

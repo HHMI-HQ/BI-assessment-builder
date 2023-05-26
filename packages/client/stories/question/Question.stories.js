@@ -19,15 +19,7 @@ import {
   initialMetadataValues,
 } from '../../app/utilities/question/initialValues'
 import complexItemSet from '../../app/utilities/question/complexItemSets'
-import { createData, randomPick } from '../../app/utilities/_helpers'
-
-const createMessages = n =>
-  createData(n, i => ({
-    content: lorem.sentences(2),
-    date: new Date().toISOString(),
-    own: randomPick([true, false]),
-    user: name.findName(),
-  }))
+import { createData, createMessages } from '../../app/utilities/_helpers'
 
 const Wrapper = styled.div`
   border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};

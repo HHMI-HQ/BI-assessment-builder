@@ -1,18 +1,9 @@
 import React, { useState } from 'react'
-import { lorem, name } from 'faker'
 
 import { ChatMessageList } from 'ui'
-import { createData, randomPick } from '../../app/utilities/_helpers'
+import { createMessages } from '../../app/utilities/_helpers'
 
-const createMessages = n =>
-  createData(n, i => ({
-    content: lorem.sentences(2),
-    date: new Date().toISOString(),
-    own: randomPick([true, false]),
-    user: name.findName(),
-  }))
-
-export const Base = () => {
+export const Base = args => {
   // for reverse infinity scroll, we want the x latest messages, but ordered from the oldest to the newest
   const [messages, setMessages] = useState(createMessages(10))
 
@@ -30,6 +21,7 @@ export const Base = () => {
         hasMore={messages.length > 0}
         messages={messages}
         onFetchMore={handleFetchMore}
+        {...args}
       />
     </div>
   )

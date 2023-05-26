@@ -5,13 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { grid } from '@coko/client'
 
 import ChatMessage from './ChatMessage'
-import { Empty, Spin, VisuallyHiddenElement } from '../common'
-
-const StyledChatMessage = styled(ChatMessage)`
-  &:not(:first-child) {
-    margin-bottom: ${grid(1)};
-  }
-`
+import { Button, Empty, Spin, VisuallyHiddenElement } from '../common'
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,6 +14,15 @@ const Wrapper = styled.div`
   overflow: auto;
   overflow-anchor: none;
   overscroll-behavior: contain;
+
+  * > * {
+    margin-top: ${grid(1)};
+  }
+`
+
+const MessagesWrappes = styled.div`
+  display: flex;
+  flex-direction: column;
 `
 
 const StyledInfiniteScroll = styled(InfiniteScroll)`
@@ -43,7 +46,58 @@ const NoMoreMessagesWrapper = styled.div`
 `
 
 const ChatMessageList = props => {
-  const { className, hasMore, messages, onFetchMore } = props
+  const { className, hasMore, messages, onFetchMore, infiniteScroll } = props
+
+  const messageList = () =>
+    infiniteScroll ? (
+      <StyledInfiniteScroll
+        dataLength={messages.length}
+        endMessage={
+          <NoMoreMessagesWrapper role="status">
+            No more messages
+          </NoMoreMessagesWrapper>
+        }
+        hasMore={hasMore}
+        inverse
+        loader={
+          <SpinnerWrapper id="chat-loading">
+            <VisuallyHiddenElement aria-live="assertive" role="status">
+              loading previous messages
+            </VisuallyHiddenElement>
+            <Spin />
+          </SpinnerWrapper>
+        }
+        next={onFetchMore}
+        scrollableTarget="scrollableDiv"
+        scrollThreshold="50px"
+      >
+        {messages.map(({ content, date, own, user }) => (
+          <ChatMessage
+            className="message"
+            content={content}
+            date={date}
+            own={own}
+            user={user}
+          />
+        ))}
+      </StyledInfiniteScroll>
+    ) : (
+      <>
+        <MessagesWrappes>
+          {messages.map(({ content, date, own, user, id }) => (
+            <ChatMessage
+              className="message"
+              content={content}
+              date={date}
+              key={id}
+              own={own}
+              user={user}
+            />
+          ))}
+        </MessagesWrappes>
+        <Button onClick={onFetchMore}>Load older</Button>
+      </>
+    )
 
   return (
     <Wrapper className={className} id="scrollableDiv">
@@ -54,37 +108,7 @@ const ChatMessageList = props => {
           role="status"
         />
       ) : (
-        <StyledInfiniteScroll
-          dataLength={messages.length}
-          endMessage={
-            <NoMoreMessagesWrapper role="status">
-              No more messages
-            </NoMoreMessagesWrapper>
-          }
-          hasMore={hasMore}
-          inverse
-          loader={
-            <SpinnerWrapper id="chat-loading">
-              <VisuallyHiddenElement aria-live="assertive" role="status">
-                loading previous messages
-              </VisuallyHiddenElement>
-              <Spin />
-            </SpinnerWrapper>
-          }
-          next={onFetchMore}
-          scrollableTarget="scrollableDiv"
-          scrollThreshold="50px"
-        >
-          {messages.map(({ content, date, own, user }) => (
-            <StyledChatMessage
-              className="message"
-              content={content}
-              date={date}
-              own={own}
-              user={user}
-            />
-          ))}
-        </StyledInfiniteScroll>
+        messageList()
       )}
     </Wrapper>
   )
@@ -100,12 +124,14 @@ ChatMessageList.propTypes = {
     }),
   ),
   hasMore: PropTypes.bool,
+  infiniteScroll: PropTypes.bool,
   onFetchMore: PropTypes.func,
 }
 
 ChatMessageList.defaultProps = {
   messages: [],
   hasMore: false,
+  infiniteScroll: false,
   onFetchMore: () => {},
 }
 

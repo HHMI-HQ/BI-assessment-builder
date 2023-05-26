@@ -1,18 +1,10 @@
 import React from 'react'
-import { lorem, name } from 'faker'
+import { name } from 'faker'
 
 import { ChatThread } from 'ui'
-import { createData, noop, randomPick } from '../../app/utilities/_helpers'
+import { createMessages, noop } from '../../app/utilities/_helpers'
 
-const createMessages = n =>
-  createData(n, i => ({
-    content: lorem.sentences(2),
-    date: new Date().toISOString(),
-    own: randomPick([true, false]),
-    user: name.findName(),
-  }))
-
-export const Base = () => {
+export const Base = args => {
   const [messages, setMessages] = React.useState(createMessages(20))
   const [announcementText, setAnnouncementText] = React.useState('')
 
@@ -43,10 +35,12 @@ export const Base = () => {
     <div style={{ height: '70vh' }}>
       <ChatThread
         announcementText={announcementText}
-        hasMore={messages.length < 20}
+        hasMore={messages.length < 50}
+        infiniteScroll={false}
         messages={messages}
         onFetchMore={handleFetchMoreMessage}
         onSendMessage={handleSend}
+        {...args}
       />
     </div>
   )
