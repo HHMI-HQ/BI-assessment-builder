@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   overflow-anchor: none;
   overscroll-behavior: contain;
 
-  * > * {
+  * + * {
     margin-top: ${grid(1)};
   }
 `
@@ -39,9 +39,8 @@ const SpinnerWrapper = styled.div`
   order: -1;
 `
 
-const NoMoreMessagesWrapper = styled.div`
-  margin-block: ${grid(4)};
-  order: -1;
+const TopMessageWrapper = styled.p`
+  order: ${props => (props.infiniteScroll ? '-1' : '0')};
   text-align: center;
 `
 
@@ -53,9 +52,9 @@ const ChatMessageList = props => {
       <StyledInfiniteScroll
         dataLength={messages.length}
         endMessage={
-          <NoMoreMessagesWrapper role="status">
-            No more messages
-          </NoMoreMessagesWrapper>
+          <TopMessageWrapper infiniteScroll>
+            Start of the conversation
+          </TopMessageWrapper>
         }
         hasMore={hasMore}
         inverse
@@ -95,7 +94,13 @@ const ChatMessageList = props => {
             />
           ))}
         </MessagesWrappes>
-        <Button onClick={onFetchMore}>Load older</Button>
+        <TopMessageWrapper>
+          {hasMore ? (
+            <Button onClick={onFetchMore}>Load older</Button>
+          ) : (
+            'Start of the conversation'
+          )}
+        </TopMessageWrapper>
       </>
     )
 
