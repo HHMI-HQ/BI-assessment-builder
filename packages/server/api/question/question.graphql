@@ -6,6 +6,7 @@ type Question {
   agreedTc: Boolean!
   rejected: Boolean!
   author: User
+  chatThreadId: ID
 }
 
 type QuestionVersion {

@@ -650,6 +650,20 @@ const unassignHandlingEditor = async (questionId, userId, options = {}) => {
   }
 }
 
+const getChatThreadForQuestion = async (questionId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} getChatThreadForQuestion:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} getting chat thread for question ${questionId}`,
+  )
+
+  try {
+    return Question.getChatThread(questionId, options)
+  } catch (error) {
+    logger.error(`${CONTROLLER_MESSAGE} ${error}`)
+    throw new Error(error)
+  }
+}
+
 const uploadFiles = async files => {
   const filesData = await Promise.all(files)
 
@@ -695,6 +709,8 @@ module.exports = {
   assignHandlingEditor,
   getQuestionsHandlingEditors,
   unassignHandlingEditor,
+
+  getChatThreadForQuestion,
 
   uploadFiles,
   getImageUrls,

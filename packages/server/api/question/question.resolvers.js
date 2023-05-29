@@ -27,6 +27,8 @@ const {
   unassignHandlingEditor,
   getQuestionsHandlingEditors,
 
+  getChatThreadForQuestion,
+
   uploadFiles,
   getImageUrls,
 } = require('../../controllers/question.controllers')
@@ -169,6 +171,10 @@ const unassignHandlingEditorResolver = async (_, { questionId, userId }) => {
   return unassignHandlingEditor(questionId, userId)
 }
 
+const chatThreadResolver = async question => {
+  return getChatThreadForQuestion(question.id)
+}
+
 module.exports = {
   Query: {
     question: questionResolver,
@@ -200,6 +206,7 @@ module.exports = {
   Question: {
     versions: versionsResolver,
     author: authorResolver,
+    chatThreadId: chatThreadResolver,
   },
   QuestionVersion: {
     question: versionQuestionResolver,
