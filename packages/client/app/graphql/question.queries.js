@@ -261,7 +261,8 @@ export const QUESTION = gql`
         complexItemSetId
         leadingContent
       }
-      #
+
+      chatThreadId
     }
   }
 `

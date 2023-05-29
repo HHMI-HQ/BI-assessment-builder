@@ -12,13 +12,15 @@ const pullRight = css`
 `
 
 const Message = styled.div`
+  align-self: baseline;
   background: ${props =>
     props.own ? th('colorPrimary') : th('colorSecondary')};
   border-radius: 3px;
   color: ${th('colorTextReverse')};
   display: inline-block;
   margin-left: ${grid(1)};
-  max-width: 90%;
+  max-inline-size: 90%;
+  min-inline-size: 30%;
   ${props =>
     props.own &&
     css`

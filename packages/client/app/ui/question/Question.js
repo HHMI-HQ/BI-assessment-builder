@@ -389,6 +389,8 @@ const Question = props => {
     currentHandlingEditors,
     loadAssignedHEs,
     onUnassignHandlingEditor,
+    // chatLoading,
+    onLoadChat,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1274,6 +1276,10 @@ const Question = props => {
 
   const handleTabChange = activeTab => {
     setActiveKey(activeTab)
+
+    if (activeTab) {
+      onLoadChat()
+    }
   }
 
   return (
@@ -1690,6 +1696,8 @@ Question.propTypes = {
   ),
   loadAssignedHEs: PropTypes.func,
   onUnassignHandlingEditor: PropTypes.func,
+  chatLoading: PropTypes.bool,
+  onLoadChat: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -1744,6 +1752,8 @@ Question.defaultProps = {
   currentHandlingEditors: [],
   loadAssignedHEs: () => {},
   onUnassignHandlingEditor: () => {},
+  chatLoading: false,
+  onLoadChat: () => {},
 }
 
 export default Question

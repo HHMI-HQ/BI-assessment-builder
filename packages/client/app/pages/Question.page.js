@@ -31,6 +31,8 @@ import {
   ASSING_HANDLING_EDITOR,
   UNASSING_HANDLING_EDITOR,
   GET_QUESTION_HANDLING_EDITORS,
+  GET_CHAT_THREAD,
+  SEND_MESSAGE,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -123,6 +125,25 @@ const metadataUiToApi = values => {
 
   return metadataToSave
 }
+
+const messagesApiToUi = (messages, currentUser = null) => {
+  return messages
+    ? messages.map(
+        ({
+          id,
+          timestamp,
+          content,
+          user: { id: userId, displayName } = {},
+        }) => ({
+          id,
+          content,
+          date: timestamp,
+          own: userId === currentUser,
+          user: displayName,
+        }),
+      )
+    : []
+}
 // #endregion transformations
 
 const QuestionPage = props => {
@@ -199,6 +220,11 @@ const QuestionPage = props => {
     },
     fetchPolicy: 'network-only',
   })
+
+  const [getChatThread, { data: { chatThread } = {}, loading: chatLoading }] =
+    useLazyQuery(GET_CHAT_THREAD, {
+      fetchPolicy: 'network-only',
+    })
 
   /* setup Prev/Next question functions */
   // read state from location to get filter values, if any
@@ -316,6 +342,8 @@ const QuestionPage = props => {
       },
     ],
   })
+
+  const [sendMessage] = useMutation(SEND_MESSAGE)
   // #endregion hooks
 
   // #region user roles
@@ -614,6 +642,25 @@ const QuestionPage = props => {
     filterGlobalTeamMembers({ variables })
   }
 
+  const onLoadChat = async () => {
+    const variables = {
+      id: question?.chatThreadId,
+    }
+
+    getChatThread({ variables })
+  }
+
+  const onSendMessage = async content => {
+    const variables = {
+      input: {
+        content,
+        chatThreadId: question?.chatThreadId,
+        userId: currentUser.id,
+      },
+    }
+
+    sendMessage({ variables })
+  }
   // #endregion handlers
 
   if (error) {
@@ -655,33 +702,18 @@ const QuestionPage = props => {
         authors={possibleAuthors}
         canAssignAuthor={isAdmin && isAuthor}
         canCreateNewVersion={isAdmin}
+        chatLoading={chatLoading}
         complexItemSetOptions={complexItemSetOptions}
         complexSetEditLink={
           version?.inProduction ? `/set/${version?.complexItemSetId}` : ''
         }
         currentHandlingEditors={currentHandlingEditors}
-        editorContent={version && JSON.parse(version.content)}
-        // admins have editorial rights (publishing rights) on their own questions
-        editorView={
-          (isEditor && !isAuthor) ||
-          (isHandlingEditor && !isAuthor) ||
-          (isAdmin && isAuthor)
-        }
         facultyView={testMode}
         handlingEditors={handlingEditors || []}
         initialMetadataValues={metadataApiToUi(version, testMode)}
         isInProduction={
           version?.inProduction || (isAdmin && isAuthor && !version?.published)
         }
-        isPublished={version?.published}
-        // admins have editorial rights (publishing rights) on their own questions
-        isRejected={question?.rejected}
-        isSubmitted={version?.submitted || (isAdmin && isAuthor)}
-        // if user is admin and author, assume the question has been submitted to get the UI as if it's "in production"
-        isUnderReview={version?.underReview}
-        isUserLoggedIn={!!currentUser}
-        // admins can always treat their questions as if they are in produciton, meaning they can edit and publish them directly,
-        // unless the question has already been published
         leadingContent={
           version?.leadingContent.length
             ? JSON.parse(version.leadingContent)
@@ -689,6 +721,9 @@ const QuestionPage = props => {
         }
         loadAssignedHEs={getQuestionsHandlingEditors}
         loadAuthors={getUsers}
+        isUserLoggedIn={!!currentUser}
+        // admins can always treat their questions as if they are in produciton, meaning they can edit and publish them directly,
+        // unless the question has already been published
         loading={
           loading ||
           !version ||
@@ -696,6 +731,7 @@ const QuestionPage = props => {
           !getResources ||
           !complexItemSetOptions
         }
+        messages={messagesApiToUi(chatThread?.messages, currentUser?.id)}
         metadata={metadata || {}}
         onAssignAuthor={handleAssignAuthor}
         onClickAssignHE={handleClickAssignHE}
@@ -707,6 +743,7 @@ const QuestionPage = props => {
         onCreateNewVersion={handleCreateNewVersion}
         onEditorContentAutoSave={handleEditorContentAutoSave}
         onImageUpload={handleImageUpload}
+        onLoadChat={onLoadChat}
         onMetadataAutoSave={handleMetadataAutoSave}
         onMoveToProduction={handleMoveToProduction}
         onMoveToReview={handleMoveToReview}
@@ -714,6 +751,7 @@ const QuestionPage = props => {
         onQuestionSubmit={handleQuestionSubmit}
         onReject={handleReject}
         onSearchHE={handleSearchHE}
+        onSendMessage={onSendMessage}
         onUnassignHandlingEditor={handleUnassignHE}
         questionAgreedTc={false} //
         refetchUser={refetchCurrentUser}
@@ -726,6 +764,19 @@ const QuestionPage = props => {
         showNextQuestionLink={false}
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
+        editorContent={version && JSON.parse(version.content)}
+        // admins have editorial rights (publishing rights) on their own questions
+        editorView={
+          (isEditor && !isAuthor) ||
+          (isHandlingEditor && !isAuthor) ||
+          (isAdmin && isAuthor)
+        }
+        isPublished={version?.published}
+        // admins have editorial rights (publishing rights) on their own questions
+        isRejected={question?.rejected}
+        isSubmitted={version?.submitted || (isAdmin && isAuthor)}
+        // if user is admin and author, assume the question has been submitted to get the UI as if it's "in production"
+        isUnderReview={version?.underReview}
       />
     </>
   )
