@@ -33,7 +33,7 @@ const ChatInput = props => {
   }
 
   const SendIcon = (
-    <SendButton data-testid="send-btn" onClick={handleSend} tabindex={0}>
+    <SendButton data-testid="send-btn" onClick={handleSend}>
       <SendOutlined />
     </SendButton>
   )

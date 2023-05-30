@@ -106,7 +106,7 @@ const ChatThread = props => {
 ChatThread.propTypes = {
   isActive: PropTypes.bool,
   announcementText: PropTypes.string,
-  messages: PropTypes.arrayOf({}),
+  messages: PropTypes.arrayOf(PropTypes.shape()),
   onFetchMore: PropTypes.func,
   onSendMessage: PropTypes.func,
   hasMore: PropTypes.bool,

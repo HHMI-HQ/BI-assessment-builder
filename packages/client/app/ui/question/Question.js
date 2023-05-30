@@ -1397,7 +1397,7 @@ Question.propTypes = {
   ),
   leadingContent: PropTypes.shape(),
   announcementText: PropTypes.string,
-  messages: PropTypes.arrayOf({}),
+  messages: PropTypes.arrayOf(PropTypes.shape()),
   hasMoreMessages: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   loadAuthors: PropTypes.func,
