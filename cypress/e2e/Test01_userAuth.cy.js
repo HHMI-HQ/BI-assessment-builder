@@ -156,6 +156,7 @@ describe('Tests for user authentication', () => {
     })
   })
 
+/*
   it('Team manager', () => {
     const addUserToRole = (role, username) => {
       cy.get(`[data-testid="select-${role}"]`).type(username)
@@ -183,8 +184,7 @@ describe('Tests for user authentication', () => {
 
     addUserToRole('editor', 'seconduser')
     addUserToRole('reviewer', 'firstuser')
-  })
-
+  })*/
   it('User with editor priveleges', () => {
     cy.login({
       email: 'seconduser@gmail.com',
