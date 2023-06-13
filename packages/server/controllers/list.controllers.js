@@ -1,5 +1,13 @@
 const path = require('path')
-const { logger, useTransaction, fileStorage, uuid } = require('@coko/server')
+
+const {
+  logger,
+  useTransaction,
+  fileStorage,
+  uuid,
+  File,
+} = require('@coko/server')
+
 const config = require('config')
 
 const { List, ListMember, Team, Question } = require('../models')
@@ -251,10 +259,10 @@ const exportQuestionsToWordFile = async (
       await Promise.all(n.content.map(async i => findImages(i)))
     }
 
+    const allVersionsContent = versions.map(version => version.content.content)
+
     await Promise.all(
-      versions.map(version =>
-        version.content.content.map(async node => findImages(node)),
-      ),
+      allVersionsContent.flat().map(async node => findImages(node)),
     )
 
     const fullContent = {
@@ -384,10 +392,10 @@ const exportListToWordFile = async (
       await Promise.all(n.content.map(async i => findImages(i)))
     }
 
+    const allVersionsContent = versions.map(version => version.content.content)
+
     await Promise.all(
-      versions.map(version =>
-        version.content.content.map(async node => findImages(node)),
-      ),
+      allVersionsContent.flat().map(async node => findImages(node)),
     )
 
     const fullContent = {
