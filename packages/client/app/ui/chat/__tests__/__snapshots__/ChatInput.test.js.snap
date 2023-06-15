@@ -24,12 +24,11 @@ exports[`ChatInput matches snapshot 1`] = `
       className="ant-input-suffix"
     >
       <button
-        className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-default sc-hLseeU kWOTMC sc-ihEcPi hVGDpE"
+        className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-default sc-hLseeU kWOTMC sc-ebLpKB eyEibI"
         data-testid="send-btn"
         disabled={false}
         onClick={[Function]}
         status={null}
-        tabindex={0}
         type="button"
       >
         <span
