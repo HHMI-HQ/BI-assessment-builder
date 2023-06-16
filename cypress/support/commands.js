@@ -94,8 +94,6 @@ Cypress.Commands.add(
     psychomotorLevel,
   }) => {
     cy.intercept('POST', graphqlEndpoint).as('GQLReq')
-    cy.get(questionType.selector).click()
-    cy.contains(questionType.value).click()
     selectData(mainTopic)
     selectData(course)
     keywords.value.forEach(keyword =>
@@ -107,9 +105,16 @@ Cypress.Commands.add(
       cy.contains(key, { timeout: 50000 }).click({ force: true })
     })
     cy.get(biointeractiveResources.selector).click()
-    selectDataWithoutParent(affectiveLevel)
-    selectDataWithoutParent(psychomotorLevel)
+
+    // temporarily disabled affective level and psychomotorLevel from metadata form
+    // selectDataWithoutParent(affectiveLevel)
+    // selectDataWithoutParent(psychomotorLevel)
     selectDataWithoutParent(cognitiveLevel)
+
+    // [info]: selecting multiple choice at last to avoid focus miss issue
+    cy.get(questionType.selector)
+      .scrollIntoView()
+      .type(`${questionType.value}{enter}`)
 
     cy.get('.ProseMirror').first().type('Question 1', { force: true })
   },

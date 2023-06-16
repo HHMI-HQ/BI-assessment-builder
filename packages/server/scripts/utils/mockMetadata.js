@@ -483,4 +483,208 @@ const population = {
   readingLevel: null,
 }
 
-module.exports = { biochemistry, anatomy, population }
+const ecology = {
+  questionType: 'matching',
+  topics: [{ topic: 'ecology', subtopic: 'ecosystems' }],
+  courses: [
+    {
+      units: [
+        {
+          unit: 'theLivingWorldEcosystems',
+          skill: null,
+          application: null,
+          courseTopic: 'primaryProductivity',
+          understanding: null,
+          learningObjective: 'ENG-1.A',
+          essentialKnowledge: 'ENG-1.A.1',
+        },
+      ],
+      course: 'apEnvironmentalScience',
+    },
+  ],
+  contentText:
+    'Plants growing under direct sunlight are known as Plants growing under direct sunlight are known as Plants growing under direct sunlight are known as Plants growing under direct sunlight are known as',
+  keywords: ['ecosystem', 'plants'],
+  biointeractiveResources: [],
+
+  content: {
+    type: 'doc',
+    content: [
+      {
+        type: 'matching_container',
+        attrs: {
+          id: '1b63d399-6706-4509-82f8-87d7bc6d0627',
+          class: 'matching-container',
+          options: [
+            {
+              label: 'climate ecosystem',
+              value: '58c5c4e1-52ef-4471-927c-243d4a40cef4',
+            },
+            {
+              label: 'ecological niche',
+              value: '6fd4c66d-19ee-4807-951b-de1ada954f6c',
+            },
+            { label: 'biome', value: 'ae80d850-1a5c-4f9d-b534-896f89c91a58' },
+            {
+              label: 'edge effect',
+              value: '20c7b886-401a-442e-8559-c94e786de746',
+            },
+          ],
+          feedback: 'biome, edge effect, climate ecosystem, ecological niche',
+        },
+        content: [
+          {
+            type: 'paragraph',
+            attrs: { class: 'paragraph' },
+            content: [
+              {
+                type: 'matching_option',
+                attrs: {
+                  id: '37644703-a192-472a-b033-a93fd1f0f3f3',
+                  class: 'matching-option',
+                  answer: '',
+                  correct: '6fd4c66d-19ee-4807-951b-de1ada954f6c',
+                  isfirst: true,
+                  options: [
+                    {
+                      label: 'climate ecosystem',
+                      value: '58c5c4e1-52ef-4471-927c-243d4a40cef4',
+                    },
+                    {
+                      label: 'ecological niche',
+                      value: '6fd4c66d-19ee-4807-951b-de1ada954f6c',
+                    },
+                    {
+                      label: 'biome',
+                      value: 'ae80d850-1a5c-4f9d-b534-896f89c91a58',
+                    },
+                    {
+                      label: 'edge effect',
+                      value: '20c7b886-401a-442e-8559-c94e786de746',
+                    },
+                  ],
+                },
+                content: [
+                  {
+                    text: 'Plants growing under direct sunlight are known as',
+                    type: 'text',
+                  },
+                ],
+              },
+              {
+                type: 'matching_option',
+                attrs: {
+                  id: '4b3ddf9d-025f-430d-ae63-0d7df48f9a93',
+                  class: 'matching-option',
+                  answer: '',
+                  correct: '20c7b886-401a-442e-8559-c94e786de746',
+                  isfirst: false,
+                  options: [
+                    {
+                      label: 'climate ecosystem',
+                      value: '58c5c4e1-52ef-4471-927c-243d4a40cef4',
+                    },
+                    {
+                      label: 'ecological niche',
+                      value: '6fd4c66d-19ee-4807-951b-de1ada954f6c',
+                    },
+                    {
+                      label: 'biome',
+                      value: 'ae80d850-1a5c-4f9d-b534-896f89c91a58',
+                    },
+                    {
+                      label: 'edge effect',
+                      value: '20c7b886-401a-442e-8559-c94e786de746',
+                    },
+                  ],
+                },
+                content: [
+                  {
+                    text: 'Plants growing under direct sunlight are known as',
+                    type: 'text',
+                  },
+                ],
+              },
+              {
+                type: 'matching_option',
+                attrs: {
+                  id: '95fb42e3-d54b-4542-b5d9-11c9d6116fc4',
+                  class: 'matching-option',
+                  answer: '',
+                  correct: '58c5c4e1-52ef-4471-927c-243d4a40cef4',
+                  isfirst: false,
+                  options: [
+                    {
+                      label: 'climate ecosystem',
+                      value: '58c5c4e1-52ef-4471-927c-243d4a40cef4',
+                    },
+                    {
+                      label: 'ecological niche',
+                      value: '6fd4c66d-19ee-4807-951b-de1ada954f6c',
+                    },
+                    {
+                      label: 'biome',
+                      value: 'ae80d850-1a5c-4f9d-b534-896f89c91a58',
+                    },
+                    {
+                      label: 'edge effect',
+                      value: '20c7b886-401a-442e-8559-c94e786de746',
+                    },
+                  ],
+                },
+                content: [
+                  {
+                    text: 'Plants growing under direct sunlight are known as',
+                    type: 'text',
+                  },
+                ],
+              },
+              {
+                type: 'matching_option',
+                attrs: {
+                  id: '0e838852-f525-44f5-91d5-840c63848e6e',
+                  class: 'matching-option',
+                  answer: '',
+                  correct: 'ae80d850-1a5c-4f9d-b534-896f89c91a58',
+                  isfirst: false,
+                  options: [
+                    {
+                      label: 'climate ecosystem',
+                      value: '58c5c4e1-52ef-4471-927c-243d4a40cef4',
+                    },
+                    {
+                      label: 'ecological niche',
+                      value: '6fd4c66d-19ee-4807-951b-de1ada954f6c',
+                    },
+                    {
+                      label: 'biome',
+                      value: 'ae80d850-1a5c-4f9d-b534-896f89c91a58',
+                    },
+                    {
+                      label: 'edge effect',
+                      value: '20c7b886-401a-442e-8559-c94e786de746',
+                    },
+                  ],
+                },
+                content: [
+                  {
+                    text: 'Plants growing under direct sunlight are known as',
+                    type: 'text',
+                  },
+                ],
+              },
+              { text: ' ', type: 'text' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  cognitiveLevel: 'higher-analyze',
+  affectiveLevel: null,
+  psychomotorLevel: null,
+  readingLevel: null,
+}
+
+module.exports = { biochemistry, anatomy, population, ecology }

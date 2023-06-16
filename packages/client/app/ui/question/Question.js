@@ -1127,13 +1127,13 @@ const Question = props => {
             onClick={handleMoveToReview}
             type="primary"
           >
-            Move to Review
+            Move to review
           </StyledButton>
         </>
       )}
       {isPublished && (
         <StyledButton onClick={showNewVersionModal} type="primary">
-          Edit Question
+          Edit question
         </StyledButton>
       )}
       {showNextQuestionLink && NextQuestion}
@@ -1208,14 +1208,14 @@ const Question = props => {
               onClick={handleMoveToReview}
               type="primary"
             >
-              Move to Review
+              Move to review
             </StyledButton>
           </>
         )}
 
         {isPublished && (
           <StyledButton onClick={showNewVersionModal} type="primary">
-            Edit Question
+            Edit question
           </StyledButton>
         )}
         {showNextQuestionLink && NextQuestion}

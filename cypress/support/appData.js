@@ -109,7 +109,7 @@ export const workflowData = {
     QuestionStatus: 'Rejected',
   },
   review: {
-    operationBtn: 'Move to Review',
+    operationBtn: 'Move to review',
     prompt: {
       header: 'You are about to move the question to review',
       body: 'Question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',

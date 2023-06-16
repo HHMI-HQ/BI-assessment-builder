@@ -100,7 +100,7 @@ describe('Testing apps responsiveness', () => {
 
       cy.contains(
         '[data-testid="editor-actions-popup"] [id="moveToReview"]',
-        'Move to Review',
+        'Move to review',
       ).click()
       cy.contains(
         '[class="ant-modal-body"] [type="button"]',
