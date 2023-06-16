@@ -100,14 +100,14 @@ const Dashboard = props => {
 
   const CreateQuestionButton = (
     <StyledCreateQuestionButton
-      aria-label="Create Question"
+      aria-label="Create question"
       data-testid="create-question-btn"
       icon={<PlusOutlined />}
       onClick={onClickCreate}
-      title="Create Question"
+      title="Create question"
       type="primary"
     >
-      Create Question
+      Create question
     </StyledCreateQuestionButton>
   )
 

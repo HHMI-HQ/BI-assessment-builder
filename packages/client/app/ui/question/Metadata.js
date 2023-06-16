@@ -438,7 +438,7 @@ const Metadata = React.forwardRef((props, ref) => {
           />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           label="Bloom's affective level"
           name="affectiveLevel"
           rules={[
@@ -468,7 +468,7 @@ const Metadata = React.forwardRef((props, ref) => {
             disabled={readOnly}
             options={metadata.blooms.psychomotor}
           />
-        </Form.Item>
+        </Form.Item> */}
 
         {/* <Form.Item label="Reading level" name="readingLevel">
           <Select disabled={readOnly} options={[]} />

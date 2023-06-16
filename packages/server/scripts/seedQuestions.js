@@ -23,7 +23,7 @@ const {
  *                 [4]- [submitted, underReview, published,inProduction]
  */
 
-const validDataType = ['biochemistry', 'anatomy', 'population']
+const validDataType = ['biochemistry', 'anatomy', 'population', 'ecology']
 
 const validQuestionStatus = [
   'submitted',

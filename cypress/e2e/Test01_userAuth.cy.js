@@ -32,13 +32,6 @@ describe('Tests for user authentication', () => {
       .should('contain', `user given admin role`)
 
     cy.exec(
-      `docker exec hhmi_server_1 node ./scripts/seedUser.js create firstuser@gmail.com profileSubmitted reviewer`,
-    )
-      .its('stdout')
-      .should('contain', `user created with email - firstuser@gmail.com.`)
-      .should('contain', `user given reviewer role`)
-
-    cy.exec(
       `docker exec hhmi_server_1 node ./scripts/seedUser.js create seconduser@gmail.com profileSubmitted editor`,
     )
       .its('stdout')
@@ -156,10 +149,10 @@ describe('Tests for user authentication', () => {
     })
   })
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Team manager', () => {
+  it('Team manager', () => {
     const addUserToRole = (role, username) => {
       cy.get(`[data-testid="select-${role}"]`).type(username)
+      cy.wait('@GQLReq')
       cy.contains('.ant-select-item-option-active', username).click()
       cy.get(`[aria-labelledby="${capitalize(role)}-team"]`).click()
       cy.contains(`[data-testid="${role}-list"]`, username)
@@ -180,11 +173,10 @@ describe('Tests for user authentication', () => {
     cy.contains('h1', 'Team Manager')
 
     removeUserFromRole('editor', 'seconduser')
-    removeUserFromRole('reviewer', 'firstuser')
 
     addUserToRole('editor', 'seconduser')
-    addUserToRole('reviewer', 'firstuser')
   })
+
   it('User with editor priveleges', () => {
     cy.login({
       email: 'seconduser@gmail.com',
@@ -205,6 +197,13 @@ describe('Tests for user authentication', () => {
   })
 
   it('User with Reviewer priveleges', () => {
+    cy.exec(
+      `docker exec hhmi_server_1 node ./scripts/seedUser.js create firstuser@gmail.com profileSubmitted reviewer`,
+    )
+      .its('stdout')
+      .should('contain', `user created with email - firstuser@gmail.com.`)
+      .should('contain', `user given reviewer role`)
+
     cy.login({
       email: 'firstuser@gmail.com',
       password: 'Password@123',

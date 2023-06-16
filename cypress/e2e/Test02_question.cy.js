@@ -15,8 +15,8 @@ describe('Testing questions', () => {
     keywords,
     biointeractiveResources,
     cognitiveLevel,
-    affectiveLevel,
-    psychomotorLevel,
+    // affectiveLevel,
+    // psychomotorLevel,
   } = question
 
   before(() => {
@@ -47,7 +47,7 @@ describe('Testing questions', () => {
     cy.viewport(laptop.preset)
   })
 
-  /* eslint-disable-next-line jest/no-disabled-tests */
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('checking the wax editor', () => {
     cy.login(contact)
 
@@ -172,7 +172,8 @@ describe('Testing questions', () => {
   })
 
   it('checking if the values selected from the UI are retained', () => {
-    cy.login(contact)
+    cy.login({ ...contact, visitUrl: '/dashboard' })
+    cy.wait('@GQLReq')
 
     // [segment]: Checking  dashboard
     cy.log('checking in the dashboard...')
@@ -209,27 +210,38 @@ describe('Testing questions', () => {
     biointeractiveResources.values.forEach(key => {
       cy.contains(`${biointeractiveResources.selector} span`, key)
     })
-    checkDataWithoutParent(affectiveLevel)
-    checkDataWithoutParent(psychomotorLevel)
+    // temporarily disabled affective level and psychomotor level from metadata form
+    // checkDataWithoutParent(affectiveLevel)
+    // checkDataWithoutParent(psychomotorLevel)
     checkDataWithoutParent(cognitiveLevel)
-    cy.url().then(url => {
-      const qId = url.split('/')[4]
-      cy.exec(
-        `docker exec hhmi_server_1 node ./scripts/seedQuestions.js updateStatus ${qId} published`,
-      )
-    })
+
+    cy.exec(
+      `docker exec hhmi_server_1 node ./scripts/seedQuestions.js deleteAll`,
+    )
+      .its('stdout')
+      .should('contain', 'Emptied questions and question_versions')
   })
 
   it('editing the question', () => {
+    cy.exec(
+      `docker exec hhmi_server_1 node ./scripts/seedQuestions.js create ${contact.username} -3 ecology published`,
+    )
+      .its('stdout')
+      .should(
+        'contain',
+        `question created under the author ${contact.username}`,
+      )
     cy.login(editorRole)
 
     cy.contains('.ant-tabs-tab', 'Editor Questions').click()
+    cy.wait('@GQLReq')
     cy.get('[data-testid="list-item-wrapper"]')
       .eq(0)
       .should('be.visible')
-      .contains('.ProseMirror', 'Question 1')
+      .contains('.ProseMirror', 'Plants growing under direct sunlight')
       .click()
-    cy.contains('button[type="button"]', 'Edit Question').click()
+    cy.wait('@GQLReq')
+    cy.contains('button[type="button"]', 'Edit question').click()
     cy.contains('[class="ant-modal-confirm-title"]', 'Warning!')
     cy.contains(
       '[class="ant-modal-confirm-content"]',
@@ -257,11 +269,15 @@ describe('Testing questions', () => {
     )
     cy.contains('[class="ant-modal-body"] [type="button"]', 'Ok').click()
   })
-
   it('duplicate question', () => {
     cy.exec(
-      'docker exec hhmi_server_1 node ./scripts/seedQuestions.js create user -3 population published',
+      `docker exec hhmi_server_1 node ./scripts/seedQuestions.js create ${contact.username} -3 population published`,
     )
+      .its('stdout')
+      .should(
+        'contain',
+        `question created under the author ${contact.username}`,
+      )
     cy.login({ ...editorRole })
     cy.contains('a[href="/discover"]', 'Browse Questions').click()
     cy.wait('@GQLReq')
@@ -290,6 +306,7 @@ describe('Testing questions', () => {
     cy.contains('span[data-testid="question-status"]', 'Not Submitted')
   })
 
+  // skipped due to #172
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('check alternative text for empty questions', () => {
     cy.login(contact)
@@ -383,6 +400,8 @@ describe('Testing lists', () => {
     // [segment]: deleting a list
   })
 
+  // skipped due to logout button issue.
+  // eslint-disable-next-line jest/no-disabled-tests
   it('adding questions to new & existing list', () => {
     cy.exec(
       `docker exec hhmi_server_1 node ./scripts/seedList.js create new_list ${contact.username}`,
@@ -497,6 +516,7 @@ describe('Testing lists', () => {
     cy.get(
       'div[id="list4-rename-popup"] button[data-testid="rename-btn"]',
     ).click()
+    cy.wait('@GQLReq')
     cy.contains('a', 'list5')
   })
 })
