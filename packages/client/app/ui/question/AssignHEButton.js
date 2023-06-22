@@ -52,6 +52,10 @@ const AssignHEButton = props => {
     }
   }, [showModal])
 
+  useEffect(() => {
+    onSearchHE()
+  }, [])
+
   const handleAssign = ({ newHandlingEditor }) => {
     onAssign(newHandlingEditor)
       .then(() => {
