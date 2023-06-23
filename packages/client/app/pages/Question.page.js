@@ -637,6 +637,10 @@ const QuestionPage = props => {
     const variables = {
       role: 'handlingEditor',
       query,
+      options: {
+        orderBy: 'username',
+        ascending: true,
+      },
     }
 
     filterGlobalTeamMembers({ variables })
@@ -709,7 +713,7 @@ const QuestionPage = props => {
         }
         currentHandlingEditors={currentHandlingEditors}
         facultyView={testMode}
-        handlingEditors={handlingEditors || []}
+        handlingEditors={handlingEditors?.result || []}
         initialMetadataValues={metadataApiToUi(version, testMode)}
         isInProduction={
           version?.inProduction || (isAdmin && isAuthor && !version?.published)

@@ -10,12 +10,12 @@ const getNonTeamMemberUsers = async (teamId, searchValue) => {
   return Team.searchForNonTeamMemberUsers(teamId, searchValue)
 }
 
-const filterGlobalTeamMembers = async (role, query) => {
+const filterGlobalTeamMembers = async (role, query, options) => {
   logger.info(
     `Team controllers: filterGlobalTeamMembers: searching for users with role ${role} matching the query ${query}`,
   )
 
-  return Team.filterGlobalTeamMembers(role, query)
+  return Team.filterGlobalTeamMembers(role, query, options)
 }
 
 const updateGlobalTeams = async teams => {

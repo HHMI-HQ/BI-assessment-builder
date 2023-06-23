@@ -8,8 +8,12 @@ const getNonTeamMemberUsersResolver = async (_, { teamId, term }, ctx) => {
   return getNonTeamMemberUsers(teamId, term)
 }
 
-const filterGlobalTeamMembersResolver = async (_, { role, query }, ctx) => {
-  return filterGlobalTeamMembers(role, query)
+const filterGlobalTeamMembersResolver = async (
+  _,
+  { role, query, options },
+  ctx,
+) => {
+  return filterGlobalTeamMembers(role, query, options)
 }
 
 const updateGlobalTeamsResolver = async (_, { input }, ctx) => {
