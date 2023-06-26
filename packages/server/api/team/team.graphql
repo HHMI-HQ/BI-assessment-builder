@@ -11,6 +11,8 @@ input UpdateGlobalTeamsInput {
 input FilterTeamMembersInput {
   orderBy: String
   ascending: Boolean
+  pageSize: Int
+  page: Int
 }
 
 extend type Query {
