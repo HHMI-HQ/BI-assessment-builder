@@ -4,12 +4,14 @@ import { useHistory } from 'react-router-dom'
 
 import { Dashboard, VisuallyHiddenElement } from 'ui'
 import {
+  ASSING_HANDLING_EDITORS,
   GET_AUTHOR_DASHBOARD,
   GET_EDITOR_DASHBOARD,
   GET_HANDLING_EDITOR_DASHBOARD,
   CREATE_QUESTION,
   CURRENT_USER,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
+  FILTER_GLOBAL_TEAM_MEMBERS,
 } from '../graphql'
 import { hasGlobalRole, dashboardDataMapper, useMetadata } from '../utilities'
 
@@ -27,6 +29,10 @@ const DashboardPage = () => {
   const [currentTabKey, setCurrentTabKey] = useState(initialTabKey)
   const [currentPage, setCurrentPage] = useState(1)
   const [currentSearchQuery, setCurrentSearchQuery] = useState(null)
+
+  const [selectedPublishedQuestions, setSelectedPublishedQuestions] =
+    useState(false)
+
   const initialRender = useRef(true)
 
   const { metadata } = useMetadata()
@@ -75,6 +81,14 @@ const DashboardPage = () => {
       }
     },
   })
+
+  const [
+    filterGlobalTeamMembers,
+    {
+      loading: loadingSearchHEs,
+      data: { filterGlobalTeamMembers: handlingEditors } = {},
+    },
+  ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS)
 
   const [
     editorQuery,
@@ -179,6 +193,10 @@ const DashboardPage = () => {
   const [createQuestionMutation] = useMutation(CREATE_QUESTION, {
     refetchQueries: [{ query: CURRENT_USER }],
   })
+
+  const [assingHandlingEditors, { loading: loadingAssingHEs }] = useMutation(
+    ASSING_HANDLING_EDITORS,
+  )
   // #endregion hooks
 
   // #region handlers
@@ -201,6 +219,39 @@ const DashboardPage = () => {
     localStorage.setItem('dashboardLastUsedTab', role)
     runQuery(query)
   }
+
+  const handleSearchHE = async query => {
+    const variables = {
+      role: 'handlingEditor',
+      query,
+      options: {
+        orderBy: 'username',
+        ascending: true,
+      },
+    }
+
+    filterGlobalTeamMembers({ variables })
+  }
+
+  const handleAssignHE = async (users, questionIds) => {
+    const mutationData = {
+      variables: {
+        questionIds,
+        userIds: users.map(user => user.value),
+      },
+    }
+
+    return assingHandlingEditors(mutationData)
+  }
+
+  const checkForPublishedQuestions = selectedQuestion => {
+    const hasPublishedQuestions = editorData?.result
+      ?.map(q => (selectedQuestion.includes(q.id) ? q.versions[0] : false))
+      .some(q => q.published === true)
+
+    setSelectedPublishedQuestions(hasPublishedQuestions)
+  }
+
   // #endregion handlers
 
   // #region data
@@ -244,7 +295,7 @@ const DashboardPage = () => {
             )
           : [],
       totalCount: editorData && editorData.totalCount,
-      showBulkActions: false,
+      showBulkActions: true,
       loading: editorLoading,
     },
     isHandlingEditor && {
@@ -266,14 +317,19 @@ const DashboardPage = () => {
     <>
       <VisuallyHiddenElement as="h1">Dashboard page</VisuallyHiddenElement>
       <Dashboard
-        // bulkActions
+        checkForPublishedQuestions={checkForPublishedQuestions}
+        handlingEditors={handlingEditors?.result || []}
         initialTabKey={initialTabKey}
         loading={loading}
-        // onQuestionSelected
+        loadingAssingHEs={loadingAssingHEs}
+        loadingSearchHEs={loadingSearchHEs}
+        onAssignHE={handleAssignHE}
         onClickCreate={handleCreateQuestion}
         onSearch={handleSearch}
+        onSearchHE={handleSearchHE}
         // showSort
         // sortOptions
+        selectedPublishedQuestions={selectedPublishedQuestions}
         tabsContent={tabs}
       />
       <VisuallyHiddenElement
