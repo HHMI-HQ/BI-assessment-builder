@@ -3,7 +3,14 @@ const config = require('config')
 
 const { createFile, logger, useTransaction } = require('@coko/server')
 
-const { Question, QuestionVersion, Team, ComplexItemSet } = require('../models')
+const {
+  Question,
+  QuestionVersion,
+  Team,
+  TeamMember,
+  ComplexItemSet,
+} = require('../models')
+
 const WaxToDocxConverter = require('../services/docx/hhmiDocx.service')
 const { clearTempImageFiles } = require('./helpers')
 const { labels } = require('./constants')
@@ -582,39 +589,63 @@ const generateWordFile = async (questionVersionId, options = {}) => {
 
 const resourceResolver = async () => resources
 
-const assignHandlingEditor = async (questionId, userId, options = {}) => {
-  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} assignHandlingEditor:`
-  logger.info(
-    `${CONTROLLER_MESSAGE} assigning user ${userId} as handling editor for question ${questionId}`,
-  )
-
+const assignHandlingEditors = async (questionIds, userIds, options = {}) => {
   const { trx } = options
 
-  try {
-    const existingTeam = await Team.findOne({
-      objectId: questionId,
-      role: HE_TEAM.role,
-    })
-
-    if (existingTeam) {
-      return Team.addMember(existingTeam.id, userId, { trx })
-    }
-
-    const newTeam = await Team.insert(
-      {
+  const result = await Promise.all(
+    questionIds.map(async questionId => {
+      const existingTeam = await Team.findOne({
         objectId: questionId,
-        objectType: 'question',
         role: HE_TEAM.role,
-        displayName: HE_TEAM.displayName,
-      },
-      { trx },
-    )
+      })
 
-    return Team.addMember(newTeam.id, userId, { trx })
-  } catch (error) {
-    logger.error(`${CONTROLLER_MESSAGE} ${error}`)
-    throw new Error(error)
-  }
+      let members = []
+
+      if (existingTeam) {
+        members = await Promise.all(
+          userIds.map(async userId => {
+            const existingMember = await TeamMember.findOne({
+              teamId: existingTeam.id,
+              userId,
+            })
+
+            if (existingMember) {
+              return existingMember
+            }
+
+            return Team.addMember(existingTeam.id, userId)
+          }),
+        )
+
+        return {
+          questionId,
+          members,
+        }
+      }
+
+      const newTeam = await Team.insert(
+        {
+          objectId: questionId,
+          objectType: 'question',
+          role: HE_TEAM.role,
+          displayName: HE_TEAM.displayName,
+        },
+        { trx },
+      )
+
+      members = await Promise.all(
+        userIds.map(userId => {
+          return Team.addMember(newTeam.id, userId)
+        }),
+      )
+      return {
+        questionId,
+        members,
+      }
+    }),
+  )
+
+  return result
 }
 
 const getQuestionsHandlingEditors = async (questionId, options = {}) => {
@@ -706,7 +737,7 @@ module.exports = {
   generateScormZip,
   generateWordFile,
 
-  assignHandlingEditor,
+  assignHandlingEditors,
   getQuestionsHandlingEditors,
   unassignHandlingEditor,
 
