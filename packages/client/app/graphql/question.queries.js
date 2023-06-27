@@ -177,10 +177,13 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
   }
 `
 
-export const ASSING_HANDLING_EDITOR = gql`
-  mutation assignHandlingEditor($questionId: ID!, $userId: ID!) {
-    assignHandlingEditor(questionId: $questionId, userId: $userId) {
-      id
+export const ASSING_HANDLING_EDITORS = gql`
+  mutation assignHandlingEditors($questionIds: [ID!]!, $userIds: [ID!]!) {
+    assignHandlingEditors(questionIds: $questionIds, userIds: $userIds) {
+      questionId
+      members {
+        id
+      }
     }
   }
 `

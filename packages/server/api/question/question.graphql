@@ -73,6 +73,11 @@ type QuestionsResponse {
   relatedQuestionsIds: [ID]
 }
 
+type AssignHandlingEditorsResponse {
+  questionId: ID!
+  members: [TeamMember!]!
+}
+
 # INPUTS
 
 input UpdateQuestionInput {
@@ -230,6 +235,9 @@ extend type Mutation {
   createNewQuestionVersion(questionId: ID!): Question!
   uploadFiles(files: [Upload!]!): [File!]!
 
-  assignHandlingEditor(questionId: ID!, userId: ID!): TeamMember!
+  assignHandlingEditors(
+    questionIds: [ID!]!
+    userIds: [ID!]!
+  ): [AssignHandlingEditorsResponse!]!
   unassignHandlingEditor(questionId: ID!, userId: ID!): Boolean
 }
