@@ -40,6 +40,7 @@ const AssignHEButton = props => {
     searchLoading,
     loadAssignedHEs,
     currentHandlingEditors,
+    expanded,
   } = props
 
   const [showModal, setShowModal] = useState(false)
@@ -60,9 +61,8 @@ const AssignHEButton = props => {
     onAssign(newHandlingEditor)
       .then(() => {
         assingHeForm.resetFields()
-        document.getElementById(
-          'he-update',
-        ).innerHTML = `${newHandlingEditor.label} assigned as handling editor`
+        document.getElementById('he-update').innerHTML =
+          ' selected users assigned as handling editors'
       })
       .catch(() => {
         const conversionErrorModal = modal.error()
@@ -98,7 +98,7 @@ const AssignHEButton = props => {
         onClick={() => setShowModal(true)}
         type="primary"
       >
-        Assign HE
+        {expanded ? 'Assign handling editors' : 'Assign HE'}
       </Button>
 
       <Modal
@@ -185,6 +185,7 @@ const AssignHEButton = props => {
               defaultOpen={false}
               labelInValue
               loading={searchLoading}
+              mode="multiple"
               onSearch={onSearchHE}
               options={handlingEditors}
               placeholder="Search for a handling editor"
@@ -198,6 +199,7 @@ const AssignHEButton = props => {
 }
 
 AssignHEButton.propTypes = {
+  expanded: PropTypes.bool,
   loading: PropTypes.bool,
   onAssign: PropTypes.func,
   onUnassign: PropTypes.func,
@@ -219,6 +221,7 @@ AssignHEButton.propTypes = {
 }
 
 AssignHEButton.defaultProps = {
+  expanded: false,
   loading: false,
   onAssign: () => {},
   onUnassign: () => {},
