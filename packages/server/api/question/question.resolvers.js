@@ -23,7 +23,7 @@ const {
   generateScormZip,
   createNewQuestionVersion,
 
-  assignHandlingEditor,
+  assignHandlingEditors,
   unassignHandlingEditor,
   getQuestionsHandlingEditors,
 
@@ -159,8 +159,8 @@ const leadingContentResolver = async version => {
   return getLeadingContentForQuestion(version)
 }
 
-const assignHandlingEditorResolver = async (_, { questionId, userId }) => {
-  return assignHandlingEditor(questionId, userId)
+const assignHandlingEditorsResolver = async (_, { questionId, userId }) => {
+  return assignHandlingEditors(questionId, userId)
 }
 
 const getQuestionsHandlingEditorsResolver = async (_, { questionId }) => {
@@ -200,7 +200,7 @@ module.exports = {
     generateScormZip: generateScormZipResolver,
     createNewQuestionVersion: createNewQuestionVersionResolver,
     uploadFiles: uploadFilesResolver,
-    assignHandlingEditor: assignHandlingEditorResolver,
+    assignHandlingEditors: assignHandlingEditorsResolver,
     unassignHandlingEditor: unassignHandlingEditorResolver,
   },
   Question: {

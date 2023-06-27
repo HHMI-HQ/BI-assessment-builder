@@ -28,7 +28,7 @@ import {
   ASSIGN_QUESTION_AUTHOR,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
   FILTER_GLOBAL_TEAM_MEMBERS,
-  ASSING_HANDLING_EDITOR,
+  ASSING_HANDLING_EDITORS,
   UNASSING_HANDLING_EDITOR,
   GET_QUESTION_HANDLING_EDITORS,
   GET_CHAT_THREAD,
@@ -317,7 +317,7 @@ const QuestionPage = props => {
   const [upload] = useMutation(UPLOAD_FILES)
 
   const [assignHandlingEditor, { loading: assignHELoading }] = useMutation(
-    ASSING_HANDLING_EDITOR,
+    ASSING_HANDLING_EDITORS,
     {
       refetchQueries: [
         {
@@ -416,11 +416,11 @@ const QuestionPage = props => {
     return submitQuestionMutation(mutationData)
   }
 
-  const handleClickAssignHE = user => {
+  const handleClickAssignHE = users => {
     const mutationData = {
       variables: {
-        questionId: id,
-        userId: user.value,
+        questionIds: id,
+        userIds: users.map(user => user.value),
       },
     }
 
