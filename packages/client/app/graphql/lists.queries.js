@@ -98,6 +98,7 @@ export const GET_LIST = gql`
           }
         }
         totalCount
+        relatedQuestionsIds
       }
     }
   }

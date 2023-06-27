@@ -77,26 +77,16 @@ const getPublishedQuestions = async (params = {}, options = {}) => {
   // return Question.findPublished({ orderBy, page, pageSize, trx })
 }
 
-const getPreviousOrNextQuestionsIds = async (
-  which,
-  currentQuestionId,
-  params = {},
-  options = {},
-) => {
+const getPublishedQuestionsIds = async (options = {}) => {
   try {
-    const { orderBy, ascending } = options
-
-    return Question.getPreviousOrNextQuestionId(
-      which,
-      currentQuestionId,
-      params,
-      {
-        orderBy,
-        ascending,
+    return useTransaction(
+      async tr => {
+        return Question.getPublishedQuestionsIds(options)
       },
+      { trx: options.trx, passedTrxOnly: true },
     )
   } catch (e) {
-    logger.error(`error getPreviousOrNextQuestionsIds: ${e.message}`)
+    logger.error(`error getPublishedQuestions: ${e.message}`)
     throw new Error(e)
   }
 }
@@ -591,7 +581,7 @@ module.exports = {
   getQuestion,
   getQuestionVersions,
   getPublishedQuestions,
-  getPreviousOrNextQuestionsIds,
+  getPublishedQuestionsIds,
 
   getAuthor,
   getAuthorDashboard,

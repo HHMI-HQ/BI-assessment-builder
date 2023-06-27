@@ -73,12 +73,15 @@ class List extends BaseModel {
     return applyListQueryOptions(query, options)
   }
 
-  static async findListQuestionsByIds(
-    quesitonIds,
+  static async findListQuestions(
+    listId,
     searchQuery,
     options = {},
     customOrder = [],
   ) {
+    const listMembers = await ListMember.find({ listId })
+    const questionIds = listMembers.result.map(q => q.questionId)
+
     const query = Question.query(options.trx)
       .leftJoin(
         'question_versions',
@@ -94,7 +97,7 @@ class List extends BaseModel {
       .where({
         published: true,
       })
-      .whereIn('questions.id', quesitonIds)
+      .whereIn('questions.id', questionIds)
       .orderBy([
         'questions.id',
         { column: 'question_versions.publication_date', order: 'desc' },
@@ -110,28 +113,30 @@ class List extends BaseModel {
       parentQuery.where('content_text', 'ilike', `%${searchQuery}%`)
     }
 
-    // if we have a custom order get the list of question in default order and then sort it
-    if (options.orderBy === 'custom') {
-      const questions = await applyListQueryOptions(parentQuery, {
-        ...options,
-        orderBy: 'publication_date',
-      })
-
-      if (customOrder?.length) {
-        questions.result.sort((a, b) => {
-          // non-sorted items (new questions that were added later) go to the end
-          if (customOrder.indexOf(a.id) === -1) return 1000
-          if (customOrder.indexOf(b.id) === -1) return -1000
-
-          // the rest is sorted as per customOrder
-          return customOrder.indexOf(a.id) - customOrder.indexOf(b.id)
+    const response = await Promise.all([
+      // the questions to display
+      new Promise((resolve, _reject) => {
+        applyListQueryOptions(parentQuery, {
+          ...options,
+          ...(options.orderBy === 'custom' ? { customOrder } : {}),
+        }).then(results => resolve(results))
+      }),
+      // the ids of all related questions (i.e. questions of the list)
+      new Promise((resolve, _reject) => {
+        applyListQueryOptions(parentQuery, {
+          orderBy: options.orderBy,
+          ascending: options.ascending,
+          ...(options.orderBy === 'custom' ? { customOrder } : {}),
+        }).then(result => {
+          resolve(result.result.map(q => q.id))
         })
-      }
+      }),
+    ])
 
-      return questions
+    return {
+      ...response[0],
+      relatedQuestionsIds: response[1],
     }
-
-    return applyListQueryOptions(parentQuery, options)
   }
 }
 

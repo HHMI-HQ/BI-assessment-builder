@@ -6,7 +6,7 @@ const {
   getAuthorDashboard,
   getReviewerDashboard,
   getManagingEditorDashboard,
-  getPreviousOrNextQuestionsIds,
+  getPublishedQuestionsIds,
 
   createQuestion,
   updateQuestion,
@@ -30,6 +30,10 @@ const questionResolver = async (_, { id, options }) => {
 
 const getPublishedQuestionsResolver = async (_, { params, options }) => {
   return getPublishedQuestions(params, options)
+}
+
+const getPublishedQuestionsIdsResolver = async () => {
+  return getPublishedQuestionsIds()
 }
 
 const getAuthorDashboardResolver = async (_, args, ctx) => {
@@ -114,13 +118,6 @@ const contentResolver = async version => {
   return JSON.stringify(withImageUrls)
 }
 
-const prevOrNextQuestionsResolver = (
-  _,
-  { which, currentQuestion, params, options },
-) => {
-  return getPreviousOrNextQuestionsIds(which, currentQuestion, params, options)
-}
-
 const generateWordFileResolver = async (_, { questionVersionId, options }) => {
   return generateWordFile(questionVersionId, options)
 }
@@ -148,7 +145,7 @@ module.exports = {
     getAuthorDashboard: getAuthorDashboardResolver,
     getReviewerDashboard: getReviewerDashboardResolver,
     getManagingEditorDashboard: getManagingEditorDashboardResolver,
-    getPreviousOrNextQuestion: prevOrNextQuestionsResolver,
+    getPublishedQuestionsIds: getPublishedQuestionsIdsResolver,
   },
   Mutation: {
     createQuestion: createQuestionResolver,

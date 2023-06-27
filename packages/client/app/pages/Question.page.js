@@ -18,7 +18,7 @@ import {
   MOVE_QUESTION_VERSION_TO_REVIEW,
   MOVE_QUESTION_VERSION_TO_PRODUCTION,
   PUBLISH_QUESTION_VERSION,
-  GET_PREV_OR_NEXT_QUESTION_ID,
+  GET_PUBLISHED_QUESTIONS_IDS,
   GENERATE_WORD_FILE,
   GENERATE_SCORM_ZIP,
   GET_RESOURCES,
@@ -165,16 +165,8 @@ const QuestionPage = props => {
   /* setup Prev/Next question functions */
   // read state from location to get filter values, if any
   const location = useLocation()
-  const { state } = location
 
-  // initialize searchParams by state.searchParams
-  // if no state, default to no filters, order by publication_date in descending order
-  const [searchParams] = useState(
-    state?.searchParams || {
-      ascending: false,
-      orderBy: 'publication_date',
-    },
-  )
+  const { state: { relatedQuestionIds } = {} } = location
 
   // keep a reactive copy of page title have an updated h1
   const [pageTitle, setPageTitle] = useState('')
@@ -229,8 +221,8 @@ const QuestionPage = props => {
     }
   }, [version, metadata])
 
-  // declare lazy query to be called when clicking the next question or previous question buttons
-  const [getQuestion] = useLazyQuery(GET_PREV_OR_NEXT_QUESTION_ID)
+  // declare lazy query to be called when no `relatedQuestionsIds` from previous state
+  const [getPublishedQuestionIds] = useLazyQuery(GET_PUBLISHED_QUESTIONS_IDS)
 
   const [generateWordFileMutation, { loading: generateWordFileLoading }] =
     useMutation(GENERATE_WORD_FILE)
@@ -314,40 +306,66 @@ const QuestionPage = props => {
   const handleClickAssignHE = () => {}
 
   const handleGetQuestionButton = which => {
-    const variables = {
-      which,
-      currentQuestion: id,
-      params: {
-        filters: searchParams.filters,
-        searchQuery: searchParams.query,
-      },
-      options: {
-        orderBy: searchParams.orderBy,
-        ascending: searchParams.ascending,
-      },
+    if (relatedQuestionIds) {
+      const hasNextQuestion = navigateToNextQuestion(which, relatedQuestionIds)
+      return new Promise((resolve, reject) => {
+        if (hasNextQuestion) resolve()
+        else reject()
+      })
     }
 
-    return getQuestion({
-      variables,
-    }).then(response => {
-      const {
-        data: {
-          getPreviousOrNextQuestion: { questionId },
-        },
-      } = response
+    // if no `relatedQuestionIds` ask server to provide them
+    return getPublishedQuestionIds().then(
+      ({ data: { getPublishedQuestionsIds } = {} }) => {
+        const hasNextQuestion = navigateToNextQuestion(
+          which,
+          getPublishedQuestionsIds,
+        )
 
-      return new Promise((resolve, reject) => {
-        if (questionId !== '0') {
-          history.push({
-            pathname: `/question/${questionId}/test`,
-            state: searchParams,
-          })
-          resolve()
-        } else {
-          reject()
-        }
-      })
-    })
+        return new Promise((resolve, reject) => {
+          if (hasNextQuestion) resolve()
+          else reject()
+        })
+      },
+    )
+  }
+
+  const navigateToNextQuestion = (which, idsList) => {
+    if (idsList?.length) {
+      const currentIndex = relatedQuestionIds.indexOf(id)
+      let newQuestionId
+
+      if (currentIndex > 0 && which === 'PREV') {
+        newQuestionId = relatedQuestionIds[currentIndex - 1]
+        history.push({
+          pathname: `/question/${newQuestionId}/test`,
+          state: { relatedQuestionIds },
+        })
+      } else if (
+        currentIndex < relatedQuestionIds.length - 1 &&
+        which === 'NEXT'
+      ) {
+        newQuestionId = relatedQuestionIds[currentIndex + 1]
+        history.push({
+          pathname: `/question/${newQuestionId}/test`,
+          state: { relatedQuestionIds },
+        })
+      } else {
+        // no more questions in this direction
+        // return new Promise((_resolve, reject) => {
+        //   reject()
+        // })
+        return false
+      }
+
+      return true
+
+      // return new Promise(resolve => {
+      //   resolve()
+      // })
+    }
+
+    return false
   }
 
   const handleMoveToReview = () => {

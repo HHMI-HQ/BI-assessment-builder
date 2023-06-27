@@ -67,10 +67,7 @@ type Unit {
 type QuestionsResponse {
   result: [Question!]!
   totalCount: Int
-}
-
-type PrevOrNextQuestionResponse {
-  questionId: ID
+  relatedQuestionsIds: [ID]
 }
 
 # INPUTS
@@ -160,6 +157,8 @@ extend type Query {
     options: QuestionPageInput
   ): QuestionsResponse!
 
+  getPublishedQuestionsIds: [ID]!
+
   getAuthorDashboard(
     orderBy: String
     ascending: Boolean
@@ -183,13 +182,6 @@ extend type Query {
     pageSize: Int
     searchQuery: String
   ): QuestionsResponse!
-
-  getPreviousOrNextQuestion(
-    which: AdjecentQuestion
-    currentQuestion: ID!
-    params: FilterQuestionsParams
-    options: QuestionPageInput
-  ): PrevOrNextQuestionResponse!
 }
 
 extend type Mutation {
