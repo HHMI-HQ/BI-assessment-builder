@@ -4,9 +4,6 @@ const {
   // uuid,
 } = require('@coko/server')
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-const { db } = require('@pubsweet/db-manager')
-
 const QuestionVersion = require('../questionVersion/questionVersion.model')
 const User = require('../user/user.model')
 const { applyListQueryOptions } = require('../helpers')
@@ -339,29 +336,42 @@ class Question extends BaseModel {
         this.applyFilters(params.filters, params.searchQuery, parentQuery)
       }
 
-      return applyListQueryOptions(parentQuery, options)
+      const response = await Promise.all([
+        new Promise(resolve => {
+          applyListQueryOptions(parentQuery, options).then(result =>
+            resolve(result),
+          )
+        }),
+        // get all question ids for the applied filters, unpaginated
+        new Promise(resolve => {
+          applyListQueryOptions(parentQuery, {
+            orderBy: options.orderBy,
+            ascending: options.ascending,
+          }).then(result => {
+            resolve(result.result.map(q => q.id))
+          })
+        }),
+      ])
+
+      return {
+        ...response[0],
+        relatedQuestionsIds: response[1],
+      }
     } catch (e) {
       console.error('Question model: filter failed', e)
       throw new Error(e)
     }
   }
 
-  static async getPreviousOrNextQuestionId(
-    which,
-    currentQuestionId,
-    params = {},
-    options = {},
-  ) {
-    const { ascending, orderBy } = options
-
+  static async getPublishedQuestionsIds(options) {
     try {
-      const allQuestionsSubquery = Question.query()
+      const query = Question.query(options.trx)
         .leftJoin(
           'question_versions',
           'questions.id',
           'question_versions.question_id',
         )
-        .select('questions.id', 'question_versions.publication_date')
+        .select('questions.*', 'question_versions.publication_date')
         .distinctOn('questions.id')
         .where({
           published: true,
@@ -371,69 +381,18 @@ class Question extends BaseModel {
           { column: 'question_versions.created', order: 'desc' },
         ])
 
-      if (params.filters || params.searchQuery) {
-        this.applyFilters(
-          params.filters,
-          params.searchQuery,
-          allQuestionsSubquery,
-        )
-      }
+      query.as('q1')
 
-      allQuestionsSubquery.as('sq1')
+      const parentQuery = Question.query(options.trx).select('*').from(query)
 
-      let allQuestionsQuery = Question.query()
-        .select('*')
-        .from(allQuestionsSubquery)
+      const questions = await applyListQueryOptions(parentQuery, {
+        orderBy: 'publication_date',
+        ascending: false,
+      })
 
-      let ascendingValue
-      if ((ascending && which === 'NEXT') || (!ascending && which === 'PREV'))
-        ascendingValue = 'asc'
-      if ((ascending && which === 'PREV') || (!ascending && which === 'NEXT'))
-        ascendingValue = 'desc'
-      if (orderBy)
-        allQuestionsQuery = allQuestionsQuery.orderBy(orderBy, ascendingValue)
-
-      const currentQuestionQuery = Question.query()
-        .leftJoin(
-          'question_versions',
-          'questions.id',
-          'question_versions.question_id',
-        )
-        .select('questions.id', 'question_versions.publication_date')
-        .distinctOn('questions.id')
-        .where({
-          published: true,
-        })
-        .orderBy([
-          'questions.id',
-          { column: 'question_versions.created', order: 'desc' },
-        ])
-        .where('questions.id', currentQuestionId)
-
-      const query = Question.query()
-        .with('all_questions', allQuestionsQuery)
-        .with('current_question', currentQuestionQuery)
-        .select('id')
-        .from('allQuestions')
-        .where(
-          orderBy, // publication_date
-          (ascending && which === 'NEXT') || (!ascending && which === 'PREV')
-            ? '>'
-            : '<',
-          db.raw(`(select ${orderBy} from current_question)`),
-        )
-        .limit(1)
-
-      // query.debug()
-
-      const result = await query
-
-      return {
-        // return 0 if there is no result
-        questionId: result.length && result[0].id,
-      }
+      return questions.result.map(q => q.id)
     } catch (e) {
-      console.error('Question model: filter failed', e)
+      console.error('Question model: getPublishedQuestionsIds failed', e)
       throw new Error(e)
     }
   }

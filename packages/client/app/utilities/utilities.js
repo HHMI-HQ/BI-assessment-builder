@@ -696,7 +696,7 @@ const dashboardDataMapper = (
   complexItemSetOptions,
   showStatus,
   showAuthor,
-  searchParams,
+  relatedQuestionIds,
   testMode,
 ) => {
   if (!questions) return null
@@ -778,7 +778,7 @@ const dashboardDataMapper = (
       href: testMode ? `/question/${id}/test` : `/question/${id}`,
       id,
       courses,
-      state: { searchParams },
+      state: { relatedQuestionIds },
       complexItemSet,
     }
   })

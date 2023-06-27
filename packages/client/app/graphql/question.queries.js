@@ -374,25 +374,14 @@ export const GET_PUBLISHED_QUESTIONS = gql`
         }
       }
       totalCount
+      relatedQuestionsIds
     }
   }
 `
 
-export const GET_PREV_OR_NEXT_QUESTION_ID = gql`
-  query GetPreviousOrNextQuestion(
-    $which: AdjecentQuestion!
-    $currentQuestion: ID!
-    $params: FilterQuestionsParams
-    $options: QuestionPageInput
-  ) {
-    getPreviousOrNextQuestion(
-      which: $which
-      currentQuestion: $currentQuestion
-      params: $params
-      options: $options
-    ) {
-      questionId
-    }
+export const GET_PUBLISHED_QUESTIONS_IDS = gql`
+  query GetPublishedQuestionsIds {
+    getPublishedQuestionsIds
   }
 `
 

@@ -29,7 +29,10 @@ const ListContentPage = () => {
 
   const {
     data: {
-      list: { title, questions: { result: questions, totalCount } = {} } = {},
+      list: {
+        title,
+        questions: { result: questions, totalCount, relatedQuestionsIds } = {},
+      } = {},
     } = {},
     loading,
   } = useQuery(GET_LIST, {
@@ -197,7 +200,7 @@ const ListContentPage = () => {
               [],
               false,
               false,
-              null,
+              relatedQuestionsIds,
               true,
             )
           : []

@@ -1,4 +1,5 @@
 const path = require('path')
+const { uniq } = require('lodash')
 
 const {
   logger,
@@ -34,17 +35,12 @@ const getListQuestions = async list => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} getListQuestions:`
 
   try {
-    const listMembers = await ListMember.find({ listId: list.id })
-    const quesitonIds = listMembers.result.map(q => q.questionId)
-
-    const questions = await List.findListQuestionsByIds(
-      quesitonIds,
+    return List.findListQuestions(
+      list.id,
       list.questionsQuery,
       list.questionsOptions,
       list.customOrder,
     )
-
-    return questions
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
     throw new Error(e)
@@ -132,6 +128,13 @@ const addToList = async (listId, questionIds) => {
       throw new Error(error)
     })
 
+    // update custom order
+    const list = await List.findById(listId)
+
+    await reorderList(listId, uniq([...list.customOrder, ...questionIds]), {
+      trx,
+    })
+
     return results
   })
 }
@@ -174,6 +177,15 @@ const deleteFromList = async (listId, questionIds, options = {}) => {
         listMembers.map(member => member.id),
       )
     }
+
+    // remove questionIds from customOrder field
+    const list = await List.findById(listId)
+
+    const newCustomOrder = list.customOrder.filter(
+      id => questionIds.indexOf(id) === -1,
+    )
+
+    await reorderList(listId, newCustomOrder, options)
 
     return deletedMemberIds
   } catch (e) {

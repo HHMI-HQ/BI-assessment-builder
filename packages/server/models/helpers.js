@@ -1,16 +1,39 @@
 /* eslint-disable import/prefer-default-export */
 
+const { db } = require('@coko/server')
 const { cloneDeep } = require('lodash')
 
 // TO DO -- move to cokoapps
 const applyListQueryOptions = async (query, options = {}) => {
   let q = cloneDeep(query)
-  const { orderBy, ascending, page, pageSize, related } = options
 
-  let ascendingValue
-  if (ascending === true) ascendingValue = 'asc'
-  if (ascending === false) ascendingValue = 'desc'
-  if (orderBy) q = q.orderBy(orderBy, ascendingValue)
+  const {
+    orderBy,
+    ascending,
+    page,
+    pageSize,
+    related,
+    customOrder,
+    customOrderFieldType = 'uuid',
+    customOrderBy = 'id',
+  } = options
+
+  if (orderBy === 'custom' && customOrder) {
+    if (customOrder.length) {
+      q.orderBy(
+        db.raw(
+          `array_position(ARRAY['${customOrder.join(
+            "','",
+          )}']::${customOrderFieldType}[], ${customOrderBy})`,
+        ),
+      )
+    }
+  } else {
+    let ascendingValue
+    if (ascending === true) ascendingValue = 'asc'
+    if (ascending === false) ascendingValue = 'desc'
+    if (orderBy) q = q.orderBy(orderBy, ascendingValue)
+  }
 
   if (
     (Number.isInteger(page) && !Number.isInteger(pageSize)) ||

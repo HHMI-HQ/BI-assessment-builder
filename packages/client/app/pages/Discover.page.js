@@ -202,8 +202,8 @@ const DiscoverPage = () => {
                 [],
                 false,
                 true,
-                searchParams,
-                true,
+                questionsData.getPublishedQuestions.relatedQuestionsIds,
+                true, // test mode
               )
             : []
         }
