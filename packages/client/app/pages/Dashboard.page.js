@@ -30,9 +30,6 @@ const DashboardPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentSearchQuery, setCurrentSearchQuery] = useState(null)
 
-  const [selectedPublishedQuestions, setSelectedPublishedQuestions] =
-    useState(false)
-
   const initialRender = useRef(true)
 
   const { metadata } = useMetadata()
@@ -244,14 +241,6 @@ const DashboardPage = () => {
     return assingHandlingEditors(mutationData)
   }
 
-  const checkForPublishedQuestions = selectedQuestion => {
-    const hasPublishedQuestions = editorData?.result
-      ?.map(q => (selectedQuestion.includes(q.id) ? q.versions[0] : false))
-      .some(q => q.published === true)
-
-    setSelectedPublishedQuestions(hasPublishedQuestions)
-  }
-
   // #endregion handlers
 
   // #region data
@@ -317,7 +306,6 @@ const DashboardPage = () => {
     <>
       <VisuallyHiddenElement as="h1">Dashboard page</VisuallyHiddenElement>
       <Dashboard
-        checkForPublishedQuestions={checkForPublishedQuestions}
         handlingEditors={handlingEditors?.result || []}
         initialTabKey={initialTabKey}
         loading={loading}
@@ -329,7 +317,6 @@ const DashboardPage = () => {
         onSearchHE={handleSearchHE}
         // showSort
         // sortOptions
-        selectedPublishedQuestions={selectedPublishedQuestions}
         tabsContent={tabs}
       />
       <VisuallyHiddenElement
