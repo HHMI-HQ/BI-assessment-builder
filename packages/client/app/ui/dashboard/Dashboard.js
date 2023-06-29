@@ -65,7 +65,6 @@ const Dashboard = props => {
     loading,
     loadingAssingHEs,
     loadingSearchHEs,
-    checkForPublishedQuestions,
     locale,
     onAssignHE,
     onClickCreate,
@@ -73,7 +72,6 @@ const Dashboard = props => {
     showSort,
     sortOptions,
     onSearchHE,
-    selectedPublishedQuestions,
     tabsContent,
   } = props
 
@@ -125,13 +123,12 @@ const Dashboard = props => {
     </StyledCreateQuestionButton>
   )
 
-  useEffect(() => {
-    checkForPublishedQuestions(selectedQuestions)
-  }, [selectedQuestions])
-
   const BulkAction =
-    // eslint-disable-next-line no-console
-    !selectedPublishedQuestions ? (
+    selectedQuestions.length > 0 &&
+    !tabsContent
+      .find(tab => tab.value === 'editor')
+      ?.questions.filter(q => selectedQuestions.indexOf(q.id) !== -1)
+      .some(q => q.status === 'Published') ? (
       <AssignHEButton
         expanded
         handlingEditors={handlingEditors}
@@ -202,15 +199,12 @@ const Dashboard = props => {
 }
 
 Dashboard.propTypes = {
-  /** custom component for bulk actions on selected questions */
-  selectedPublishedQuestions: PropTypes.bool,
   handlingEditors: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
     }),
   ),
-  checkForPublishedQuestions: PropTypes.func.isRequired,
   initialTabKey: PropTypes.string,
   loading: PropTypes.bool.isRequired,
   loadingAssingHEs: PropTypes.bool,
@@ -265,7 +259,6 @@ Dashboard.propTypes = {
 }
 
 Dashboard.defaultProps = {
-  selectedPublishedQuestions: false,
   handlingEditors: [],
   initialTabKey: null,
   locale: null,
