@@ -267,7 +267,7 @@ const List = props => {
   // to preserve it, keep track of selected items in the parent component, and pass it down via this prop
   useEffect(() => {
     setSelectedItems(controlledSelectedItems)
-  }, [dataSource])
+  }, [JSON.stringify(dataSource)])
 
   const handleSelect = useFunction(id => {
     setSelectedItems([...selectedItems, id])

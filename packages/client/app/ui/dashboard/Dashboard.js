@@ -104,8 +104,6 @@ const Dashboard = props => {
     return onAssignHE(users, selectedQuestions)
   }
 
-  const onQuestionSelected = rows => setSelectedQuestions(rows)
-
   useEffect(() => {
     onSearch(searchParams)
   }, [searchParams])
@@ -123,12 +121,12 @@ const Dashboard = props => {
     </StyledCreateQuestionButton>
   )
 
-  const BulkAction =
-    selectedQuestions.length > 0 &&
+  // if there are selectedQuestions and none of them is published
+  const BulkAction = selectedQuestions.length > 0 &&
     !tabsContent
       .find(tab => tab.value === 'editor')
       ?.questions.filter(q => selectedQuestions.indexOf(q.id) !== -1)
-      .some(q => q.status === 'Published') ? (
+      .some(q => q.status === 'Published') && (
       <AssignHEButton
         expanded
         handlingEditors={handlingEditors}
@@ -137,7 +135,7 @@ const Dashboard = props => {
         onAssign={handleAssingHE}
         onSearchHE={onSearchHE}
       />
-    ) : null
+    )
 
   const isLoading = tabsContent.some(tab => tab.loading)
 
@@ -178,7 +176,7 @@ const Dashboard = props => {
                   loading={tabLoading}
                   locale={mergedLocale}
                   onPageChange={setSearchPage}
-                  onQuestionSelected={onQuestionSelected}
+                  onQuestionSelected={setSelectedQuestions}
                   onSearch={setSearchQuery}
                   onSortOptionChange={setSortOption}
                   questions={questions}
