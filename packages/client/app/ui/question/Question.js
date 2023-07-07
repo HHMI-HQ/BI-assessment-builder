@@ -33,6 +33,7 @@ import {
 } from '../common'
 import Wax from '../wax/Wax'
 import { extractDocumentText } from '../../utilities'
+import AssignAuthorButton from './AssignAuthorButton'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
 const ModalFooter = Modal.footer
@@ -89,6 +90,11 @@ const StyledButton = styled(Button)`
   @media (min-width: ${th('mediaQueries.mediumPlus')}) {
     width: auto;
   }
+`
+
+const StyledAssignAuthorButton = styled(AssignAuthorButton)`
+  margin-right: ${grid(2)};
+  width: 100%;
 `
 
 const SubmitButton = styled(StyledButton)`
@@ -480,6 +486,7 @@ PanelWrapper.propTypes = {
 
 const Question = props => {
   const {
+    authors,
     editorContent,
     editorView,
     facultyView,
@@ -493,7 +500,9 @@ const Question = props => {
     isUnderReview,
     isInProduction,
     loading,
+    loadAuthors,
     metadata,
+    onAssignAuthor,
     onClickAssignHE,
     onClickNextButton,
     onClickPreviousButton,
@@ -507,9 +516,11 @@ const Question = props => {
     onQuestionSubmit,
     onReject,
     questionAgreedTc,
+    refetchUser,
     resources,
     scormZipLoading,
     showAssignHEButton,
+    canAssignAuthor,
     showNextQuestionLink,
     submitting,
     updated,
@@ -769,8 +780,20 @@ const Question = props => {
               Are you sure you want to publish this question version?
             </ModalHeader>
           ),
-          content:
-            'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Discover page',
+          content: (
+            <>
+              <p>
+                Clicking &quot;Yes, publish&quot; will make the question
+                discoverable for all website visitors in the Discover page.
+              </p>
+              {canAssignAuthor && (
+                <p>
+                  As an admin, you can assign another author for the questions
+                  you create right after publishing them.
+                </p>
+              )}
+            </>
+          ),
           footer: [
             <ModalFooter key="footer">
               <Button onClick={() => confirmPublish.destroy()}>Cancel</Button>
@@ -1101,6 +1124,14 @@ const Question = props => {
           Assign HE
         </StyledButton>
       )}
+      {canAssignAuthor && isPublished && (
+        <StyledAssignAuthorButton
+          authors={authors}
+          loadAuthors={loadAuthors}
+          onAssignAuthor={onAssignAuthor}
+          refetchUser={refetchUser}
+        />
+      )}
       {isUnderReview && (
         <>
           <StyledButton
@@ -1181,6 +1212,15 @@ const Question = props => {
             Assign HE
           </StyledButton>
         )}
+        {canAssignAuthor && isPublished && (
+          <StyledAssignAuthorButton
+            authors={authors}
+            loadAuthors={loadAuthors}
+            onAssignAuthor={onAssignAuthor}
+            refetchUser={refetchUser}
+          />
+        )}
+
         {isUnderReview && (
           <>
             <StyledButton
@@ -1433,7 +1473,15 @@ const Question = props => {
 }
 
 Question.propTypes = {
+  authors: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string,
+    }),
+  ),
   loading: PropTypes.bool.isRequired,
+  loadAuthors: PropTypes.func,
+  onAssignAuthor: PropTypes.func,
   onClickPreviousButton: PropTypes.func,
   onClickNextButton: PropTypes.func,
   onCreateNewVersion: PropTypes.func,
@@ -1459,6 +1507,7 @@ Question.propTypes = {
   isInProduction: PropTypes.bool,
   isUserLoggedIn: PropTypes.bool,
   editorView: PropTypes.bool,
+  canAssignAuthor: PropTypes.bool,
   showAssignHEButton: PropTypes.bool,
   showNextQuestionLink: PropTypes.bool,
   facultyView: PropTypes.bool,
@@ -1647,6 +1696,7 @@ Question.propTypes = {
       ]),
     ),
   }).isRequired,
+  refetchUser: PropTypes.func,
   resources: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
@@ -1708,6 +1758,7 @@ Question.propTypes = {
 }
 
 Question.defaultProps = {
+  authors: [],
   onCreateNewVersion: () => {},
   onMoveToReview: () => {},
   onMoveToProduction: () => {},
@@ -1723,6 +1774,8 @@ Question.defaultProps = {
   onEditorContentAutoSave: () => {},
   onImageUpload: () => {},
   onMetadataAutoSave: () => {},
+  onAssignAuthor: () => {},
+  loadAuthors: () => {},
   submitting: false,
   isPublished: false,
   isRejected: false,
@@ -1731,9 +1784,11 @@ Question.defaultProps = {
   isInProduction: false,
   editorView: false,
   questionAgreedTc: false,
+  canAssignAuthor: false,
   showAssignHEButton: true,
   showNextQuestionLink: false,
   facultyView: false,
+  refetchUser: () => {},
   resources: [],
   updated: '',
   isUserLoggedIn: true,

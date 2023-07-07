@@ -29,6 +29,25 @@ export const Base = args => {
   const [editorContent, setEditorContent] = useState(initialContent)
   const [lastUpdated, setLastUpdated] = useState(new Date().toISOString())
 
+  const [authors, setAuthors] = useState([
+    {
+      value: '3aa64674-5b8b-47f1-96dd-ae83455106da',
+      label: 'user1',
+    },
+    {
+      value: '6b619777-ae96-4217-9811-a40b8eccddef',
+      label: 'user2',
+    },
+    {
+      value: 'a7987191-8532-40bd-9f97-9748ab613ef3',
+      label: 'user3',
+    },
+    {
+      value: 'a91e4a93-0bf1-4bac-b884-1c084c491d81',
+      label: 'user4',
+    },
+  ])
+
   const [error, setError] = useState(false)
 
   const emptyNavigationFunction = e => {
@@ -79,24 +98,39 @@ export const Base = args => {
     })
   }
 
+  const handleAssginAuthor = async authorId => {
+    return new Promise((resolve, reject) => {
+      resolve(authorId)
+    })
+  }
+
+  const handleSearch = query => {
+    setAuthors(() =>
+      authors.filter(handlingEditor => handlingEditor.label === query),
+    )
+  }
+
   return (
     <Wrapper>
       <Checkbox onChange={e => setError(e.target.checked)}>
         Will have error on submit
       </Checkbox>
       <Question
+        authors={authors}
         autoSaveInterval={5000}
         editorContent={editorContent}
         isSubmitted={submitted}
         isUserLoggedIn
         loading={false}
         metadata={metadataTransformer(metadata)}
+        onAssignAuthor={handleAssginAuthor}
         onClickBackButton={emptyNavigationFunction}
         onClickNextButton={emptyNavigationFunction}
         onClickPreviousButton={emptyNavigationFunction}
         onEditorContentAutoSave={handleEditorContentChanged}
         onMetadataAutoSave={handleMetadataAutosave}
         onQuestionSubmit={onSubmit}
+        onSearchAuthor={handleSearch}
         questionAgreedTc={false}
         resources={resources}
         submitting={false}

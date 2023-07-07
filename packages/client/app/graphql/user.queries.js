@@ -124,6 +124,17 @@ export const FILTER_USERS = gql`
   }
 `
 
+export const FILTER_USERS_OPTIONS = gql`
+  query FilterUsers($params: UsersQueryParams) {
+    filterUsers(params: $params) {
+      result {
+        value: id
+        label: displayName
+      }
+    }
+  }
+`
+
 export const DELETE_USERS = gql`
   mutation DeleteUsers($ids: [ID!]!) {
     deleteUsers(ids: $ids)

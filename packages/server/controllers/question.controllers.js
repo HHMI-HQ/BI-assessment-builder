@@ -362,6 +362,30 @@ const publishQuestionVersion = async (questionVersionId, options = {}) => {
   )
 }
 
+const assignAuthorship = async (questionId, userId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} assignAuthorship:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} assigning user ${userId} as author of question ${questionId}`,
+  )
+
+  try {
+    // await Question.assignAuthorship(questionId, userId)
+    return useTransaction(
+      async trx => {
+        return Team.assignQuestionAuthor(questionId, userId, {
+          trx,
+        })
+      },
+      {
+        trx: options.trx,
+      },
+    )
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 const generateScormZip = async questionVersionId => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} generateScormZip:`
   logger.info(
@@ -598,6 +622,7 @@ module.exports = {
   rejectQuestion,
   submitQuestion,
   createNewQuestionVersion,
+  assignAuthorship,
 
   metadataResolver,
   resourceResolver,

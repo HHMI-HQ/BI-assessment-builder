@@ -24,6 +24,8 @@ import {
   GET_RESOURCES,
   CREATE_NEW_VERSION,
   UPLOAD_FILES,
+  FILTER_USERS_OPTIONS,
+  ASSIGN_QUESTION_AUTHOR,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -224,6 +226,26 @@ const QuestionPage = props => {
   // declare lazy query to be called when no `relatedQuestionsIds` from previous state
   const [getPublishedQuestionIds] = useLazyQuery(GET_PUBLISHED_QUESTIONS_IDS)
 
+  const [
+    getUsers,
+    { data: { filterUsers: { result: possibleAuthors } = {} } = {} },
+  ] = useLazyQuery(FILTER_USERS_OPTIONS, {
+    variables: {
+      params: {
+        isActive: true,
+        search: '',
+      },
+    },
+  })
+
+  const [assignAuthorship] = useMutation(ASSIGN_QUESTION_AUTHOR)
+
+  // need to refetch user after assigning author, but also show confirmation modal to the user
+  // refetchQuery won't work, because it would delete the AssignAuthor component
+  const [refetchCurrentUser] = useLazyQuery(CURRENT_USER, {
+    fetchPolicy: 'network-only',
+  })
+
   const [generateWordFileMutation, { loading: generateWordFileLoading }] =
     useMutation(GENERATE_WORD_FILE)
 
@@ -255,7 +277,6 @@ const QuestionPage = props => {
   }, AUTOSAVE_DELAY)
 
   const handleEditorContentAutoSave = content => {
-    // console.log(content)
     return new Promise(resolve => {
       debouncedEditorAutoSave(content, resolve)
     })
@@ -488,6 +509,18 @@ const QuestionPage = props => {
       }
     })
   }
+
+  const handleAssignAuthor = authorId => {
+    const mutationData = {
+      variables: {
+        questionId: id,
+        userId: authorId,
+      },
+    }
+
+    return assignAuthorship(mutationData)
+  }
+
   // #endregion handlers
 
   if (error) {
@@ -525,6 +558,8 @@ const QuestionPage = props => {
     <>
       <VisuallyHiddenElement as="h1">{pageTitle}</VisuallyHiddenElement>
       <Question
+        authors={possibleAuthors}
+        canAssignAuthor={isAdmin && isAuthor}
         editorContent={version && JSON.parse(version.content)}
         // admins have editorial rights (publishing rights) on their own questions
         editorView={(isEditor && !isAuthor) || (isAdmin && isAuthor)}
@@ -541,8 +576,10 @@ const QuestionPage = props => {
         isSubmitted={version?.submitted || (isAdmin && isAuthor)}
         isUnderReview={version?.underReview}
         isUserLoggedIn={!!currentUser}
+        loadAuthors={getUsers}
         loading={loading || !version || !metadata || !getResources}
         metadata={metadata || {}}
+        onAssignAuthor={handleAssignAuthor}
         onClickAssignHE={handleClickAssignHE}
         onClickBackButton={handleClickBackButton}
         onClickExportToScorm={testMode ? handleExportToScorm : null}
@@ -559,6 +596,7 @@ const QuestionPage = props => {
         onQuestionSubmit={handleQuestionSubmit}
         onReject={handleReject}
         questionAgreedTc={false} //
+        refetchUser={refetchCurrentUser}
         resources={getResources}
         scormZipLoading={generateScormZipLoading}
         showAssignHEButton={false} //

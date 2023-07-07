@@ -36,6 +36,19 @@ const isEditorOrAdmin = rule()(async (_, __, ctx) => {
   return user.isActive && (userIsEditor || userIsAdmin)
 })
 
+const isAdminAndAuthor = rule()(async (_, { questionId }, ctx) => {
+  if (!ctx.user) return false
+
+  const UserModel = ctx.connectors.User.model
+  const user = await UserModel.query().findById(ctx.user)
+  const userIsAdmin = await user.hasGlobalRole('admin')
+  return (
+    user.isActive &&
+    userIsAdmin &&
+    isQuestionAuthor(ctx.connectors.Team.model, ctx.user, questionId)
+  )
+})
+
 const isAuthor = rule()(async (_, { questionId }, ctx) => {
   if (!ctx.user) return false
 
@@ -153,6 +166,7 @@ const permissions = {
     moveQuestionVersionToProduction: isEditor,
     publishQuestionVersion: isEditorOrAdmin,
     createNewQuestionVersion: isEditorOrAdmin,
+    assignAuthorship: isAdminAndAuthor,
   },
   Query: {
     // Users

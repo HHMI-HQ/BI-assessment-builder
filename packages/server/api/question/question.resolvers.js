@@ -7,6 +7,7 @@ const {
   getReviewerDashboard,
   getManagingEditorDashboard,
   getPublishedQuestionsIds,
+  assignAuthorship,
 
   createQuestion,
   updateQuestion,
@@ -94,6 +95,10 @@ const publishQuestionVersionResolver = async (_, { questionVersionId }) => {
   return publishQuestionVersion(questionVersionId)
 }
 
+const assignAuthorshipResolver = async (_, { questionId, userId }) => {
+  return assignAuthorship(questionId, userId)
+}
+
 const versionsResolver = async (
   question,
   { latestOnly, publishedOnly },
@@ -156,6 +161,7 @@ module.exports = {
     moveQuestionVersionToReview: moveQuestionVersionToReviewResolver,
     moveQuestionVersionToProduction: moveQuestionVersionToProductionResolver,
     publishQuestionVersion: publishQuestionVersionResolver,
+    assignAuthorship: assignAuthorshipResolver,
     generateWordFile: generateWordFileResolver,
     generateScormZip: generateScormZipResolver,
     createNewQuestionVersion: createNewQuestionVersionResolver,
