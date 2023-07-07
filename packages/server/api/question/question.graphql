@@ -192,6 +192,8 @@ extend type Mutation {
   moveQuestionVersionToProduction(questionVersionId: ID!): QuestionVersion!
   publishQuestionVersion(questionVersionId: ID!): QuestionVersion!
 
+  assignAuthorship(questionId: ID!, userId: ID!): Boolean
+
   updateQuestion(
     questionId: ID!
     questionVersionId: ID!

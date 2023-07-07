@@ -408,3 +408,9 @@ export const UPLOAD_FILES = gql`
     }
   }
 `
+
+export const ASSIGN_QUESTION_AUTHOR = gql`
+  mutation ($questionId: ID!, $userId: ID!) {
+    assignAuthorship(questionId: $questionId, userId: $userId)
+  }
+`

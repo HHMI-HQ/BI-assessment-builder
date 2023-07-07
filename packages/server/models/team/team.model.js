@@ -1,4 +1,5 @@
 const TeamModel = require('@coko/server/src/models/team/team.model')
+const TeamMember = require('@coko/server/src/models/teamMember/teamMember.model')
 
 const User = require('../user/user.model')
 
@@ -22,6 +23,25 @@ class Team extends TeamModel {
             .orWhere('users.surname', 'ilike', `%${query}%`)
             .orWhere('users.displayName', 'ilike', `%${query}%`)
         })
+    } catch (e) {
+      throw new Error(e)
+    }
+  }
+
+  static async assignQuestionAuthor(objectId, userId, options = {}) {
+    try {
+      const team = await Team.findOne({
+        objectId,
+        objectType: 'question',
+        role: 'author',
+      })
+
+      // patch team_members.user_id
+      const affecetedRows = await TeamMember.query(options.trx)
+        .patch({ userId })
+        .where({ teamId: team.id })
+
+      return affecetedRows === 1
     } catch (e) {
       throw new Error(e)
     }
