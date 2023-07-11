@@ -6,6 +6,8 @@ You can override the default environment variables by declaring them in a `.env`
 
 ## Production
 
+Coko Team and hosting organisation, Forum 1, please refer to the [Production Deployment document](https://docs.google.com/document/d/16zXvgMLBoAxWbOkw_MqU8bFcnz4f8s9AMmdn9_x1uL0/edit?usp=sharing)
+
 ### Server
 ##### Preparation
 
