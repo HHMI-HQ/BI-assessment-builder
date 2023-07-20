@@ -54,6 +54,28 @@ const EditorArea = styled.div`
     @media (min-width: ${th('mediaQueries.small')}) {
       padding: ${grid(12)} ${grid(5)};
     }
+
+    .true-false,
+    .true-false-single-correct {
+      .rc-switch {
+        background-color: ${th('colorSuccess')};
+      }
+    }
+
+    .multiple-choice,
+    .multiple-choice-single-correct {
+      .rc-switch {
+        background-color: ${th('colorError')};
+
+        &.rc-switch-checked {
+          background-color: ${th('colorSuccess')};
+        }
+      }
+    }
+
+    .rc-switch-disabled::after {
+      background-color: #cecece;
+    }
   }
 `
 
