@@ -155,7 +155,7 @@ describe('Question Workflows', () => {
       )
       cy.contains(
         '[class="ant-modal-confirm-content"]',
-        'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Browse Questions Page',
+        'Clicking "Yes, publish" will make the question discoverable for all website visitors in the Browse Questions Page.',
       )
       cy.contains(buttonAntModalBody, 'Yes, publish').click()
       cy.wait('@GQLReq')
@@ -165,7 +165,6 @@ describe('Question Workflows', () => {
       cy.deleteAllQuestions()
     })
 
-    // eslint-disable-next-line jest/no-commented-out-tests
     it('Assign author to a question', () => {
       cy.seedUser(user2)
       cy.seedQuestion(admin.username, -2, 'biochemistry', 'published')

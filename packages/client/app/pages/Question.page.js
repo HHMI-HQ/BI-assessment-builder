@@ -549,7 +549,7 @@ const QuestionPage = props => {
     return (
       <Result
         // replace link with a Button with to="/dashboard" after MR is merged
-        extra={<Link to="/discover">Visit the Discover page</Link>}
+        extra={<Link to="/discover">Visit the Browse Questions page</Link>}
         status="404"
         subTitle="Sorry, this question hasn't been published yet."
         title="Question Not Ready"

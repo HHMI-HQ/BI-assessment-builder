@@ -16,7 +16,7 @@ import { config } from '../wax/config'
 
 import Metadata from './Metadata'
 import ExportToWordButton from './ExportToWordButton'
-import ExportToScormButton from './ExportToScormButton'
+// import ExportToScormButton from './ExportToScormButton'
 import AutoSaving from './AutoSaveIndicator'
 import {
   Button,
@@ -118,10 +118,10 @@ const StyledWordExportButton = styled(ExportToWordButton)`
   width: 100%;
 `
 
-const StyledScormExportButton = styled(ExportToScormButton)`
-  margin-right: ${grid(2)};
-  width: 100%;
-`
+// const StyledScormExportButton = styled(ExportToScormButton)`
+//   margin-right: ${grid(2)};
+//   width: 100%;
+// `
 
 const RightAreaWrapper = styled.div`
   align-items: center;
@@ -491,7 +491,7 @@ const Question = props => {
     editorView,
     facultyView,
     onClickExportToWord,
-    onClickExportToScorm,
+    // onClickExportToScorm,
     initialMetadataValues,
     isUserLoggedIn,
     isPublished,
@@ -518,7 +518,7 @@ const Question = props => {
     questionAgreedTc,
     refetchUser,
     resources,
-    scormZipLoading,
+    // scormZipLoading,
     showAssignHEButton,
     canAssignAuthor,
     showNextQuestionLink,
@@ -664,7 +664,7 @@ const Question = props => {
         <ModalHeader>Are you sure you want to submit the question?</ModalHeader>
       ),
       content:
-        'This will make the question visible to editors an reviewers, and after a successful review it will be published for all users.',
+        'This will make the question visible to editors and reviewers, and after a successful review it will be published for all users.',
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmSubmitModal.destroy()}>Cancel</Button>
@@ -690,7 +690,7 @@ const Question = props => {
         <ModalHeader>You are about to move the question to review</ModalHeader>
       ),
       content:
-        'Question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
+        'This question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmMoveToReview.destroy()}>Cancel</Button>
@@ -732,7 +732,7 @@ const Question = props => {
         </ModalHeader>
       ),
       content:
-        'Question will become editable and editors can apply the feedback from the reviewer. Are you sure?',
+        'This question will become editable and editors can apply the feedback from the reviewer. Are you sure?',
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmMoveToProduction.destroy()}>
@@ -808,7 +808,7 @@ const Question = props => {
                       showDialog(
                         'success',
                         'Question published successfully',
-                        'Question was published and is now available in the Discover page',
+                        'Question was published and is now available in the Browse Questions page',
                       )
                     })
                     .catch(() => {
@@ -923,8 +923,8 @@ const Question = props => {
     confirmNewVersion.update({
       title: <ModalHeader>Warning!</ModalHeader>,
       content: `You are editing a published question. Any changes you make will be automatically saved, but not automatically published. 
-      You will need to publish the question again for the edits to be reflected in the Discover page.
-      After the edited question is published, the old one will not be available anymore in the Discover page. 
+      You will need to publish the question again for the edits to be reflected in the Browse Questions page.
+      After the edited question is published, the old one will not be available anymore in the Browse Questions page. 
       Do you wish to continue?`,
       footer: [
         <ModalFooter key="footer">
@@ -1317,12 +1317,12 @@ const Question = props => {
         onExport={onClickExportToWord}
         showMetadataOption={isUserLoggedIn}
       />
-      {isUserLoggedIn && (
+      {/* {isUserLoggedIn && (
         <StyledScormExportButton
           loading={scormZipLoading}
           onExport={onClickExportToScorm}
         />
-      )}
+      )} */}
       {isPublished && canCreateNewVersion && (
         <StyledButton onClick={showNewVersionModal} type="primary">
           Edit question
@@ -1357,12 +1357,12 @@ const Question = props => {
             onExport={onClickExportToWord}
             showMetadataOption={isUserLoggedIn}
           />
-          {isUserLoggedIn && (
+          {/* {isUserLoggedIn && (
             <StyledScormExportButton
               loading={scormZipLoading}
               onExport={onClickExportToScorm}
             />
-          )}
+          )} */}
           {isPublished && canCreateNewVersion && (
             <StyledButton onClick={showNewVersionModal} type="primary">
               Edit question
