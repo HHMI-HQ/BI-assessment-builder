@@ -158,7 +158,7 @@ describe('Testing questions', () => {
     )
     cy.contains(
       '[class="ant-modal-confirm-content"]',
-      'This will make the question visible to editors an reviewers, and after a successful review it will be published for all users.',
+      'This will make the question visible to editors and reviewers, and after a successful review it will be published for all users.',
     )
     cy.contains(buttonAntModalBody, 'Submit').click()
     cy.wait('@GQLReq')
@@ -226,7 +226,7 @@ describe('Testing questions', () => {
     cy.contains(antModalConfirmTitle, 'Warning!')
     cy.contains(
       '[class="ant-modal-confirm-content"]',
-      `You are editing a published question. Any changes you make will be automatically saved, but not automatically published. You will need to publish the question again for the edits to be reflected in the Discover page. After the edited question is published, the old one will not be available anymore in the Discover page. Do you wish to continue?`,
+      `You are editing a published question. Any changes you make will be automatically saved, but not automatically published. You will need to publish the question again for the edits to be reflected in the Browse Questions page. After the edited question is published, the old one will not be available anymore in the Browse Questions page. Do you wish to continue`,
     )
     cy.contains(buttonAntModalBody, 'Create new version').click()
     cy.wait('@GQLReq')
@@ -240,7 +240,7 @@ describe('Testing questions', () => {
     cy.contains(antModalConfirmTitle, 'Question published successfully')
     cy.contains(
       '[class="ant-modal-confirm-content"]',
-      'Question was published and is now available in the Discover page',
+      'Question was published and is now available in the Browse Questions page',
     )
     cy.contains(buttonAntModalBody, 'Ok').click()
   })

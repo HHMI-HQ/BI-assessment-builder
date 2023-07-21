@@ -181,7 +181,9 @@ const DiscoverPage = () => {
 
   return (
     <>
-      <VisuallyHiddenElement as="h1">Discover page</VisuallyHiddenElement>
+      <VisuallyHiddenElement as="h1">
+        Browse Questions page
+      </VisuallyHiddenElement>
       <Discover
         existingListsOptions={existingLists}
         isUserLoggedIn={!!currentUser}

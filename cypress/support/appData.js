@@ -112,7 +112,7 @@ export const workflowData = {
     operationBtn: 'Move to review',
     prompt: {
       header: 'You are about to move the question to review',
-      body: 'Question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
+      body: 'This question will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
       cancelBtn: 'Cancel',
       okBtn: 'Move to review',
     },
@@ -126,7 +126,7 @@ export const workflowData = {
     operationBtn: 'Move to production',
     prompt: {
       header: 'You are about to move the question to production',
-      body: 'Question will become editable and editors can apply the feedback from the reviewer. Are you sure?',
+      body: 'This question will become editable and editors can apply the feedback from the reviewer. Are you sure?',
       cancelBtn: 'Cancel',
       okBtn: 'Move to production',
     },
@@ -146,7 +146,7 @@ export const workflowData = {
     },
     success: {
       header: 'Question published successfully',
-      body: 'Question was published and is now available in the Discover page',
+      body: 'Question was published and is now available in the Browse Questions page',
     },
     QuestionStatus: 'Published',
   },

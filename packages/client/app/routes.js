@@ -57,7 +57,7 @@ const regexPaths = [
   // },
   {
     path: /^\/discover$/,
-    name: 'Discover page',
+    name: 'Browse Questions page',
   },
   {
     path: /^\/dashboard$/,
