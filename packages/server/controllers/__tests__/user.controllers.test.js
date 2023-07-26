@@ -35,13 +35,17 @@ describe('User Controller', () => {
   })
 
   it('bioInteractiveLogin gets valid env vars from the process', async () => {
-    expect(BIOINTERACTIVE_OAUTH_CLIENT_ID).toBe('123')
-    expect(BIOINTERACTIVE_OAUTH_CLIENT_SECRET).toBe('321')
+    expect(BIOINTERACTIVE_OAUTH_CLIENT_ID).toBe('hhmi_assessment_builder')
+    expect(BIOINTERACTIVE_OAUTH_CLIENT_SECRET).toBe('abc123')
     expect(BIOINTERACTIVE_OAUTH_REDIRECT_URI).toBe(
-      'hhmi.co/biointeractive-oauth',
+      'https://hhmi.cloud68.co/biointeractive-oauth',
     )
-    expect(BIOINTERACTIVE_OAUTH_API_USER_URI).toBe('bio.int/api')
-    expect(BIOINTERACTIVE_OAUTH_TOKEN_URI).toBe('bio.int/token')
+    expect(BIOINTERACTIVE_OAUTH_API_USER_URI).toBe(
+      'https://www.biointeractive.org/oauth2/UserInfo',
+    )
+    expect(BIOINTERACTIVE_OAUTH_TOKEN_URI).toBe(
+      'https://www.biointeractive.org/oauth2/token',
+    )
   })
 
   it('bioInteractiveLogin retrieves an access token', async () => {
