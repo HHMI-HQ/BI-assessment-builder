@@ -7,6 +7,9 @@ services:
       dockerfile: ./Dockerfile-production
       args:
         - server_url=${SERVER_URL:-http://localhost:3000}
+        - show_email_login=${CLIENT_SHOW_EMAIL_LOGIN_OPTION:-false}
+        - oauth_client_id=${CLIENT_BIOINTERACTIVE_OAUTH_CLIENT_ID:-hhmi_assessment_builder}
+        - oauth_redirect_uri=${CLIENT_BIOINTERACTIVE_OAUTH_REDIRECT_URI:-https://hhmi.cloud68.co/biointeractive}
     command: ['npx', 'serve', '-p', '4000', '--single', './_build']
     ports:
       - ${CLIENT_PORT:-4000}:4000
