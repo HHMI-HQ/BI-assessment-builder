@@ -16,7 +16,6 @@ import {
   CREATE_LIST,
   GET_LISTS,
   CURRENT_USER,
-  GET_COMPLEX_ITEM_SETS_OPTIONS,
 } from '../graphql'
 
 const sortOptions = [
@@ -51,13 +50,6 @@ const DiscoverPage = () => {
   const { metadata } = useMetadata()
   const initialRender = useRef(true)
   const history = useHistory()
-
-  const { data: { getAvailableSets: complexItemSetOptions } = {} } = useQuery(
-    GET_COMPLEX_ITEM_SETS_OPTIONS,
-    {
-      variables: { publishedOnly: true },
-    },
-  )
 
   const { data: questionsData, loading } = useQuery(GET_PUBLISHED_QUESTIONS, {
     variables: {
@@ -193,7 +185,6 @@ const DiscoverPage = () => {
         Browse Questions page
       </VisuallyHiddenElement>
       <Discover
-        complexItemSetOptions={complexItemSetOptions}
         existingListsOptions={existingLists}
         isUserLoggedIn={!!currentUser}
         loading={loading}

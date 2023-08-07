@@ -51,8 +51,7 @@ const ibCourses = ['biBiology', 'biEnvironmentalScience']
 const introBioCourses = ['introBioForNonMajors', 'introBioForMajors']
 
 const Sidebar = props => {
-  const { className, text, setFilters, metadata, form, complexItemSetOptions } =
-    props
+  const { className, text, setFilters, metadata, form } = props
 
   const applyFilters = () => {
     setFilters(form.getFieldsValue())
@@ -364,19 +363,12 @@ Sidebar.propTypes = {
   }),
   /** form instance for the filters' <Form> */
   form: PropTypes.shape(),
-  complexItemSetOptions: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
-    }),
-  ),
 }
 
 Sidebar.defaultProps = {
   text: '',
   metadata: null,
   form: {},
-  complexItemSetOptions: [],
 }
 
 export default Sidebar

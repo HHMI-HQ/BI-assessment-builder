@@ -2,7 +2,6 @@ const {
   getAuthor,
   getQuestion,
   getQuestionVersions,
-  getLeadingContentForQuestion,
   getPublishedQuestions,
   getAuthorDashboard,
   getReviewerDashboard,
@@ -233,6 +232,5 @@ module.exports = {
   QuestionVersion: {
     question: versionQuestionResolver,
     content: contentResolver,
-    leadingContent: leadingContentResolver,
   },
 }

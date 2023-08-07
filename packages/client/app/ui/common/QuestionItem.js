@@ -6,8 +6,6 @@ import styled from 'styled-components'
 import { uuid, th, grid } from '@coko/client'
 
 import { DateParser } from '@pubsweet/ui'
-import { LinkOutlined } from '@ant-design/icons'
-
 import WaxWrapper from '../wax/Wax'
 import { DashLayout } from '../wax/layout'
 import { dashConfig } from '../wax/config'
@@ -52,7 +50,8 @@ const StatusContainer = styled.div`
   padding: 0 0 0.7rem 0.7rem;
 `
 
-const InfoRow = styled.div`
+const SecondRow = styled.div`
+  justify-content: space-evenly;
   margin-bottom: ${grid(2)};
 
   details {
@@ -86,7 +85,7 @@ const InfoRow = styled.div`
   }
 `
 
-const MetadataTable = styled.table`
+const BottomRow = styled.table`
   border: none;
   width: 100%;
 
@@ -118,17 +117,8 @@ const sortFunction = (a, b) =>
   courseOrder.indexOf(a.course.label) - courseOrder.indexOf(b.course.label)
 
 const QuestionItem = props => {
-  const {
-    className,
-    metadata,
-    content,
-    status,
-    href,
-    id,
-    courses,
-    state,
-    complexItemSet,
-  } = props
+  const { className, metadata, content, status, href, id, courses, state } =
+    props
 
   return (
     <Wrapper className={className} id={id}>
@@ -176,7 +166,7 @@ const QuestionItem = props => {
         ) : null}
       </FirstRow>
 
-      <InfoRow data-testid="courses">
+      <SecondRow data-testid="courses">
         {courses.sort(sortFunction).map(c => {
           return !c.course ? (
             <span key={uuid()}>Unknown course</span>
@@ -193,17 +183,9 @@ const QuestionItem = props => {
             </details>
           )
         })}
-      </InfoRow>
+      </SecondRow>
 
-      {complexItemSet && (
-        <InfoRow>
-          <Link to={complexItemSet.href}>
-            <LinkOutlined /> {complexItemSet.title}
-          </Link>
-        </InfoRow>
-      )}
-
-      <MetadataTable>
+      <BottomRow>
         <tbody>
           {metadata &&
             metadata.length &&
@@ -227,7 +209,7 @@ const QuestionItem = props => {
               </tr>
             ))}
         </tbody>
-      </MetadataTable>
+      </BottomRow>
     </Wrapper>
   )
 }
@@ -261,10 +243,6 @@ QuestionItem.propTypes = {
     }),
   ),
   state: PropTypes.shape(),
-  complexItemSet: PropTypes.shape({
-    href: PropTypes.string,
-    title: PropTypes.string,
-  }),
 }
 
 QuestionItem.defaultProps = {
@@ -274,7 +252,6 @@ QuestionItem.defaultProps = {
   id: uuid(),
   courses: [],
   state: null,
-  complexItemSet: null,
 }
 
 export default QuestionItem
