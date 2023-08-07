@@ -1025,8 +1025,6 @@ const QuestionPage = props => {
         facultyView={testMode}
         handlingEditors={handlingEditors?.result || []}
         initialMetadataValues={metadataApiToUi(version, testMode)}
-        // admins can always treat their questions as if they are in produciton, meaning they can edit and publish them directly,
-        // unless the question has already been published
         isInProduction={
           version?.inProduction ||
           (isAdmin && isAuthor && !version?.published && !version?.unpublished)
