@@ -216,7 +216,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
             className="ant-list-items"
           >
             <li
-              className="sc-cCYyox jOHVSt"
+              className="sc-cCYyox kLMLcl"
               data-testid="list-item-wrapper"
             >
               <label
@@ -245,7 +245,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </div>
             </li>
             <li
-              className="sc-cCYyox jOHVSt"
+              className="sc-cCYyox kLMLcl"
               data-testid="list-item-wrapper"
             >
               <label
@@ -274,7 +274,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </div>
             </li>
             <li
-              className="sc-cCYyox jOHVSt"
+              className="sc-cCYyox kLMLcl"
               data-testid="list-item-wrapper"
             >
               <label
@@ -303,7 +303,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </div>
             </li>
             <li
-              className="sc-cCYyox jOHVSt"
+              className="sc-cCYyox kLMLcl"
               data-testid="list-item-wrapper"
             >
               <label
