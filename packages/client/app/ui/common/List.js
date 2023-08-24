@@ -68,6 +68,14 @@ const ListItemWrapper = styled.li`
     outline-offset: -2px;
   }
 
+  & > label {
+    display: flex;
+
+    & > span {
+      align-self: center;
+    }
+  }
+
   &&&& {
     background-color: ${({ isDragging }) =>
       isDragging ? th('colorSelection') : 'transparent'};
@@ -185,6 +193,36 @@ function useFunction(callback) {
 // const EmptyList = () => {
 //   return 'no data'
 // }
+// Maybe we can add it as a util or turn it into a component inside and export it from Checkbox.js
+const selectAllCheckbox = (
+  setItems,
+  dataSource,
+  items,
+  label = 'Select All',
+) => {
+  const { length: itemslgth } = items
+  const { length: datalgth } = dataSource
+
+  const toggle = () =>
+    setItems(keys =>
+      keys.length === datalgth ? [] : dataSource.map(r => r.id),
+    )
+
+  // posible reusable util
+  const isChecked = () =>
+    itemslgth < datalgth && itemslgth !== 0 ? 'mixed' : itemslgth > 0
+
+  return (
+    <CheckBox
+      aria-checked={isChecked()}
+      checked={datalgth > 0 && itemslgth === datalgth}
+      indeterminate={isChecked() === 'mixed'}
+      onChange={toggle}
+    >
+      {label}
+    </CheckBox>
+  )
+}
 
 const List = props => {
   const {
@@ -445,6 +483,8 @@ const List = props => {
 
       {showInternalHeaderRow && (
         <InternalHeader>
+          {itemSelection &&
+            selectAllCheckbox(setSelectedItems, dataSource, selectedItems)}
           {showTotalCount && (
             <TotalCount>
               <span>{totalCount} results</span>
