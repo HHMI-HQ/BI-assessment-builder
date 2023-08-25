@@ -705,13 +705,16 @@ const QuestionPage = props => {
         assignHELoading={assignHELoading}
         authors={possibleAuthors}
         canAssignAuthor={isAdmin && isAuthor}
-        canCreateNewVersion={isAdmin}
+        canCreateNewVersion={isAdmin || isEditor}
         chatLoading={chatLoading}
         complexItemSetOptions={complexItemSetOptions}
         complexSetEditLink={
           version?.inProduction ? `/set/${version?.complexItemSetId}` : ''
         }
         currentHandlingEditors={currentHandlingEditors}
+        editorContent={version && JSON.parse(version.content)}
+        // admins have editorial rights (publishing rights) on their own questions
+        editorView={isEditor || (isHandlingEditor && !isAuthor) || isAdmin}
         facultyView={testMode}
         handlingEditors={handlingEditors?.result || []}
         initialMetadataValues={metadataApiToUi(version, testMode)}
@@ -768,13 +771,6 @@ const QuestionPage = props => {
         showNextQuestionLink={false}
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
-        editorContent={version && JSON.parse(version.content)}
-        // admins have editorial rights (publishing rights) on their own questions
-        editorView={
-          (isEditor && !isAuthor) ||
-          (isHandlingEditor && !isAuthor) ||
-          (isAdmin && isAuthor)
-        }
         isPublished={version?.published}
         // admins have editorial rights (publishing rights) on their own questions
         isRejected={question?.rejected}

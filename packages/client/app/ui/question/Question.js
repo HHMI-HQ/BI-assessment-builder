@@ -405,7 +405,7 @@ const Question = props => {
   const [activeKey, setActiveKey] = useState(0)
 
   const readOnly =
-    (editorView && !isInProduction) ||
+    (editorView && !isInProduction && isSubmitted) ||
     (!editorView && isSubmitted) ||
     isRejected
 
@@ -1177,7 +1177,8 @@ const Question = props => {
           lastAutoSave={updated && new Date(updated)}
         />
       )}
-      {!isRejected && (editorView ? RightAreaEditor : RightAreaAuthor)}
+      {!isRejected &&
+        (editorView && isSubmitted ? RightAreaEditor : RightAreaAuthor)}
     </RightAreaWrapper>
   )
 
