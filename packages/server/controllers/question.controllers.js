@@ -599,26 +599,45 @@ const assignHandlingEditors = async (questionIds, userIds, options = {}) => {
         role: HE_TEAM.role,
       })
 
+      const authorTeam = await Team.findOne({
+        objectId: questionId,
+        role: AUTHOR_TEAM.role,
+      })
+
+      // filtering out HES who are authors of the current question
+      const author = await TeamMember.findOne({
+        teamId: authorTeam.id,
+      })
+
+      const hasAuthorshipConflit = userIds.includes(author.userId)
+
+      const filteredHEs = userIds.filter(userId => author.userId !== userId)
+
+      //
+
       let members = []
 
       if (existingTeam) {
         members = await Promise.all(
-          userIds.map(async userId => {
+          filteredHEs.map(async userId => {
             const existingMember = await TeamMember.findOne({
               teamId: existingTeam.id,
               userId,
             })
 
             if (existingMember) {
-              return existingMember
+              return existingMember.id
             }
 
-            return Team.addMember(existingTeam.id, userId)
+            const assignedMember = await Team.addMember(existingTeam.id, userId)
+
+            return assignedMember.id
           }),
         )
 
         return {
           questionId,
+          hasAuthorshipConflit,
           members,
         }
       }
@@ -634,12 +653,15 @@ const assignHandlingEditors = async (questionIds, userIds, options = {}) => {
       )
 
       members = await Promise.all(
-        userIds.map(userId => {
-          return Team.addMember(newTeam.id, userId)
+        filteredHEs.map(async userId => {
+          const assignedMember = await Team.addMember(newTeam.id, userId)
+          return assignedMember.id
         }),
       )
+
       return {
         questionId,
+        hasAuthorshipConflit,
         members,
       }
     }),

@@ -104,6 +104,19 @@ const Dashboard = props => {
     return onAssignHE(users, selectedQuestions)
   }
 
+  const updateSelectedQuestions = questions => {
+    setSelectedQuestions(currentlySelectedQuestion =>
+      currentlySelectedQuestion.filter(
+        qId =>
+          !questions.some(
+            assignedQuestion =>
+              assignedQuestion.questionId === qId &&
+              assignedQuestion.hasAuthorshipConflit !== true,
+          ),
+      ),
+    )
+  }
+
   useEffect(() => {
     onSearch(searchParams)
   }, [searchParams])
@@ -122,6 +135,7 @@ const Dashboard = props => {
   )
 
   // if there are selectedQuestions and none of them is published
+
   const BulkAction = selectedQuestions.length > 0 &&
     !tabsContent
       .find(tab => tab.value === 'editor')
@@ -134,6 +148,7 @@ const Dashboard = props => {
         loadingAssingHEs={loadingAssingHEs}
         onAssign={handleAssingHE}
         onSearchHE={onSearchHE}
+        updateSelectedQuestions={updateSelectedQuestions}
       />
     )
 
@@ -180,6 +195,7 @@ const Dashboard = props => {
                   onSearch={setSearchQuery}
                   onSortOptionChange={setSortOption}
                   questions={questions}
+                  selectedQuestions={selectedQuestions}
                   showRowCheckboxes={!!showBulkActions}
                   showSort={showSort}
                   sortOptions={sortOptions}

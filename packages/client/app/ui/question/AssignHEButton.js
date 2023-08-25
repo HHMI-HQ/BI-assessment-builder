@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+
 import { DeleteOutlined } from '@ant-design/icons'
 
-import { Button, Form, Select, Modal, VisuallyHiddenElement } from '../common'
+import {
+  Button,
+  Form,
+  Select,
+  Modal,
+  VisuallyHiddenElement,
+  Paragraph,
+} from '../common'
 
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer
@@ -41,6 +49,7 @@ const AssignHEButton = props => {
     loadAssignedHEs,
     currentHandlingEditors,
     expanded,
+    updateSelectedQuestions,
   } = props
 
   const [showModal, setShowModal] = useState(false)
@@ -59,10 +68,56 @@ const AssignHEButton = props => {
 
   const handleAssign = ({ newHandlingEditor }) => {
     onAssign(newHandlingEditor)
-      .then(() => {
+      .then(({ data: { assignHandlingEditors } }) => {
         assingHeForm.resetFields()
+
         document.getElementById('he-update').innerHTML =
           ' selected users assigned as handling editors'
+
+        const hasAssignedAuthor = assignHandlingEditors.some(
+          assignHandlingEditor =>
+            assignHandlingEditor.hasAuthorshipConflit === true,
+        )
+
+        const infoModalContent = hasAssignedAuthor
+          ? `${
+              newHandlingEditor.length > 1
+                ? 'Some Handling Editors'
+                : 'Selected Handling Editor'
+            } couldn't be assigned for ${
+              assignHandlingEditors.length > 1
+                ? 'selected questions'
+                : 'this question'
+            }, because Handling editors cannot handle the questions they authored.`
+          : `Handling editor${
+              newHandlingEditor.length > 1 ? 's' : ''
+            } assigned to the question${
+              assignHandlingEditors.length > 1 ? 's' : ''
+            } successfully`
+
+        const assignmentInfoModal = modal.info()
+
+        const onInfoModalClose = () => {
+          updateSelectedQuestions(assignHandlingEditors)
+          assignmentInfoModal.destroy()
+          setShowModal(false)
+        }
+
+        assignmentInfoModal.update({
+          title: <ModalHeader>Assignment Info</ModalHeader>,
+          content: (
+            <div>
+              <Paragraph>{infoModalContent}</Paragraph>
+            </div>
+          ),
+          footer: [
+            <ModalFooter>
+              <Button autoFocus onClick={onInfoModalClose} type="primary">
+                Ok
+              </Button>
+            </ModalFooter>,
+          ],
+        })
       })
       .catch(() => {
         const conversionErrorModal = modal.error()
@@ -218,6 +273,7 @@ AssignHEButton.propTypes = {
   onSearchHE: PropTypes.func,
   searchLoading: PropTypes.bool,
   loadAssignedHEs: PropTypes.func,
+  updateSelectedQuestions: PropTypes.func,
 }
 
 AssignHEButton.defaultProps = {
@@ -230,6 +286,7 @@ AssignHEButton.defaultProps = {
   handlingEditors: [],
   loadAssignedHEs: () => {},
   currentHandlingEditors: [],
+  updateSelectedQuestions: () => {},
 }
 
 export default AssignHEButton

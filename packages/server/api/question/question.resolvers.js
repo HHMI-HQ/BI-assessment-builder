@@ -159,8 +159,8 @@ const leadingContentResolver = async version => {
   return getLeadingContentForQuestion(version)
 }
 
-const assignHandlingEditorsResolver = async (_, { questionId, userId }) => {
-  return assignHandlingEditors(questionId, userId)
+const assignHandlingEditorsResolver = async (_, { questionIds, userIds }) => {
+  return assignHandlingEditors(questionIds, userIds)
 }
 
 const getQuestionsHandlingEditorsResolver = async (_, { questionId }) => {

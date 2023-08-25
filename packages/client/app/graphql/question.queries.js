@@ -181,9 +181,8 @@ export const ASSING_HANDLING_EDITORS = gql`
   mutation assignHandlingEditors($questionIds: [ID!]!, $userIds: [ID!]!) {
     assignHandlingEditors(questionIds: $questionIds, userIds: $userIds) {
       questionId
-      members {
-        id
-      }
+      hasAuthorshipConflit
+      members
     }
   }
 `
