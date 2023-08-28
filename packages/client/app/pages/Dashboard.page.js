@@ -191,9 +191,7 @@ const DashboardPage = () => {
     refetchQueries: [{ query: CURRENT_USER }],
   })
 
-  const [assingHandlingEditors, { loading: loadingAssingHEs }] = useMutation(
-    ASSING_HANDLING_EDITORS,
-  )
+  const [assingHandlingEditors] = useMutation(ASSING_HANDLING_EDITORS)
   // #endregion hooks
 
   // #region handlers
@@ -309,7 +307,6 @@ const DashboardPage = () => {
         handlingEditors={handlingEditors?.result || []}
         initialTabKey={initialTabKey}
         loading={loading}
-        loadingAssingHEs={loadingAssingHEs}
         loadingSearchHEs={loadingSearchHEs}
         onAssignHE={handleAssignHE}
         onClickCreate={handleCreateQuestion}

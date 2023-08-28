@@ -63,7 +63,6 @@ const Dashboard = props => {
     handlingEditors,
     initialTabKey,
     loading,
-    loadingAssingHEs,
     loadingSearchHEs,
     locale,
     onAssignHE,
@@ -145,7 +144,6 @@ const Dashboard = props => {
         expanded
         handlingEditors={handlingEditors}
         loading={loadingSearchHEs}
-        loadingAssingHEs={loadingAssingHEs}
         onAssign={handleAssingHE}
         onSearchHE={onSearchHE}
         updateSelectedQuestions={updateSelectedQuestions}
@@ -221,7 +219,6 @@ Dashboard.propTypes = {
   ),
   initialTabKey: PropTypes.string,
   loading: PropTypes.bool.isRequired,
-  loadingAssingHEs: PropTypes.bool,
   loadingSearchHEs: PropTypes.bool,
   locale: PropTypes.shape(),
   /** create new question */
@@ -276,7 +273,6 @@ Dashboard.defaultProps = {
   handlingEditors: [],
   initialTabKey: null,
   locale: null,
-  loadingAssingHEs: false,
   loadingSearchHEs: false,
   onAssignHE: () => {},
   onSearchHE: () => {},
