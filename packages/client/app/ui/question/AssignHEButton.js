@@ -76,7 +76,7 @@ const AssignHEButton = props => {
 
         const hasAssignedAuthor = assignHandlingEditors.some(
           assignHandlingEditor =>
-            assignHandlingEditor.hasAuthorshipConflit === true,
+            assignHandlingEditor.hasAuthorshipConflict === true,
         )
 
         const infoModalContent = hasAssignedAuthor

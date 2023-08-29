@@ -110,7 +110,7 @@ const Dashboard = props => {
           !questions.some(
             assignedQuestion =>
               assignedQuestion.questionId === qId &&
-              assignedQuestion.hasAuthorshipConflit !== true,
+              assignedQuestion.hasAuthorshipConflict !== true,
           ),
       ),
     )

@@ -609,7 +609,7 @@ const assignHandlingEditors = async (questionIds, userIds, options = {}) => {
         teamId: authorTeam.id,
       })
 
-      const hasAuthorshipConflit = userIds.includes(author.userId)
+      const hasAuthorshipConflict = userIds.includes(author.userId)
 
       const filteredHEs = userIds.filter(userId => author.userId !== userId)
 
@@ -637,7 +637,7 @@ const assignHandlingEditors = async (questionIds, userIds, options = {}) => {
 
         return {
           questionId,
-          hasAuthorshipConflit,
+          hasAuthorshipConflict,
           members,
         }
       }
@@ -661,7 +661,7 @@ const assignHandlingEditors = async (questionIds, userIds, options = {}) => {
 
       return {
         questionId,
-        hasAuthorshipConflit,
+        hasAuthorshipConflict,
         members,
       }
     }),

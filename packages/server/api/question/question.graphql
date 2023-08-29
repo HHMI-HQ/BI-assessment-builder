@@ -75,7 +75,7 @@ type QuestionsResponse {
 
 type AssignHandlingEditorsResponse {
   questionId: ID!
-  hasAuthorshipConflit: Boolean!
+  hasAuthorshipConflict: Boolean!
   members: [ID!]!
 }
 
