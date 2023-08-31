@@ -821,6 +821,22 @@ const conditionalWord = (cased, options) => {
   return safeCall(caseMode[cased], text)
 }
 
+const safeIndex = (index, direction, list, min = 0) => {
+  let finalIndex
+  const max = list.length - 1
+
+  const options = {
+    down: () => (index > max ? (finalIndex = min) : (finalIndex = index)),
+    up: () => (index < min ? (finalIndex = max) : (finalIndex = index)),
+    'up-stop': () => (index < min ? (finalIndex = min) : (finalIndex = index)),
+    'down-stop': () =>
+      index > max ? (finalIndex = max) : (finalIndex = index),
+  }
+
+  safeCall(options[direction])
+  return finalIndex
+}
+
 export {
   extractDocumentText,
   extractTopicsAndSubtopics,
@@ -842,4 +858,5 @@ export {
   safeCall,
   capitalize,
   conditionalWord,
+  safeIndex,
 }

@@ -15,6 +15,7 @@ export default createGlobalStyle`
     scrollbar-color: ${th('colorPrimary')} #fff;
 
     ::-webkit-scrollbar {
+      height: ${grid(1)};
       width: ${grid(1)};
     }
   

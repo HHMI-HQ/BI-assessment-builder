@@ -24,6 +24,56 @@ const Wrapper = styled.div`
 
     .ant-table {
       height: calc(100% - ${grid(16)});
+      width: 1300px;
+    }
+
+    /* .ant-table-measure-row {
+      visibility: collapse;
+    } */
+
+    .ant-table-content {
+      max-height: 300px;
+      overflow: scroll;
+    }
+
+    .ant-table-tbody {
+      height: 270px;
+    }
+
+    .ant-table-thead {
+      .ant-table-thead > tr > th {
+        position: sticky;
+        top: 0;
+      }
+      height: 30px;
+      margin: 0;
+      width: 100%;
+    }
+
+    .ant-table-cell {
+      height: 30px;
+      max-height: 50px;
+
+      :nth-child(1) {
+        background-color: #7c7c7c31;
+      }
+
+      ::before {
+        display: none;
+      }
+    }
+
+    .ant-table-thead .ant-table-cell {
+      box-shadow: inset 0 0 15px #8da8ff31;
+      font-size: 14px;
+      padding: 0.8rem;
+    }
+
+    & nav {
+      box-shadow: inset 0 0 15px #8da8ff31;
+      display: flex;
+      justify-content: flex-start;
+      padding: 0.3rem;
     }
   }
 `

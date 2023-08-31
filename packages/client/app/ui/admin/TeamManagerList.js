@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid, th } from '@coko/client'
+import { th } from '@coko/client'
 import { List, H1 } from '../common'
 import TeamManagerBlock from './TeamManagerBlock'
 
@@ -22,15 +22,11 @@ const Wrapper = styled.div`
 const PageHeader = styled(H1)`
   margin: 0 auto;
   text-align: center;
-
-  @media (min-width: ${th('mediaQueries.small')}) {
-    margin: ${grid(2)} auto;
-  }
 `
 
 const StyledSection = styled.section`
   background: ${th('colorBackground')};
-  padding: ${grid(4)};
+  padding: 0;
 `
 
 const TeamManagerList = props => {

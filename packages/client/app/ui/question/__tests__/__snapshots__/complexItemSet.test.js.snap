@@ -2,13 +2,13 @@
 
 exports[`ComplexItemSetForm matches snapshot 1`] = `
 <div
-  className="sc-NrEwa cyZHDt"
+  className="sc-fkDAhV fjHRts"
 >
   <div
     className="sc-iNmOIt hDXbYN"
   >
     <form
-      className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y sc-gKWViP vGsgG"
+      className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y sc-jQCNTa ftmChd"
       data-testid="form-content"
       onReset={[Function]}
       onSubmit={[Function]}
@@ -47,11 +47,11 @@ exports[`ComplexItemSetForm matches snapshot 1`] = `
                 className="ant-form-item-control-input-content"
               >
                 <div
-                  className="sc-ceEKmU"
+                  className="sc-ickaZJ"
                 >
                   <input
                     aria-required="true"
-                    className="ant-input css-dev-only-do-not-override-1vtf12y sc-ickaZJ ijWmoE"
+                    className="ant-input css-dev-only-do-not-override-1vtf12y sc-eUkMuS ivxpSw"
                     disabled={false}
                     id="title"
                     onBlur={[Function]}
@@ -74,7 +74,7 @@ exports[`ComplexItemSetForm matches snapshot 1`] = `
          the content for the complex item set leading text in the editor below
       </h3>
       <div
-        className="sc-jQCNTa hIVykf"
+        className="sc-kndUNU jZAtpL"
       >
         <div
           className="sc-dWSiPC fbGTni"
@@ -117,7 +117,7 @@ exports[`ComplexItemSetForm matches snapshot 1`] = `
         </div>
       </div>
       <div
-        className="sc-kCtSUc bFGyaY"
+        className="sc-eyMvgT iTnuFt"
       >
         <button
           className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-jIXSKn crwhTQ"

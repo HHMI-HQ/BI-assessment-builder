@@ -24,24 +24,25 @@ import {
 } from '../../utilities'
 
 const Wrapper = styled.div`
+  background-color: #f5f5f5;
   height: 100%;
 `
 
 const PageHeader = styled(H1)`
-  margin: 0 auto;
+  color: #fff;
+  margin: 0;
+  max-height: 10rem;
+  min-height: 10rem;
   text-align: center;
-
-  @media (min-width: ${th('mediaQueries.small')}) {
-    margin: ${grid(2)} auto;
-  }
 `
 
 const StyledSection = styled.section`
-  background: ${th('colorBackground')};
+  align-items: center;
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: ${grid(4)};
+  justify-content: center;
+  padding: 0;
 
   > div:nth-child(2) {
     flex-grow: 1;
@@ -49,58 +50,52 @@ const StyledSection = styled.section`
 `
 
 const StyledTable = styled(Table)`
-  .ant-table-content {
-    overflow-x: auto;
+  background-color: #fff;
+  border: 1px solid #0001;
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 80px #edf3f5;
+  margin: 0.5rem 0;
+  max-width: 95%;
+  overflow: scroll;
+  padding: ${grid(6)};
+  position: relative;
+  width: 1300px;
+
+  .ant-table-cell {
+    height: 30px;
+    max-height: 50px;
   }
-`
 
-const StyledCheckbox = styled(Checkbox)`
-  align-items: center;
-  display: flex;
-  flex-direction: column-reverse;
-  white-space: nowrap;
-
-  .ant-checkbox {
-    align-self: auto;
+  .ant-table-thead .ant-table-cell {
+    box-shadow: inset 0 0 15px #8da8ff1a;
+    font-size: 14px;
+    padding: 0.8rem;
   }
 
-  &::after {
-    display: none;
+  & nav {
+    box-shadow: inset 0 0 15px #8da8ff1a;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.3rem;
   }
 `
 
 const FooterActionsWrapper = styled.div`
+  background-color: #fff;
+  box-shadow: inset 0 0 12px #dee5e7;
+
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  padding-bottom: 10px;
+  margin-bottom: 10px;
+  max-width: 96%;
+  padding: ${grid(4)};
+  width: 1300px;
 
   @media (min-width: ${th('mediaQueries.small')}) {
-    flex-direction: row;
+    flex-direction: row-reverse;
   }
 `
-
-const selectAllCheckbox = (setRows, rowsData, rows) => {
-  const toggle = () =>
-    setRows(keys =>
-      keys.length === rowsData.length ? [] : rowsData.map(r => r.key),
-    )
-
-  // posible reusable util
-  const isChecked = ({ length: rowslgth = [] }, { length: datalgth = [] }) =>
-    rowslgth < datalgth && rowslgth !== 0 ? 'mixed' : rowslgth > 0
-
-  return (
-    <StyledCheckbox
-      aria-checked={isChecked(rows, rowsData)}
-      checked={rowsData.length > 0 && rows.length === rowsData.length}
-      indeterminate={isChecked(rows, rowsData) === 'mixed'}
-      onChange={toggle}
-    >
-      Select all
-    </StyledCheckbox>
-  )
-}
 
 const ModalContext = React.createContext(null)
 const { footer: ModalFooter, header: ModalHeader } = Modal
@@ -163,17 +158,16 @@ const UserList = ({
       title: 'Expertise',
       dataIndex: 'expertise',
       key: 'expertise',
-      render: arrayOfStrings => (
-        <>
-          {/* eslint-disable-next-line react/destructuring-assignment */}
-          {arrayOfStrings &&
-            arrayOfStrings.map(course => (
+      render: arrayOfStrings =>
+        arrayOfStrings && (
+          <>
+            {arrayOfStrings.map(course => (
               <Tag key={uuid()}>
                 {profileOptions.courses.find(c => c.value === course)?.label}
               </Tag>
             ))}
-        </>
-      ),
+          </>
+        ),
     },
     {
       title: 'Reviewer',
@@ -214,7 +208,6 @@ const UserList = ({
   const rowSelection = {
     onChange: handleSelectionChange,
     selectedRowKeys: selectedRows,
-    columnTitle: selectAllCheckbox(setSelectedRows, dataSource, selectedRows),
     renderCell: (_checked, record, _index, originNode) =>
       React.cloneElement(originNode, {
         'aria-label': `Select user ${record.displayName}`,
@@ -337,6 +330,7 @@ const UserList = ({
             onSearch={onSearch}
             pagination={pagination}
             rowSelection={rowSelection}
+            // scroll={{ y: 270, x: 1300 }}
             searchLoading={searchLoading}
             searchPlaceholder="Search for users"
             showSearch
