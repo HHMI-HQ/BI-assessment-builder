@@ -3,26 +3,32 @@
 exports[`TeamManagerBlock matches snapshot 1`] = `
 <div
   className="sc-kCtSUc hnhKwx"
+  className="sc-fkDAhV eAGzLS"
 >
-  <h2
-    className="ant-typography sc-fkDAhV iKuMhI css-dev-only-do-not-override-1vtf12y"
-    style={
-      {
-        "WebkitLineClamp": undefined,
-      }
-    }
+  <div
+    className="sc-csCMJt jubfdI sc-jQCNTa jwtBGR"
   >
-    <span
-      id="team-editor"
+    <h1
+      className="ant-typography css-dev-only-do-not-override-1vtf12y"
+      style={
+        {
+          "WebkitLineClamp": undefined,
+        }
+      }
     >
-      editor
-    </span>
-  </h2>
+      <span
+        id="team-editor"
+      >
+        editor
+      </span>
+    </h1>
+  </div>
   <div
     className="sc-kFuwaP eKsANT"
   >
     <form
       className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y sc-jQCNTa cenbRH"
+      className="ant-form ant-form-vertical css-dev-only-do-not-override-1vtf12y sc-eyMvgT hZxfUY"
       data-testid="form-content"
       onReset={[Function]}
       onSubmit={[Function]}
@@ -58,10 +64,10 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
                 className="ant-form-item-control-input-content"
               >
                 <span
-                  className="sc-ivnCJf"
+                  className="sc-cyRfQX"
                 >
                   <div
-                    className="ant-select ant-select-in-form-item sc-cyRfQX bXaHaV css-dev-only-do-not-override-1vtf12y ant-select-multiple ant-select-show-arrow ant-select-show-search"
+                    className="ant-select ant-select-in-form-item sc-lnAgIa DXBaK css-dev-only-do-not-override-1vtf12y ant-select-multiple ant-select-show-arrow ant-select-show-search"
                     data-testid="select-editor"
                     onBlur={[Function]}
                     onFocus={[Function]}
@@ -186,6 +192,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
       <button
         aria-labelledby="editor-team"
         className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ sc-eyMvgT"
+        className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ sc-gOzvQd"
         disabled={true}
         onClick={[Function]}
         status={null}
@@ -199,10 +206,11 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
   </div>
   <div
     className="sc-eACynP ggjpgk sc-lbGWWz iYhZvc"
+    className="sc-bZPPFW cuvZaR sc-dkPMvu SsOgC"
   >
     <div
       aria-labelledby="team-editor"
-      className="ant-list ant-list-split sc-cjERFW gNvrPQ css-dev-only-do-not-override-1vtf12y"
+      className="ant-list ant-list-split sc-jegxcv gCeHZy css-dev-only-do-not-override-1vtf12y"
       data-testid="editor-list"
       role="group"
     >
@@ -216,11 +224,11 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
             className="ant-list-items"
           >
             <li
-              className="sc-cCYyox kLMLcl"
+              className="sc-cjERFW kyeAYZ"
               data-testid="list-item-wrapper"
             >
               <label
-                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iVFRtF cVchYB css-dev-only-do-not-override-1vtf12y"
+                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iCmkLe bvGNWF css-dev-only-do-not-override-1vtf12y"
               >
                 <span
                   className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
@@ -240,16 +248,17 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </label>
               <div
                 className="sc-kndUNU"
+                className="sc-lbGWWz"
               >
                 user1
               </div>
             </li>
             <li
-              className="sc-cCYyox kLMLcl"
+              className="sc-cjERFW kyeAYZ"
               data-testid="list-item-wrapper"
             >
               <label
-                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iVFRtF cVchYB css-dev-only-do-not-override-1vtf12y"
+                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iCmkLe bvGNWF css-dev-only-do-not-override-1vtf12y"
               >
                 <span
                   className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
@@ -269,16 +278,17 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </label>
               <div
                 className="sc-kndUNU"
+                className="sc-lbGWWz"
               >
                 user2
               </div>
             </li>
             <li
-              className="sc-cCYyox kLMLcl"
+              className="sc-cjERFW kyeAYZ"
               data-testid="list-item-wrapper"
             >
               <label
-                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iVFRtF cVchYB css-dev-only-do-not-override-1vtf12y"
+                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iCmkLe bvGNWF css-dev-only-do-not-override-1vtf12y"
               >
                 <span
                   className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
@@ -298,16 +308,17 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </label>
               <div
                 className="sc-kndUNU"
+                className="sc-lbGWWz"
               >
                 user3
               </div>
             </li>
             <li
-              className="sc-cCYyox kLMLcl"
+              className="sc-cjERFW kyeAYZ"
               data-testid="list-item-wrapper"
             >
               <label
-                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iVFRtF cVchYB css-dev-only-do-not-override-1vtf12y"
+                className="ant-checkbox-wrapper sc-jTrPJq iCGpyE sc-iCmkLe bvGNWF css-dev-only-do-not-override-1vtf12y"
               >
                 <span
                   className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
@@ -327,6 +338,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
               </label>
               <div
                 className="sc-kndUNU"
+                className="sc-lbGWWz"
               >
                 user4
               </div>
@@ -338,6 +350,7 @@ exports[`TeamManagerBlock matches snapshot 1`] = `
   </div>
   <button
     className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ sc-gOzvQd"
+    className="ant-btn css-dev-only-do-not-override-1vtf12y ant-btn-primary sc-hLseeU fUCNCZ sc-kndUNU"
     data-testid="remove-editor"
     disabled={true}
     onClick={[Function]}

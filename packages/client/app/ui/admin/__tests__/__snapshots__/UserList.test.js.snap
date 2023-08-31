@@ -2,16 +2,16 @@
 
 exports[`UserList matches snapshot 1`] = `
 <div
-  className="sc-kCtSUc byXAJf"
+  className="sc-fkDAhV hrtgbA"
 >
   <section
     className="sc-eyMvgT gNCaAR"
   >
     <div
-      className="sc-fkDAhV khBCMl"
+      className="sc-csCMJt ckhlXC sc-jQCNTa gyzOnN"
     >
       <h1
-        className="ant-typography sc-jQCNTa knxsdz css-dev-only-do-not-override-1vtf12y"
+        className="ant-typography css-dev-only-do-not-override-1vtf12y"
         style={
           {
             "WebkitLineClamp": undefined,
@@ -22,13 +22,13 @@ exports[`UserList matches snapshot 1`] = `
       </h1>
     </div>
     <div
-      className="sc-cimVjy kFtPam sc-gOzvQd cliCRF"
+      className="sc-ifSlWn dGbIhR sc-gOzvQd cliCRF"
     >
       <div
-        className="sc-ifSlWn fNhuEQ"
+        className="sc-bOkmgI fEpRzQ"
       >
         <span
-          className="ant-input-group-wrapper ant-input-search sc-bALXmG FcGdp css-dev-only-do-not-override-1vtf12y"
+          className="ant-input-group-wrapper ant-input-search sc-ivnCJf fNVLOy css-dev-only-do-not-override-1vtf12y"
         >
           <span
             className="ant-input-wrapper ant-input-group css-dev-only-do-not-override-1vtf12y"
@@ -138,6 +138,29 @@ exports[`UserList matches snapshot 1`] = `
                               scope="col"
                               style={{}}
                             >
+                              <div
+                                className="ant-table-selection"
+                              >
+                                <label
+                                  className="ant-checkbox-wrapper css-dev-only-do-not-override-1vtf12y"
+                                >
+                                  <span
+                                    className="ant-checkbox css-dev-only-do-not-override-1vtf12y"
+                                  >
+                                    <input
+                                      aria-label="Select all"
+                                      checked={false}
+                                      className="ant-checkbox-input"
+                                      disabled={false}
+                                      onChange={[Function]}
+                                      type="checkbox"
+                                    />
+                                    <span
+                                      className="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </div>
                               <div
                                 className="ant-table-selection"
                               >
@@ -486,7 +509,7 @@ exports[`UserList matches snapshot 1`] = `
       </div>
       <nav
         aria-label="Pagination"
-        className="sc-iKGpAt kjUTHT sc-bOkmgI iDxoIN"
+        className="sc-gjTGSA cEZTaT sc-hLPCTx faXtEP"
         role="navigation"
       >
         <ul
@@ -546,7 +569,7 @@ exports[`UserList matches snapshot 1`] = `
       </nav>
     </div>
     <div
-      className="sc-kndUNU bsldMr"
+      className="sc-lbGWWz ihMovH"
     >
       <label
         className="ant-checkbox-wrapper sc-jTrPJq iCGpyE css-dev-only-do-not-override-1vtf12y"
@@ -600,7 +623,7 @@ exports[`UserList matches snapshot 1`] = `
       </div>
     </div>
     <span
-      className="sc-gjTGSA fuiUoE"
+      className="sc-eACynP fVGQWA"
       id="action-status"
       role="status"
     />
