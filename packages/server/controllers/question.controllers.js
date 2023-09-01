@@ -189,6 +189,19 @@ const getHandlingEditorDashboard = async (userId, options = {}) => {
   })
 }
 
+const getHandlingEditorDashboard = async (userId, options = {}) => {
+  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
+
+  return Question.findByRole(userId, 'handlingEditor', {
+    orderBy,
+    ascending,
+    page,
+    pageSize,
+    searchQuery,
+    trx,
+  })
+}
+
 /**
  * Create question & first question version
  * Add user that created it to the author team
@@ -817,6 +830,12 @@ module.exports = {
   generateScormZip,
   generateWordFile,
   generateQtiZip,
+
+  assignHandlingEditors,
+  getQuestionsHandlingEditors,
+  unassignHandlingEditor,
+
+  getChatThreadForQuestion,
 
   assignHandlingEditors,
   getQuestionsHandlingEditors,
