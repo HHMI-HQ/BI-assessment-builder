@@ -137,6 +137,9 @@ const DashboardPage = () => {
   const editorData = editorResponse && editorResponse.getManagingEditorDashboard
   const handlingEditorData = heResponse && heResponse.getHandlingEditorDashboard
 
+  const productionData =
+    productionResponse && productionResponse.getInProductionDashboard
+
   const mappedDataHE =
     handlingEditorData && metadata
       ? dashboardDataMapper({
@@ -167,9 +170,6 @@ const DashboardPage = () => {
           showAssigned: true,
         })
       : []
-
-  const productionData =
-    productionResponse && productionResponse.getInProductionDashboard
 
   const queryMapper = {
     query: {
@@ -306,11 +306,11 @@ const DashboardPage = () => {
               productionData.result,
               metadata,
               complexItemSetOptions,
-              true,
+              false,
               true,
             )
           : [],
-      totalCount: productionData && productionData.totalCount,
+      totalCount: productionData?.totalCount,
       showBulkActions: false,
       loading: productionLoading,
     },
