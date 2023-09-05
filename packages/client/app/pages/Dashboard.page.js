@@ -116,8 +116,28 @@ const DashboardPage = () => {
       ...defaultSearchOptions,
       page: 0,
     },
-    onCompleted: data =>
-      updateSearchResultAnnounce(data, 'getHandlingEditorDashboard'),
+    onCompleted: data => {
+      // run only on update, not on first render
+      if (initialRender.current) initialRender.current = false
+      else {
+        const nrOfQuestions = data.getHandlingEditorDashboard.result.length
+        const total = data.getHandlingEditorDashboard.totalCount
+        let announcement = 'Results updated.'
+
+        if (total === 0) {
+          announcement = `${announcement} No results for your search query`
+        } else if (total <= 10) {
+          announcement = `${announcement} ${nrOfQuestions} questions`
+        } else {
+          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
+            total / 10,
+          )} with ${nrOfQuestions} questions from a total of ${total}`
+        }
+
+        document.querySelector('#search-results-update').innerHTML =
+          announcement
+      }
+    },
   })
 
   const [
@@ -129,8 +149,28 @@ const DashboardPage = () => {
     },
   ] = useLazyQuery(GET_PRODUCTION_DASHBOARD, {
     fetchPolicy: 'network-only',
-    onCompleted: data =>
-      updateSearchResultAnnounce(data, 'getInProductionDashboard'),
+    onCompleted: data => {
+      // run only on update, not on first render
+      if (initialRender.current) initialRender.current = false
+      else {
+        const nrOfQuestions = data.getInProductionDashboard.result.length
+        const total = data.getInProductionDashboard.totalCount
+        let announcement = 'Results updated.'
+
+        if (total === 0) {
+          announcement = `${announcement} No results for your search query`
+        } else if (total <= 10) {
+          announcement = `${announcement} ${nrOfQuestions} questions`
+        } else {
+          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
+            total / 10,
+          )} with ${nrOfQuestions} questions from a total of ${total}`
+        }
+
+        document.querySelector('#search-results-update').innerHTML =
+          announcement
+      }
+    },
   })
 
   const authorData = authorResponse && authorResponse.getAuthorDashboard
@@ -170,17 +210,6 @@ const DashboardPage = () => {
           showStatus: true,
           showAuthor: true,
           showAssigned: true,
-        })
-      : []
-
-  const mappedDataProduction =
-    productionData && metadata
-      ? dashboardDataMapper({
-          questions: productionData.result,
-          metadata,
-          complexItemSetOptions,
-          showStatus: false,
-          showAuthor: true,
         })
       : []
 
@@ -313,8 +342,17 @@ const DashboardPage = () => {
     isProduction && {
       label: 'Production Questions',
       value: 'production',
-      questions: mappedDataProduction,
-      totalCount: productionData?.totalCount,
+      questions:
+        productionData && metadata
+          ? dashboardDataMapper(
+              productionData.result,
+              metadata,
+              complexItemSetOptions,
+              false,
+              true,
+            )
+          : [],
+      totalCount: productionData && productionData.totalCount,
       showBulkActions: false,
       loading: productionLoading,
     },
