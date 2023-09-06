@@ -42,9 +42,30 @@ const DashboardPage = () => {
 
   const { data: currentUserResponse } = useQuery(CURRENT_USER)
 
-  const { data: { getAvailableSets: complexItemSetOptions } = {} } = useQuery(
-    GET_COMPLEX_ITEM_SETS_OPTIONS,
-  )
+  const updateSearchResultAnnounce = (data, query) => {
+    if (initialRender.current) initialRender.current = false
+    else {
+      const nrOfQuestions = data[query].result.length
+      const total = data[query].totalCount
+      let announcement = 'Results updated.'
+
+      if (total === 0) {
+        announcement = `${announcement} No results for your search query`
+      } else if (total <= 10) {
+        announcement = `${announcement} ${nrOfQuestions} questions`
+      } else {
+        announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
+          total / 10,
+        )} with ${nrOfQuestions} questions from a total of ${total}`
+      }
+
+      document.querySelector('#search-results-update').innerHTML = announcement
+    }
+  }
+
+  const {
+    data: { complexItemSets: { result: complexItemSetOptions } = {} } = {},
+  } = useQuery(GET_COMPLEX_ITEM_SETS_OPTIONS)
 
   // leave fetch policy to network until pagination is handled in the cache (with a merge function)
   const [
@@ -61,28 +82,7 @@ const DashboardPage = () => {
       ...defaultSearchOptions,
       page: 0,
     },
-    onCompleted: data => {
-      // run only on update, not on first render
-      if (initialRender.current) initialRender.current = false
-      else {
-        const nrOfQuestions = data.getAuthorDashboard.result.length
-        const total = data.getAuthorDashboard.totalCount
-        let announcement = 'Results updated.'
-
-        if (total === 0) {
-          announcement = `${announcement} No results for your search query`
-        } else if (total <= 10) {
-          announcement = `${announcement} ${nrOfQuestions} questions`
-        } else {
-          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
-            total / 10,
-          )} with ${nrOfQuestions} questions from a total of ${total}`
-        }
-
-        document.querySelector('#search-results-update').innerHTML =
-          announcement
-      }
-    },
+    onCompleted: data => updateSearchResultAnnounce(data, 'getAuthorDashboard'),
   })
 
   const [
@@ -98,28 +98,8 @@ const DashboardPage = () => {
     { data: editorResponse, loading: editorLoading, called: editorCalled },
   ] = useLazyQuery(GET_EDITOR_DASHBOARD, {
     fetchPolicy: 'network-only',
-    onCompleted: data => {
-      // run only on update, not on first render
-      if (initialRender.current) initialRender.current = false
-      else {
-        const nrOfQuestions = data.getManagingEditorDashboard.result.length
-        const total = data.getManagingEditorDashboard.totalCount
-        let announcement = 'Results updated.'
-
-        if (total === 0) {
-          announcement = `${announcement} No results for your search query`
-        } else if (total <= 10) {
-          announcement = `${announcement} ${nrOfQuestions} questions`
-        } else {
-          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
-            total / 10,
-          )} with ${nrOfQuestions} questions from a total of ${total}`
-        }
-
-        document.querySelector('#search-results-update').innerHTML =
-          announcement
-      }
-    },
+    onCompleted: data =>
+      updateSearchResultAnnounce(data, 'getManagingEditorDashboard'),
   })
 
   const [
@@ -169,28 +149,8 @@ const DashboardPage = () => {
     },
   ] = useLazyQuery(GET_PRODUCTION_DASHBOARD, {
     fetchPolicy: 'network-only',
-    onCompleted: data => {
-      // run only on update, not on first render
-      if (initialRender.current) initialRender.current = false
-      else {
-        const nrOfQuestions = data.getInProductionDashboard.result.length
-        const total = data.getInProductionDashboard.totalCount
-        let announcement = 'Results updated.'
-
-        if (total === 0) {
-          announcement = `${announcement} No results for your search query`
-        } else if (total <= 10) {
-          announcement = `${announcement} ${nrOfQuestions} questions`
-        } else {
-          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
-            total / 10,
-          )} with ${nrOfQuestions} questions from a total of ${total}`
-        }
-
-        document.querySelector('#search-results-update').innerHTML =
-          announcement
-      }
-    },
+    onCompleted: data =>
+      updateSearchResultAnnounce(data, 'getInProductionDashboard'),
   })
 
   const authorData = authorResponse && authorResponse.getAuthorDashboard
