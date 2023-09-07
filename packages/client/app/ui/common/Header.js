@@ -1,5 +1,5 @@
 /* stylelint-disable string-quotes */
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -88,8 +88,7 @@ const Navigation = styled.nav`
 
 const MainNav = styled.div`
   align-items: center;
-  background-color: ${p => (p.show ? '#efefef' : '#c5c5c5')};
-  box-shadow: 0 0 10px #0003 ${p => p.open && ', inset 0px 0px 30px #0008'};
+  box-shadow: 0 0 10px #0003;
   color: #000;
   display: flex;
   height: calc(
@@ -101,7 +100,6 @@ const MainNav = styled.div`
   right: 0;
   top: calc(${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')});
   transition: width 0.3s, padding 0.3s, background-color 0.5s;
-  width: ${p => (!p.show ? '0' : '250px')};
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     background-color: #0000;
@@ -115,12 +113,14 @@ const MainNav = styled.div`
   }
 `
 
+/* To achieve vertical scrolling if the menu is open on small height devices */
 const NavWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 100%;
   margin: 0;
   overflow: hidden ${p => (p.show ? 'auto' : 'hidden')};
-  padding: 1rem 0 1rem 1.5rem;
-  top: 0;
+  padding: 1rem 0;
   width: 100%;
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
@@ -307,7 +307,7 @@ const StyledLogin = styled(Link)`
   text-align: center;
   text-decoration: none;
   transition: all cubic-bezier(0.645, 0.045, 0.355, 1) 0.3s;
-  width: 100%;
+  width: fit-content;
 
   &:hover,
   &:focus {
@@ -341,12 +341,34 @@ const MobileMenuToggle = styled.button`
   transition: filter 300ms;
   width: 25px;
 
+  &[aria-expanded='true'] ~ ${MainNav} {
+    background-color: #efefef;
+    padding: 0 0 0 1rem;
+    width: 250px;
+  }
+
+  &[aria-expanded='false'] ~ ${MainNav} {
+    background-color: #c5c5c5;
+    padding: 0;
+    width: 0;
+  }
+
   &:hover {
     filter: drop-shadow(0 0 3px #0ff6);
   }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     display: none;
+
+    &[aria-expanded='true'] ~ ${MainNav} {
+      background-color: #0000;
+      width: 100%;
+    }
+
+    &[aria-expanded='false'] ~ ${MainNav} {
+      background-color: #0000;
+      width: 100%;
+    }
   }
 `
 
@@ -557,56 +579,40 @@ const Header = props => {
     ...rest
   } = props
 
-  const [showMenu, setShowMenu] = useState(false)
-  const [openUserMenu, setOpenUserMenu] = useState(false)
   const { width: windowWidth } = useWindowSize()
 
-  const userMenuKeyDown = useKeyboardOnList({
-    /* to avoid conflicts between both menues that shares some of their links */
-    enabled: windowWidth >= 1200,
-    setOpen: setOpenUserMenu,
-    isOpen: openUserMenu,
-    menuItems: [
-      ...document.querySelectorAll('#user-menu [aria-label="menu-link"]'),
-    ],
-    openButton: document.querySelector('button[aria-controls="user-menu"]'),
-    additionalKeys: action => {
-      return {
-        PageUp: action.selectFirst,
-        PageDown: action.selectLast,
-      }
-    },
-  })
+  const [openUserMenu, setOpenUserMenu, userMenuBlur, userMenuKeyDown] =
+    useKeyboardOnList({
+      /* to avoid conflicts between both menues that shares some of their links */
+      enabled: windowWidth >= 1200,
+      menuItems: [...document.querySelectorAll('#user-menu .menu-link')],
+      openButton: document.querySelector('button[aria-controls="user-menu"]'),
+      additionalKeys: action => {
+        return {
+          PageUp: action.goToFirst,
+          PageDown: action.goToLast,
+        }
+      },
+    })
 
-  const mainNavKeyDown = useKeyboardOnList({
-    enabled: windowWidth < 1200,
-    setOpen: setShowMenu,
-    isOpen: showMenu,
-    menuItems: [...document.querySelectorAll('[aria-label="menu-link"]')],
-    openButton: document.querySelector('[aria-label="Menu"]'),
-    overrideKeys: action => {
-      return {
-        Escape: action.close,
-        Enter: action.select,
-        ArrowUp: action.moveUpLoop,
-        ArrowDown: action.moveDownLoop,
-        ArrowLeft: action.open,
-        ArrowRight: action.close,
-        PageUp: action.goToFirst,
-        PageDown: action.goToLast,
-      }
-    },
-  })
-
-  const handleMainNavBlur = e => {
-    !e.currentTarget.contains(e.relatedTarget)
-      ? hideMenu()
-      : e.currentTarget.focus()
-  }
-
-  const handleUserMenuBlur = e => {
-    !e.currentTarget.contains(e.relatedTarget) && setOpenUserMenu(false)
-  }
+  const [showMenu, setShowMenu, mainNavBlur, mainNavKeyDown] =
+    useKeyboardOnList({
+      enabled: windowWidth < 1200,
+      menuItems: [...document.querySelectorAll('#main-nav .menu-link')],
+      openButton: document.querySelector('[aria-label="Menu"]'),
+      overrideKeys: action => {
+        return {
+          Escape: action.close,
+          Enter: action.select,
+          ArrowUp: action.moveUpLoop,
+          ArrowDown: action.moveDownLoop,
+          ArrowLeft: action.open,
+          ArrowRight: action.close,
+          PageUp: action.goToFirst,
+          PageDown: action.goToLast,
+        }
+      },
+    })
 
   const hideMenu = () => showMenu && setShowMenu(false)
 
@@ -636,12 +642,12 @@ const Header = props => {
       {
         link: links.about,
         text: 'About',
-        className: 'info',
+        className: 'menu-link info',
       },
       {
         link: links.learning,
         text: 'Professional Learning',
-        className: 'info',
+        className: 'menu-link info',
       },
     ],
     userLinks: [
@@ -691,11 +697,11 @@ const Header = props => {
           ...remaining
         }) =>
           renderIf && (
-            <li key={`${text}-link`}>
+            <li key={`${text}-link`} role="menuitem">
               {icon}
               <Component
                 aria-current={currentPath === link ? 'page' : false}
-                aria-label="menu-link"
+                className="menu-link"
                 onClick={click}
                 to={link}
                 {...remaining}
@@ -725,7 +731,7 @@ const Header = props => {
         <h1>HHMI BioInterctive Assessment Builder</h1>
       </Branding>
       <Navigation
-        onBlur={handleMainNavBlur}
+        onBlur={mainNavBlur}
         onKeyDown={mainNavKeyDown}
         role="navigation"
       >
@@ -746,7 +752,7 @@ const Header = props => {
               <StyledList>
                 {loggedin ? (
                   <UserMenuWrapper
-                    onBlur={handleUserMenuBlur}
+                    onBlur={userMenuBlur}
                     onKeyDown={userMenuKeyDown}
                   >
                     <p>{displayName}</p>
@@ -754,6 +760,7 @@ const Header = props => {
                       aria-controls="user-menu"
                       aria-expanded={openUserMenu}
                       aria-haspopup="true"
+                      aria-label="Toggle user menu"
                       data-testid="usermenu-btn"
                       onClick={() => setOpenUserMenu(!openUserMenu)}
                     />
