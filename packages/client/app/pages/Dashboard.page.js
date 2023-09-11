@@ -116,28 +116,8 @@ const DashboardPage = () => {
       ...defaultSearchOptions,
       page: 0,
     },
-    onCompleted: data => {
-      // run only on update, not on first render
-      if (initialRender.current) initialRender.current = false
-      else {
-        const nrOfQuestions = data.getHandlingEditorDashboard.result.length
-        const total = data.getHandlingEditorDashboard.totalCount
-        let announcement = 'Results updated.'
-
-        if (total === 0) {
-          announcement = `${announcement} No results for your search query`
-        } else if (total <= 10) {
-          announcement = `${announcement} ${nrOfQuestions} questions`
-        } else {
-          announcement = `${announcement} Page ${currentPage} of ${Math.ceil(
-            total / 10,
-          )} with ${nrOfQuestions} questions from a total of ${total}`
-        }
-
-        document.querySelector('#search-results-update').innerHTML =
-          announcement
-      }
-    },
+    onCompleted: data =>
+      updateSearchResultAnnounce(data, 'getHandlingEditorDashboard'),
   })
 
   const [
@@ -326,7 +306,7 @@ const DashboardPage = () => {
               productionData.result,
               metadata,
               complexItemSetOptions,
-              false,
+              true,
               true,
             )
           : [],

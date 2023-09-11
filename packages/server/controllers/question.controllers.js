@@ -193,12 +193,13 @@ const getHandlingEditorDashboard = async (userId, options = {}) => {
 const getInProductionDashboard = async (userId, options = {}) => {
   const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
 
-  return Question.findByExcludingRole(userId, 'none', {
+  return Question.findByExcludingRole(userId, '*', {
     orderBy,
     ascending,
     page,
     pageSize,
     searchQuery,
+    inProductionOnly: true,
     trx,
   })
 }

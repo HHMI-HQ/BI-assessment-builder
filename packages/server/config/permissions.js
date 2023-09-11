@@ -24,6 +24,14 @@ const isHandlingEditor = rule()(async (_, __, ctx) => {
   return user.isActive && user.hasGlobalRole('handlingEditor')
 })
 
+const isFromProductionTeam = rule()(async (_, __, ctx) => {
+  if (!ctx.user) return false
+
+  const UserModel = ctx.connectors.User.model
+  const user = await UserModel.query().findById(ctx.user)
+  return user.isActive && user.hasGlobalRole('production')
+})
+
 const isAdmin = rule()(async (_, __, ctx) => {
   if (!ctx.user) return false
 
@@ -165,6 +173,7 @@ const canPublish = rule()(async (_, __, ctx) => {
     user.isActive &&
     ((await user.hasGlobalRole('editor')) ||
       (await user.hasGlobalRole('handlingEditor')) ||
+      (await user.hasGlobalRole('production')) ||
       user.hasGlobalRole('admin'))
   )
 })
@@ -235,7 +244,7 @@ const permissions = {
     getAuthorDashboard: isActive,
     getManagingEditorDashboard: isEditor,
     getHandlingEditorDashboard: isHandlingEditor,
-    getInProductionDashboard: isActive,
+    getInProductionDashboard: isFromProductionTeam,
   },
 }
 

@@ -224,7 +224,7 @@ export const GET_PRODUCTION_DASHBOARD = gql`
         author {
           displayName
         }
-        versions(latestOnly: true, publishedOnly: false, productionOnly: true) {
+        versions(latestOnly: false, productionOnly: true) {
           id
           content
 

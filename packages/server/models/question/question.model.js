@@ -399,7 +399,7 @@ class Question extends BaseModel {
 
   // eg. find all questions apart from the ones this user is an author of
   static async findByExcludingRole(userId, role, options = {}) {
-    const { submittedOnly, filters = {} } = options
+    const { submittedOnly, inProductionOnly, filters = {} } = options
 
     const { status, searchQuery, heAssigned, author } = filters
 
@@ -451,7 +451,10 @@ class Question extends BaseModel {
       query.where({ submitted: true })
     }
 
-    // create initial query for questions excluding author's ones
+    if (inProductionOnly) {
+      query.where({ inProduction: true })
+    }
+
     query
       .distinctOn('questions.id')
       .orderBy([
