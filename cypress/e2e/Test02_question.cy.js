@@ -19,6 +19,7 @@ import {
 } from '../support/routes'
 import { laptop } from '../support/viewport'
 
+const disableScripts = false
 describe('Testing questions', () => {
   const listItems = ['item1', 'item2', 'item3']
 
@@ -33,9 +34,9 @@ describe('Testing questions', () => {
   } = question
 
   before(() => {
-    cy.resetDB()
-    cy.seedUser({ ...admin })
-    cy.seedUser({ ...user2 })
+    cy.resetDB(disableScripts)
+    cy.seedUser(disableScripts, { ...admin })
+    cy.seedUser(disableScripts, { ...user2 })
   })
 
   beforeEach(() => {
@@ -117,7 +118,7 @@ describe('Testing questions', () => {
     cy.get('.ProseMirror').clear()
     cy.get('.ProseMirror').type('Question 2')
     cy.get('.ProseMirror').click({ force: true })
-    cy.deleteAllQuestions()
+    cy.deleteAllQuestions(disableScripts)
   })
   it('creating a question & checking values in the UI', () => {
     cy.login(user2)
@@ -184,10 +185,10 @@ describe('Testing questions', () => {
     // checkDataWithoutParent(affectiveLevel)
     // checkDataWithoutParent(psychomotorLevel)
     checkDataWithoutParent(cognitiveLevel)
-    cy.deleteAllQuestions()
+    cy.deleteAllQuestions(disableScripts)
   })
   it('editing the question', () => {
-    cy.seedQuestion(user2.username, -3, 'ecology', 'published')
+    cy.seedQuestion(disableScripts, user2.username, -3, 'ecology', 'published')
     cy.login(admin)
     cy.contains(anchorTags.discover, 'Browse Questions').click()
     cy.wait('@GQLReq')
@@ -221,8 +222,14 @@ describe('Testing questions', () => {
     cy.contains(buttonAntModalBody, 'Ok').click()
   })
   it('duplicate question', () => {
-    cy.deleteAllQuestions()
-    cy.seedQuestion(user2.username, -3, 'population', 'published')
+    cy.deleteAllQuestions(disableScripts)
+    cy.seedQuestion(
+      disableScripts,
+      user2.username,
+      -3,
+      'population',
+      'published',
+    )
     cy.login({ ...user2 })
     cy.contains(anchorTags.discover, 'Browse Questions').click()
     cy.wait('@GQLReq')
@@ -285,10 +292,22 @@ describe('Testing questions', () => {
 
 describe('Testing lists', () => {
   before(() => {
-    cy.resetDB()
-    cy.seedUser({ ...user2 })
-    cy.seedQuestion(user2.username, -10, 'biochemistry', 'published')
-    cy.seedQuestion(user2.username, -20, 'population', 'published')
+    cy.resetDB(disableScripts)
+    cy.seedUser(disableScripts, { ...user2 })
+    cy.seedQuestion(
+      disableScripts,
+      user2.username,
+      -10,
+      'biochemistry',
+      'published',
+    )
+    cy.seedQuestion(
+      disableScripts,
+      user2.username,
+      -20,
+      'population',
+      'published',
+    )
   })
   beforeEach(() => {
     cy.intercept('POST', graphqlEndpoint).as('GQLReq')
@@ -305,7 +324,7 @@ describe('Testing lists', () => {
   // skipped due to logout button issue.
   // eslint-disable-next-line jest/no-disabled-tests
   it('adding questions to new & existing list', () => {
-    cy.seedList('new_list', user2.username)
+    cy.seedList(disableScripts, 'new_list', user2.username)
     cy.login({ ...user2 })
     cy.contains(anchorTags.discover, 'Browse Questions').click()
     cy.wait('@GQLReq')
@@ -359,12 +378,12 @@ describe('Testing lists', () => {
       .should('contain', 'Energy: carbohydrates')
   })
   it('checking if export triggers download', () => {
-    cy.seedList('list3', user2.username)
+    cy.seedList(disableScripts, 'list3', user2.username)
     cy.login({ ...user2, visitUrl: dashboardRoute })
     cy.get(listItemWrapper).eq(0).should('be.visible').contains('p').click()
     cy.url().then(url => {
       const qId = url.split('/')[4]
-      cy.addQuestionToList('list3', qId)
+      cy.addQuestionToList(disableScripts, 'list3', qId)
     })
     cy.visit(lists)
     cy.wait('@GQLReq')
@@ -376,7 +395,7 @@ describe('Testing lists', () => {
       .should('contain', 'Energy: carbohydrates')
   })
   it('rename list', () => {
-    cy.seedList('list4', user2.username)
+    cy.seedList(disableScripts, 'list4', user2.username)
     cy.login({ ...user2, visitUrl: lists })
     cy.get('[aria-label="Rename list list4"]').click()
     cy.get('div[id="list4-rename-popup"] input[name="renameList"]').type(

@@ -7,18 +7,31 @@ import { listItemWrapper, submitButton } from '../support/selectors'
 import { getDateInFormat } from '../utils/helpers'
 import { laptop } from '../support/viewport'
 
+const disableScripts = false
 // eslint-disable-next-line jest/no-disabled-tests
 describe('Discover page tests', () => {
   before(() => {
-    cy.resetDB()
+    cy.resetDB(disableScripts)
 
-    cy.seedUser({ ...user2 })
+    cy.seedUser(disableScripts, { ...user2 })
 
-    cy.seedQuestion(user2.username, -1, 'anatomy', 'published')
+    cy.seedQuestion(disableScripts, user2.username, -1, 'anatomy', 'published')
 
-    cy.seedQuestion(user2.username, -2, 'biochemistry', 'published')
+    cy.seedQuestion(
+      disableScripts,
+      user2.username,
+      -2,
+      'biochemistry',
+      'published',
+    )
 
-    cy.seedQuestion(user2.username, -3, 'population', 'published')
+    cy.seedQuestion(
+      disableScripts,
+      user2.username,
+      -3,
+      'population',
+      'published',
+    )
 
     // cy.visit('/discoverPage')
   })

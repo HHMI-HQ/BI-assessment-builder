@@ -21,14 +21,16 @@ import {
   graphqlEndpoint,
 } from '../support/routes'
 
+const disableScripts = false
+
 describe('Tests for user authentication', () => {
   const { contact, address, school, reviewing } = user1
 
   before(() => {
-    cy.resetDB()
-    cy.seedUser({ ...admin })
-    cy.seedUser({ ...contact, profileSubmitted: false })
-    cy.seedUser({ ...editor })
+    cy.resetDB(disableScripts)
+    cy.seedUser(disableScripts, { ...admin })
+    cy.seedUser(disableScripts, { ...contact, profileSubmitted: false })
+    cy.seedUser(disableScripts, { ...editor })
   })
 
   beforeEach(() => {
@@ -178,7 +180,7 @@ describe('Tests for user authentication', () => {
   })
 
   it('User with Reviewer priveleges', () => {
-    cy.seedUser({ ...reviewer })
+    cy.seedUser(disableScripts, { ...reviewer })
 
     cy.login({
       ...reviewer,
