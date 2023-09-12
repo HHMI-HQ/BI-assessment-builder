@@ -351,6 +351,7 @@ const QuestionPage = props => {
   const isHandlingEditor = hasGlobalRole(currentUser, 'handlingEditor')
   const isAuthor = hasRole(currentUser, 'author', id)
   const isAdmin = hasGlobalRole(currentUser, 'admin')
+  const isProduction = hasGlobalRole(currentUser, 'production')
   // #endregion user roles
 
   // #region handlers
@@ -721,7 +722,8 @@ const QuestionPage = props => {
         // admins can always treat their questions as if they are in produciton, meaning they can edit and publish them directly,
         // unless the question has already been published
         isInProduction={
-          version?.inProduction || (isAdmin && isAuthor && !version?.published)
+          version?.inProduction ||
+          (isAdmin && (isAuthor || isProduction) && !version?.published)
         }
         isPublished={version?.published}
         isRejected={question?.rejected}
