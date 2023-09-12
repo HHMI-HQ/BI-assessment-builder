@@ -1,4 +1,3 @@
-// /* eslint-disable cypress/unsafe-to-chain-command */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -107,6 +106,8 @@ Cypress.Commands.add(
     cy.get(questionType.selector)
       .scrollIntoView()
       .type(`${questionType.value}{enter}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000)
 
     cy.get('.ProseMirror').first().type('Question 1', { force: true })
   },
