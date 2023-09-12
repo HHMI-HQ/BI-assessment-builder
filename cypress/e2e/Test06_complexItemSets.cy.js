@@ -14,13 +14,16 @@ import {
   listItemWrapper,
 } from '../support/selectors'
 
+const disableScripts = false
+
 describe('Complex item set', () => {
   before(() => {
-    cy.resetDB()
+    cy.resetDB(disableScripts)
 
-    cy.seedUser(user2)
+    cy.seedUser(disableScripts, user2)
 
     cy.seedComplexItemSet(
+      disableScripts,
       user2.username,
       complexItemSet1.title,
       complexItemSet1.leadingContent,
@@ -91,6 +94,7 @@ describe('Complex item set', () => {
   context('add question to list', () => {
     before(() => {
       cy.seedComplexItemSet(
+        disableScripts,
         user2.username,
         complexItemSet3.title,
         complexItemSet3.leadingContent,
@@ -117,7 +121,7 @@ describe('Complex item set', () => {
       cy.url().then(url => {
         const qId = url.split('/')[4]
 
-        cy.updateQuestionStatus(qId, 'published')
+        cy.updateQuestionStatus(disableScripts, qId, 'published')
       })
       cy.get(anchorTags.sets).click()
       cy.wait('@GQLReq')
@@ -130,7 +134,7 @@ describe('Complex item set', () => {
       // [segment]: checking if the question is listed in the set
       cy.log('checking if the question is listed in the set')
       cy.get(listItemWrapper).eq(0).contains('p', 'question 1')
-      cy.deleteAllQuestions()
+      cy.deleteAllQuestions(disableScripts)
     })
 
     it('from the question page', () => {
@@ -148,7 +152,7 @@ describe('Complex item set', () => {
 
       cy.url().then(url => {
         const qId = url.split('/')[4]
-        cy.updateQuestionStatus(qId, 'published')
+        cy.updateQuestionStatus(disableScripts, qId, 'published')
       })
       cy.get(anchorTags.sets).click()
       cy.wait('@GQLReq')

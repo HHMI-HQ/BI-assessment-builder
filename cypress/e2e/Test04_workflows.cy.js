@@ -21,10 +21,11 @@ import {
   graphqlEndpoint,
 } from '../support/routes'
 
+const disableScripts = false
 describe('Question Workflows', () => {
   before(() => {
-    cy.resetDB()
-    cy.seedUser({ ...admin })
+    cy.resetDB(disableScripts)
+    cy.seedUser(disableScripts, { ...admin })
   })
   beforeEach(() => {
     cy.intercept({ method: 'POST', url: graphqlEndpoint }).as('GQLReq')
@@ -32,12 +33,24 @@ describe('Question Workflows', () => {
   })
   describe('Editor worflow', () => {
     before(() => {
-      cy.seedUser({ ...editor })
-      cy.seedQuestion(admin.username, -3, 'population', 'submitted')
-      cy.seedQuestion(admin.username, -2, 'biochemistry', 'submitted')
+      cy.seedUser(disableScripts, { ...editor })
+      cy.seedQuestion(
+        disableScripts,
+        admin.username,
+        -3,
+        'population',
+        'submitted',
+      )
+      cy.seedQuestion(
+        disableScripts,
+        admin.username,
+        -2,
+        'biochemistry',
+        'submitted',
+      )
     })
     after(() => {
-      cy.deleteAllQuestions()
+      cy.deleteAllQuestions(disableScripts)
     })
     context('Managing Editor functionalities', () => {
       it('All submitted questions are listed', () => {
@@ -148,11 +161,17 @@ describe('Question Workflows', () => {
       cy.visit(discoverPage)
       cy.wait('@GQLReq')
       cy.contains('[class="ProseMirror"]', 'Question 1')
-      cy.deleteAllQuestions()
+      cy.deleteAllQuestions(disableScripts)
     })
     it('Assign author to a question', () => {
-      cy.seedUser(user2)
-      cy.seedQuestion(admin.username, -2, 'biochemistry', 'published')
+      cy.seedUser(disableScripts, user2)
+      cy.seedQuestion(
+        disableScripts,
+        admin.username,
+        -2,
+        'biochemistry',
+        'published',
+      )
       cy.login({ ...admin })
       cy.get(listItemWrapper).eq(0).get('p').click()
       cy.wait('@GQLReq')
@@ -193,9 +212,10 @@ describe('Question Workflows', () => {
 describe('Complex item set workflows', () => {
   before(() => {
     cy.resetDB()
-    cy.seedUser(admin)
+    cy.seedUser(disableScripts, admin)
 
     cy.seedComplexItemSet(
+      disableScripts,
       admin.username,
       complexItemSet1.title,
       complexItemSet1.leadingContent,
@@ -208,7 +228,7 @@ describe('Complex item set workflows', () => {
   })
 
   it('Set created by a user must not be editable by other users', () => {
-    cy.seedUser(user2)
+    cy.seedUser(disableScripts, user2)
 
     cy.login({ ...user2, visitUrl: setsPage })
     cy.wait('@GQLReq')
@@ -220,7 +240,7 @@ describe('Complex item set workflows', () => {
   })
 
   it('Editors should be able to edit any questions', () => {
-    cy.seedUser(editor)
+    cy.seedUser(disableScripts, editor)
 
     cy.login({ ...editor, visitUrl: setsPage })
     cy.wait('@GQLReq')
@@ -231,14 +251,14 @@ describe('Complex item set workflows', () => {
     cy.get(antTabs).contains('Edit').should('exist')
   })
   it('Sets with submitted questions shouldnt be editable', () => {
-    cy.seedQuestion(admin.username, -1, 'anatomy', 'submitted')
+    cy.seedQuestion(disableScripts, admin.username, -1, 'anatomy', 'submitted')
 
     cy.login({ ...admin, visit: dashboardRoute })
     cy.get(listItemWrapper).eq(0).get('.ProseMirror').click()
     cy.url().then(url => {
       const qId = url.split('/')[4]
 
-      cy.addQuestionToComplexItemSet(complexItemSet1.title, qId)
+      cy.addQuestionToComplexItemSet(disableScripts, complexItemSet1.title, qId)
     })
     cy.visit(setsPage, { method: 'GET' })
     cy.wait('@GQLReq')

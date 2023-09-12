@@ -12,12 +12,19 @@ import {
 } from '../support/selectors'
 import { discover as discoverPage, graphqlEndpoint } from '../support/routes'
 
+const disableScripts = false
 describe('Testing apps responsiveness', () => {
   before(() => {
-    cy.resetDB()
-    cy.seedUser({ ...user2 })
-    cy.seedUser({ ...editorRole })
-    cy.seedQuestion(user2.username, -2, 'population', 'submitted')
+    cy.resetDB(disableScripts)
+    cy.seedUser(disableScripts, { ...user2 })
+    cy.seedUser(disableScripts, { ...editorRole })
+    cy.seedQuestion(
+      disableScripts,
+      user2.username,
+      -2,
+      'population',
+      'submitted',
+    )
   })
 
   describe('mobile view', () => {
