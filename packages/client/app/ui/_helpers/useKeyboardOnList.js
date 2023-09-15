@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { isBoolean } from 'lodash'
 import { safeIndex, isFunction, safeCall } from '../../utilities'
 
@@ -13,33 +13,32 @@ const useKeyboardOnList = ({
   closeOnStart = true, // optionally close the menu if action is moveUp and the active element is the first
   closeOnEnd = false, // optionally close the menu if action is moveDown and the active element is the last
   closeOnSelect = false, // optionally close the menu when selecting a menu item
-  notPreventDefault = ['Tab', '229'], // boolean or array of keycode(s) strings that must not preventDefault (229 for mobile), if bool: FALSE: prevent on all keys, TRUE: dont prevent
-  selectAction = () => document?.activeElement?.click(), // callback to select menu item
-  onFocus = (item, setFocused) => {
-    item.focus()
-    setFocused(item)
-  },
+  notPreventDefault = ['Enter', 'Tab', '229'], // boolean or array of keycode(s) strings that must not preventDefault (229 for mobile), if bool: FALSE: prevent on all keys, TRUE: dont prevent
+  onSelect = item => item?.click(), // callback to select menu item
+  onFocus = item => item?.focus(),
 }) => {
   const [prevKey, setPrevKey] = useState('')
   const [open, setOpen] = useState(initialState)
   const [focused, setFocused] = useState(null)
+  const [selected, setSelected] = useState(null)
 
-  const currentIndex = () => menuItems.indexOf(document.activeElement)
+  const currentIndex = () =>
+    menuItems.indexOf(focused || document.activeElement)
+
   const atLastIndex = () => currentIndex() === menuItems.length - 1
 
-  const itemSelected = () =>
-    menuItems.filter(el => el === document.activeElement && el)
+  const setInertAttrOnItems = () =>
+    menuItems.forEach(item => {
+      !open ? item.setAttribute('inert', true) : item.removeAttribute('inert')
+    })
 
   const actions = {
-    onTabOpenButton: () => {
-      if (open) return
-      openButton === document.activeElement && setOpen(true)
-      itemSelected() && setFocused(itemSelected())
+    onTab: () => {
+      setFocused(null)
+      setInertAttrOnItems()
     },
     open: () => {
-      if (open) return
-      !itemSelected() && actions.goToFirst()
-      setOpen(true)
+      !open && setOpen(true)
     },
     close: () => {
       if (!open) return
@@ -47,38 +46,33 @@ const useKeyboardOnList = ({
       openButton?.focus()
     },
     select: () => {
-      isFunction(selectAction) && selectAction(menuItems, actions)
+      focused ? setSelected(focused) : setSelected(menuItems[currentIndex()])
       closeOnSelect && actions.close()
     },
     goToFirst: () => {
-      onFocus(menuItems, setFocused)
+      setFocused(menuItems[0])
     },
     goToLast: () => {
-      onFocus(menuItems[menuItems.length - 1], setFocused)
+      setFocused(menuItems[menuItems.length - 1])
     },
     moveDownLoop: () => {
       !open
         ? actions.open()
-        : onFocus(
+        : setFocused(
             menuItems[safeIndex(currentIndex() + 1, `down`, menuItems)],
-            setFocused,
           )
     },
     moveUpLoop: () => {
       open &&
-        onFocus(
-          menuItems[safeIndex(currentIndex() - 1, `up`, menuItems)],
-          setFocused,
-        )
+        setFocused(menuItems[safeIndex(currentIndex() - 1, `up`, menuItems)])
     },
     moveDown: () => {
       if (atLastIndex()) return closeOnEnd && actions.close()
 
       return !open
         ? actions.open()
-        : onFocus(
+        : setFocused(
             menuItems[safeIndex(currentIndex() + 1, `down-stop`, menuItems)],
-            setFocused,
           )
     },
     moveUp: () => {
@@ -86,16 +80,15 @@ const useKeyboardOnList = ({
 
       return (
         open &&
-        onFocus(
+        setFocused(
           menuItems[safeIndex(currentIndex() - 1, `up-stop`, menuItems)],
-          setFocused,
         )
       )
     },
   }
 
   const defaultKeys = {
-    Tab: actions.onTabOpenButton,
+    Tab: actions.onTab,
     Escape: actions.close,
     Enter: actions.select,
     Space: actions.goToFirst,
@@ -127,7 +120,7 @@ const useKeyboardOnList = ({
 
       if (matches.length === 0) return setPrevKey('')
 
-      const nextItem = matches.indexOf(document.activeElement) + 1
+      const nextItem = matches.indexOf(focused || document.activeElement) + 1
 
       prevKey !== key
         ? matches[0].focus()
@@ -143,7 +136,20 @@ const useKeyboardOnList = ({
     return safeCall(keys[code], selectByFirstChar)
   }
 
-  return [open, setOpen, handleBlur, handleKeyboard, focused]
+  useEffect(() => {
+    setInertAttrOnItems()
+    !open ? focused && setFocused(null) : !focused && setFocused(menuItems[0])
+  }, [open])
+
+  useLayoutEffect(() => {
+    focused && onFocus(focused)
+  }, [focused])
+
+  useLayoutEffect(() => {
+    selected && onSelect(selected)
+  }, [selected])
+
+  return [open, setOpen, handleBlur, handleKeyboard, focused, selected]
 }
 
 export default useKeyboardOnList
