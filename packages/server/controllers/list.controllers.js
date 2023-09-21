@@ -427,7 +427,29 @@ const exportQuestionsToQti = async (
       })
     }
 
-    // TODO: handle complex item set questions
+    // handle complex item set questions
+    // fetch all sets
+    const complexItemSets = await Promise.all(
+      versions.map(async (version, i) => {
+        const { complexItemSetId } = version
+
+        if (complexItemSetId) {
+          const set = await ComplexItemSet.findById(complexItemSetId)
+          return set
+        }
+
+        return null
+      }),
+    )
+
+    // preppend set's content before version's content
+    versions.forEach((version, i) => {
+      if (complexItemSets[i]) {
+        version.content.content.unshift(
+          ...[...complexItemSets[i].leadingContent.content],
+        )
+      }
+    })
 
     const qtiExporter = new WaxToQTIConverter(versions, listId)
 
