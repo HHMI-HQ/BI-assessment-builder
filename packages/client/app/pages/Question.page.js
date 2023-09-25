@@ -33,6 +33,7 @@ import {
   GET_QUESTION_HANDLING_EDITORS,
   GET_CHAT_THREAD,
   SEND_MESSAGE,
+  CREATE_CHAT_THREAD,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -156,6 +157,7 @@ const QuestionPage = props => {
 
   const {
     data: { question } = {},
+    refetch: refetchQuestion,
     loading,
     error,
   } = useQuery(QUESTION, {
@@ -176,6 +178,7 @@ const QuestionPage = props => {
   const [updateQuestionMutation] = useMutation(UPDATE_QUESTION)
 
   const [submitQuestionMutation] = useMutation(SUBMIT_QUESTION)
+  const [createChatThreadMutation] = useMutation(CREATE_CHAT_THREAD)
 
   const [rejectQuestionMutation] = useMutation(REJECT_QUESTION, {
     variables: { questionId: id },
@@ -402,7 +405,7 @@ const QuestionPage = props => {
   const handleQuestionSubmit = questionData => {
     const { editorContent: latestContent } = questionData
 
-    const mutationData = {
+    const submitQuestionMutationData = {
       variables: {
         questionId: id,
         questionVersionId: version.id,
@@ -413,7 +416,28 @@ const QuestionPage = props => {
       },
     }
 
-    return submitQuestionMutation(mutationData)
+    const chatThreadMutationData = {
+      variables: {
+        input: {
+          chatType: 'authorChat',
+          relatedObjectId: id,
+        },
+      },
+    }
+
+    return new Promise((resolve, reject) => {
+      submitQuestionMutation(submitQuestionMutationData)
+        .then(() => {
+          return createChatThreadMutation(chatThreadMutationData)
+        })
+        .then(() => {
+          refetchQuestion()
+          resolve()
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
   }
 
   const handleClickAssignHE = users => {
