@@ -89,6 +89,10 @@ const createGlobalEditorTeamWithUsers = async () => {
   return createGlobalBaseTeamwithUsers('editor', 'Managing Editor')
 }
 
+const createGlobalHandlingEditorTeamWithUsers = async () => {
+  return createGlobalBaseTeamwithUsers('handlingEditor', 'Handling Editor')
+}
+
 module.exports = {
   createChatThreadTeamWithUsers,
   createGlobalTeamWithUsers,
@@ -96,4 +100,5 @@ module.exports = {
   createGlobalAuthorTeamWithUsers,
   createGlobalReviewerTeamWithUsers,
   createGlobalEditorTeamWithUsers,
+  createGlobalHandlingEditorTeamWithUsers,
 }
