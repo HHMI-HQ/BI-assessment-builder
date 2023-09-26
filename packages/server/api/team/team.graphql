@@ -6,6 +6,7 @@ type GlobalTeamMembersResponse {
 input UpdateGlobalTeamsInput {
   id: ID!
   members: [ID!]!
+  removedMembers: [ID]
 }
 
 input FilterTeamMembersInput {
