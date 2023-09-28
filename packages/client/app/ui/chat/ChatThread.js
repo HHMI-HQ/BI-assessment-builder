@@ -25,6 +25,7 @@ const StyledChatInput = styled(ChatInput)`
 
 const ChatThread = props => {
   const {
+    participants,
     announcementText,
     hasMore,
     isActive,
@@ -90,6 +91,7 @@ const ChatThread = props => {
         {...rest}
       />
       <StyledChatInput
+        participants={participants}
         onSend={onSendMessage}
         placeholder="Write to author"
         type="text"
@@ -111,6 +113,10 @@ ChatThread.propTypes = {
   onSendMessage: PropTypes.func,
   hasMore: PropTypes.bool,
   infiniteScroll: PropTypes.bool,
+  participants: PropTypes.arrayOf({
+    id: PropTypes.string,
+    username: PropTypes.string,
+  }),
 }
 
 ChatThread.defaultProps = {
@@ -120,6 +126,7 @@ ChatThread.defaultProps = {
   onFetchMore: () => {},
   hasMore: false,
   onSendMessage: () => {},
+  participants: [],
   infiniteScroll: false,
 }
 

@@ -374,6 +374,7 @@ const Question = props => {
     questionAgreedTc,
     refetchUser,
     resources,
+    questionParticipants,
     qtiZipLoading,
     showAssignHEButton,
     canAssignAuthor,
@@ -1348,23 +1349,21 @@ const Question = props => {
                   </>
                 ),
               },
-
-              // temporarily disabled chat tab
-              isSubmitted &&
-                false && {
-                  label: AuthorChatTab,
-                  key: 1,
-                  children: (
-                    <ChatThread
-                      announcementText={announcementText}
-                      hasMore={hasMoreMessages}
-                      isActive={activeKey === 1}
-                      messages={messages}
-                      onFetchMore={onFetchMoreMessages}
-                      onSendMessage={onSendMessage}
-                    />
-                  ),
-                },
+              isSubmitted && {
+                label: AuthorChatTab,
+                key: 1,
+                children: (
+                  <ChatThread
+                    announcementText={announcementText}
+                    hasMore={hasMoreMessages}
+                    isActive={activeKey === 1}
+                    messages={messages}
+                    onFetchMore={onFetchMoreMessages}
+                    onSendMessage={onSendMessage}
+                    participants={questionParticipants}
+                  />
+                ),
+              },
             ]}
             onChange={handleTabChange}
             renderTabBar={(tabProps, DefaultTabBar) => {
@@ -1681,6 +1680,10 @@ Question.propTypes = {
   }),
   updated: PropTypes.string,
   wordFileLoading: PropTypes.bool,
+  questionParticipants: PropTypes.arrayOf({
+    id: PropTypes.string,
+    username: PropTypes.string,
+  }),
   qtiZipLoading: PropTypes.bool,
   complexSetEditLink: PropTypes.string,
   handlingEditors: PropTypes.arrayOf(
@@ -1749,6 +1752,7 @@ Question.defaultProps = {
   isUserLoggedIn: true,
   canCreateNewVersion: false,
   wordFileLoading: false,
+  questionParticipants: [],
   qtiZipLoading: false,
   complexSetEditLink: null,
   handlingEditors: [],
