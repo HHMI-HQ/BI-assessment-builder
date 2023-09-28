@@ -203,6 +203,15 @@ export const GET_QUESTION_HANDLING_EDITORS = gql`
   }
 `
 
+export const GET_QUESTION_PARTICIPANTS = gql`
+  query GetQuestionParticipants($id: ID!) {
+    getQuestionParticipants(id: $id) {
+      id
+      display: username
+    }
+  }
+`
+
 export const CREATE_QUESTION = gql`
   mutation CreateQuestion($input: UpdateQuestionInput) {
     createQuestion(input: $input) {
