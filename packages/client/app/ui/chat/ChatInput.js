@@ -19,9 +19,9 @@ const SendButton = styled(Button)`
 const InputContainer = styled('div')`
   display: flex;
   border: 1px solid grey;
+  margin-block: ${grid(1)};
 
   // overrding react-mentions styles
-
   .mentions-input {
     flex-grow: 1;
     height: 100%;
