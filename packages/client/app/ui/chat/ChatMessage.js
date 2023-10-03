@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
+import DOMPurify from 'dompurify'
 
 import { grid, th } from '@coko/client'
 
@@ -56,6 +57,20 @@ const Date = styled.div`
 
 const ChatMessage = forwardRef((props, ref) => {
   const { className, content, date, own, user, ...rest } = props
+
+  const parts = content.split(/(@\w+)/g)
+  let output = ''
+
+  parts.forEach(part => {
+    if (part.startsWith('@')) {
+      output += `<span style="font-weight:900">${part}</span>`
+      return
+    }
+
+    output += part
+  })
+  const sanitizedHTML = DOMPurify.sanitize(output)
+
   return (
     <Message className={className} own={own} ref={ref} tabIndex={0} {...rest}>
       {!own && <Name>{user}</Name>}
@@ -63,7 +78,12 @@ const ChatMessage = forwardRef((props, ref) => {
         {own ? 'you said' : 'said'}
       </VisuallyHiddenElement>
 
-      <Content>{content}</Content>
+      <Content>
+        <div
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+        />
+      </Content>
       <Date>
         <DateParser timestamp={date}>
           {(_, timeAgo) => <span>{timeAgo} ago</span>}
