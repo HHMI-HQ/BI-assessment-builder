@@ -16,7 +16,13 @@ exports[`ChatMessage matches snaphot 1`] = `
   <div
     className="sc-eyMvgT"
   >
-    Reprehenderit quia praesentium non itaque ea et quia ut ab. Molestias et rem distinctio vel voluptatibus ratione ut.
+    <div
+      dangerouslySetInnerHTML={
+        {
+          "__html": "Reprehenderit quia praesentium non itaque ea et quia ut ab. Molestias et rem distinctio vel voluptatibus ratione ut.",
+        }
+      }
+    />
   </div>
   <div
     className="sc-gOzvQd hwaxRV"
