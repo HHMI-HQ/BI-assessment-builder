@@ -45,7 +45,18 @@ const TopMessageWrapper = styled.p`
 `
 
 const ChatMessageList = props => {
-  const { className, hasMore, messages, onFetchMore, infiniteScroll } = props
+  const {
+    className,
+    hasMore,
+    messages,
+    onFetchMore,
+    infiniteScroll,
+    participants,
+  } = props
+
+  const participantUsernames = participants.map(
+    participant => participant.display,
+  )
 
   const messageList = () =>
     infiniteScroll ? (
@@ -76,6 +87,7 @@ const ChatMessageList = props => {
             content={content}
             date={date}
             own={own}
+            participants={participantUsernames}
             user={user}
           />
         ))}
@@ -90,6 +102,7 @@ const ChatMessageList = props => {
               date={date}
               key={id}
               own={own}
+              participants={participantUsernames}
               user={user}
             />
           ))}
@@ -128,6 +141,7 @@ ChatMessageList.propTypes = {
       user: PropTypes.string,
     }),
   ),
+  participants: PropTypes.arrayOf(),
   hasMore: PropTypes.bool,
   infiniteScroll: PropTypes.bool,
   onFetchMore: PropTypes.func,
@@ -138,6 +152,7 @@ ChatMessageList.defaultProps = {
   hasMore: false,
   infiniteScroll: false,
   onFetchMore: () => {},
+  participants: [],
 }
 
 export default ChatMessageList

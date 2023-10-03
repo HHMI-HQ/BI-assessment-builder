@@ -56,13 +56,14 @@ const Date = styled.div`
 `
 
 const ChatMessage = forwardRef((props, ref) => {
-  const { className, content, date, own, user, ...rest } = props
+  const { className, content, date, own, user, participants, ...rest } = props
 
   const parts = content.split(/(@\w+)/g)
   let output = ''
 
   parts.forEach(part => {
-    if (part.startsWith('@')) {
+    // checking if the mentioned user is a part of participants in the cat
+    if (part.startsWith('@') && participants.includes(part.slice(1))) {
       output += `<span style="font-weight:900">${part}</span>`
       return
     }
@@ -98,11 +99,13 @@ ChatMessage.propTypes = {
   date: PropTypes.string.isRequired,
   own: PropTypes.bool,
   user: PropTypes.string,
+  participants: PropTypes.arrayOf(PropTypes.string),
 }
 
 ChatMessage.defaultProps = {
   own: false,
   user: null,
+  participants: [],
 }
 
 export default ChatMessage
