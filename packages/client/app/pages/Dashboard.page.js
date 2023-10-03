@@ -171,6 +171,17 @@ const DashboardPage = () => {
         })
       : []
 
+  const mappedDataProduction =
+    productionData && metadata
+      ? dashboardDataMapper({
+          questions: productionData.result,
+          metadata,
+          complexItemSetOptions,
+          showStatus: false,
+          showAuthor: true,
+        })
+      : []
+
   const queryMapper = {
     query: {
       author: authorQuery,
@@ -300,16 +311,7 @@ const DashboardPage = () => {
     isProduction && {
       label: 'Production Questions',
       value: 'production',
-      questions:
-        productionData && metadata
-          ? dashboardDataMapper(
-              productionData.result,
-              metadata,
-              complexItemSetOptions,
-              false,
-              true,
-            )
-          : [],
+      questions: mappedDataProduction,
       totalCount: productionData?.totalCount,
       showBulkActions: false,
       loading: productionLoading,
