@@ -1,6 +1,6 @@
-const { logger, useTransaction, uuid /* createJWT */ } = require('@coko/server')
+const { logger, useTransaction, uuid, createJWT } = require('@coko/server')
 const axios = require('axios').default
-// const crypto = require('node:crypto')
+const crypto = require('node:crypto')
 const qs = require('node:querystring')
 
 const { roles } = require('../constants')
@@ -123,7 +123,7 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
             data: qs.stringify(payload),
           })
         } catch (e) {
-          throw new Error(e)
+          throw new Error('error token uri')
         }
 
         const { access_token: accessToken, error: tokenError } =
@@ -133,7 +133,7 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
           logger.error(
             `error bioInteractiveLogin: get access token: ${tokenError}`,
           )
-          throw new Error(tokenError)
+          throw new Error('error bioInteractiveLogin: get access token')
         }
 
         // get user
@@ -146,30 +146,25 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
           logger.error(
             `error bioInteractiveLogin: get access token: ${userInfoError}`,
           )
-          throw new Error(userInfoError)
+          throw new Error('error bioInteractiveLogin: userInfoError')
         }
 
         let user
 
         // do we already have a user that is social?
         // no, set the user
-        // const { sub: biointeractiveUserId } = userInfo
+        const { email, sub: biointeractiveUserId } = userInfo
 
-        return {
-          user,
-          token: JSON.stringify(userInfo), // createJWT(user),
-        }
-
-        // const identity = await Identity.query()
-        //   .select('*')
-        //   .whereJsonSupersetOf('profile_data', {
-        //     sub: biointeractiveUserId,
-        //   })
-        //   .where({
-        //     isSocial: true,
-        //     provider: 'biointeractive',
-        //   })
-        //   .first()
+        const identity = await Identity.query()
+          .select('*')
+          .whereJsonSupersetOf('profile_data', {
+            sub: biointeractiveUserId,
+          })
+          .where({
+            isSocial: true,
+            provider: 'biointeractive',
+          })
+          .first()
 
         // const details = {
         //   userInfo,
@@ -181,64 +176,68 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
         //   token: JSON.stringify(details), // createJWT(user),
         // }
 
-        // if (!identity) {
-        //   const givenNames = userInfo.given_name.map(g => g.value).join(' ')
-        //   const surname = userInfo.family_name.map(g => g.value).join(' ')
+        if (!identity) {
+          try {
+            const givenNames = userInfo.given_name.map(g => g.value).join(' ')
+            const surname = userInfo.family_name.map(g => g.value).join(' ')
 
-        //   const password = uuid()
-        //   const agreedTc = false
+            const password = uuid()
+            const agreedTc = false
 
-        //   logger.info('bioInteractiveLogin: creating user')
+            logger.info('bioInteractiveLogin: creating user')
 
-        //   user = await User.insert(
-        //     {
-        //       agreedTc,
-        //       givenNames,
-        //       password,
-        //       surname,
-        //       isActive: true,
-        //     },
-        //     { trx: tr },
-        //   )
+            user = await User.insert(
+              {
+                agreedTc,
+                givenNames,
+                password,
+                surname,
+                isActive: true,
+              },
+              { trx: tr },
+            )
 
-        //   const verificationToken = crypto.randomBytes(64).toString('hex')
-        //   const verificationTokenTimestamp = new Date()
+            const verificationToken = crypto.randomBytes(64).toString('hex')
+            const verificationTokenTimestamp = new Date()
 
-        //   logger.info(
-        //     'bioInteractiveLogin: creating user local identity with fetched email',
-        //     user,
-        //   )
+            logger.info(
+              'bioInteractiveLogin: creating user local identity with fetched email',
+              user,
+            )
 
-        //   await Identity.insert(
-        //     {
-        //       userId: user.id,
-        //       email,
-        //       isSocial: true,
-        //       verificationToken,
-        //       verificationTokenTimestamp,
-        //       isVerified: true,
-        //       isDefault: true,
-        //       oauthAccessToken: accessToken,
-        //       provider: 'biointeractive',
-        //       profileData: userInfo,
-        //     },
-        //     { trx: tr },
-        //   )
+            await Identity.insert(
+              {
+                userId: user.id,
+                email,
+                isSocial: true,
+                verificationToken,
+                verificationTokenTimestamp,
+                isVerified: true,
+                isDefault: true,
+                oauthAccessToken: accessToken,
+                provider: 'biointeractive',
+                profileData: userInfo,
+              },
+              { trx: tr },
+            )
 
-        //   return {
-        //     user,
-        //     token: createJWT(user),
-        //   }
-        // }
+            return {
+              user,
+              token: createJWT(user),
+            }
+          } catch (e) {
+            throw new Error('error creating new user')
+          }
+        }
 
-        // // get the user, and update the token
-        // await identity.patch({ oauthAccessToken: accessToken }, { trx: tr })
-        // user = await User.findById(identity.userId)
+        // get the user, and update the token
+        await identity.patch({ oauthAccessToken: accessToken }, { trx: tr })
+        user = await User.findById(identity.userId)
 
-        // return {
-        //   user,
-        //   token: createJWT(user),
-        // }
+        return {
+          user,
+          token: createJWT(user),
+        }
       },
       { trx },
     )

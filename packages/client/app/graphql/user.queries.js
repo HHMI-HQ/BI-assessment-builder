@@ -110,7 +110,7 @@ export const FILTER_USERS = gql`
         displayName
         defaultIdentity {
           email
-          profileData
+          # profileData
         }
         coursesTeaching
         created
