@@ -123,7 +123,7 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
             data: qs.stringify(payload),
           })
         } catch (e) {
-          console.error(e)
+          console.error('TOKEN ERROR:', e.response.data)
         }
 
         const { access_token: accessToken, error: tokenError } =
@@ -153,70 +153,65 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
 
         // do we already have a user that is social?
         // no, set the user
-        const { email, sub } = userInfo
+        const { email, sub = '' } = userInfo
+        const givenNames = userInfo.given_name.map(g => g.value).join(' ')
+        const surname = userInfo.family_name.map(g => g.value).join(' ')
 
-        const identity = await Identity.query()
-          .select('*')
-          .whereJsonSupersetOf('profile_data', {
-            sub, // biointeractive user id
-          })
-          .where({
-            isSocial: true,
-            provider: 'biointeractive',
-          })
-          .first()
+        const identity = await Identity.query().findOne(builder =>
+          builder
+            .whereJsonSupersetOf('profile_data', {
+              sub, // biointeractive user id
+            })
+            .where({
+              isSocial: true,
+              provider: 'biointeractive',
+            }),
+        )
 
         if (!identity) {
-          try {
-            const givenNames = userInfo.given_name.map(g => g.value).join(' ')
-            const surname = userInfo.family_name.map(g => g.value).join(' ')
+          const password = uuid()
+          const agreedTc = false
 
-            const password = uuid()
-            const agreedTc = false
+          logger.info('bioInteractiveLogin: creating user')
 
-            logger.info('bioInteractiveLogin: creating user')
+          user = await User.insert(
+            {
+              agreedTc,
+              givenNames,
+              password,
+              surname,
+              isActive: true,
+            },
+            { trx: tr },
+          )
 
-            user = await User.insert(
-              {
-                agreedTc,
-                givenNames,
-                password,
-                surname,
-                isActive: true,
-              },
-              { trx: tr },
-            )
+          const verificationToken = crypto.randomBytes(64).toString('hex')
+          const verificationTokenTimestamp = new Date()
 
-            const verificationToken = crypto.randomBytes(64).toString('hex')
-            const verificationTokenTimestamp = new Date()
+          logger.info(
+            'bioInteractiveLogin: creating user local identity with fetched email',
+            user,
+          )
 
-            logger.info(
-              'bioInteractiveLogin: creating user local identity with fetched email',
-              user,
-            )
+          await Identity.insert(
+            {
+              userId: user.id,
+              email,
+              isSocial: true,
+              verificationToken,
+              verificationTokenTimestamp,
+              isVerified: true,
+              isDefault: true,
+              oauthAccessToken: accessToken,
+              provider: 'biointeractive',
+              profileData: userInfo,
+            },
+            { trx: tr },
+          )
 
-            await Identity.insert(
-              {
-                userId: user.id,
-                email,
-                isSocial: true,
-                verificationToken,
-                verificationTokenTimestamp,
-                isVerified: true,
-                isDefault: true,
-                oauthAccessToken: accessToken,
-                provider: 'biointeractive',
-                profileData: userInfo,
-              },
-              { trx: tr },
-            )
-
-            return {
-              user,
-              token: createJWT(user),
-            }
-          } catch (e) {
-            throw new Error('error creating new user')
+          return {
+            user,
+            token: createJWT(user),
           }
         }
 
