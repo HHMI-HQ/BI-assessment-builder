@@ -171,7 +171,6 @@ const bioInteractiveLogin = async (authCode, options = {}) => {
         const identity = await Identity.findOne({
           email: email.toLowerCase(),
           isSocial: true,
-          provider: 'biointeractive',
         })
 
         if (!identity) {
