@@ -554,13 +554,38 @@ const QuestionPage = props => {
   }
 
   const handlePublish = () => {
-    const mutationData = {
+    const publishQuestionVersionmutationData = {
       variables: {
         questionVersionId: version.id,
       },
     }
 
-    return publishQuestionVersionMutation(mutationData)
+    const chatThreadMutationData = {
+      variables: {
+        input: {
+          chatType: 'authorChat',
+          relatedObjectId: id,
+        },
+      },
+    }
+
+    if (!question?.chatThreadId) {
+      return new Promise((resolve, reject) => {
+        publishQuestionVersionMutation(publishQuestionVersionmutationData)
+          .then(() => {
+            return createChatThreadMutation(chatThreadMutationData)
+          })
+          .then(() => {
+            refetchQuestion()
+            resolve()
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    }
+
+    return publishQuestionVersionMutation(publishQuestionVersionmutationData)
   }
 
   const handleReject = () => {
