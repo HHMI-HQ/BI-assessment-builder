@@ -35,6 +35,7 @@ import {
   SEND_MESSAGE,
   CREATE_CHAT_THREAD,
   GET_QUESTION_PARTICIPANTS,
+  UPLOAD_ATTACHMENTS,
 } from '../graphql'
 import { useMetadata, hasRole, hasGlobalRole } from '../utilities'
 
@@ -187,6 +188,8 @@ const QuestionPage = props => {
 
   const [submitQuestionMutation] = useMutation(SUBMIT_QUESTION)
   const [createChatThreadMutation] = useMutation(CREATE_CHAT_THREAD)
+
+  const [uploadAttachments] = useMutation(UPLOAD_ATTACHMENTS)
 
   const [rejectQuestionMutation] = useMutation(REJECT_QUESTION, {
     variables: { questionId: id },
@@ -711,17 +714,57 @@ const QuestionPage = props => {
     getChatThread({ variables })
   }
 
-  const onSendMessage = async (content, mentions) => {
-    const variables = {
-      input: {
-        content,
-        chatThreadId: question?.chatThreadId,
-        userId: currentUser.id,
-        mentions,
-      },
-    }
+  const onSendMessage = async (content, mentions, attachments) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const sendMessageMutationData = {
+          variables: {
+            input: {
+              content,
+              chatThreadId: question?.chatThreadId,
+              userId: currentUser.id,
+              mentions,
+            },
+          },
+        }
 
-    sendMessage({ variables })
+        sendMessage(sendMessageMutationData)
+          .then(
+            ({
+              data: {
+                sendMessage: { id: messageId },
+              },
+            }) => {
+              if (attachments && attachments.length > 0) {
+                const fileObjects = attachments.map(
+                  attachment => attachment.originFileObj,
+                )
+
+                const fileUploadMutationData = {
+                  variables: {
+                    input: {
+                      attachments: fileObjects,
+                      messageId,
+                    },
+                  },
+                }
+
+                return uploadAttachments(fileUploadMutationData)
+              }
+
+              return resolve()
+            },
+          )
+          .then(() => {
+            resolve()
+          })
+          .catch(err => {
+            reject(err)
+          })
+      } catch (err) {
+        reject(err)
+      }
+    })
   }
   // #endregion handlers
 
