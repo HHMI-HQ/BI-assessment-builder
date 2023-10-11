@@ -2,6 +2,7 @@ const {
   createChatThread,
   getMessages,
   getMessageAuthor,
+  uploadAttachments,
 } = require('../../controllers/chat.controllers')
 
 const createChatThreadResolver = async (_, { input }) => {
@@ -16,6 +17,10 @@ const userResolver = async message => {
   return getMessageAuthor(message)
 }
 
+const uploadAttachmentsResolver = async (_, { input }) => {
+  return uploadAttachments(input)
+}
+
 module.exports = {
   ChatThread: {
     messages: messagesResolver,
@@ -25,5 +30,6 @@ module.exports = {
   },
   Mutation: {
     createChatThread: createChatThreadResolver,
+    uploadAttachments: uploadAttachmentsResolver,
   },
 }

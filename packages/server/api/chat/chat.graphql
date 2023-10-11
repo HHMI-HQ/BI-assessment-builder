@@ -1,3 +1,9 @@
+input UploadAttachmentsInput {
+  attachments: [Upload!]!
+  messageId: ID!
+}
+
 extend type Mutation {
   createChatThread(input: CreateChatThreadInput!): ChatThread!
+  uploadAttachments(input: UploadAttachmentsInput!): [File!]!
 }

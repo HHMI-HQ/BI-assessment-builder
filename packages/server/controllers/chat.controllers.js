@@ -1,5 +1,5 @@
 const { logger, useTransaction } = require('@coko/server')
-
+const { createFile } = require('@coko/server')
 const { ChatThread, ChatMessage } = require('@coko/server/src/models')
 const { User } = require('../models')
 
@@ -56,8 +56,29 @@ const getMessageAuthor = async ({ id, userId }, options = {}) => {
   }
 }
 
+const uploadAttachments = async ({ attachments, messageId }) => {
+  const attachmentData = await Promise.all(attachments)
+  return Promise.all(
+    attachmentData.map(async attachment => {
+      const stream = attachment.createReadStream()
+
+      const storedFile = await createFile(
+        stream,
+        attachment.filename,
+        null,
+        null,
+        [],
+        messageId,
+      )
+
+      return storedFile
+    }),
+  )
+}
+
 module.exports = {
   createChatThread,
   getMessages,
   getMessageAuthor,
+  uploadAttachments,
 }
