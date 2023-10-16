@@ -489,7 +489,7 @@ const routes = (
                 path="/learning"
               />
               <Route component={PageNotFound} path="/404" />
-              <Route component={() => <Redirect to="/404" />} path="*" />
+              <Route component={PageNotFound} path="*" />
             </Switch>
           </StyledMain>
         </StyledPage>

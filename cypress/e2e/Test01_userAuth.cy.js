@@ -74,6 +74,8 @@ describe('Tests for user authentication', () => {
     cy.get(submitButton).click()
     cy.contains(alertContainer, 'Email is required')
     cy.contains(alertContainer, 'Password is required')
+
+    cy.contains('button[type="button"]', 'Choose another login method')
     cy.contains(anchorTags.requestPasswordRest, 'Forgot your password?')
     cy.contains(anchorTags.signup, 'Do you want to signup instead?')
 
