@@ -1,6 +1,6 @@
-const { logger, useTransaction } = require('@coko/server')
+const { logger, useTransaction, pubsubManager } = require('@coko/server')
 const { createFile } = require('@coko/server')
-const { ChatThread, ChatMessage } = require('@coko/server/src/models')
+const { ChatThread, ChatMessage, File } = require('@coko/server/src/models')
 const { User } = require('../models')
 const { getFileUrl } = require('./file.controllers')
 
@@ -26,49 +26,49 @@ const createChatThread = async (input = {}, options = {}) => {
   }
 }
 
+const sendMessage = async (
+  chatThreadId,
+  content,
+  userId,
+  mentions = [],
+  options = {},
+) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} sendMessage:`
+
+  try {
+    const { trx, ...restOptions } = options
+
+    const newMessage = await useTransaction(
+      async tr => {
+        logger.info(
+          `${CONTROLLER_MESSAGE} creating a new message for chat thread with id ${chatThreadId}`,
+        )
+        return ChatMessage.insert(
+          { chatThreadId, userId, content, mentions },
+          { trx: tr, ...restOptions },
+        )
+      },
+      { trx, passedTrxOnly: true },
+    )
+
+    const pubsub = await pubsubManager.getPubsub()
+
+    await pubsub.publish('MESSAGE_CREATED', {
+      messageCreated: newMessage,
+    })
+
+    return newMessage
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 const getMessages = async (threadId, options = {}) => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} getMessages:`
   logger.info(`${CONTROLLER_MESSAGE} Getting messages for thread ${threadId}`)
 
   try {
-    const messagesWithAttachments = await ChatMessage.query(options.trx)
-      .select('chat_messages.*', 'files.name ', 'files.stored_objects')
-      .leftJoin('files', 'chat_messages.id', 'files.objectId')
-      .where('chatThreadId', threadId)
-
-    const messages = Array.from(
-      new Set(messagesWithAttachments.map(({ id }) => id)),
-    )
-
-    const messagePromises = messages.map(async id => {
-      const attachments = await Promise.all(
-        messagesWithAttachments
-          .filter(message => message.id === id)
-          .map(async ({ name, storedObjects }) => {
-            const fileUrl = await getFileUrl({ storedObjects }, 'small')
-            return {
-              name,
-              fileUrl,
-            }
-          }),
-      )
-
-      const { created, content, userId } = messagesWithAttachments.find(
-        message => message.id === id,
-      )
-
-      return {
-        id,
-        content,
-        timestamp: created,
-        userId,
-        attachments,
-      }
-    })
-
-    // eslint-disable-next-line no-unused-vars
-    const newMessageArray = await Promise.all(messagePromises)
-
     return (
       await ChatMessage.query(options.trx).where('chatThreadId', threadId)
     ).map(({ id, created, content, userId }) => ({
@@ -115,9 +115,31 @@ const uploadAttachments = async ({ attachments, messageId }) => {
   )
 }
 
+const getAttachments = async ({ id }) => {
+  const files = await useTransaction(trx => {
+    return File.query(trx)
+      .select('files.name', 'files.storedObjects')
+      .where({ objectId: id })
+  })
+
+  const filesWithUrl = await Promise.all(
+    files.map(async file => {
+      const url = getFileUrl(file, 'medium')
+      return {
+        url,
+        name: file.name,
+      }
+    }),
+  )
+
+  return filesWithUrl
+}
+
 module.exports = {
   createChatThread,
+  getAttachments,
   getMessages,
   getMessageAuthor,
   uploadAttachments,
+  sendMessage,
 }
