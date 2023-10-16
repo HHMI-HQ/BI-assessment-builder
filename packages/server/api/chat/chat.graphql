@@ -3,7 +3,20 @@ input UploadAttachmentsInput {
   messageId: ID!
 }
 
+type Attachment {
+  name: String!
+  url: String!
+}
+
+extend type ChatMessage {
+  attachments: [Attachment!]!
+}
+
 extend type Mutation {
   createChatThread(input: CreateChatThreadInput!): ChatThread!
   uploadAttachments(input: UploadAttachmentsInput!): [File!]!
+}
+
+extend type Subscription {
+  messageCreated(chatThreadId: ID!): ChatMessage!
 }
