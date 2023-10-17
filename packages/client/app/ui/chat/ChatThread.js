@@ -115,10 +115,12 @@ ChatThread.propTypes = {
   onSendMessage: PropTypes.func,
   hasMore: PropTypes.bool,
   infiniteScroll: PropTypes.bool,
-  participants: PropTypes.arrayOf({
-    id: PropTypes.string,
-    username: PropTypes.string,
-  }),
+  participants: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      username: PropTypes.string,
+    }),
+  ),
 }
 
 ChatThread.defaultProps = {

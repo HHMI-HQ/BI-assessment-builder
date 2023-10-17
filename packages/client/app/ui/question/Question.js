@@ -1680,10 +1680,12 @@ Question.propTypes = {
   }),
   updated: PropTypes.string,
   wordFileLoading: PropTypes.bool,
-  questionParticipants: PropTypes.arrayOf({
-    id: PropTypes.string,
-    username: PropTypes.string,
-  }),
+  questionParticipants: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      username: PropTypes.string,
+    }),
+  ),
   qtiZipLoading: PropTypes.bool,
   complexSetEditLink: PropTypes.string,
   handlingEditors: PropTypes.arrayOf(

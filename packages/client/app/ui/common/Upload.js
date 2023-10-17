@@ -7,24 +7,26 @@ import styled from 'styled-components'
 import Button from './Button'
 
 const UploadButton = styled(Button)`
-  outline: none;
   border: none;
-  margin-inline: ${grid(1)};
   color: ${props => props.theme.colorPrimary};
+  margin-inline: ${grid(1)};
+  outline: none;
 `
 
 const StyledAntUpload = styled(AntUpload)`
   display: flex;
   flex-direction: row-reverse;
+
   & .ant-upload-list {
     display: flex;
     flex-direction: row;
   }
+
   & .ant-upload-list-item {
     border: 1px solid grey;
-    padding: ${grid(2)};
-    margin: ${grid(1)};
     border-radius: 10px;
+    margin: ${grid(1)};
+    padding: ${grid(2)};
   }
 `
 
@@ -49,7 +51,7 @@ Upload.defaultProps = {
 }
 
 Upload.propTypes = {
-  files: PropTypes.arrayOf(),
+  files: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
 }

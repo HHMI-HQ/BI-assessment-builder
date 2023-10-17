@@ -146,7 +146,7 @@ ChatMessageList.propTypes = {
       user: PropTypes.string,
     }),
   ),
-  participants: PropTypes.arrayOf(),
+  participants: PropTypes.arrayOf(PropTypes.shape()),
   hasMore: PropTypes.bool,
   infiniteScroll: PropTypes.bool,
   onFetchMore: PropTypes.func,

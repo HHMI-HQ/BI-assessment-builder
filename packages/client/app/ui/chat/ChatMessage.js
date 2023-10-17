@@ -15,20 +15,18 @@ const pullRight = css`
 
 const Message = styled.div`
   align-self: baseline;
-  margin-block: 10px;
   background: ${props =>
     props.own ? th('colorBackgroundHue') : th('colorPrimaryBorder')};
   border-radius: ${props =>
     props.own ? '15px 0 15px 15px' : '0 15px 15px 15px'};
+  box-shadow: rgb(50 50 93 / 25%) 0 6px 12px -2px,
+    rgb(0 0 0 / 30%) 0 3px 7px -3px;
   color: ${props => (props.own ? th('colorTextDark') : th('colorTextReverse'))};
   display: inline-block;
+  margin-block: 10px;
   margin-left: ${grid(1)};
   max-inline-size: 50%;
   min-inline-size: 30%;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  padding: ${grid(1)};
-
   ${props =>
     props.own &&
     css`
@@ -38,15 +36,17 @@ const Message = styled.div`
         ${pullRight}
       }
     `};
+  padding: ${grid(1)};
 
   &:focus {
     outline: ${props => `${props.theme.lineWidth * 4}px`} solid
       ${th('colorPrimaryBorder')};
     outline-offset: 1px;
   }
+
   & .mention {
-    font-weight: 900;
     cursor: pointer;
+    font-weight: 900;
   }
 `
 
@@ -62,34 +62,34 @@ const Content = styled.div`
 
 const Date = styled.div`
   display: flex;
-  justify-content: flex-end;
   font-size: ${th('fontSizeBaseSmall')};
   font-style: italic;
-  margin-top: ${grid(2)};
+  justify-content: flex-end;
   margin-right: ${grid(2)};
+  margin-top: ${grid(2)};
 `
 
 const Attachments = styled.div`
-  margin-block: ${grid(2)};
-  background: rgba(0, 0, 0, 0.1);
-  padding: ${grid(3)};
+  background: rgba(0 0 0 10%);
   border-radius: 8px;
-  box-shadow: inset rgba(0, 0, 0, 0.18) 0px 1px 2px;
+  box-shadow: inset rgb(0 0 0 / 18%) 0 1px 2px;
   display: grid;
+  grid-gap: 5px;
   grid-template-columns: repeat(2, 0.2fr);
-  grid-gap: 5px 5px;
+  margin-block: ${grid(2)};
+  padding: ${grid(3)};
 `
 
 const AttachmentItem = styled.span`
+  border: 1px solid white;
+  border-radius: 5px;
+  cursor: pointer;
   display: inline-block;
   overflow: hidden;
-  text-overflow: ellipsis;
-  width: 130px;
-  white-space: nowrap;
-  cursor: pointer;
-  border: 1px solid white;
   padding: ${grid(1)};
-  border-radius: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 130px;
 `
 
 const ChatMessage = forwardRef((props, ref) => {
@@ -151,7 +151,7 @@ const ChatMessage = forwardRef((props, ref) => {
 })
 
 ChatMessage.propTypes = {
-  attachments: PropTypes.arrayOf(),
+  attachments: PropTypes.arrayOf(PropTypes.shape()),
   content: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   own: PropTypes.bool,
