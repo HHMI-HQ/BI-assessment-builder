@@ -19,6 +19,7 @@ export const GET_CHAT_THREAD = gql`
       messages {
         id
         content
+        created
         user {
           id
           displayName

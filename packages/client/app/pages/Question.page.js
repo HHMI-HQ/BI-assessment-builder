@@ -140,7 +140,7 @@ const messagesApiToUi = (messages, currentUser = null) => {
     ? messages.map(
         ({
           id,
-          timestamp,
+          created,
           content,
           user: { id: userId, displayName } = {},
           attachments,
@@ -148,7 +148,7 @@ const messagesApiToUi = (messages, currentUser = null) => {
           return {
             id,
             content,
-            date: timestamp,
+            date: created,
             own: userId === currentUser,
             user: displayName,
             attachments,
@@ -899,8 +899,8 @@ const QuestionPage = props => {
         onSendMessage={onSendMessage}
         onUnassignHandlingEditor={handleUnassignHE}
         qtiZipLoading={generateQtiZipLoading}
-        questionParticipants={questionParticipants}
         questionAgreedTc={false} //
+        questionParticipants={questionParticipants}
         refetchUser={refetchCurrentUser}
         resources={getResources}
         searchHELoading={loadingSearchHE}

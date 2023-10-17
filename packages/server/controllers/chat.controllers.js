@@ -74,7 +74,7 @@ const getMessages = async (threadId, options = {}) => {
     ).map(({ id, created, content, userId }) => ({
       id,
       content,
-      timestamp: created,
+      created,
       userId,
     }))
   } catch (error) {
