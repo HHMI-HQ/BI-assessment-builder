@@ -20,48 +20,52 @@ const StyledUpload = styled(Upload)`
 
 const SendButton = styled(Button)`
   background: ${props => props.theme.colorPrimaryBorder};
+  border: none;
+  border-radius: 50%;
+  color: ${props => props.theme.colorTextReverse};
+  height: 45px;
   margin-inline: ${grid(1)};
   outline: none;
-  border-radius: 50%;
-  border: none;
-  height: 45px;
-  weight: 50px;
+  width: 50px;
 
-  color: ${props => props.theme.colorTextReverse};
   &:hover,
   &:focus {
-    color: ${props => props.theme.colorTextReverse} !important;
     background: ${props => props.theme.colorPrimary};
+    /* stylelint-disable-next-line declaration-no-important */
+    color: ${props => props.theme.colorTextReverse} !important;
   }
 `
 
 const InputWrapper = styled('div')`
-  background: rgba(0, 0, 0, 0.1);
-  box-shadow: inset rgba(0, 0, 0, 0.18) 0px 1px 2px;
+  background: rgb(0 0 0 / 10%);
+  border-radius: 20px;
+  box-shadow: inset rgb(0 0 0 / 18%) 0 1px 2px;
 
   display: flex;
-  // border: 1px solid grey;
   margin-block: ${grid(1)};
   padding: ${grid(2)};
-  border-radius: 20px;
 
   // overrding react-mentions styles
   .mentions-input {
     flex-grow: 1;
     height: 100%;
   }
+
   .mentions-input__input {
-    outline: none;
     border: none;
     color: ${props => props.theme.colorText};
+    outline: none;
   }
+
   .mentions-input__suggestions__list {
     border: 1px solid ${props => props.theme.colorPrimaryBorder};
     border-radius: ${grid(1)};
   }
+
   .mentions-input__suggestions__item {
     padding-inline: ${grid(2)};
   }
+
   .mentions-input__suggestions__item--focused {
     background: ${props => props.theme.colorPrimaryBorder};
     color: ${props => props.theme.colorBackground};
@@ -73,10 +77,10 @@ const UploadWrapper = styled('div')`
 `
 
 const ChatInputSection = styled('div')`
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
 `
 
 // TODO -- this needs to be a wax editor with two plugins (mention & task)
@@ -151,10 +155,12 @@ const ChatInput = props => {
 
 ChatInput.propTypes = {
   onSend: PropTypes.func.isRequired,
-  participants: PropTypes.arrayOf({
-    id: PropTypes.string,
-    display: PropTypes.string,
-  }),
+  participants: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      display: PropTypes.string,
+    }),
+  ),
 }
 
 ChatInput.defaultProps = {
