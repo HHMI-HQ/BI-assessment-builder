@@ -226,7 +226,7 @@ const IBCourseMetadata = props => {
 
   return (
     <>
-      <p>{courseData.label}: College Board Curriculum</p>
+      {!filterMode && <p>{courseData.label}: College Board Curriculum</p>}
       <Form.Item
         label="Course Unit"
         name={unitName}

@@ -338,10 +338,10 @@ const metadata = {
       {
         label: 'Higher-order',
         options: [
-          {
-            label: 'Understand (higher-order)',
-            value: 'higher-understand',
-          },
+          // {
+          //   label: 'Understand (higher-order)',
+          //   value: 'higher-understand',
+          // },
           {
             label: 'Apply',
             value: 'higher-apply',
@@ -370,6 +370,10 @@ const metadata = {
           {
             label: 'Understand (lower-order)',
             value: 'lower-understand',
+          },
+          {
+            label: 'Apply',
+            value: 'lower-apply',
           },
         ],
       },
@@ -15722,19 +15726,19 @@ const metadata = {
   questionTypes: [
     {
       value: 'multipleChoice',
-      label: 'Multiple choice',
+      label: 'Multi-Select',
     },
     {
       value: 'multipleChoiceSingleCorrect',
-      label: 'Multiple choice (single correct)',
+      label: 'Multiple Choice',
     },
     {
       value: 'trueFalse',
-      label: 'True / False',
+      label: 'Multiple True / False',
     },
     {
       value: 'trueFalseSingleCorrect',
-      label: 'True / False (single correct)',
+      label: 'True / False',
     },
     {
       value: 'fillInTheBlank',

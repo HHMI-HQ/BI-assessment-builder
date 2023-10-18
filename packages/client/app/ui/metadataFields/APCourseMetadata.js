@@ -223,7 +223,7 @@ const APCourseMetadata = props => {
 
   return (
     <>
-      <p>{courseData.label}: College Board Framework</p>
+      {!filterMode && <p>{courseData.label}: College Board Framework</p>}
       <Form.Item
         label="Course Unit"
         name={unitName}

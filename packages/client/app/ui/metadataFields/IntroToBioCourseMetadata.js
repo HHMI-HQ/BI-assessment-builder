@@ -153,7 +153,7 @@ const IntroToBioCourseMetadata = props => {
 
   return (
     <>
-      <p>{courseData.label}</p>
+      {!filterMode && <p>{courseData.label}</p>}
       <Form.Item
         label="Course Unit"
         name={unitName}
