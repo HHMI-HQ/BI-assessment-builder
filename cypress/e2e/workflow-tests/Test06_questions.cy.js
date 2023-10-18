@@ -29,6 +29,53 @@ import {
 } from '../../support/routes'
 
 const disableScripts = false
+
+/**
+ *
+ * @param {string} listItem - The index of question inside the wrapper
+ * @param {string} stage - The stage in which the question page is going to be checked
+ * @param {boolean} isHE [isHE=false] - pass true if the user who is going to check the question is a HE
+ */
+const checkStage = (listItem, stage, isHE = false) => {
+  const { operationBtn, prompt, success, QuestionStatus } = workflowData[stage]
+
+  cy.get(listItemWrapper)
+    .eq(listItem)
+    .should('be.visible')
+    .contains('p')
+    .first()
+    .click()
+  // [segment]: checking buttons that should be visible based on the question status
+  cy.contains(exportToWordButton, 'Export to Word')
+
+  if (stage === 'publish') {
+    cy.contains('[type="button"]', 'Do not accept').should('not.exist')
+  } else {
+    cy.contains('[type="button"]', 'Do not accept')
+  }
+
+  cy.contains('[type="button"]', operationBtn).click()
+  cy.contains(antModalContent, prompt.header)
+  cy.contains(antModalContent, prompt.body)
+  cy.contains(
+    'div[class="ant-modal-content"] button[type="button"]',
+    prompt.okBtn,
+  ).click()
+  cy.wait('@GQLReq')
+  cy.contains(antModalContent, success.header)
+  cy.contains(antModalContent, success.body)
+  cy.contains(buttonAntModalBody, 'Ok').click()
+  cy.visit(dashboardRoute, { method: 'GET' })
+  cy.wait('@GQLReq')
+
+  if (!isHE) {
+    cy.get(listItemWrapper)
+      .eq(listItem)
+      .should('be.visible')
+      .contains('[data-testid="question-status"]', QuestionStatus)
+  }
+}
+
 describe('Question Workflows', () => {
   before(() => {
     cy.resetDB(disableScripts)
@@ -80,45 +127,7 @@ describe('Question Workflows', () => {
         cy.wait('@GQLReq')
         cy.get(listItemWrapper).should('have.length', 2)
       })
-      it('Overall flow', () => {
-        const checkStage = (listItem, stage) => {
-          const { operationBtn, prompt, success, QuestionStatus } =
-            workflowData[stage]
-
-          cy.get(listItemWrapper)
-            .eq(listItem)
-            .should('be.visible')
-            .contains('p')
-            .first()
-            .click()
-          // [segment]: checking buttons that should be visible based on the question status
-          cy.contains(exportToWordButton, 'Export to Word')
-
-          if (stage === 'publish') {
-            cy.contains('[type="button"]', 'Do not accept').should('not.exist')
-          } else {
-            cy.contains('[type="button"]', 'Do not accept')
-          }
-
-          cy.contains('[type="button"]', operationBtn).click()
-          cy.contains(antModalContent, prompt.header)
-          cy.contains(antModalContent, prompt.body)
-          cy.contains(
-            'div[class="ant-modal-content"] button[type="button"]',
-            prompt.okBtn,
-          ).click()
-          cy.wait('@GQLReq')
-          cy.contains(antModalContent, success.header)
-          cy.contains(antModalContent, success.body)
-          cy.contains(buttonAntModalBody, 'Ok').click()
-          cy.visit(dashboardRoute, { method: 'GET' })
-          cy.wait('@GQLReq')
-          cy.get(listItemWrapper)
-            .eq(listItem)
-            .should('be.visible')
-            .contains('[data-testid="question-status"]', QuestionStatus)
-        }
-
+      it('Overall question flow', () => {
         cy.login({ ...editor })
         cy.contains(antTabs, 'Editor Questions').click()
         cy.wait('@GQLReq')
@@ -324,7 +333,7 @@ describe('Question Workflows', () => {
     })
     context('Handling Editor functionalities', () => {
       before(() => {
-        cy.deleteAllQuestions()
+        cy.deleteAllQuestions(disableScripts)
       })
       it('Only assinged questions are visible', () => {
         cy.seedQuestion(
@@ -381,6 +390,31 @@ describe('Question Workflows', () => {
         cy.contains('button[type="button"]', 'Edit question').should(
           'not.exist',
         )
+      })
+      it('Overall question workflow', () => {
+        cy.deleteAllQuestions(disableScripts)
+        cy.seedQuestion(
+          disableScripts,
+          user2.username,
+          -2,
+          'anatomy',
+          'submitted',
+          handlingEditor1.username,
+        )
+        cy.seedQuestion(
+          disableScripts,
+          user2.username,
+          -3,
+          'population',
+          'submitted',
+          handlingEditor1.username,
+        )
+        cy.login(handlingEditor1)
+        cy.contains(antTabs, 'Handling Editor Questions').click()
+        checkStage(1, 'reject', true)
+        checkStage(0, 'review', true)
+        checkStage(0, 'production', true)
+        checkStage(0, 'publish', true)
       })
     })
   })

@@ -191,6 +191,21 @@ const canCreateNewVersion = rule()(async (_, __, ctx) => {
   )
 })
 
+// editors and handlingEditors can reject questions
+const canRejectQuestion = rule()(async (_, __, ctx) => {
+  if (!ctx.user) return false
+  if (!ctx.user) return false
+
+  const UserModel = ctx.connectors.User.model
+  const user = await UserModel.query().findById(ctx.user)
+
+  return (
+    user.isActive &&
+    ((await user.hasGlobalRole('editor')) ||
+      user.hasGlobalRole('handlingEditor'))
+  )
+})
+
 const permissions = {
   Mutation: {
     // Authentication
@@ -227,7 +242,7 @@ const permissions = {
     createQuestion: isActive,
     updateQuestion: canUpdateQuestion,
     submitQuestion: isAuthor,
-    rejectQuestion: isEditor,
+    rejectQuestion: canRejectQuestion,
     moveQuestionVersionToReview: canMoveToReview,
     moveQuestionVersionToProduction: canMoveToProduction,
     publishQuestionVersion: canPublish,
