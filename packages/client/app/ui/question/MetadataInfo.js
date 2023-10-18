@@ -206,7 +206,7 @@ const MetadataInfo = props => {
       )}
       {values.biointeractiveResources.length > 0 && (
         <>
-          <MetadataHeading>Biointeractive resources</MetadataHeading>
+          <MetadataHeading>Biointeractive Resources</MetadataHeading>
           <StyledList>
             {values.biointeractiveResources.map(resource => {
               const resourceObject = resources.find(r => r.value === resource)

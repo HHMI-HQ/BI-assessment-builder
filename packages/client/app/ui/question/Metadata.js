@@ -444,12 +444,12 @@ const Metadata = React.forwardRef((props, ref) => {
         {/* BLOOMS */}
 
         <Form.Item
-          label="Bloom's cognitive level"
+          label="Bloom's Cognitive Level"
           name="cognitiveLevel"
           rules={[
             {
               required: true,
-              message: "Bloom's cognitive level is required",
+              message: "Bloom's Cognitive Level is required",
             },
           ]}
         >

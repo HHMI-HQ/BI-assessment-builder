@@ -12898,7 +12898,7 @@ const metadata = {
       value: 'introBioForNonMajors',
     },
     {
-      label: 'Introductory biology for majors',
+      label: 'Introductory Biology for Majors',
       value: 'introBioForMajors',
       units: [
         {

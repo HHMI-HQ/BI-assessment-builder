@@ -146,7 +146,7 @@ const Sidebar = props => {
                   options={metadata.questionTypes}
                 />
               </Form.Item>
-              <Form.Item label="Bloom's cognitive level" name="cognitiveLevel">
+              <Form.Item label="Bloom's Cognitive Level" name="cognitiveLevel">
                 <Select
                   data-testid="cognitive-level-select"
                   mode="multiple"
@@ -154,7 +154,7 @@ const Sidebar = props => {
                   options={metadata.blooms.cognitive}
                 />
               </Form.Item>
-              <Form.Item label="Complex item set" name="complexItemSet">
+              <Form.Item label="Complex Item Set" name="complexItemSet">
                 <Select
                   data-testid="complex-item-set-select"
                   mode="multiple"
