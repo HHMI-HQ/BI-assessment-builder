@@ -183,7 +183,7 @@ describe('User Controller', () => {
     const email = internet.email()
     const user = await createUser()
 
-    await createIdentity(user, email, true)
+    await createIdentity(user, email, true, 'biointeractive')
 
     const identitiesBefore = await Identity.find({})
 
