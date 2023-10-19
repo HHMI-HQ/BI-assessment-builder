@@ -3,62 +3,60 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid, th } from '@coko/client'
-import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import { grid, th, darken } from '@coko/client'
+import { EditOutlined, LogoutOutlined } from '@ant-design/icons'
 import logoMobile from '../../../static/hhmi-logo-white-sm.svg'
+import manageTeamIcon from '../../../static/team.svg'
+import manageUserIcon from '../../../static/manageuser.svg'
+import pendingTasksIcon from '../../../static/taskIcon.svg'
+import notificationIcon from '../../../static/notificationIcon.svg'
+import userIcon from '../../../static/user-icon.svg'
 import logo from '../../../static/hhmi-ab-logo-sm.svg'
 import menuOpen from '../../../static/waffle-white.svg'
 import menuClose from '../../../static/close-white.svg'
+
 import Button from './Button'
-import { safeCall, safeIndex } from '../../utilities'
+import useWindowSize from '../_helpers/useWindowSize'
+import useKeyboardOnList from '../_helpers/useKeyboardOnList'
 
 // #region styles
 const StyledHeader = styled.header`
   align-items: center;
   background-color: ${th('colorBody')};
-  /* box-shadow: -5px 5px 18px -2px ${th('colorText')}; */
+  box-shadow: 0 0 15px 2px #00000045, inset 0 0 12px #ffffff28;
   display: flex;
-  flex-flow: row wrap;
+  height: 64px;
   justify-content: space-between;
-  padding: ${th('headerPaddingVertical')} ${grid(4)};
+  padding-left: 0;
   width: 100%;
   z-index: 9;
 
-  @media screen and (min-width: ${th('mediaQueries.medium')}) {
-    padding: ${th('headerPaddingVertical')} ${grid(5)};
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    justify-content: unset;
+    padding-left: ${grid(5)};
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th('mediaQueries.small')}) {
     flex-direction: row;
-    /* height: 110px; */
-    justify-content: unset;
+    padding-left: ${grid(3)};
   }
 `
 
 const Branding = styled(Link)`
-  background-image: ${`url(${logoMobile})`};
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 80px ${th('mobileLogoHeight')};
+  background: #0000 url(${logoMobile}) no-repeat center / contain;
   display: block;
+  filter: drop-shadow(0 0 12px #ff00);
   height: ${th('mobileLogoHeight')};
-  margin-right: 30px;
+  margin: 0 1.5rem 0.3rem 0;
   overflow: hidden;
-  transition: outline 200ms ease-in;
+  transition: filter 0.3s ease-in;
   width: 95px;
 
   @media screen and (min-width: ${th('mediaQueries.small')}) {
-    background-image: ${() => `url(${logo})`};
-    background-size: 332px ${th('mobileLogoHeight')};
+    background-image: url(${logo});
+    background-size: contain;
     width: 340px;
   }
-
-  /* @media screen and (min-width: ${th('mediaQueries.medium')}) {
-    background-image: ${() => `url(${logo})`};
-    background-size: 332px 44px;
-    height: 44px;
-    width: 332px;
-  } */
 
   h1 {
     height: 0;
@@ -68,12 +66,13 @@ const Branding = styled(Link)`
 
   &:hover,
   &:focus {
-    outline: 1px solid ${th('colorTextReverse')};
+    filter: drop-shadow(0 0 5px #0ff8);
   }
 `
 
 const Navigation = styled.nav`
   align-items: center;
+  background-color: #0000;
   display: flex;
   flex-basis: 40px;
   height: ${th('mobileLogoHeight')};
@@ -81,43 +80,108 @@ const Navigation = styled.nav`
   overflow: visible;
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
-    background-color: ${th('colorBody')};
+    background-color: #0000;
     flex-grow: 1;
-    /* height: auto; */
     justify-content: space-between;
     margin: 0;
     padding: 0;
   }
 `
 
+const MainNav = styled.div`
+  align-items: center;
+  box-shadow: 0 0 10px #0003;
+  color: #000;
+  display: flex;
+  height: calc(
+    100vh - (${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')})
+  );
+  justify-content: flex-end;
+  overflow: visible;
+  position: absolute;
+  right: 0;
+  top: calc(${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')});
+  transition: width 0.3s, padding 0.3s, background-color 0.5s;
+
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    background-color: #0000;
+    flex-direction: row;
+    height: auto;
+    justify-content: space-between;
+    padding: 0;
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
+`
+
+/* To achieve vertical scrolling if the menu is open on small height devices */
+const NavWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  overflow: hidden ${p => (p.show ? 'auto' : 'hidden')};
+  padding: 1rem 0;
+  width: 100%;
+
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    > ul:nth-of-type(1) {
+      border-left: 1px solid #ffffff34;
+      padding-left: 2rem;
+    }
+    display: contents;
+    overflow: hidden;
+  }
+`
+
+const RightNavContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    flex-direction: row;
+  }
+`
+
 const StyledList = styled.ul`
-  display: block;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   list-style: none;
   margin: 0;
   padding: 0;
+  position: relative;
+  width: 250px;
 
   > li {
     color: ${th('colorTextDark')};
     font-size: ${th('fontSizeBase')};
     line-height: 2.5rem;
+    padding-left: 1rem;
 
     > a {
-      display: inline-flex;
-      width: 100%;
+      display: flex;
+      width: max-content;
     }
   }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
-    align-items: start;
+    align-items: center;
+    background-color: #0000;
     display: flex;
-    height: 3.0625rem;
-    padding: ${grid(4)} 0 0 0;
+    flex-direction: row;
+    height: 2.5rem;
+    padding: 0 0 0 1rem;
+    width: fit-content;
 
     > li {
       align-items: center;
       color: ${th('colorTextReverse')};
-      display: inline-flex;
+      display: flex;
       line-height: inherit;
+      padding-left: 0;
 
       &:not(:first-child:last-child) {
         margin-right: 1rem;
@@ -126,49 +190,32 @@ const StyledList = styled.ul`
   }
 `
 
-const LeftNavContainer = styled.div`
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
-    display: flex;
-    flex-direction: row;
-  }
-`
-
-const NavLinks = styled.div`
-  background-color: ${th('colorBackground')};
-  display: none;
-  height: calc(
-    100vh - (${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')})
-  );
-  left: 0;
-  overflow: auto;
-  padding: ${grid(6)} ${grid(4)}; // 1.5rem 1rem;
-  position: absolute;
-  top: calc(${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')});
-  width: 100%;
-
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
-    background-color: ${th('colorBody')};
-    display: flex;
-    height: auto;
-    justify-content: space-between;
-    left: unset;
-    overflow: initial;
-    padding: 0;
-    position: relative;
-    top: unset;
-  }
-`
-
 const StyledLink = styled(Link)`
-  color: inherit;
+  color: black;
   display: inline-block;
-  font-size: inherit;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 900;
   line-height: 1.25;
   overflow-x: hidden;
   padding: 10px 0;
   text-decoration: none;
+  width: max-content;
 
+  &.info {
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 300;
+
+    &:hover {
+      color: #8ebbbd;
+    }
+
+    span::after {
+      background-color: #8ebbbd;
+    }
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
   span::after {
     background-color: ${th('colorTertiary')};
     content: '';
@@ -191,11 +238,16 @@ const StyledLink = styled(Link)`
   }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
-    line-height: 1.5;
+    color: #fff;
     padding: 0;
+    width: 200px;
+
+    &.info {
+      color: #8ebbbd;
+    }
 
     span::after {
-      background-color: ${th('colorTextReverse')};
+      background-color: #eee;
     }
   }
 `
@@ -212,7 +264,7 @@ const StyledButton = styled(Button)`
   padding: 10px 0;
   text-align: start;
   transition: none;
-  width: 100%;
+  width: max-content;
 
   /* stylelint-disable-next-line no-descending-specificity */
   span::after {
@@ -228,9 +280,9 @@ const StyledButton = styled(Button)`
 
   &:hover,
   &:focus {
-    span {
-      color: ${th('colorTextReverse')};
+    top: 0;
 
+    span {
       &::after {
         transform: translateX(0);
       }
@@ -251,20 +303,15 @@ const StyledLogin = styled(Link)`
   align-items: center;
   background-color: ${th('colorPrimary')};
   border-color: ${th('colorPrimary')};
-  border-radius: 0;
   color: ${th('colorTextReverse')};
   display: flex;
   font-size: ${th('fontSizeBase')};
-  height: 40px;
+  height: 32px;
   padding: ${grid(1)} ${grid(4)};
-  text-align: left;
+  text-align: center;
   text-decoration: none;
   transition: all cubic-bezier(0.645, 0.045, 0.355, 1) 0.3s;
-  width: 100%;
-
-  && {
-    line-height: 38px;
-  }
+  width: fit-content;
 
   &:hover,
   &:focus {
@@ -275,113 +322,218 @@ const StyledLogin = styled(Link)`
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     height: 32px;
-    margin-top: ${grid(-1)};
-
-    && {
-      line-height: 30px;
-    }
+    margin-right: ${grid(5)};
   }
 `
 
 const MobileMenuToggle = styled.button`
+  aspect-ratio: 1 / 1;
   background-color: ${th('colorBody')};
-  background-image: linear-gradient(transparent, transparent),
-    ${() => `url(${menuOpen})`};
+  background-image: url(${menuOpen});
+  background-size: cover;
 
-  &[aria-expanded='true'] {
-    background-image: linear-gradient(transparent, transparent),
-      ${() => `url(${menuClose})`};
-  }
-
-  /* control display of NavLinks only for < medium screens */
-  @media screen and (max-width: ${th('mediaQueries.large')}) {
-    &[aria-expanded='true'] ~ ${NavLinks} {
-      display: block;
-    }
-
-    &[aria-expanded='false'] ~ ${NavLinks} {
-      display: none;
-    }
-  }
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 31px 31px;
   border: none;
   cursor: pointer;
-  display: block;
-  height: 31px;
-  overflow: hidden;
+  display: flex;
+  margin-right: ${grid(5)};
   padding: 0;
-  transition: outline 200ms cubic-bezier(0.645, 0.045, 0.355, 1);
-  width: 31px;
+  position: relative;
+  transition: filter 300ms;
+  width: 25px;
 
-  &:hover,
-  &:focus {
-    outline: 1px solid ${th('colorTextReverse')};
+  &[aria-expanded='true'] {
+    background-image: url(${menuClose});
+  }
+
+  &[aria-expanded='true'] ~ ${MainNav} {
+    background-color: #efefef;
+    width: 250px;
+  }
+
+  &[aria-expanded='false'] ~ ${MainNav} {
+    background-color: #c5c5c5;
+    width: 0;
   }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     display: none;
+
+    &[aria-expanded='true'] ~ ${MainNav} {
+      background-color: #0000;
+      width: 100%;
+    }
+
+    &[aria-expanded='false'] ~ ${MainNav} {
+      background-color: #0000;
+      width: 100%;
+    }
   }
 `
 
 const UserMenuWrapper = styled.div`
+  align-items: flex-start;
+  border: none;
   display: flex;
   flex-direction: column;
   font-weight: bold;
+  margin-right: ${grid(2)};
+  position: relative;
   width: 100%;
 
+  > p {
+    color: ${th('colorPrimary')};
+    margin: 0;
+    padding: 0 0 0 0.5rem;
+    position: absolute;
+    top: 5px;
+    width: max-content;
+  }
+
+  .ant-btn:not(:disabled):focus-visible {
+    filter: drop-shadow(0 0 2px #5edfff55);
+    outline-color: #0000;
+  }
+
   @media screen and (min-width: ${th('mediaQueries.large')}) {
-    height: 32px;
-    margin-top: ${grid(-1)};
+    align-items: center;
+    border-left: 1px solid #34f1ff62;
+    flex-direction: row;
+    gap: 0.3rem;
+    height: 40px;
+
+    p {
+      border-radius: 0.5rem;
+      color: ${th('colorSelection')};
+      margin: 0;
+      padding: 0 0.5rem 0 1rem;
+      position: initial;
+    }
   }
 `
 
 const UserMenuButton = styled(Button)`
-  align-items: center;
-  display: flex;
-  flex-direction: row-reverse;
-  font-weight: 700;
-  justify-content: space-between;
+  display: none;
 
-  span:not([role='img']) {
-    margin-left: 0;
-    margin-right: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    align-items: center;
+    background: #0000 url(${userIcon}) no-repeat center / contain;
+    border: none;
+    border-radius: 100% 100% 0.5rem;
+    display: flex;
+    height: 32px;
+    margin-right: 10px;
+    position: relative;
+    width: 32px;
 
-  span[role='img'] {
-    margin-top: 3px;
+    &:hover,
+    &:focus-visible,
+    &:active {
+      background-color: transparent;
+      transform: scale(1.05);
+    }
   }
 `
 
 const CollapsableMenu = styled.ul`
-  background-color: ${th('colorPrimary')};
-  border: none;
-  color: ${th('colorBackground')};
+  align-items: flex-start;
+  background-color: #0000;
   display: flex;
   flex-direction: column;
-  gap: ${grid(1)};
+  justify-content: center;
   list-style: none;
-  padding: ${grid(2)} ${grid(4)};
-  text-align: left;
+  margin: 0;
+  max-height: 1000px;
+  overflow: hidden;
+  padding: 0;
+  transition: none;
+  width: 100%;
 
-  > li > a {
-    color: ${th('colorTextReverse')};
-    display: inline-flex;
-    font-size: ${th('fontSizeBase')};
+  > li {
+    display: flex;
+    line-height: 1rem;
+    margin: 0;
+    padding: 0;
     width: 100%;
+
+    > a,
+    button {
+      color: ${darken('colorPrimary', 0.25)};
+      font-size: 0.9rem;
+      font-weight: 600;
+
+      &:hover {
+        > span {
+          color: ${th('colorPrimary')};
+        }
+      }
+
+      /* stylelint-disable-next-line no-descending-specificity */
+      & span::after {
+        background-color: ${th('colorPrimary')};
+      }
+    }
+  }
+
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    background-color: ${darken('colorPrimary', 0.3)};
+    border-radius: 0 0 0 0.5rem;
+    box-shadow: 0 0 12px #0006, inset 0 0 25px #0004;
+    color: ${th('colorBackground')};
+    /* left: calc(100% - 250px + ${grid(4)}); */
+    max-height: ${p => (!p.isOpen ? '0' : '1000px')};
+    position: absolute;
+    right: -10px;
+    top: 52px;
+    transition: max-height 0.3s;
+    width: 250px;
+    will-change: max-height;
+
+    > li {
+      padding-left: 0.3rem;
+      /* stylelint-disable-next-line no-descending-specificity */
+      & span::after {
+        background-color: #7fdbff;
+      }
+
+      > a,
+      button {
+        color: ${th('colorTextReverse')};
+        display: inline-flex;
+        height: inherit;
+        margin: 0 0.5rem;
+        padding: ${grid(2)} 0;
+        width: inherit;
+
+        &:focus,
+        &:hover,
+        &:active,
+        &:focus-visible {
+          color: #7fdbff;
+          outline-color: #0000;
+
+          > span {
+            color: #7fdbff;
+            outline-color: #0000;
+          }
+          /* outline-color: #0000; */
+        }
+      }
+
+      :not(:last-child) {
+        border-bottom: 1px solid #0002;
+      }
+    }
   }
 `
 
 const Separator = styled.hr`
-  margin: 0 0 ${grid(4)} 0;
+  height: 2px;
+  margin: ${grid(2)};
   padding: 0;
+  width: 90%;
 
   &::after {
-    background-color: ${th('colorText')};
+    background-color: #0002;
   }
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
@@ -407,7 +559,124 @@ const SkipLink = styled.a`
     top: 0;
   }
 `
+
+const StyledIcon = styled.img`
+  filter: brightness(20%);
+  margin: 0 0.5rem;
+  object-fit: contain;
+  width: 16px;
+
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    filter: none;
+  }
+`
+
 // #endregion styles
+
+// #region NOTIFICATION ICON
+const Wrapper = styled.div`
+  align-items: center;
+  border-left: 1px solid #0001;
+  border-right: 1px solid #0001;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  margin: 0;
+  padding: 0 0.2rem;
+  position: relative;
+  width: 40px;
+
+  @media screen and (min-width: ${th('mediaQueries.large')}) {
+    border-color: #fff1;
+  }
+`
+
+const StyledCounter = styled.div`
+  align-items: center;
+  background-color: ${th('colorError')};
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: 12px;
+  font-weight: 700;
+  height: 18px;
+  justify-content: center;
+  padding: 0.3rem;
+  pointer-events: none;
+  position: absolute;
+  right: 3px;
+  text-align: center;
+  text-rendering: geometricPrecision;
+  top: 3px;
+  transform: scale(${p => (p.$show ? 1 : 0)});
+  transition: transform 0.2s;
+  width: 18px;
+`
+
+const StyledNotificationIcon = styled.button`
+  aspect-ratio: 1 / 1;
+  background: url(${p => p.$src});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 80%;
+  border: none;
+  cursor: pointer;
+  margin: 0.2rem 0;
+  width: 25px;
+`
+
+// eslint-disable-next-line react/prop-types
+const NotificationIcon = ({ iconSrc, pending = [], onClick }) => {
+  return (
+    <Wrapper>
+      <StyledNotificationIcon
+        $src={iconSrc}
+        onClick={onClick}
+        style={{ position: 'absolute' }}
+      />
+
+      <StyledCounter $show={pending.length > 0}>
+        <span>{pending.length.toString()}</span>
+      </StyledCounter>
+    </Wrapper>
+  )
+}
+
+// eslint-disable-next-line react/prop-types
+const PendingTasksAndMentions = ({ task, message, mediaBreak }) => {
+  const [tasks, setTasks] = task
+  const [messages, setMessages] = message
+  return (
+    <span
+      style={{
+        backgroundColor: mediaBreak ? '#0003' : '#fff5',
+        height: '40px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginRight: 'auto',
+        borderBottom: '1px solid #0001',
+        borderTop: '1px solid #0001',
+        width: '100%',
+        padding: '0.5rem',
+      }}
+    >
+      <span style={{ display: 'flex' }}>
+        <NotificationIcon
+          iconSrc={notificationIcon}
+          onClick={() => setMessages([])}
+          pending={messages}
+        />
+        <NotificationIcon
+          iconSrc={pendingTasksIcon}
+          onClick={() => setTasks([])}
+          pending={tasks}
+        />
+      </span>
+    </span>
+  )
+}
+// #endregion NOTIFICATIONICON
 
 const Header = props => {
   const {
@@ -416,75 +685,138 @@ const Header = props => {
     canManageTeams,
     currentPath,
     displayName,
-    links: {
-      homepage,
-      questions,
-      dashboard,
-      sets,
-      lists,
-      about,
-      learning,
-      manageUsers,
-      manageTeams,
-      profile,
-      login,
-    },
+    links,
     onLogout,
     ...rest
   } = props
 
-  const [showMenu, setShowMenu] = useState(false)
-  const [openUserMenu, setOpenUserMenu] = useState(false)
+  // to be removed
+  const fakePendingMsgs = useState([1, 1, 1, 1])
+  const fakePendingTsks = useState([1, 1, 1, 1, 1, 1, 1])
+  const pendingTotal = [...fakePendingTsks[0], ...fakePendingMsgs[0]]
+  const { width: windowWidth } = useWindowSize()
 
-  const userMenuOnKeyDown = e => {
-    e.key !== 'Tab' && e.preventDefault()
-    const { code } = e
+  const [openUserMenu, setOpenUserMenu, userMenuBlur, userMenuKeyDown] =
+    useKeyboardOnList({
+      /* to avoid conflicts between both menues that shares some of their links */
+      enabled: windowWidth >= 1200,
+      menuItems: [...document.querySelectorAll('#user-menu .menu-link')],
+      openButton: document.querySelector('button[aria-controls="user-menu"]'),
+    })
 
-    const listOfLinks = [
-      ...document.querySelectorAll('#user-menu a'),
-      document.querySelector('#user-menu button'),
-    ]
-
-    const currentIndex = () => listOfLinks.indexOf(document.activeElement)
-
-    const keys = {
-      Escape: () => {
-        setOpenUserMenu(false)
-        document.querySelector('button[aria-controls="user-menu"]').focus()
+  const [showMenu, setShowMenu, mainNavBlur, mainNavKeyDown] =
+    useKeyboardOnList({
+      enabled: windowWidth < 1200,
+      menuItems: [...document.querySelectorAll('#main-nav .menu-link')],
+      openButton: document.querySelector('[aria-label="Menu"]'),
+      additionalKeys: action => {
+        return {
+          ArrowUp: action.moveUpLoop,
+          ArrowLeft: action.open,
+          ArrowRight: action.close,
+        }
       },
-      Enter: () => {
-        document.activeElement.click()
-        showMenu && setShowMenu(false)
-        document.querySelector('button[aria-controls="user-menu"]').focus()
-      },
-      Space: () =>
-        setTimeout(() => {
-          listOfLinks[0].focus()
-        }, 50),
-      ArrowDown: () => {
-        !openUserMenu
-          ? setOpenUserMenu(true)
-          : listOfLinks[
-              safeIndex(currentIndex() + 1, 'down', listOfLinks)
-            ].focus()
-      },
-      ArrowUp: () => {
-        !openUserMenu
-          ? setOpenUserMenu(true)
-          : listOfLinks[
-              safeIndex(currentIndex() - 1, 'up', listOfLinks)
-            ].focus()
-      },
-    }
+    })
 
-    return safeCall(keys[code])
+  const hideMenu = () => showMenu && setShowMenu(false)
+
+  const linksUI = {
+    navigation: [
+      {
+        link: links.questions,
+        text: 'Browse Questions',
+      },
+      {
+        link: links.dashboard,
+        text: 'My Questions',
+        renderIf: loggedin,
+      },
+      {
+        link: links.sets,
+        text: 'My Sets',
+        renderIf: loggedin,
+      },
+      {
+        link: links.lists,
+        text: 'My Lists',
+        renderIf: loggedin,
+      },
+    ],
+    info: [
+      {
+        link: links.about,
+        text: 'About',
+        className: 'menu-link info',
+      },
+      {
+        link: links.learning,
+        text: 'Professional Learning',
+        className: 'menu-link info',
+      },
+    ],
+    userLinks: [
+      {
+        link: links.manageUsers,
+        text: 'Manage Users',
+        click: () => setOpenUserMenu(false),
+        renderIf: canManageUsers,
+        icon: <StyledIcon src={manageUserIcon} />,
+      },
+      {
+        link: links.manageTeams,
+        text: 'Manage Teams',
+        click: () => setOpenUserMenu(false),
+        renderIf: canManageTeams,
+        icon: <StyledIcon src={manageTeamIcon} />,
+      },
+      {
+        link: links.profile,
+        text: 'Profile',
+        click: () => setOpenUserMenu(false),
+        icon: <EditOutlined style={{ margin: '0 .5rem' }} />,
+      },
+      {
+        text: 'Logout',
+        click: () => {
+          setOpenUserMenu(false)
+          onLogout()
+        },
+        icon: <LogoutOutlined style={{ margin: '0 .5rem' }} />,
+        Component: StyledButton,
+        'data-testid': 'logout-btn',
+      },
+    ],
   }
 
-  const userMenuOnBlur = e => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      setOpenUserMenu(false)
-    }
-  }
+  const renderLinks = sourceLinks => (
+    <>
+      {[...sourceLinks].map(
+        ({
+          link,
+          text,
+          click,
+          icon,
+          renderIf = true,
+          Component = StyledLink,
+          ...remaining
+        }) =>
+          renderIf && (
+            <li key={`${text}-link`} role="menuitem">
+              {icon}
+              <Component
+                aria-current={currentPath === link ? 'page' : false}
+                className="menu-link"
+                onClick={click}
+                to={link}
+                {...remaining}
+              >
+                <span>{text}</span>
+              </Component>
+            </li>
+          ),
+      )}
+    </>
+  )
 
   return (
     <StyledHeader role="banner" {...rest}>
@@ -499,186 +831,86 @@ const Header = props => {
       >
         Skip to main content
       </SkipLink>
-      <Branding to={homepage}>
+      <Branding to={links.homepage}>
         <h1>HHMI BioInterctive Assessment Builder</h1>
       </Branding>
-      <Navigation role="navigation">
+      <Navigation
+        onBlur={mainNavBlur}
+        onKeyDown={mainNavKeyDown}
+        role="navigation"
+      >
         <MobileMenuToggle
           aria-controls="main-nav"
           aria-expanded={showMenu}
           aria-label="Menu"
           data-testid="nav-toggle"
           onClick={() => setShowMenu(!showMenu)}
-        />
-        <NavLinks id="main-nav">
-          <StyledList>
-            <li>
-              <StyledLink
-                aria-current={currentPath === questions ? 'page' : false}
-                onClick={() => setShowMenu(false)}
-                to={questions}
-              >
-                <span>Browse Questions</span>
-              </StyledLink>
-            </li>
-            {loggedin && (
-              <>
-                <li>
-                  <StyledLink
-                    aria-current={currentPath === dashboard ? 'page' : false}
-                    onClick={() => setShowMenu(false)}
-                    to={dashboard}
-                  >
-                    <span>Dashboard</span>
-                  </StyledLink>
-                </li>
-                <li>
-                  <StyledLink
-                    aria-current={currentPath === sets ? 'page' : false}
-                    onClick={() => setShowMenu(false)}
-                    to={sets}
-                  >
-                    <span>Sets</span>
-                  </StyledLink>
-                </li>
-                <li>
-                  <StyledLink
-                    aria-current={currentPath === lists ? 'page' : false}
-                    onClick={() => setShowMenu(false)}
-                    to={lists}
-                  >
-                    <span>My Lists</span>
-                  </StyledLink>
-                </li>
-              </>
-            )}
-          </StyledList>
-          <Separator />
-          <LeftNavContainer>
-            <StyledList>
-              <li>
-                <StyledLink
-                  aria-current={currentPath === about ? 'page' : false}
-                  onClick={() => setShowMenu(false)}
-                  to={about}
-                >
-                  <span>About</span>
-                </StyledLink>
-              </li>
-              <li>
-                <StyledLink
-                  aria-current={currentPath === learning ? 'page' : false}
-                  onClick={() => setShowMenu(false)}
-                  to={learning}
-                >
-                  <span>Professional Learning</span>
-                </StyledLink>
-              </li>
-            </StyledList>
+        >
+          <StyledCounter
+            $show={!showMenu && pendingTotal.length > 0}
+            style={{ top: '-5px', left: '-5px' }}
+          >
+            {pendingTotal.length}
+          </StyledCounter>
+        </MobileMenuToggle>
+        <MainNav id="main-nav" show={showMenu}>
+          <NavWrapper show={showMenu}>
+            <StyledList>{renderLinks(linksUI.navigation)}</StyledList>
             <Separator />
-            <StyledList>
-              <li>
+            <RightNavContainer>
+              <StyledList>{renderLinks(linksUI.info)}</StyledList>
+              <StyledList>
                 {loggedin ? (
                   <UserMenuWrapper
-                    onBlur={userMenuOnBlur}
-                    onKeyDown={userMenuOnKeyDown}
+                    onBlur={userMenuBlur}
+                    onKeyDown={userMenuKeyDown}
                   >
+                    <p>{displayName}</p>
+
                     <UserMenuButton
                       aria-controls="user-menu"
                       aria-expanded={openUserMenu}
                       aria-haspopup="true"
+                      aria-label="Toggle user menu"
                       data-testid="usermenu-btn"
-                      icon={
-                        openUserMenu ? (
-                          <UpOutlined aria-hidden="true" />
-                        ) : (
-                          <DownOutlined aria-hidden="true" />
-                        )
-                      }
                       onClick={() => setOpenUserMenu(!openUserMenu)}
-                      type="primary"
                     >
-                      {displayName}
+                      <StyledCounter
+                        $show={!openUserMenu && pendingTotal.length > 0}
+                        style={{
+                          bottom: '-1px',
+                          right: '-3px',
+                          top: 'unset',
+                          left: 'unset',
+                        }}
+                      >
+                        {pendingTotal.length}
+                      </StyledCounter>
                     </UserMenuButton>
                     <CollapsableMenu
                       aria-label="User menu"
                       id="user-menu"
+                      isOpen={openUserMenu}
                       role="menu"
-                      style={{ display: openUserMenu ? 'flex' : 'none' }}
                     >
-                      {canManageUsers && (
-                        <li role="none">
-                          <StyledLink
-                            aria-current={
-                              currentPath === manageUsers ? 'page' : false
-                            }
-                            onClick={() => {
-                              setShowMenu(false)
-                              setOpenUserMenu(false)
-                            }}
-                            role="menuitem"
-                            to={manageUsers}
-                          >
-                            <span>Manage Users</span>
-                          </StyledLink>
-                        </li>
-                      )}
-                      {canManageTeams && (
-                        <li role="none">
-                          <StyledLink
-                            aria-current={
-                              currentPath === manageTeams ? 'page' : false
-                            }
-                            onClick={() => {
-                              setShowMenu(false)
-                              setOpenUserMenu(false)
-                            }}
-                            role="menuitem"
-                            to={manageTeams}
-                          >
-                            <span>Manage Teams</span>
-                          </StyledLink>
-                        </li>
-                      )}
-                      <li role="none">
-                        <StyledLink
-                          aria-current={
-                            currentPath === profile ? 'page' : false
-                          }
-                          onClick={() => {
-                            setShowMenu(false)
-                            setOpenUserMenu(false)
-                          }}
-                          role="menuitem"
-                          to={profile}
-                        >
-                          <span>Profile</span>
-                        </StyledLink>
-                      </li>
-                      <li role="none">
-                        <StyledButton
-                          data-testid="logout-btn"
-                          onClick={() => {
-                            setShowMenu(false)
-                            setOpenUserMenu(false)
-                            onLogout()
-                          }}
-                          role="menuitem"
-                        >
-                          Logout
-                        </StyledButton>
-                      </li>
+                      <PendingTasksAndMentions
+                        mediaBreak={windowWidth >= 1200}
+                        message={fakePendingMsgs}
+                        task={fakePendingTsks}
+                      />
+
+                      {renderLinks(linksUI.userLinks)}
                     </CollapsableMenu>
                   </UserMenuWrapper>
                 ) : (
-                  <StyledLogin onClick={() => setShowMenu(false)} to={login}>
+                  <StyledLogin onClick={hideMenu} to={links.login}>
                     Login
                   </StyledLogin>
                 )}
-              </li>
-            </StyledList>
-          </LeftNavContainer>
-        </NavLinks>
+              </StyledList>
+            </RightNavContainer>
+          </NavWrapper>
+        </MainNav>
       </Navigation>
     </StyledHeader>
   )
@@ -691,19 +923,7 @@ Header.propTypes = {
   canManageUsers: PropTypes.bool,
   canManageTeams: PropTypes.bool,
   displayName: PropTypes.string,
-  links: PropTypes.shape({
-    homepage: PropTypes.string,
-    questions: PropTypes.string,
-    dashboard: PropTypes.string,
-    sets: PropTypes.string,
-    lists: PropTypes.string,
-    about: PropTypes.string,
-    learning: PropTypes.string,
-    manageUsers: PropTypes.string,
-    manageTeams: PropTypes.string,
-    profile: PropTypes.string,
-    login: PropTypes.string,
-  }),
+  links: PropTypes.objectOf(PropTypes.string),
   onLogout: PropTypes.func,
 }
 
