@@ -39,6 +39,7 @@ export { default as Header } from './Header'
 export { default as Link } from './HhmiLink'
 export { default as Upload } from './Upload'
 
+export * from './NotificationIcon'
 export * from './Headings'
 export * from './Typography'
 

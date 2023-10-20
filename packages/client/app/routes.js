@@ -41,6 +41,7 @@ import {
   PageNotFound,
   ComplexItemSet,
   ComplexItemSetsList,
+  Notifications,
 } from './pages'
 
 import { CURRENT_USER } from './graphql'
@@ -79,6 +80,10 @@ const regexPaths = [
   {
     path: /^\/manage-teams$/,
     name: 'Team Manager page',
+  },
+  {
+    path: /^\/notifications$/,
+    name: 'Notifications page',
   },
   {
     path: /^\/profile$/,
@@ -242,6 +247,8 @@ const SiteHeader = () => {
     learning: '/learning',
     manageUsers: '/manage-users',
     manageTeams: '/manage-teams',
+    tasks: '/notifications/tasks',
+    messages: '/notifications/messages',
     profile: '/profile',
     login: '/login',
   }
@@ -440,6 +447,24 @@ const routes = (
                 render={() => (
                   <Authenticated>
                     <ComplexItemSetsList />
+                  </Authenticated>
+                )}
+              />
+              <Route
+                exact
+                path="/notifications/tasks"
+                render={() => (
+                  <Authenticated>
+                    <Notifications currentTabKey="tasks" />
+                  </Authenticated>
+                )}
+              />
+              <Route
+                exact
+                path="/notifications/messages"
+                render={() => (
+                  <Authenticated>
+                    <Notifications currentTabKey="messages" />
                   </Authenticated>
                 )}
               />

@@ -1,5 +1,5 @@
 /* stylelint-disable string-quotes */
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -18,6 +18,7 @@ import menuClose from '../../../static/close-white.svg'
 import Button from './Button'
 import useWindowSize from '../_helpers/useWindowSize'
 import useKeyboardOnList from '../_helpers/useKeyboardOnList'
+import { CounterBadge, NotificationIcon } from './NotificationIcon'
 
 // #region styles
 const StyledHeader = styled.header`
@@ -29,7 +30,7 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   padding-left: 0;
   width: 100%;
-  z-index: 9;
+  z-index: 1;
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     justify-content: unset;
@@ -138,9 +139,13 @@ const NavWrapper = styled.div`
 const RightNavContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
 
   @media screen and (min-width: ${th('mediaQueries.large')}) {
     flex-direction: row;
+    height: unset;
+    justify-content: unset;
   }
 `
 
@@ -571,85 +576,12 @@ const StyledIcon = styled.img`
   }
 `
 
-// #endregion styles
-
-// #region NOTIFICATION ICON
-const Wrapper = styled.div`
-  align-items: center;
-  border-left: 1px solid #0001;
-  border-right: 1px solid #0001;
-  display: flex;
-  height: 30px;
-  justify-content: center;
-  margin: 0;
-  padding: 0 0.2rem;
-  position: relative;
-  width: 40px;
-
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
-    border-color: #fff1;
-  }
-`
-
-const StyledCounter = styled.div`
-  align-items: center;
-  background-color: ${th('colorError')};
-  border-radius: 50%;
-  color: #fff;
-  display: flex;
-  font-size: 12px;
-  font-weight: 700;
-  height: 18px;
-  justify-content: center;
-  padding: 0.3rem;
-  pointer-events: none;
-  position: absolute;
-  right: 3px;
-  text-align: center;
-  text-rendering: geometricPrecision;
-  top: 3px;
-  transform: scale(${p => (p.$show ? 1 : 0)});
-  transition: transform 0.2s;
-  width: 18px;
-`
-
-const StyledNotificationIcon = styled.button`
-  aspect-ratio: 1 / 1;
-  background: url(${p => p.$src});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 80%;
-  border: none;
-  cursor: pointer;
-  margin: 0.2rem 0;
-  width: 25px;
-`
-
 // eslint-disable-next-line react/prop-types
-const NotificationIcon = ({ iconSrc, pending = [], onClick }) => {
-  return (
-    <Wrapper>
-      <StyledNotificationIcon
-        $src={iconSrc}
-        onClick={onClick}
-        style={{ position: 'absolute' }}
-      />
-
-      <StyledCounter $show={pending.length > 0}>
-        <span>{pending.length.toString()}</span>
-      </StyledCounter>
-    </Wrapper>
-  )
-}
-
-// eslint-disable-next-line react/prop-types
-const PendingTasksAndMentions = ({ task, message, mediaBreak }) => {
-  const [tasks, setTasks] = task
-  const [messages, setMessages] = message
+const PendingTasksAndMentions = ({ tasks, messages, mediaBreak, to }) => {
   return (
     <span
       style={{
-        backgroundColor: mediaBreak ? '#0003' : '#fff5',
+        backgroundColor: mediaBreak ? '#0002' : '#fff2',
         height: '40px',
         display: 'flex',
         alignItems: 'center',
@@ -664,13 +596,13 @@ const PendingTasksAndMentions = ({ task, message, mediaBreak }) => {
       <span style={{ display: 'flex' }}>
         <NotificationIcon
           iconSrc={notificationIcon}
-          onClick={() => setMessages([])}
           pending={messages}
+          to={to[0]}
         />
         <NotificationIcon
           iconSrc={pendingTasksIcon}
-          onClick={() => setTasks([])}
           pending={tasks}
+          to={to[1]}
         />
       </span>
     </span>
@@ -691,9 +623,9 @@ const Header = props => {
   } = props
 
   // to be removed
-  const fakePendingMsgs = useState([1, 1, 1, 1])
-  const fakePendingTsks = useState([1, 1, 1, 1, 1, 1, 1])
-  const pendingTotal = [...fakePendingTsks[0], ...fakePendingMsgs[0]]
+  const fakePendingMsgs = [1, 1, 1, 1]
+  const fakePendingTsks = [1, 1, 1, 1, 1, 1, 1]
+  const pendingTotal = [...fakePendingTsks, ...fakePendingMsgs]
   const { width: windowWidth } = useWindowSize()
 
   const [openUserMenu, setOpenUserMenu, userMenuBlur, userMenuKeyDown] =
@@ -756,28 +688,35 @@ const Header = props => {
     ],
     userLinks: [
       {
+        Component: PendingTasksAndMentions,
+        link: [links.messages, links.tasks],
+        mediaBreak: windowWidth >= 1200,
+        messages: fakePendingMsgs,
+        tasks: fakePendingTsks,
+      },
+      {
         link: links.manageUsers,
         text: 'Manage Users',
-        click: () => setOpenUserMenu(false),
+        onClick: () => setOpenUserMenu(false),
         renderIf: canManageUsers,
         icon: <StyledIcon src={manageUserIcon} />,
       },
       {
         link: links.manageTeams,
         text: 'Manage Teams',
-        click: () => setOpenUserMenu(false),
+        onClick: () => setOpenUserMenu(false),
         renderIf: canManageTeams,
         icon: <StyledIcon src={manageTeamIcon} />,
       },
       {
         link: links.profile,
         text: 'Profile',
-        click: () => setOpenUserMenu(false),
+        onClick: () => setOpenUserMenu(false),
         icon: <EditOutlined style={{ margin: '0 .5rem' }} />,
       },
       {
         text: 'Logout',
-        click: () => {
+        onClick: () => {
           setOpenUserMenu(false)
           onLogout()
         },
@@ -806,7 +745,6 @@ const Header = props => {
               <Component
                 aria-current={currentPath === link ? 'page' : false}
                 className="menu-link"
-                onClick={click}
                 to={link}
                 {...remaining}
               >
@@ -846,26 +784,30 @@ const Header = props => {
           data-testid="nav-toggle"
           onClick={() => setShowMenu(!showMenu)}
         >
-          <StyledCounter
+          <CounterBadge
+            $pos="-5px 0 0 -8px"
+            $scale="0"
             $show={!showMenu && pendingTotal.length > 0}
-            style={{ top: '-5px', left: '-5px' }}
-          >
-            {pendingTotal.length}
-          </StyledCounter>
+            counts={pendingTotal.length}
+          />
         </MobileMenuToggle>
         <MainNav id="main-nav" show={showMenu}>
           <NavWrapper show={showMenu}>
             <StyledList>{renderLinks(linksUI.navigation)}</StyledList>
             <Separator />
             <RightNavContainer>
-              <StyledList>{renderLinks(linksUI.info)}</StyledList>
+              {windowWidth >= 1200 && (
+                <StyledList>{renderLinks(linksUI.info)}</StyledList>
+              )}
               <StyledList>
                 {loggedin ? (
                   <UserMenuWrapper
                     onBlur={userMenuBlur}
                     onKeyDown={userMenuKeyDown}
                   >
-                    <p>{displayName}</p>
+                    <p style={{ maxWidth: `${openUserMenu ? '0' : '1px'})` }}>
+                      {displayName}
+                    </p>
 
                     <UserMenuButton
                       aria-controls="user-menu"
@@ -875,17 +817,11 @@ const Header = props => {
                       data-testid="usermenu-btn"
                       onClick={() => setOpenUserMenu(!openUserMenu)}
                     >
-                      <StyledCounter
+                      <CounterBadge
+                        $pos="unset -4px -4px unset"
                         $show={!openUserMenu && pendingTotal.length > 0}
-                        style={{
-                          bottom: '-1px',
-                          right: '-3px',
-                          top: 'unset',
-                          left: 'unset',
-                        }}
-                      >
-                        {pendingTotal.length}
-                      </StyledCounter>
+                        counts={pendingTotal.length}
+                      />
                     </UserMenuButton>
                     <CollapsableMenu
                       aria-label="User menu"
@@ -893,12 +829,6 @@ const Header = props => {
                       isOpen={openUserMenu}
                       role="menu"
                     >
-                      <PendingTasksAndMentions
-                        mediaBreak={windowWidth >= 1200}
-                        message={fakePendingMsgs}
-                        task={fakePendingTsks}
-                      />
-
                       {renderLinks(linksUI.userLinks)}
                     </CollapsableMenu>
                   </UserMenuWrapper>
@@ -908,6 +838,11 @@ const Header = props => {
                   </StyledLogin>
                 )}
               </StyledList>
+              {windowWidth < 1200 && (
+                <StyledList style={{ justifySelf: 'flexend' }}>
+                  {renderLinks(linksUI.info)}
+                </StyledList>
+              )}
             </RightNavContainer>
           </NavWrapper>
         </MainNav>
