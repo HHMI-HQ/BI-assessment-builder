@@ -648,7 +648,15 @@ class Question extends BaseModel {
           userId,
         })
     } else {
-      query.where({ complexItemSetId })
+      query
+        .leftJoin('teams', 'questions.id', 'teams.object_id')
+        .leftJoin('team_members', 'team_members.team_id', 'teams.id')
+        .where({ complexItemSetId, submitted: true })
+        .orWhere({
+          role: 'author',
+          complexItemSetId,
+          userId,
+        })
     }
 
     query.debug()
