@@ -140,6 +140,12 @@ class WaxToQTIConverter {
     }
   }
 
+  #tableBodyHandler = content => {
+    return {
+      tbody: this.#contentParser(content.content),
+    }
+  }
+
   #tableCellHandler = content => {
     return {
       td: this.#contentParser(content.content),
@@ -554,6 +560,7 @@ class WaxToQTIConverter {
     orderedlist: this.#orderedListHandler,
     paragraph: this.#paragraphHandler,
     table: this.#tableHandler,
+    table_body: this.#tableBodyHandler,
     table_cell: this.#tableCellHandler,
     table_header: this.#tableCellHandler,
     table_row: this.#tableRowHandler,

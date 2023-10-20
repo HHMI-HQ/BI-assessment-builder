@@ -1,4 +1,4 @@
-import { columnResizing, tableEditing } from 'prosemirror-tables'
+/* eslint-disable import/no-extraneous-dependencies */
 import {
   InlineAnnotationsService,
   AnnotationToolGroupService,
@@ -7,8 +7,6 @@ import {
   LinkService,
   ListsService,
   ListToolGroupService,
-  TablesService,
-  TableToolGroupService,
   BaseService,
   BaseToolGroupService,
   DisplayTextToolGroupService,
@@ -19,13 +17,8 @@ import {
   SpecialCharactersToolGroupService,
   EditorInfoToolGroupServices,
   BottomInfoService,
-  MultipleChoiceQuestionService,
-  FillTheGapQuestionService,
-  MatchingService,
-  MultipleDropDownService,
-  EssayService,
-  QuestionsDropDownToolGroupService,
 } from 'wax-prosemirror-services'
+import { TablesService, columnResizing } from 'wax-table-service'
 
 import { DefaultSchema } from 'wax-prosemirror-core'
 
@@ -45,29 +38,14 @@ export default {
         'FullScreen',
       ],
     },
-    {
-      templateArea: 'fillTheGap',
-      toolGroups: ['FillTheGap'],
-    },
-    {
-      templateArea: 'MultipleDropDown',
-      toolGroups: ['MultipleDropDown'],
-    },
   ],
 
   SchemaService: DefaultSchema,
-  PmPlugins: [columnResizing(), tableEditing()],
+  PmPlugins: [columnResizing()],
 
   ImageService: { showAlt: true },
 
   services: [
-    new FillTheGapQuestionService(),
-    new MatchingService(),
-    new MultipleChoiceQuestionService(),
-    new MultipleDropDownService(),
-    new EssayService(),
-    new QuestionsDropDownToolGroupService(),
-
     new ListsService(),
     new LinkService(),
     new InlineAnnotationsService(),
@@ -75,7 +53,6 @@ export default {
     new TablesService(),
     new BaseService(),
     new BaseToolGroupService(),
-    new TableToolGroupService(),
     new ImageToolGroupService(),
     new AnnotationToolGroupService(),
     new ListToolGroupService(),

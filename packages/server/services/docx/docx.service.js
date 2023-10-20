@@ -319,8 +319,10 @@ class WaxToDocxConverter {
 
   // #region tables
   tableHandler = table => {
+    const tableBody = table.content[0]
+
     return new Table({
-      rows: this.contentParser(table.content),
+      rows: this.contentParser(tableBody.content),
       width: {
         size: 100,
         type: WidthType.PERCENTAGE,

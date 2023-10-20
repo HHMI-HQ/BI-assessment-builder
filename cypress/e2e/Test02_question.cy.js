@@ -64,16 +64,10 @@ describe('Testing questions', () => {
     // [segment]: question dropdown
     cy.log('checking question dropdown...')
     cy.contains('[aria-controls="questions-list"]', 'Question Type').click()
-    cy.contains('#questions-list  > :nth-child(1)', 'Multiple choice')
-    cy.contains(
-      '#questions-list  > :nth-child(2)',
-      'Multiple choice (single correct)',
-    )
-    cy.contains('#questions-list  > :nth-child(3)', 'True/False')
-    cy.contains(
-      '#questions-list  > :nth-child(4)',
-      'True/False (single correct)',
-    )
+    cy.contains('#questions-list  > :nth-child(1)', 'Multi-Select')
+    cy.contains('#questions-list  > :nth-child(2)', 'Multiple Choice')
+    cy.contains('#questions-list  > :nth-child(3)', 'Multiple True/False')
+    cy.contains('#questions-list  > :nth-child(4)', 'True/False')
     cy.contains('#questions-list  > :nth-child(5)', 'Matching')
     cy.contains('#questions-list  > :nth-child(6)', 'Essay')
     cy.contains('#questions-list  > :nth-child(7)', 'Multiple dropdowns')

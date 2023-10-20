@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { grid, th } from '@coko/client'
@@ -7,6 +8,7 @@ import VisuallyHiddenElement from '../../common/VisuallyHiddenElement'
 
 import 'wax-prosemirror-core/dist/index.css'
 import 'wax-prosemirror-services/dist/index.css'
+import 'wax-table-service/dist/index.css'
 
 const Wrapper = styled.div`
   background-color: ${th('colorBackground')};

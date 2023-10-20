@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useContext } from 'react'
 import styled, { css, ThemeProvider } from 'styled-components'
 import { WaxContext } from 'wax-prosemirror-core'
@@ -12,6 +13,8 @@ import { config } from '../config'
 
 import 'wax-prosemirror-core/dist/index.css'
 import 'wax-prosemirror-services/dist/index.css'
+import 'wax-questions-service/dist/index.css'
+import 'wax-table-service/dist/index.css'
 
 const fullScreenStyles = css`
   background-color: ${th('colorBackground')};
