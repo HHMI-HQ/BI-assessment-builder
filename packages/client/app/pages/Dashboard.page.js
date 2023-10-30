@@ -287,7 +287,7 @@ const DashboardPage = () => {
 
   const tabs = [
     {
-      label: 'Authored Questions',
+      label: 'Authored Items',
       value: 'author',
       questions: mappedDataAuthor,
       totalCount: authorData?.totalCount,
@@ -295,7 +295,7 @@ const DashboardPage = () => {
       loading: authorLoading,
     },
     isEditor && {
-      label: 'Editor Questions',
+      label: 'Editor Items',
       value: 'editor',
       questions: mappedDataEditor,
       totalCount: editorData?.totalCount,
@@ -303,7 +303,7 @@ const DashboardPage = () => {
       loading: editorLoading,
     },
     isHandlingEditor && {
-      label: 'Handling Editor Questions',
+      label: 'Handling Editor Items',
       value: 'handlingEditor',
       questions: mappedDataHE,
       totalCount: handlingEditorData?.totalCount,

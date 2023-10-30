@@ -55,11 +55,8 @@ describe('Testing questions', () => {
     cy.log('checking if user can submit when question is empty...')
     cy.get('[data-testid="accept-tnc"]').click()
     cy.get(submitQuestionButton).click()
-    cy.contains(antModalContent, 'Question text cannot be empty')
-    cy.contains(
-      antModalContent,
-      'Please provide some content for your question',
-    )
+    cy.contains(antModalContent, 'Item text cannot be empty')
+    cy.contains(antModalContent, 'Please provide some content for your item')
     cy.contains(buttonAntModalBody, 'Ok').click()
     // [segment]: question dropdown
     cy.log('checking question dropdown...')
@@ -134,11 +131,11 @@ describe('Testing questions', () => {
     cy.get(submitQuestionButton).click()
     cy.contains(
       antModalConfirmTitle,
-      'Are you sure you want to submit the question?',
+      'Are you sure you want to submit this item?',
     )
     cy.contains(
       '[class="ant-modal-confirm-content"]',
-      'This will make the question visible to editors and reviewers, and after a successful review it will be published for all users.',
+      'This will make this item visible to editors and reviewers, and after a successful review it will be published for all users.',
     )
     cy.contains(buttonAntModalBody, 'Submit').click()
     cy.wait('@GQLReq')
@@ -187,7 +184,7 @@ describe('Testing questions', () => {
   it('editing the question', () => {
     cy.seedQuestion(disableScripts, user2.username, -3, 'ecology', 'published')
     cy.login(admin)
-    cy.contains(anchorTags.discover, 'Browse Questions').click()
+    cy.contains(anchorTags.discover, 'Browse Items').click()
     cy.wait('@GQLReq')
     cy.get(listItemWrapper)
       .eq(0)
@@ -195,11 +192,11 @@ describe('Testing questions', () => {
       .contains(ProseMirror, 'Plants growing under direct sunlight')
       .click()
     cy.wait('@GQLReq')
-    cy.contains('button[type="button"]', 'Edit question').click()
+    cy.contains('button[type="button"]', 'Edit item').click()
     cy.contains(antModalConfirmTitle, 'Warning!')
     cy.contains(
       '[class="ant-modal-confirm-content"]',
-      `You are editing a published question. Any changes you make will be automatically saved, but not automatically published. You will need to publish the question again for the edits to be reflected in the Browse Questions page. After the edited question is published, the old one will not be available anymore in the Browse Questions page. Do you wish to continue`,
+      `You are editing a published item. Any changes you make will be automatically saved, but not automatically published. You will need to publish this item again for the edits to be reflected in the Browse Items page. After the edited item is published, the old one will not be available anymore in the Browse Items page. Do you wish to continue?`,
     )
     cy.contains(buttonAntModalBody, 'Create new version').click()
     cy.wait('@GQLReq')
@@ -211,10 +208,10 @@ describe('Testing questions', () => {
       .type('Edited')
     cy.contains('[type="button"]', 'Publish').click()
     cy.contains('[type="button"]', 'Yes, publish').click()
-    cy.contains(antModalConfirmTitle, 'Question published successfully')
+    cy.contains(antModalConfirmTitle, 'Item published successfully')
     cy.contains(
       '[class="ant-modal-confirm-content"]',
-      'Question was published and is now available in the Browse Questions page',
+      'Item was published and is now available in the Browse Items page',
     )
     cy.contains(buttonAntModalBody, 'Ok').click()
   })
@@ -228,7 +225,7 @@ describe('Testing questions', () => {
       'published',
     )
     cy.login({ ...user2 })
-    cy.contains(anchorTags.discover, 'Browse Questions').click()
+    cy.contains(anchorTags.discover, 'Browse Items').click()
     cy.wait('@GQLReq')
     cy.get(listItemWrapper)
       .eq(0)
@@ -244,7 +241,7 @@ describe('Testing questions', () => {
     cy.wait('@GQLReq')
     cy.visit(dashboardRoute)
     cy.wait('@GQLReq')
-    cy.contains('div[role="tab"]', 'Authored Questions').click()
+    cy.contains('div[role="tab"]', 'Authored Items').click()
     cy.wait('@GQLReq')
     cy.get(listItemWrapper)
       .eq(0)
@@ -321,7 +318,7 @@ describe('Testing lists', () => {
   it('adding questions to new & existing list', () => {
     cy.seedList(disableScripts, 'new_list', user2.username)
     cy.login({ ...user2 })
-    cy.contains(anchorTags.discover, 'Browse Questions').click()
+    cy.contains(anchorTags.discover, 'Browse Items').click()
     cy.wait('@GQLReq')
     // [segment]: adding question to new lsit
     cy.get(listItemWrapper)

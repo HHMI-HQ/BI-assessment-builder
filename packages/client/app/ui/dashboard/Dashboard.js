@@ -135,7 +135,7 @@ const Dashboard = props => {
       title="Create question"
       type="primary"
     >
-      Create question
+      Create item
     </StyledCreateQuestionButton>
   )
 

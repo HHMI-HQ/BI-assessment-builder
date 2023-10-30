@@ -209,7 +209,7 @@ const ComplexItemSet = props => {
             title="Add question to this set"
             type="primary"
           >
-            Add question to this set
+            Add item to this set
           </StyledButton>
         ) : null
       }
