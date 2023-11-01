@@ -15,6 +15,7 @@ const EditorWrapper = styled.section`
   margin: auto;
   /* max-width: 75vw; */
   overflow: auto;
+  position: relative;
   width: 100%;
 `
 
@@ -33,6 +34,15 @@ const SubmitTestBar = styled.div`
   padding: ${grid(2)} ${grid(2)};
   width: 100%;
 `
+
+const MissingQuestionTypeAlert = styled.div`
+  border: 1px solid ${th('colorBorder')};
+  inset-block-start: 40%;
+  inset-inline-start: 50%;
+  padding: ${grid(4)};
+  position: absolute;
+  transform: translate(-50%, -50%);
+`
 // #endregion styled
 
 export const ComplexItemSetContext = createContext({})
@@ -49,6 +59,7 @@ const QuestionEditor = props => {
     withFeedback,
     leadingContent,
     complexSetEditLink,
+    selectedQuestionType,
   } = props
 
   const [showFeedBack, setShowFeedBack] = useState(false)
@@ -127,6 +138,7 @@ const QuestionEditor = props => {
             content={preserveLocalState ? editorContent : content}
             customValues={customValues}
             innerRef={innerRef}
+            key={selectedQuestionType?.waxValue}
             layout={layout}
             onContentChange={!testMode ? onContentChange : () => {}}
             onImageUpload={onImageUpload}
@@ -147,6 +159,12 @@ const QuestionEditor = props => {
             </Button>
           )}
         </SubmitTestBar>
+      )}
+
+      {!selectedQuestionType && (
+        <MissingQuestionTypeAlert data-testid="missing-question-text">
+          Please select an item type in the metadata form to start editing
+        </MissingQuestionTypeAlert>
       )}
     </EditorWrapper>
   )
@@ -170,6 +188,7 @@ QuestionEditor.propTypes = {
   withFeedback: PropTypes.bool,
   published: PropTypes.bool,
   complexSetEditLink: PropTypes.string,
+  selectedQuestionType: PropTypes.shape(),
 }
 
 QuestionEditor.defaultProps = {
@@ -181,6 +200,7 @@ QuestionEditor.defaultProps = {
   published: false,
   withFeedback: true,
   complexSetEditLink: null,
+  selectedQuestionType: null,
 }
 
 export default QuestionEditor

@@ -152,8 +152,8 @@ export const workflowData = {
   },
 }
 
-export const multipleChoiceQuestionString =
-  'By 2040, the world s population is expected to rise to approximately20 billion10 billion7 billion9 billion'
+export const fillInTheBlankString =
+  ' By 2040, the world s population is expected to rise to approximately   ______  .'
 
 export const multipleChoiceQuestionWithMetadata =
   'correctNot correctCorrectMetadataQuestion type:  multipleChoiceTopics:Topic:  environmentalScienceSubtopic:  humanPopulationImpctsCourses:Course:  apEnvironmentalScienceUnit:  populationsSkill:  Application:  Course Topic:  populationGrowthAndResourceAvailabilityUnderstanding:  Learning objective:  ERT-3.FEssential knowledge:  ERT-3.F.1Keywords:  population, environmentBioInteractive resources:Bloom&apos;s Cognitive Level:  higher-evaluateBloom&apos;s Affective Level:  valuingBloom&apos;s Psychomotor Level:  nonDiscursiveCommunicationPublication date:'
