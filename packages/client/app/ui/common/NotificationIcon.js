@@ -25,21 +25,18 @@ export const StyledCounter = styled.div`
   align-items: center;
   background-color: ${p => (p.$show ? th('colorError') : th('colorTertiary'))};
   border-radius: 50%;
-  bottom: ${({ $pos }) => $pos[2] || 'unset'};
   color: ${p => (p.$show ? '#fff' : '#fff0')};
   display: flex;
   font-size: 12px;
   font-weight: 700;
   height: 18px;
+  inset: ${({ $pos }) => $pos};
   justify-content: center;
-  left: ${({ $pos }) => $pos[3] || 'unset'};
   padding: 0.3rem;
   pointer-events: none;
   position: absolute;
-  right: ${({ $pos }) => $pos[1] || 'unset'};
   text-align: center;
   text-rendering: geometricPrecision;
-  top: ${({ $pos }) => $pos[0] || 'unset'};
   transform: scale(${p => (p.$show ? 1 : p.$scale || 0.3)});
   transition: all 0.3s;
   width: 18px;
@@ -59,7 +56,7 @@ const StyledNotificationIcon = styled(Link)`
 
 export const CounterBadge = ({ counts, $pos = '', ...rest }) => {
   return (
-    <StyledCounter $pos={$pos.split(' ')} {...rest}>
+    <StyledCounter $pos={$pos} {...rest}>
       <span>{counts}</span>
     </StyledCounter>
   )

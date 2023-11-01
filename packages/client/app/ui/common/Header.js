@@ -200,7 +200,7 @@ const StyledList = styled.ul`
 const StyledLink = styled(Link)`
   color: black;
   display: inline-block;
-  font-size: 0.9rem;
+  font-size: ${th('fontSizeBase')};
   font-weight: 900;
   line-height: 1.25;
   overflow-x: hidden;
@@ -210,7 +210,7 @@ const StyledLink = styled(Link)`
 
   &.info {
     color: #000;
-    font-size: 0.8rem;
+    font-size: ${th('fontSizeBaseSmall')};
     font-weight: 300;
 
     &:hover {
@@ -347,6 +347,11 @@ const MobileMenuToggle = styled.button`
   position: relative;
   transition: filter 300ms;
   width: 25px;
+
+  &:focus {
+    outline: 1px solid white;
+    outline-offset: 1px;
+  }
 
   &[aria-expanded='true'] {
     background-image: url(${menuClose});
@@ -600,14 +605,14 @@ const PendingTasksAndMentions = ({ tasks, mediaBreak, to }) => {
       <span style={{ display: 'flex' }}>
         <NotificationIcon
           iconSrc={messagesIcon}
-          pending={fakePendingMsgs}
           onClick={() => setTabKey('mentions')}
+          pending={fakePendingMsgs}
           to={to}
         />
         <NotificationIcon
           iconSrc={pendingTasksIcon}
-          pending={tasks}
           onClick={() => setTabKey('tasks')}
+          pending={tasks}
           to={to}
         />
       </span>
@@ -639,14 +644,18 @@ const Header = props => {
     useKeyboardOnList({
       /* to avoid conflicts between both menues that shares some of their links */
       enabled: windowWidth >= 1200,
-      menuItems: [...document.querySelectorAll('#user-menu .menu-link')],
+      menuItems: [
+        ...document.querySelectorAll('#user-menu a, #user-menu button'),
+      ],
       openButton: document.querySelector('button[aria-controls="user-menu"]'),
     })
 
   const [showMenu, setShowMenu, mainNavBlur, mainNavKeyDown] =
     useKeyboardOnList({
       enabled: windowWidth < 1200,
-      menuItems: [...document.querySelectorAll('#main-nav .menu-link')],
+      menuItems: [
+        ...document.querySelectorAll('#main-nav a, #main-nav button'),
+      ],
       openButton: document.querySelector('[aria-label="Menu"]'),
       additionalKeys: action => {
         return {
@@ -824,7 +833,7 @@ const Header = props => {
                       onClick={() => setOpenUserMenu(!openUserMenu)}
                     >
                       <CounterBadge
-                        $pos="unset -4px -4px unset"
+                        $pos="auto -4px -4px auto;"
                         $show={!openUserMenu && pendingTotal.length > 0}
                         counts={pendingTotal.length}
                       />
