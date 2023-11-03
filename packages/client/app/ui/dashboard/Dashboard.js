@@ -128,11 +128,11 @@ const Dashboard = props => {
 
   const CreateQuestionButton = (
     <StyledCreateQuestionButton
-      aria-label="Create question"
+      aria-label="Create item"
       data-testid="create-question-btn"
       icon={<PlusOutlined />}
       onClick={onClickCreate}
-      title="Create question"
+      title="Create item"
       type="primary"
     >
       Create item
