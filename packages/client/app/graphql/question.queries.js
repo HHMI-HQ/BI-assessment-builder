@@ -182,6 +182,75 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
   }
 `
 
+export const GET_REVIEWER_DASHBOARD = gql`
+  query GetReviewerDashboard(
+    $orderBy: String
+    $ascending: Boolean
+    $page: Int
+    $pageSize: Int
+    $filters: DashboardFilters
+  ) {
+    getReviewerDashboard(
+      orderBy: $orderBy
+      ascending: $ascending
+      page: $page
+      pageSize: $pageSize
+      filters: $filters
+    ) {
+      result {
+        id
+        rejected
+        author {
+          displayName
+        }
+        versions(latestOnly: true) {
+          id
+          content
+          submitted
+          underReview
+          inProduction
+          published
+          publicationDate
+
+          complexItemSetId
+          topics {
+            topic
+            subtopic
+          }
+
+          courses {
+            course
+            units {
+              # application
+              # courseTopic
+              # essentialKnowledge
+              learningObjective
+              # skill
+              understanding
+              # unit
+            }
+          }
+
+          cognitiveLevel
+          # affectiveLevel
+          # psychomotorLevel
+
+          reviewerStatus
+          reviews {
+            id
+            content
+            reviewerId
+            status {
+              submitted
+            }
+          }
+        }
+      }
+      totalCount
+    }
+  }
+`
+
 export const GET_PRODUCTION_DASHBOARD = gql`
   query GetInProductionDashboard(
     $orderBy: String
@@ -287,6 +356,16 @@ export const GET_PRODUCTION_CHAT_PARTICIPANTS = gql`
   }
 `
 
+export const GET_REVIEWER_CHAT_PARTICIPANTS = gql`
+  query GetReviewerChatParticipants($id: ID!) {
+    getReviewerChatParticipants(id: $id) {
+      id
+      display: displayName
+      role
+    }
+  }
+`
+
 export const CREATE_QUESTION = gql`
   mutation CreateQuestion($input: UpdateQuestionInput) {
     createQuestion(input: $input) {
@@ -360,10 +439,39 @@ export const QUESTION = gql`
         questionType
         complexItemSetId
         leadingContent
+
+        reviewerStatus
+        isReviewerAutomationOn
+        amountOfReviewers
+        reviews {
+          id
+          content
+          reviewerId
+          status {
+            submitted
+          }
+        }
+        reviewerPool {
+          id
+          status
+          reviewSubmitted
+          user {
+            id
+            displayName
+            topicsReviewing
+            receivedTraining
+            receivedInclusiveLanguageTraining
+            defaultIdentity {
+              id
+              email
+            }
+          }
+        }
       }
 
       authorChatThreadId
       productionChatThreadId
+      reviewerChatThreadId
       heAssigned
     }
   }
@@ -631,5 +739,49 @@ export const UPLOAD_FILES = gql`
 export const ASSIGN_QUESTION_AUTHOR = gql`
   mutation ($questionId: ID!, $userId: ID!) {
     assignAuthorship(questionId: $questionId, userId: $userId)
+  }
+`
+
+export const UPDATE_REVIEWER_POOL = gql`
+  mutation UpdateReviewerPool($questionVersionId: ID!, $reviewerIds: [ID!]!) {
+    updateReviewerPool(
+      questionVersionId: $questionVersionId
+      reviewerIds: $reviewerIds
+    ) {
+      id
+      reviewerPool {
+        id
+        user {
+          id
+        }
+      }
+    }
+  }
+`
+
+export const CHANGE_AMOUNT_OF_REVIEWERS = gql`
+  mutation ChangeAmountOfReviewers($questionVersionId: ID!, $amount: Int!) {
+    changeAmountOfReviewers(
+      questionVersionId: $questionVersionId
+      amount: $amount
+    ) {
+      id
+      amountOfReviewers
+    }
+  }
+`
+
+export const CHANGE_REVIEWER_AUTOMATION_STATUS = gql`
+  mutation ChangeReviewerAutomationStatus(
+    $questionVersionId: ID!
+    $value: Boolean!
+  ) {
+    changeReviewerAutomationStatus(
+      questionVersionId: $questionVersionId
+      value: $value
+    ) {
+      id
+      isReviewerAutomationOn
+    }
   }
 `
