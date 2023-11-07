@@ -19,3 +19,7 @@ extend type Query {
     options: NotificationFilterOptions
   ): [Notification!]!
 }
+
+extend type Mutation {
+  markAs(read: Boolean, notificationIds: [ID!]!)
+}

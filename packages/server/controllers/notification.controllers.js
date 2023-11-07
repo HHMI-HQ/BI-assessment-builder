@@ -20,6 +20,24 @@ const getUserNotifications = async (userId, notificationType, options) => {
   }
 }
 
+const markNotifications = async (read, notificationIds, options) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} markNotifications:`
+
+  try {
+    return Notification.markAs(
+      {
+        read,
+        notificationIds,
+      },
+      options,
+    )
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   getUserNotifications,
+  markNotifications,
 }
