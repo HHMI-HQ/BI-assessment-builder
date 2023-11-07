@@ -8,6 +8,11 @@ type Notification {
   read: Boolean!
 }
 
+type NotificationResponse {
+  result: [Notification!]!
+  totalCount: Int
+}
+
 input NotificationFilterOptions {
   page: Int
   pageSize: Int
@@ -18,7 +23,7 @@ extend type Query {
   userNotifications(
     type: String
     options: NotificationFilterOptions
-  ): [Notification!]!
+  ): NotificationResponse!
 }
 
 extend type Mutation {

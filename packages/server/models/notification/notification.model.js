@@ -27,19 +27,18 @@ class Notification extends BaseModel {
     }
   }
 
-  static async filterUserNotifications(
-    userId,
-    notificationsType,
-    options = {},
-  ) {
+  static async filterUserNotifications(userId, notificationType, options = {}) {
     try {
       const { read } = options
 
       const query = Notification.query(options.trx).where({
         userId,
-        notificationsType,
-        read,
+        notificationType,
       })
+
+      if (read !== undefined) {
+        query.where({ read })
+      }
 
       return applyListQueryOptions(query, options)
     } catch (e) {
