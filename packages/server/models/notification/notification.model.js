@@ -33,9 +33,12 @@ class Notification extends BaseModel {
     options = {},
   ) {
     try {
+      const { read } = options
+
       const query = Notification.query(options.trx).where({
         userId,
         notificationsType,
+        read,
       })
 
       return applyListQueryOptions(query, options)

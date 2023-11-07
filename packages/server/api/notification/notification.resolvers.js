@@ -2,8 +2,8 @@ const {
   getUserNotifications,
 } = require('../../controllers/notification.controllers')
 
-const userNotificationsResolver = async (_, args, ctx) => {
-  return getUserNotifications(ctx.user, args)
+const userNotificationsResolver = async (_, { type, options }, ctx) => {
+  return getUserNotifications(ctx.user, type, options)
 }
 
 module.exports = {
