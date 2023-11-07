@@ -55,6 +55,8 @@ class Notification extends BaseModel {
       await Notification.query(options.trx)
         .patch({ read })
         .whereIn('id', notificationIds)
+
+      return
     } catch (e) {
       console.error(
         `Notification model: failed to mark notifications as ${
