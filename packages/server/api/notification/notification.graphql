@@ -1,0 +1,21 @@
+type Notification {
+  created: DateTime!
+  user_id: ID!
+  notification_type: String
+  object_id: ID
+  content: String
+  read: Boolean!
+}
+
+input NotificationFilterOptions {
+  page: Int
+  pageSize: Int
+  read: Boolean
+}
+
+extend type Query {
+  userNotifications(
+    type: String
+    options: NotificationFilterOptions
+  ): [Notification!]!
+}
