@@ -168,7 +168,7 @@ const DashboardPage = () => {
       ? dashboardDataMapper({
           questions: handlingEditorData.result,
           metadata,
-          complexItemSetOptions: 'editor',
+          complexItemSetOptions,
           showAuthor: true,
           showStatus: true,
         })
