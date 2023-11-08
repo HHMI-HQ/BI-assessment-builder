@@ -47,6 +47,22 @@ class Notification extends BaseModel {
     }
   }
 
+  static async getUserUnreadNotifications(userId, options = {}) {
+    try {
+      return Notification.query(options.trx)
+        .select('notification_type')
+        .where({
+          userId,
+          read: false,
+        })
+        .count()
+        .groupBy('notification_type')
+    } catch (e) {
+      console.error('Notification model: unread notification count failed', e)
+      throw new Error(e)
+    }
+  }
+
   static async markAs(data, options) {
     const { notificationIds, read } = data
 

@@ -20,6 +20,17 @@ const getUserNotifications = async (userId, notificationType, options) => {
   }
 }
 
+const getUnreadNotificationsCountForUser = async (userId, options) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} getUnreadNotificationsCountForUser:`
+
+  try {
+    return Notification.getUserUnreadNotifications(userId, options)
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 const markNotifications = async (read, notificationIds, options) => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} markNotifications:`
 
@@ -39,5 +50,6 @@ const markNotifications = async (read, notificationIds, options) => {
 
 module.exports = {
   getUserNotifications,
+  getUnreadNotificationsCountForUser,
   markNotifications,
 }

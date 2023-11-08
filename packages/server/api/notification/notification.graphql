@@ -13,6 +13,11 @@ type NotificationResponse {
   totalCount: Int
 }
 
+type UnreadNotificationsResponse {
+  notificationType: String!
+  count: Int!
+}
+
 input NotificationFilterOptions {
   page: Int
   pageSize: Int
@@ -20,6 +25,7 @@ input NotificationFilterOptions {
 }
 
 extend type Query {
+  getUnreadNotificationsCount: [UnreadNotificationsResponse!]!
   userNotifications(
     type: String
     options: NotificationFilterOptions
