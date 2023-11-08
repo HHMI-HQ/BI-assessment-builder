@@ -63,15 +63,15 @@ class Notification extends BaseModel {
     }
   }
 
-  static async markAs(data, options) {
+  static async markAs(data, options = {}) {
     const { notificationIds, read } = data
 
     try {
-      await Notification.query(options.trx)
+      const rowsAffected = await Notification.query(options.trx)
         .patch({ read })
         .whereIn('id', notificationIds)
 
-      return
+      return rowsAffected === notificationIds.length
     } catch (e) {
       console.error(
         `Notification model: failed to mark notifications as ${

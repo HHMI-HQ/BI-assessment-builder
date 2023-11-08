@@ -33,5 +33,5 @@ extend type Query {
 }
 
 extend type Mutation {
-  markAs(read: Boolean, notificationIds: [ID!]!): [ID!]!
+  markAs(read: Boolean, notificationIds: [ID!]!): Boolean!
 }
