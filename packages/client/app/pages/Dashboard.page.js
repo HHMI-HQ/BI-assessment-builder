@@ -343,6 +343,14 @@ const DashboardPage = () => {
       showBulkActions: false,
       loading: productionLoading,
     },
+    isProduction && {
+      label: 'Production Items',
+      value: 'production',
+      questions: mappedDataProduction,
+      totalCount: productionData && productionData.totalCount,
+      showBulkActions: false,
+      loading: productionLoading,
+    },
   ].filter(Boolean)
 
   // #endregion data

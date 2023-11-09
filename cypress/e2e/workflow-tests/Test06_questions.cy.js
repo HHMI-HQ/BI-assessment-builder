@@ -542,6 +542,37 @@ describe('Question Workflows', () => {
       cy.get(listItemWrapper).should('have.length', 0)
     })
   })
+  describe('Production team worflow', () => {
+    before(() => {
+      cy.seedUser(disableScripts, productionMember1)
+      cy.seedQuestion(
+        disableScripts,
+        user2.username,
+        -4,
+        'population',
+        'inProduction',
+      )
+    })
+
+    it('Question in production stage available for editing', () => {
+      cy.login(productionMember1)
+      cy.contains(antTabs, 'Production Items').click()
+      cy.get(listItemWrapper).eq(0).contains(ProseMirror, 'By 2040').click()
+      cy.get('[data-testid="topic-select"]').scrollIntoView().click()
+      cy.contains('Ecology').click({ force: true })
+      cy.get('[data-testid="subtopic-select"]').scrollIntoView().click()
+      cy.contains('Matter & Energy').click({ force: true })
+      cy.get('[data-testid="publish-question-btn"]').first().click()
+      cy.contains(
+        '[class="ant-modal-body"] button[type="button"]',
+        'Yes, publish',
+      ).click()
+      cy.contains(
+        '[class="ant-modal-body"] [class="ant-modal-confirm-content"]',
+        'Item was published and is now available in the Browse Items page',
+      )
+    })
+  })
   describe('Author chat', () => {
     before(() => {
       cy.viewport(laptop.preset)
