@@ -273,11 +273,16 @@ describe('Testing questions', () => {
     })
     // skipped due to #172
     // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('check alternative text for empty questions', () => {
+    it('check alternative text for empty questions', () => {
       cy.login(user2)
       cy.get(createQuestionButton).click()
       cy.wait('@GQLReq')
       cy.wait('@GQLReq')
+      cy.get('[data-testid="questionType-select"]').scrollIntoView().click()
+      cy.contains('Multiple Answers').click({ force: true })
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(2000)
+
       cy.visit(dashboardRoute, { method: 'GET' })
       cy.wait('@GQLReq')
       cy.get(listItemWrapper)
@@ -285,6 +290,7 @@ describe('Testing questions', () => {
         .should('be.visible')
         .contains(ProseMirror, '(empty)')
         .click()
+      cy.get('.multiple-choice .ProseMirror').first().click()
       cy.get('[id="file-upload"]').selectFile(
         'cypress/fixtures/images/img12.png',
         { force: true },
@@ -337,6 +343,7 @@ describe('Testing lists', () => {
     cy.get('.ant-table-row').eq(0).contains(antTableCell, 'list1')
     // [segment]: deleting a list
   })
+
   it('adding questions to new & existing list', () => {
     cy.seedList(disableScripts, 'new_list', user2.username)
     cy.login({ ...user2 })
@@ -391,6 +398,7 @@ describe('Testing lists', () => {
       .contains('p')
       .should('contain', 'Energy: carbohydrates')
   })
+
   it('checking if export triggers download', () => {
     cy.seedList(disableScripts, 'list3', user2.username)
     cy.login({ ...user2, visitUrl: dashboardRoute })
