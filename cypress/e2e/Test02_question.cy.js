@@ -58,9 +58,7 @@ describe('Testing questions', () => {
         '[data-testid="missing-question-text"]',
         'Please select an item type in the metadata form to start editing',
       )
-      cy.get('[data-testid="questionType-select"]').scrollIntoView().click()
-      cy.contains('Multiple Answers').click({ force: true })
-      cy.get('.multiple-choice').should('exist')
+      cy.createQuestionWidget()
       cy.get('[data-testid="questionType-select"]').scrollIntoView().click()
       cy.contains('Multiple Choice').click()
       cy.contains(
@@ -80,11 +78,7 @@ describe('Testing questions', () => {
       cy.contains(antModalContent, 'Please provide some content for your item')
       cy.contains(buttonAntModalBody, 'Ok').click()
       // [segment]: display missing question text
-
-      cy.get('[data-testid="questionType-select"]').scrollIntoView().click()
-      cy.contains('Multiple Answers').click()
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(2000)
+      cy.createQuestionWidget()
       cy.get('.multiple-choice').first().type('{enter}')
       // [segment]: Testing text formats
       cy.log('testing text formats...')
@@ -278,10 +272,7 @@ describe('Testing questions', () => {
       cy.get(createQuestionButton).click()
       cy.wait('@GQLReq')
       cy.wait('@GQLReq')
-      cy.get('[data-testid="questionType-select"]').scrollIntoView().click()
-      cy.contains('Multiple Answers').click({ force: true })
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(2000)
+      cy.createQuestionWidget()
 
       cy.visit(dashboardRoute, { method: 'GET' })
       cy.wait('@GQLReq')
