@@ -24,6 +24,6 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:4000',
     defaultCommandTimeout: 10000,
-    video: false,
+    video: true,
   },
 })
