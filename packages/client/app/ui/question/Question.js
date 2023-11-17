@@ -820,7 +820,7 @@ const Question = props => {
   const AuthorChatTab = <StyledTabItem>Chat</StyledTabItem>
 
   const ProductionAssignmentsTab = (
-    <StyledTabItem>Production Assignments</StyledTabItem>
+    <StyledTabItem>Production chat</StyledTabItem>
   )
 
   const PreviousQuestion = (

@@ -60,18 +60,9 @@ const StyledUpload = styled(Upload)`
 `
 
 const SendButton = styled(Button)`
-  background-color: ${props => props.theme.colorPrimaryBorder};
   border: none;
-  color: ${props => props.theme.colorTextReverse};
   height: 32px;
   margin: ${grid(1)};
-
-  &:hover,
-  &:focus {
-    background-color: ${props => props.theme.colorPrimary};
-    /* stylelint-disable-next-line declaration-no-important */
-    color: ${props => props.theme.colorTextReverse} !important;
-  }
 `
 
 // TODO -- this needs to be a wax editor with two plugins (mention & task)
@@ -85,7 +76,7 @@ const ChatInput = props => {
 
   const inputRef = useRef(null)
 
-  const handleTextChange = (event, newValue, _, mentioned) => {
+  const handleTextChange = (_, newValue, __, mentioned) => {
     setInputValue(newValue)
     const mentionIDs = mentioned.map(({ id }) => id)
     setMentions(mentionIDs)
@@ -146,14 +137,14 @@ const ChatInput = props => {
         />
       </StyledMentionsInput>
       <StyledUpload
-        accept=".pdf,.jpeg,.png"
+        accept="image/*,.pdf,.docx,.odt"
         aria-label="upload-attachments"
         files={attachments}
         multiple
         onChange={handleAttachmentChange}
         onRemove={handleRemoveAttachment}
       />
-      <SendButton data-testid="send-btn" onClick={handleSend}>
+      <SendButton data-testid="send-btn" onClick={handleSend} type="primary">
         <SendOutlined />
       </SendButton>
     </MainContainer>
