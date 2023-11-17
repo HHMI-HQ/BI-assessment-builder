@@ -145,9 +145,9 @@ const ChatMessage = forwardRef((props, ref) => {
           {attachments.map(attachment => (
             <AttachmentItem
               data-testid="message-attachment"
-              download
               href={attachment.url}
               key={attachment.name}
+              target="_blank"
             >
               <PaperClipOutlined />
               {attachment.name}

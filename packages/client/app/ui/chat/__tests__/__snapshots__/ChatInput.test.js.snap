@@ -84,7 +84,7 @@ exports[`ChatInput matches snapshot 1`] = `
         tabIndex="0"
       >
         <input
-          accept=".pdf,.jpeg,.png"
+          accept="image/*,.pdf,.docx,.odt"
           aria-label="upload-attachments"
           multiple={true}
           onChange={[Function]}
@@ -124,7 +124,7 @@ exports[`ChatInput matches snapshot 1`] = `
     />
   </span>
   <button
-    className="ant-btn css-dev-only-do-not-override-12jzuas ant-btn-default sc-hLseeU kWOTMC sc-CQMxN gPjewM"
+    className="ant-btn css-dev-only-do-not-override-12jzuas ant-btn-primary sc-hLseeU iQloaX sc-CQMxN iCwxBZ"
     data-testid="send-btn"
     disabled={false}
     onClick={[Function]}

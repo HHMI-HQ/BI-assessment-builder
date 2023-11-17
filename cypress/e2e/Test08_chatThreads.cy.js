@@ -231,7 +231,7 @@ describe('ChatThreads', () => {
         .eq(0)
         .contains(ProseMirror, 'What substance')
         .click()
-      cy.contains(antTabs, 'Production Assignments').click()
+      cy.contains(antTabs, 'Production chat').click()
 
       cy.get('[placeholder="Write a message"]').type('@')
       cy.contains('[role="listbox"]', editor.username)
@@ -252,7 +252,7 @@ describe('ChatThreads', () => {
           .eq(0)
           .contains(ProseMirror, 'What substance')
           .click()
-        cy.contains(antTabs, 'Production Assignments').should('not.exist')
+        cy.contains(antTabs, 'Production chat').should('not.exist')
       })
       it('should only be visible to editors and production team', () => {
         cy.login(editor)
@@ -266,7 +266,7 @@ describe('ChatThreads', () => {
           cy.updateQuestionStatus(false, id, 'inProduction')
         })
         cy.reload()
-        cy.contains(antTabs, 'Production Assignments')
+        cy.contains(antTabs, 'Production chat')
         cy.logout()
         // [segment]: Checking if the Production Assigments tab is visible to author
         cy.log(
@@ -277,7 +277,7 @@ describe('ChatThreads', () => {
           .eq(0)
           .contains(ProseMirror, 'What substance')
           .click()
-        cy.contains(antTabs, 'Production Assignments').should('not.exist')
+        cy.contains(antTabs, 'Production chat').should('not.exist')
       })
     })
   })

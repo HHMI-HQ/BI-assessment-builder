@@ -127,7 +127,7 @@ const ChatMessageList = props => {
     <Wrapper className={className} id="scrollableDiv">
       {messages.length === 0 ? (
         <Empty
-          description="No coverstions yet"
+          description="No conversations yet"
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           role="status"
         />
