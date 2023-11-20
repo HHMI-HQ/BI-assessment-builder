@@ -954,6 +954,7 @@ const QuestionPage = props => {
         authors={possibleAuthors}
         canAssignAuthor={isAdmin && isAuthor}
         canCreateNewVersion={isAdmin || isEditor}
+        canPublish={isEditor || isHandlingEditor || isAdmin}
         chatLoading={chatLoading}
         complexItemSetOptions={complexItemSetOptions}
         complexSetEditLink={

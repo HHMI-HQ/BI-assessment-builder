@@ -357,6 +357,7 @@ const Question = props => {
     isSubmitted,
     isUnderReview,
     isInProduction,
+    canPublish,
     loading,
     loadAuthors,
     metadata,
@@ -1030,7 +1031,7 @@ const Question = props => {
           </StyledButton>
         </>
       )}
-      {isInProduction && (
+      {canPublish && isInProduction && (
         <StyledButton
           data-testid="publish-question-btn"
           onClick={handlePublish}
@@ -1121,7 +1122,7 @@ const Question = props => {
             </StyledButton>
           </>
         )}
-        {isInProduction && (
+        {canPublish && isInProduction && (
           <StyledButton
             data-testid="publish-question-btn"
             onClick={handlePublish}
@@ -1458,6 +1459,7 @@ Question.propTypes = {
   isInProduction: PropTypes.bool,
   isUserLoggedIn: PropTypes.bool,
   editorView: PropTypes.bool,
+  canPublish: PropTypes.bool,
   canAssignAuthor: PropTypes.bool,
   showAssignHEButton: PropTypes.bool,
   showNextQuestionLink: PropTypes.bool,
@@ -1779,6 +1781,7 @@ Question.defaultProps = {
   isSubmitted: false,
   isUnderReview: false,
   isInProduction: false,
+  canPublish: false,
   editorView: false,
   questionAgreedTc: false,
   canAssignAuthor: false,

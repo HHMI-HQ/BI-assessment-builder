@@ -145,18 +145,25 @@ const createQuestion = async (
 
 const updateStatus = async (id, status) => {
   const transactionCallback = async trx => {
+    let patchValue = {}
+
+    if (status === 'notSubmitted') {
+      patchValue = {
+        ...patchValue,
+        submitted: false,
+        published: false,
+        inProduction: false,
+        underReview: false,
+      }
+    } else if (status === 'published') {
+      patchValue = { ...patchValue, inProduction: false, published: true }
+    } else {
+      patchValue = { [status]: true }
+    }
+
     try {
       const updatedQuestion = await QuestionVersion.query()
-        .patch({
-          ...(status === 'notSubmitted'
-            ? {
-                submitted: false,
-                published: false,
-                inProduction: false,
-                underReview: false,
-              }
-            : { [status]: true }),
-        })
+        .patch(patchValue)
         .where('questionId', id)
         .returning('*')
         .first()
