@@ -17,12 +17,6 @@ const reviewSubmittedStatus = {
 
 const baseMessage = 'Review controller:'
 
-// const reviews = async (questionId, reviewerId) => {
-// 	try {
-// 		return Review.
-// 	}
-// }
-
 const submitReview = async (
   questionVersionId,
   content,
