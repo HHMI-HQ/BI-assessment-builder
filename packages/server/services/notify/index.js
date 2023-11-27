@@ -67,6 +67,12 @@ class CokoNotifier {
     'hhmi.revokeInvitation': {
       notifyBy: ['email'],
     },
+    'hhmi.rejectInvitation': {
+      notifyBy: ['email'],
+    },
+    'hhmi.acceptInvitation': {
+      notifyBy: ['email'],
+    },
     // ...
   }
 

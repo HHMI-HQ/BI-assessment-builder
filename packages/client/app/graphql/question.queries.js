@@ -234,6 +234,8 @@ export const GET_REVIEWER_DASHBOARD = gql`
           cognitiveLevel
           # affectiveLevel
           # psychomotorLevel
+
+          reviewStatus
         }
       }
       totalCount

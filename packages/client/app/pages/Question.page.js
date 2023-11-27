@@ -44,6 +44,7 @@ import {
   MESSAGE_CREATED_SUBSCRIPTION,
   CANCEL_EMAIL_NOTIFICATION,
   UNPUBLISH_QUESTION_VERSION,
+  ACCEPT_OR_REJECT_REVIEW_INVITATION,
 } from '../graphql'
 import {
   useMetadata,
@@ -553,6 +554,10 @@ const QuestionPage = props => {
   })
 
   const [sendMessage] = useMutation(SEND_MESSAGE)
+
+  const [acceptOrRejectInvitation] = useMutation(
+    ACCEPT_OR_REJECT_REVIEW_INVITATION,
+  )
   // #endregion hooks
 
   // #region user roles
@@ -561,6 +566,7 @@ const QuestionPage = props => {
   const isProductionMember = hasGlobalRole(currentUser, 'production')
   const isAuthor = hasRole(currentUser, 'author', id)
   const isAdmin = hasGlobalRole(currentUser, 'admin')
+  const isReviewer = hasRole(currentUser, 'reviewer')
 
   const showAuthorChatTab =
     version?.submitted &&
@@ -957,6 +963,29 @@ const QuestionPage = props => {
     return sendMessage(mutationData)
   }
 
+  const handleAcceptReviewInvite = async () => {
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        accepted: true,
+      },
+    }
+
+    return acceptOrRejectInvitation(mutationData)
+  }
+
+  const handleRejectReviewInvite = async reason => {
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        accepted: false,
+        reason,
+      },
+    }
+
+    return acceptOrRejectInvitation(mutationData)
+  }
+
   // #endregion handlers
 
   if (error) {
@@ -1071,6 +1100,8 @@ const QuestionPage = props => {
         onPublish={handlePublish}
         onQuestionSubmit={handleQuestionSubmit}
         onReject={handleReject}
+        onReviewerAcceptInvite={handleAcceptReviewInvite}
+        onReviewerRejectInvite={handleRejectReviewInvite}
         onSearchHE={handleSearchHE}
         onSendAuthorChatMessage={onSendAuthorChatMessage}
         onSendProductionChatMessage={onSendProductionChatMessage}
@@ -1085,6 +1116,7 @@ const QuestionPage = props => {
         questionAgreedTc={false} //
         refetchUser={refetchCurrentUser}
         resources={getResources}
+        reviewerView={isReviewer}
         searchHELoading={loadingSearchHE}
         selectedQuestionType={selectedQuestionType}
         showAssignHEButton={
