@@ -409,7 +409,7 @@ const submitReview = async ({ attachments, review, to }) => {
 
     return { attachments, content, subject, text, to }
   } catch (e) {
-    logger.error('Failed to create email for submit review')
+    logger.error(`Failed to create email for submit review: ${e}`)
     throw new Error(e)
   }
 }
