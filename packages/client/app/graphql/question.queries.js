@@ -232,7 +232,8 @@ export const GET_REVIEWER_DASHBOARD = gql`
           # affectiveLevel
           # psychomotorLevel
 
-          reviewStatus
+          reviewerStatus
+          reviews
         }
       }
       totalCount
@@ -416,6 +417,14 @@ export const QUESTION = gql`
         questionType
         complexItemSetId
         leadingContent
+
+        reviewerStatus
+        reviews(currentUserOnly: true) {
+          id
+          status {
+            submitted
+          }
+        }
       }
 
       authorChatThreadId

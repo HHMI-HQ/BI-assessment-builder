@@ -33,10 +33,11 @@ import {
   Spin,
   TabsStyled as Tabs,
 } from '../common'
-import { extractDocumentText } from '../../utilities'
+import { REVIEWER_STATUSES, extractDocumentText } from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
 import ReviewerRejectButton from './ReviewerRejectButton'
 import ReviewerAcceptButton from './ReviewerAcceptButton'
+import ReviewerSubmitButton from './ReviewerSubmitButton'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
 const ModalFooter = Modal.footer
@@ -147,6 +148,10 @@ const StyledReviewerRejectInviteButton = styled(ReviewerRejectButton)`
 `
 
 const StyledReviewerAcceptInviteButton = styled(ReviewerAcceptButton)`
+  width: 100%;
+`
+
+const StyledReviewerSubmitInviteButton = styled(ReviewerSubmitButton)`
   width: 100%;
 `
 
@@ -401,6 +406,7 @@ const Question = props => {
     onReject,
     onSendAuthorChatMessage,
     onSendProductionChatMessage,
+    onSubmitReview,
     authorChatParticipants,
     productionChatParticipants,
     onReviewerAcceptInvite,
@@ -409,6 +415,7 @@ const Question = props => {
     refetchUser,
     resources,
     reviewInviteStatus,
+    reviewSubmitted,
     reviewerView,
     qtiZipLoading,
     showAssignHEButton,
@@ -1182,14 +1189,25 @@ const Question = props => {
   const reviewerInviteActions = (
     <ReviewerActionsWrapper>
       {ViewAsContent}
-      <StyledReviewerRejectInviteButton
-        onReject={onReviewerRejectInvite}
-        showDialog={showDialog}
-      />
-      <StyledReviewerAcceptInviteButton
-        onAccept={onReviewerAcceptInvite}
-        showDialog={showDialog}
-      />
+      {reviewInviteStatus === REVIEWER_STATUSES.invited && (
+        <>
+          <StyledReviewerRejectInviteButton
+            onReject={onReviewerRejectInvite}
+            showDialog={showDialog}
+          />
+          <StyledReviewerAcceptInviteButton
+            onAccept={onReviewerAcceptInvite}
+            showDialog={showDialog}
+          />
+        </>
+      )}
+      {reviewInviteStatus === REVIEWER_STATUSES.accepted &&
+        !reviewSubmitted && (
+          <StyledReviewerSubmitInviteButton
+            onSubmit={onSubmitReview}
+            showDialog={showDialog}
+          />
+        )}
     </ReviewerActionsWrapper>
   )
 
@@ -1227,7 +1245,11 @@ const Question = props => {
       )}
       {!isRejected &&
         (editorView && isSubmitted ? RightAreaEditor : RightAreaAuthor)}
-      {reviewerView && !isRejected && !reviewInviteStatus && RightAreaReviewer}
+      {reviewerView &&
+        !isRejected &&
+        (reviewInviteStatus === REVIEWER_STATUSES.invited ||
+          reviewInviteStatus === REVIEWER_STATUSES.accepted) &&
+        RightAreaReviewer}
     </RightAreaWrapper>
   )
 
@@ -1478,6 +1500,7 @@ Question.propTypes = {
   onReviewerRejectInvite: PropTypes.func,
   onSendAuthorChatMessage: PropTypes.func,
   onSendProductionChatMessage: PropTypes.func,
+  onSubmitReview: PropTypes.func,
   onClickAssignHE: PropTypes.func,
   onClickExportToQti: PropTypes.func,
   onClickExportToWord: PropTypes.func,
@@ -1695,6 +1718,7 @@ Question.propTypes = {
     }),
   ),
   reviewInviteStatus: PropTypes.string,
+  reviewSubmitted: PropTypes.bool,
   reviewerView: PropTypes.bool,
   initialMetadataValues: PropTypes.shape({
     topics: PropTypes.arrayOf(
@@ -1813,6 +1837,7 @@ Question.defaultProps = {
   onAssignAuthor: () => {},
   onReviewerAcceptInvite: () => {},
   onReviewerRejectInvite: () => {},
+  onSubmitReview: () => {},
   loadAuthors: () => {},
   submitting: false,
   isPublished: false,
@@ -1831,6 +1856,7 @@ Question.defaultProps = {
   refetchUser: () => {},
   resources: [],
   reviewInviteStatus: null,
+  reviewSubmitted: false,
   reviewerView: false,
   updated: '',
   isUserLoggedIn: true,
