@@ -7,14 +7,14 @@ export const GET_AUTHOR_DASHBOARD = gql`
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getAuthorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -125,14 +125,14 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getHandlingEditorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -178,20 +178,21 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
     }
   }
 `
+
 export const GET_PRODUCTION_DASHBOARD = gql`
   query GetInProductionDashboard(
     $orderBy: String
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getInProductionDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -237,6 +238,7 @@ export const GET_PRODUCTION_DASHBOARD = gql`
     }
   }
 `
+
 export const ASSING_HANDLING_EDITORS = gql`
   mutation assignHandlingEditors($questionIds: [ID!]!, $userIds: [ID!]!) {
     assignHandlingEditors(questionIds: $questionIds, userIds: $userIds) {

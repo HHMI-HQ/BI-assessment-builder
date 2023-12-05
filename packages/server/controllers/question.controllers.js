@@ -139,14 +139,14 @@ const getAuthor = async questionId => {
 }
 
 const getAuthorDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
+  const { orderBy, ascending, page, pageSize, filters, trx } = options
 
   return Question.findByRole(userId, 'author', {
     orderBy,
     ascending,
     page,
     pageSize,
-    searchQuery,
+    filters,
     trx,
   })
 }
@@ -180,14 +180,14 @@ const getManagingEditorDashboard = async (userId, options = {}) => {
 }
 
 const getHandlingEditorDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
+  const { orderBy, ascending, page, pageSize, filters, trx } = options
 
   return Question.findByRole(userId, 'handlingEditor', {
     orderBy,
     ascending,
     page,
     pageSize,
-    searchQuery,
+    filters,
     trx,
   })
 }
@@ -215,7 +215,9 @@ const getAuthorChatParticipants = async questionId => {
 }
 
 const getInProductionDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, trx, searchQuery } = options
+  const { orderBy, ascending, page, pageSize, trx, filters } = options
+
+  const { searchQuery } = filters
 
   return Question.findByExcludingRole(userId, 'author', {
     orderBy,

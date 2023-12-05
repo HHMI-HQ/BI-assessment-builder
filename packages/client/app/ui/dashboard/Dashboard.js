@@ -1,6 +1,6 @@
 /* stylelint-disable string-quotes */
 import React, { useState, useEffect } from 'react'
-import PropTypes, { oneOfType } from 'prop-types'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { th } from '@coko/client'
 import { PlusOutlined } from '@ant-design/icons'
@@ -59,7 +59,6 @@ const Dashboard = props => {
     onSearchHE,
     tabsContent,
     withFilters,
-    filters,
   } = props
 
   const isMobile = useBreakpoint('(max-width: 900px)')
@@ -181,6 +180,7 @@ const Dashboard = props => {
               questions,
               totalCount,
               showBulkActions,
+              filters,
             }) => ({
               label,
               key: value,
@@ -273,9 +273,6 @@ Dashboard.propTypes = {
       showBulkActions: PropTypes.bool,
     }),
   ),
-  filters: PropTypes.arrayOf(
-    oneOfType([PropTypes.string, PropTypes.bool, PropTypes.object]),
-  ),
   withFilters: PropTypes.bool,
 }
 
@@ -289,7 +286,6 @@ Dashboard.defaultProps = {
   showSort: false,
   sortOptions: [],
   tabsContent: [],
-  filters: null,
   withFilters: false,
 }
 
