@@ -250,14 +250,6 @@ extend type Query {
     filters: DashboardFilters
   ): QuestionsResponse!
 
-  getInProductionDashboard(
-    orderBy: String
-    ascending: Boolean
-    page: Int
-    pageSize: Int
-    searchQuery: String
-  ): QuestionsResponse!
-
   getQuestionsHandlingEditors(questionId: ID!): [User!]!
   getAuthorChatParticipants(id: ID!): [User!]!
   getProductionChatParticipants(id: ID!): [User!]!

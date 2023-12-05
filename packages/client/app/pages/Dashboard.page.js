@@ -230,9 +230,7 @@ const DashboardPage = () => {
       variables: {
         ...defaultSearchOptions,
         page: currentPage - 1,
-        ...(currentTabKey === 'editor'
-          ? { filters: query || {} }
-          : { searchQuery: query }),
+        filters: query || {},
       },
     }
 
