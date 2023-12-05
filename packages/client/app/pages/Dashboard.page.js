@@ -20,7 +20,10 @@ import {
   useMetadata,
   callOn,
 } from '../utilities'
-import { dashboardEditorFilters } from '../ui/_helpers/searchFilters'
+import {
+  statusFilters,
+  createHeAssignedFilters,
+} from '../ui/_helpers/searchFilters'
 
 const defaultSearchOptions = {
   orderBy: 'created',
@@ -35,6 +38,10 @@ const DashboardPage = () => {
   const [currentTabKey, setCurrentTabKey] = useState(initialTabKey)
   const [currentPage, setCurrentPage] = useState(1)
   const [currentSearchQuery, setCurrentSearchQuery] = useState(null)
+
+  const [heFilterOptions, setHeFilterOptions] = useState(
+    createHeAssignedFilters([]),
+  )
 
   const initialRender = useRef(true)
 
@@ -99,7 +106,7 @@ const DashboardPage = () => {
   ] = useLazyQuery(GET_EDITOR_DASHBOARD, {
     fetchPolicy: 'network-only',
     onCompleted: data =>
-      updateSearchResultAnnounce(data, 'getManagingEditorDashb'),
+      updateSearchResultAnnounce(data, 'getManagingEditorDashboard'),
   })
 
   const [
@@ -200,7 +207,21 @@ const DashboardPage = () => {
 
   useEffect(() => {
     runQuery(currentSearchQuery)
-  }, [currentTabKey, currentPage])
+  }, [currentTabKey, currentPage, currentSearchQuery])
+
+  useEffect(() => {
+    !handlingEditors &&
+      filterGlobalTeamMembers({
+        variables: {
+          role: 'handlingEditor',
+          options: {
+            orderBy: 'username',
+            ascending: true,
+          },
+        },
+      })
+    setHeFilterOptions(createHeAssignedFilters(handlingEditors?.result))
+  }, [handlingEditors])
 
   const runQuery = query => {
     const { query: roleQuery } = queryMapper
@@ -209,9 +230,7 @@ const DashboardPage = () => {
       variables: {
         ...defaultSearchOptions,
         page: currentPage - 1,
-        ...(currentTabKey === 'editor'
-          ? { filters: query || {} }
-          : { searchQuery: query }),
+        filters: query || {},
       },
     }
 
@@ -240,10 +259,11 @@ const DashboardPage = () => {
 
     setCurrentTabKey(role)
     setCurrentPage(page)
-    setCurrentSearchQuery(query)
+    setCurrentSearchQuery(
+      typeof query === 'object' ? query : { searchQuery: query },
+    )
 
     localStorage.setItem('dashboardLastUsedTab', role)
-    runQuery(query)
   }
 
   const handleSearchHE = async query => {
@@ -302,6 +322,7 @@ const DashboardPage = () => {
       totalCount: editorData?.totalCount,
       showBulkActions: true,
       loading: editorLoading,
+      filters: [...statusFilters, heFilterOptions],
     },
     isHandlingEditor && {
       label: 'Handling Editor Items',
@@ -310,6 +331,7 @@ const DashboardPage = () => {
       totalCount: handlingEditorData?.totalCount,
       showBulkActions: false,
       loading: heLoading,
+      filters: statusFilters,
     },
     isProduction && {
       label: 'Production Items',
@@ -327,7 +349,6 @@ const DashboardPage = () => {
     <>
       <VisuallyHiddenElement as="h1">Dashboard page</VisuallyHiddenElement>
       <Dashboard
-        filters={dashboardEditorFilters}
         handlingEditors={handlingEditors?.result || []}
         initialTabKey={initialTabKey}
         loading={loading}
@@ -339,7 +360,7 @@ const DashboardPage = () => {
         // showSort
         // sortOptions
         tabsContent={tabs}
-        withFilters={currentTabKey === 'editor'}
+        withFilters={['editor', 'handlingEditor'].includes(currentTabKey)}
       />
       <VisuallyHiddenElement
         aria-live="polite"

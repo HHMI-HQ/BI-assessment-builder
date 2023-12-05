@@ -277,7 +277,7 @@ describe('Search filter', () => {
       .click()
       .then($search => {
         cy.get('ul[id="filterList"] li[id="Assigned to HE"]').last().click()
-        cy.get('ul[id="filterList"] li[id="Is"]').last().click()
+        cy.get('ul[id="filterList"] li[id="nuaduslaine"]').last().click()
         cy.get($search).type(`{enter}`)
       })
     cy.get(listItemWrapper)

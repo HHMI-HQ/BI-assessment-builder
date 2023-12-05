@@ -17,14 +17,14 @@ const GET_AUTHOR_DASHBOARD = `
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getAuthorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -226,7 +226,7 @@ describe('Question API authorization', () => {
         ascending: true,
         page: 1,
         pageSize: 10,
-        searchQuery: '',
+        filters: {},
       },
     })
 
@@ -250,7 +250,7 @@ describe('Question API authorization', () => {
         ascending: true,
         page: 1,
         pageSize: 10,
-        searchQuery: '',
+        filters: {},
       },
     })
 

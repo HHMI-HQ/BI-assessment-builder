@@ -184,7 +184,7 @@ input QuestionPageInput {
 input DashboardFilters {
   searchQuery: String
   status: String
-  heAssigned: Boolean
+  heAssigned: String
   author: String
 }
 
@@ -214,7 +214,7 @@ extend type Query {
     ascending: Boolean
     page: Int
     pageSize: Int
-    searchQuery: String
+    filters: DashboardFilters
   ): QuestionsResponse!
 
   getReviewerDashboard(
@@ -238,7 +238,7 @@ extend type Query {
     ascending: Boolean
     page: Int
     pageSize: Int
-    searchQuery: String
+    filters: DashboardFilters
   ): QuestionsResponse!
 
   getInProductionDashboard(
@@ -246,7 +246,7 @@ extend type Query {
     ascending: Boolean
     page: Int
     pageSize: Int
-    searchQuery: String
+    filters: DashboardFilters
   ): QuestionsResponse!
 
   getQuestionsHandlingEditors(questionId: ID!): [User!]!

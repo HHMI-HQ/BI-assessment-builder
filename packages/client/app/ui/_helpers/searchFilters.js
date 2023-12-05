@@ -1,7 +1,29 @@
 import theme from '../../theme'
 
-/* eslint-disable import/prefer-default-export */
-export const dashboardEditorFilters = [
+export const createHeAssignedFilters = (handlingEditors = []) => {
+  const heOptions = handlingEditors.map(he => {
+    const { label, value } = he
+    return {
+      label,
+      value,
+      badgeBg: theme.colorSuccessAlt,
+    }
+  })
+
+  return {
+    key: { label: 'Assigned to HE', value: 'heAssigned' },
+    values: [
+      {
+        label: 'Is not Assigned',
+        value: '',
+        badgeBg: theme.colorErrorAlt,
+      },
+      ...heOptions,
+    ],
+  }
+}
+
+export const statusFilters = [
   {
     key: { label: 'Status', value: 'status' },
     values: [
@@ -20,13 +42,17 @@ export const dashboardEditorFilters = [
       { label: 'Rejected', value: 'rejected', badgeBg: theme.colorError },
     ],
   },
-  {
-    key: { label: 'Assigned to HE', value: 'heAssigned' },
-    values: [
-      { label: 'Is', value: true, badgeBg: theme.colorSuccessAlt },
-      { label: 'Is not', value: false, badgeBg: theme.colorErrorAlt },
-    ],
-  },
+  // {
+  //   key: { label: 'Assigned to HE', value: 'heAssigned' },
+  //   values: [
+  //     {
+  //       label: 'editorUser',
+  //       value: 'editorUser',
+  //       badgeBg: theme.colorSuccessAlt,
+  //     },
+  //     { label: 'Is not', value: false, badgeBg: theme.colorErrorAlt },
+  //   ],
+  // },
   // {
   //   key: { label: 'Author', value: 'author' },
   //   values: [
