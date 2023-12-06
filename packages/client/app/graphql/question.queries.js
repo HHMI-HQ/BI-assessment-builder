@@ -343,6 +343,16 @@ export const GET_PRODUCTION_CHAT_PARTICIPANTS = gql`
   }
 `
 
+export const GET_REVIEWER_CHAT_PARTICIPANTS = gql`
+  query GetReviewerChatParticipants($id: ID!) {
+    getReviewerChatParticipants(id: $id) {
+      id
+      display: displayName
+      role
+    }
+  }
+`
+
 export const CREATE_QUESTION = gql`
   mutation CreateQuestion($input: UpdateQuestionInput) {
     createQuestion(input: $input) {
@@ -417,8 +427,9 @@ export const QUESTION = gql`
         leadingContent
 
         reviewerStatus
-        reviews(currentUserOnly: true) {
+        reviews {
           id
+          content
           status {
             submitted
           }
@@ -427,6 +438,7 @@ export const QUESTION = gql`
 
       authorChatThreadId
       productionChatThreadId
+      reviewerChatThreadId
       heAssigned
     }
   }

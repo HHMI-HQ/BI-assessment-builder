@@ -363,6 +363,7 @@ const Question = props => {
     defaultActiveKey,
     authorChatMessages,
     productionChatMessages,
+    reviewerChatMessages,
     editorContent,
     leadingContent,
     complexSetEditLink,
@@ -398,9 +399,11 @@ const Question = props => {
     onReject,
     onSendAuthorChatMessage,
     onSendProductionChatMessage,
+    onSendReviewerChatMessage,
     onSubmitReview,
     authorChatParticipants,
     productionChatParticipants,
+    reviewerChatParticipants,
     onReviewerAcceptInvite,
     onReviewerRejectInvite,
     questionAgreedTc,
@@ -428,6 +431,7 @@ const Question = props => {
     onChangeTab,
     showAuthorChatTab,
     showProductionChatTab,
+    showReviewerChatTab,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -856,6 +860,8 @@ const Question = props => {
   const ProductionAssignmentsTab = (
     <StyledTabItem>Production chat</StyledTabItem>
   )
+
+  const ReviewerChatTab = <StyledTabItem>Reviewer chat</StyledTabItem>
 
   const PreviousQuestion = (
     <StyledPrevNextButton
@@ -1470,6 +1476,20 @@ const Question = props => {
                   />
                 ),
               },
+              showReviewerChatTab && {
+                label: ReviewerChatTab,
+                key: 'reviewerChat',
+                children: (
+                  <ChatThread
+                    hasMore={hasMoreMessages}
+                    isActive={activeKey === 'reviewerChat'}
+                    messages={reviewerChatMessages}
+                    onFetchMore={onFetchMoreMessages}
+                    onSendMessage={onSendReviewerChatMessage}
+                    participants={reviewerChatParticipants}
+                  />
+                ),
+              },
             ]}
             onChange={handleTabChange}
             renderTabBar={(tabProps, DefaultTabBar) => {
@@ -1509,7 +1529,7 @@ Question.propTypes = {
   announcementText: PropTypes.string,
   authorChatMessages: PropTypes.arrayOf(PropTypes.shape()),
   productionChatMessages: PropTypes.arrayOf(PropTypes.shape()),
-
+  reviewerChatMessages: PropTypes.arrayOf(PropTypes.shape()),
   hasMoreMessages: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   loadAuthors: PropTypes.func,
@@ -1530,6 +1550,7 @@ Question.propTypes = {
   onReviewerRejectInvite: PropTypes.func,
   onSendAuthorChatMessage: PropTypes.func,
   onSendProductionChatMessage: PropTypes.func,
+  onSendReviewerChatMessage: PropTypes.func,
   onSubmitReview: PropTypes.func,
   onClickAssignHE: PropTypes.func,
   onClickExportToQti: PropTypes.func,
@@ -1809,6 +1830,12 @@ Question.propTypes = {
       username: PropTypes.string,
     }),
   ),
+  reviewerChatParticipants: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      username: PropTypes.string,
+    }),
+  ),
   qtiZipLoading: PropTypes.bool,
   complexSetEditLink: PropTypes.string,
   handlingEditors: PropTypes.arrayOf(
@@ -1833,6 +1860,7 @@ Question.propTypes = {
   onChangeTab: PropTypes.func,
   showAuthorChatTab: PropTypes.bool,
   showProductionChatTab: PropTypes.bool,
+  showReviewerChatTab: PropTypes.bool,
 }
 
 Question.defaultProps = {
@@ -1843,6 +1871,7 @@ Question.defaultProps = {
   hasMoreMessages: false,
   authorChatMessages: [],
   productionChatMessages: [],
+  reviewerChatMessages: [],
   onChangeAnnouncement: () => {},
   onCreateNewVersion: () => {},
   onFetchMoreMessages: () => {},
@@ -1852,6 +1881,7 @@ Question.defaultProps = {
   onReject: () => {},
   onSendAuthorChatMessage: () => {},
   onSendProductionChatMessage: () => {},
+  onSendReviewerChatMessage: () => {},
   onClickAssignHE: () => {},
   editorContent: {},
   leadingContent: null,
@@ -1892,6 +1922,7 @@ Question.defaultProps = {
   wordFileLoading: false,
   authorChatParticipants: [],
   productionChatParticipants: [],
+  reviewerChatParticipants: [],
   qtiZipLoading: false,
   complexSetEditLink: null,
   handlingEditors: [],
@@ -1907,6 +1938,7 @@ Question.defaultProps = {
   onChangeTab: () => {},
   showAuthorChatTab: false,
   showProductionChatTab: false,
+  showReviewerChatTab: false,
 }
 
 export default Question
