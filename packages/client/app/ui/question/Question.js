@@ -6,7 +6,6 @@ import {
   LeftOutlined,
   RightOutlined,
   EllipsisOutlined,
-  UploadOutlined,
 } from '@ant-design/icons'
 
 import { grid, th } from '@coko/client'
@@ -95,6 +94,15 @@ const StyledButton = styled(Button)`
   }
 `
 
+const Details = styled.details`
+  cursor: pointer;
+  margin-block: ${grid(2)};
+
+  & .tnc-content {
+    padding: ${grid(2)};
+  }
+`
+
 const StyledAssignAuthorButton = styled(AssignAuthorButton)`
   margin-right: ${grid(2)};
   width: 100%;
@@ -118,7 +126,7 @@ const StyledPrevNextButton = styled(StyledButton)`
 
 const StyledWordExportButton = styled(ExportToWordButton)`
   margin-right: ${grid(2)};
-  width: 100%;
+  width: auto;
 `
 
 const StyledScormExportButton = styled(ExportToScormButton)`
@@ -404,7 +412,7 @@ const Question = props => {
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
-  const { confirm, info, success, error } = modal
+  const { confirm, success, error } = modal
 
   const formRef = useRef()
   const waxRef = useRef()
@@ -438,63 +446,6 @@ const Question = props => {
     onMetadataAutoSave(data).then(() => {
       setAutoSaving(false)
     })
-  }
-
-  const showTermsAndConditions = e => {
-    e.preventDefault()
-    const infoModal = info()
-    infoModal.update({
-      title: <ModalHeader>Accept Terms and Conditions</ModalHeader>,
-      content: (
-        <Paragraph>
-          By submitting information via the form below (the “Item Information”),
-          and clicking the “Submit” button, you agree to{' '}
-          <Link
-            as="a"
-            href="https://www.hhmi.org/terms-of-use"
-            rel="noreferrer"
-            target="_blank"
-          >
-            HHMI’s Terms of Use
-          </Link>{' '}
-          and you grant to the Howard Hughes Medical Institute (“HHMI”) and our
-          affiliates (referred to collectively with HHMI as, “we,” “us,” or
-          “our”) a royalty-free, perpetual, irrevocable, non-exclusive right and
-          license to use, publish, reproduce, modify, adapt, edit, translate,
-          create derivative works from, incorporate into other works,
-          distribute, sub-license, and otherwise exploit such Item Information,
-          and derivatives or modifications thereof, throughout the universe in
-          any form, media or technology now known or hereafter developed,
-          including without limitation sub-licensing and distributing the Item
-          Information or derivatives or modifications thereof under a Creative
-          Commons license selected by HHMI. You hereby represent, warrant and
-          covenant that the Item Information submitted by you is original to
-          you, and that neither the existence nor the exploitation thereof shall
-          infringe upon or violate any trademark, patent, copyright, trade
-          secret, right of privacy or publicity, or other common law right of
-          any third party.
-        </Paragraph>
-      ),
-      footer: [
-        <ModalFooter key="footer">
-          <Button autoFocus onClick={() => infoModal.destroy()} type="primary">
-            Ok
-          </Button>
-        </ModalFooter>,
-      ],
-      maskClosable: true,
-      afterClose: () =>
-        document.body.querySelector('#termsAndConditions').focus(),
-      width: '570px',
-      bodyStyle: {
-        marginRight: 38,
-        textAlign: 'justify',
-      },
-    })
-  }
-
-  const handleAgreeTcChange = e => {
-    setAgreedTc(!agreedTc)
   }
 
   const isEmptyEditor = () => {
@@ -532,6 +483,39 @@ const Question = props => {
     return false
   }
 
+  const TermsAndConditions = (
+    <Details>
+      <summary>Read terms and conditions</summary>
+      <Paragraph className="tnc-content">
+        By submitting information via the form below (the “Item Information”),
+        and clicking the “Submit” button, you agree to{' '}
+        <Link
+          as="a"
+          href="https://www.hhmi.org/terms-of-use"
+          rel="noreferrer"
+          target="_blank"
+        >
+          HHMI’s Terms of Use
+        </Link>{' '}
+        and you grant to the Howard Hughes Medical Institute (“HHMI”) and our
+        affiliates (referred to collectively with HHMI as, “we,” “us,” or “our”)
+        a royalty-free, perpetual, irrevocable, non-exclusive right and license
+        to use, publish, reproduce, modify, adapt, edit, translate, create
+        derivative works from, incorporate into other works, distribute,
+        sub-license, and otherwise exploit such Item Information, and
+        derivatives or modifications thereof, throughout the universe in any
+        form, media or technology now known or hereafter developed, including
+        without limitation sub-licensing and distributing the Item Information
+        or derivatives or modifications thereof under a Creative Commons license
+        selected by HHMI. You hereby represent, warrant and covenant that the
+        Item Information submitted by you is original to you, and that neither
+        the existence nor the exploitation thereof shall infringe upon or
+        violate any trademark, patent, copyright, trade secret, right of privacy
+        or publicity, or other common law right of any third party.
+      </Paragraph>
+    </Details>
+  )
+
   const handleSubmit = () => {
     if (isEmptyEditor()) return
 
@@ -540,21 +524,45 @@ const Question = props => {
       title: (
         <ModalHeader>Are you sure you want to submit this item?</ModalHeader>
       ),
-      content:
-        'This will make this item visible to editors and reviewers, and after a successful review it will be published for all users.',
+      content: (
+        <>
+          <Paragraph>
+            This will make this item visible to editors and reviewers, and after
+            a successful review it will be published for all users.
+          </Paragraph>
+          {TermsAndConditions}
+          <ModalContext.Consumer>
+            {({ agree, setAgree }) => (
+              <StyledCheckbox
+                aria-label="I accept the terms and conditions"
+                checked={agree}
+                data-testid="accept-tnc"
+                onChange={() => setAgree(!agree)}
+              >
+                Accept terms and conditions
+              </StyledCheckbox>
+            )}
+          </ModalContext.Consumer>
+        </>
+      ),
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmSubmitModal.destroy()}>Cancel</Button>
-          <Button
-            autoFocus
-            onClick={() => {
-              formRef.current.submit()
-              confirmSubmitModal.destroy()
-            }}
-            type="primary"
-          >
-            Submit
-          </Button>
+          <ModalContext.Consumer>
+            {({ agree }) => (
+              <Button
+                autoFocus
+                disabled={!agree}
+                onClick={() => {
+                  formRef.current.submit()
+                  confirmSubmitModal.destroy()
+                }}
+                type="primary"
+              >
+                Submit
+              </Button>
+            )}
+          </ModalContext.Consumer>
         </ModalFooter>,
       ],
     })
@@ -885,35 +893,51 @@ const Question = props => {
     </StyledPrevNextButton>
   )
 
-  const isMobile = useBreakpoint('(min-width: 550px)')
+  const isMobile = useBreakpoint('(max-width: 900px)')
 
   // eslint-disable-next-line no-nested-ternary
-  const RightAreaAuthor = isSubmitted ? null : isMobile ? (
+  const RightAreaAuthor = isSubmitted ? (
+    <StyledWordExportButton
+      isIconButton={isMobile}
+      loading={wordFileLoading}
+      onExport={onClickExportToWord}
+      showMetadataOption={isUserLoggedIn}
+    />
+  ) : isMobile ? (
     <>
-      <StyledCheckbox
-        aria-label="I accept the terms and conditions"
-        checked={agreedTc}
-        data-testid="accept-tnc"
-        onChange={handleAgreeTcChange}
+      <StyledWordExportButton
+        isIconButton
+        loading={wordFileLoading}
+        onExport={onClickExportToWord}
+        showMetadataOption={isUserLoggedIn}
+      />
+
+      <Button
+        aria-label="Submit"
+        // onClick={handleSubmitButtonClick}
+
+        onClick={handleSubmit}
+        title="Submit"
+        type="primary"
       >
-        Accept{' '}
-        <Link
-          id="termsAndConditions"
-          onClick={showTermsAndConditions}
-          to="#termsAndCondition"
-        >
-          terms and conditions
-        </Link>
-      </StyledCheckbox>
+        Submit
+      </Button>
+    </>
+  ) : (
+    <>
+      <StyledWordExportButton
+        loading={wordFileLoading}
+        onExport={onClickExportToWord}
+        showMetadataOption={isUserLoggedIn}
+      />
 
       <SubmitButton
         data-testid="submit-question-btn"
         disabled={
           // !formRef.current.isFieldsTouched(true) ||
-          submitting ||
+          submitting
           // formRef.current.getFieldsError().filter(({ errors }) => errors.length)
           //   .length > 0 ||
-          !agreedTc
         }
         onClick={handleSubmit}
         type="primary"
@@ -921,69 +945,6 @@ const Question = props => {
         Submit
       </SubmitButton>
     </>
-  ) : (
-    <Button
-      aria-label="Submit"
-      icon={<UploadOutlined />}
-      // onClick={handleSubmitButtonClick}
-      onClick={() => {
-        const confirmSubmit = confirm()
-        confirmSubmit.update({
-          title: 'Ready to submit?',
-          content: (
-            <ModalContext.Consumer>
-              {({ agree, setAgree }) => (
-                <StyledCheckbox
-                  aria-label="I accept the terms and conditions"
-                  checked={agree}
-                  onChange={() => setAgree(!agree)}
-                >
-                  Accept{' '}
-                  <Link
-                    id="termsAndConditions"
-                    onClick={showTermsAndConditions}
-                    to="#termsAndCondition"
-                  >
-                    terms and conditions
-                  </Link>
-                </StyledCheckbox>
-              )}
-            </ModalContext.Consumer>
-          ),
-          footer: (
-            <ModalFooter>
-              <Button
-                onClick={() => {
-                  confirmSubmit.destroy()
-                }}
-              >
-                Cancel
-              </Button>
-              <ModalContext.Consumer>
-                {({ agree }) => (
-                  <Button
-                    autoFocus
-                    disabled={!agree}
-                    onClick={() => {
-                      confirmSubmit.destroy()
-                      handleSubmit()
-                    }}
-                    type="primary"
-                  >
-                    Submit
-                  </Button>
-                )}
-              </ModalContext.Consumer>
-            </ModalFooter>
-          ),
-          maskClosable: true,
-          // okText: 'Submit Item',
-          // onOk: handleSubmit,
-        })
-      }}
-      title="Submit"
-      type="primary"
-    />
   )
 
   const editorActionsDropdownMenu = (

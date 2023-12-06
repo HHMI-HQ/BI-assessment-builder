@@ -68,7 +68,8 @@ describe('Testing apps responsiveness', () => {
         'making sure upload icon button is displayed instead of normal button...',
       )
 
-      cy.get('[aria-label="upload"]').should('be.visible')
+      cy.contains('[aria-label="Submit"]', 'Submit').should('be.visible')
+      cy.get('[id="exportToWord"]').should('be.visible')
       cy.get(submitQuestionButton).should('not.exist')
       cy.get(navToggle).click()
       cy.get(anchorTags.dashboard).click()
