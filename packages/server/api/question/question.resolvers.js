@@ -35,6 +35,7 @@ const {
   uploadFiles,
   getImageUrls,
   getProductionChatParticipants,
+  getReviewerChatParticipants,
 
   updateReviewerPool,
   changeAmountOfReviewers,
@@ -204,6 +205,10 @@ const productionChatThreadResolver = async question => {
   return getChatThreadForQuestion(question.id, 'productionChat')
 }
 
+const reviewerChatThreadIdResolver = async question => {
+  return getChatThreadForQuestion(question.id, 'reviewerChat')
+}
+
 const heAssignedResolver = async question => {
   const assignedHEs = await getQuestionsHandlingEditors(question.id)
   return assignedHEs.length > 0
@@ -215,6 +220,10 @@ const getAuthorChatParticipantsResolver = async (_, { id }) => {
 
 const getProductionChatParticipantsResolver = async (_, { id }) => {
   return getProductionChatParticipants(id)
+}
+
+const getReviewerChatParticipantsResolver = async (_, { id }) => {
+  return getReviewerChatParticipants(id)
 }
 
 const updateReviewerPoolResolver = async (
@@ -263,6 +272,7 @@ module.exports = {
     getAuthorChatParticipants: getAuthorChatParticipantsResolver,
     getInProductionDashboard: getInProductionDashboardResolver,
     getProductionChatParticipants: getProductionChatParticipantsResolver,
+    getReviewerChatParticipants: getReviewerChatParticipantsResolver,
   },
   Mutation: {
     createQuestion: createQuestionResolver,
@@ -291,6 +301,7 @@ module.exports = {
     author: authorResolver,
     authorChatThreadId: authorChatThreadResolver,
     productionChatThreadId: productionChatThreadResolver,
+    reviewerChatThreadId: reviewerChatThreadIdResolver,
     heAssigned: heAssignedResolver,
   },
   QuestionVersion: {
