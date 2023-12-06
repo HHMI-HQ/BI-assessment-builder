@@ -24,6 +24,7 @@ import {
 import { laptop } from '../support/viewport'
 
 const disableScripts = false
+
 describe('Testing questions', () => {
   const listItems = ['item1', 'item2', 'item3']
 
@@ -72,7 +73,6 @@ describe('Testing questions', () => {
     it('checking the wax editor', () => {
       // [segment]: Checking if user can submit when question is empty
       cy.log('checking if user can submit when question is empty...')
-      cy.get('[data-testid="accept-tnc"]').click()
       cy.get(submitQuestionButton).click()
       cy.contains(antModalContent, 'Item text cannot be empty')
       cy.contains(antModalContent, 'Please provide some content for your item')
@@ -138,8 +138,12 @@ describe('Testing questions', () => {
       //   today.getMinutes(),
       // ).padStart(2, 0)}`
       // cy.contains('span', time)
-      cy.get('[data-testid="accept-tnc"]').click()
+
+      // [segment]: checking if the Export to word is present
+      cy.log('checking if the Export to word is present')
+      cy.get('[id="question-actions"] [id="exportToWord"]').should('be.visible')
       cy.get(submitQuestionButton).click()
+
       cy.contains(
         antModalConfirmTitle,
         'Are you sure you want to submit this item?',
@@ -148,7 +152,15 @@ describe('Testing questions', () => {
         '[class="ant-modal-confirm-content"]',
         'This will make this item visible to editors and reviewers, and after a successful review it will be published for all users.',
       )
-      cy.contains(buttonAntModalBody, 'Submit').click()
+      cy.contains('[class="ant-modal-body"] button.ant-btn', 'Submit').should(
+        'be.disabled',
+      )
+      cy.get('[data-testid="accept-tnc"]').click()
+
+      cy.contains('[class="ant-modal-body"] button.ant-btn', 'Submit')
+        .should('not.be.disabled')
+        .click()
+
       cy.wait('@GQLReq')
       // [segment]: checking if the values are retained in the UI
       cy.visit(dashboardRoute, { method: 'GET' })
@@ -190,6 +202,7 @@ describe('Testing questions', () => {
       // checkDataWithoutParent(affectiveLevel)
       // checkDataWithoutParent(psychomotorLevel)
       checkDataWithoutParent(cognitiveLevel)
+
       cy.deleteAllQuestions(disableScripts)
     })
     it('editing the question', () => {

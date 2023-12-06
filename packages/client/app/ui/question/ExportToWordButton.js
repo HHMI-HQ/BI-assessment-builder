@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { FileWordOutlined } from '@ant-design/icons'
 
 import { Button, Checkbox, Modal } from '../common'
 
@@ -8,7 +9,8 @@ const ModalFooter = Modal.footer
 const ModalContext = React.createContext(null)
 
 const ExportToWordButton = props => {
-  const { className, loading, onExport, showMetadataOption } = props
+  const { className, loading, onExport, showMetadataOption, isIconButton } =
+    props
 
   const [showModal, setShowModal] = useState(false)
   const [showFeedback, setShowFeedback] = useState(true)
@@ -41,15 +43,27 @@ const ExportToWordButton = props => {
 
   return (
     <ModalContext.Provider value={null}>
-      <Button
-        className={className}
-        id="exportToWord"
-        loading={loading}
-        onClick={() => setShowModal(true)}
-        type="primary"
-      >
-        Export to Word
-      </Button>
+      {isIconButton ? (
+        <Button
+          className={className}
+          icon={<FileWordOutlined />}
+          id="exportToWord"
+          loading={loading}
+          onClick={() => setShowModal(true)}
+          title="Export to Word"
+          type="primary"
+        />
+      ) : (
+        <Button
+          className={className}
+          id="exportToWord"
+          loading={loading}
+          onClick={() => setShowModal(true)}
+          type="primary"
+        >
+          Export to Word
+        </Button>
+      )}
 
       <Modal
         afterClose={() => document.body.querySelector('#exportToWord').focus()}
@@ -92,12 +106,14 @@ const ExportToWordButton = props => {
 }
 
 ExportToWordButton.propTypes = {
+  isIconButton: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   onExport: PropTypes.func.isRequired,
   showMetadataOption: PropTypes.bool,
 }
 
 ExportToWordButton.defaultProps = {
+  isIconButton: false,
   showMetadataOption: false,
 }
 
