@@ -15728,20 +15728,20 @@ const metadata = {
       label: 'Recommended',
       options: [
         {
-          value: 'multipleChoice',
-          label: 'Multiple Answers',
-        },
-        {
-          value: 'multipleChoiceSingleCorrect',
-          label: 'Multiple Choice',
-        },
-        {
           value: 'essay',
           label: 'Essay',
         },
         {
           value: 'matching',
           label: 'Matching',
+        },
+        {
+          value: 'multipleChoiceSingleCorrect',
+          label: 'Multiple Choice',
+        },
+        {
+          value: 'multipleChoice',
+          label: 'Multiple Answers',
         },
         {
           value: 'trueFalse',
