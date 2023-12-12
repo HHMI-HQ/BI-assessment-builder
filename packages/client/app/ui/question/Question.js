@@ -1387,11 +1387,6 @@ const Question = props => {
 
   const RightArea = (
     <RightAreaWrapper id="question-actions" tabIndex="-1">
-      {showPreviewButton && (
-        <Button onClick={() => setPreview(prev => !prev)}>
-          {!preview ? 'Preview' : 'Continue editing'}
-        </Button>
-      )}
       {readOnly ? null : (
         <AutoSaving
           autoSaving={autoSaving}
