@@ -1142,16 +1142,16 @@ const Question = props => {
 
   const RightArea = (
     <RightAreaWrapper id="question-actions" tabIndex="-1">
-      {showPreviewButton && (
-        <Button onClick={() => setPreview(prev => !prev)}>
-          {!preview ? 'Preview' : 'Continue editing'}
-        </Button>
-      )}
       {readOnly ? null : (
         <AutoSaving
           autoSaving={autoSaving}
           lastAutoSave={updated && new Date(updated)}
         />
+      )}
+      {showPreviewButton && (
+        <StyledButton onClick={() => setPreview(prev => !prev)}>
+          {!preview ? 'Preview' : 'Continue editing'}
+        </StyledButton>
       )}
       {!isRejected &&
         (editorView && isSubmitted ? RightAreaEditor : RightAreaAuthor)}
@@ -1286,12 +1286,14 @@ const Question = props => {
                           leadingContent={leadingContent}
                           onContentChange={handleQuestionContentChange}
                           onImageUpload={onImageUpload}
-                          published={preview && isPublished}
+                          published={preview || isPublished}
                           readOnly={
                             readOnly || preview || !selectedQuestionType
                           }
                           selectedQuestionType={selectedQuestionType}
-                          withFeedback={showMetadata}
+                          withFeedback={
+                            !preview || (showMetadata && facultyView)
+                          }
                         />
                       }
                       metadata={
@@ -1324,7 +1326,7 @@ const Question = props => {
                           </SkipToTop>
                         </>
                       }
-                      showMetadata={showMetadata && !preview}
+                      showMetadata={showMetadata && (!preview || facultyView)}
                     />
                   </>
                 ),
