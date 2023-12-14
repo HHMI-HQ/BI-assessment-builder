@@ -61,7 +61,13 @@ const Name = styled.div`
 `
 
 const Content = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 0 0.5rem;
+
+  > span {
+    margin: 0;
+  }
 `
 
 const Date = styled.div`
@@ -101,21 +107,24 @@ const AttachmentItem = styled.a`
 `
 
 const MessageContent = ({ content, participants }) => {
-  const parts = content.split(/(@\w+)/g)
+  const lines = content.split('\n').map(line => {
+    const parts = line.split(/(@\w+)/g)
 
-  const output = parts.map((part, index) => {
-    // checking if the mentioned user is a part of participants in the chat
-    return part.startsWith('@') && participants.includes(part.slice(1)) ? (
-      // eslint-disable-next-line react/no-array-index-key
-      <StyledMention data-testid="user-mention" key={`${part}-${index}`}>
-        {part}
-      </StyledMention>
-    ) : (
-      part
-    )
+    const output = parts.map((part, index) => {
+      return part.startsWith('@') && participants.includes(part.slice(1)) ? (
+        // eslint-disable-next-line react/no-array-index-key
+        <StyledMention data-testid="user-mention" key={`${part}-${index}`}>
+          {part}
+        </StyledMention>
+      ) : (
+        part
+      )
+    })
+
+    return <span>{output}</span>
   })
 
-  return <Content>{output}</Content>
+  return <Content>{lines}</Content>
 }
 
 const ChatMessage = forwardRef((props, ref) => {

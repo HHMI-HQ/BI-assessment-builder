@@ -11,18 +11,33 @@ import { Button, Upload } from '../common'
 import { inputShadow } from '../common/_reusableStyles'
 
 const MainContainer = styled('div')`
+  align-items: center;
   background-color: #f5f5f5;
+  border-top: 1px solid #0004;
   box-shadow: 0 0 12px #0002;
   display: flex;
   flex-direction: row;
-  padding: 0.5rem 1rem;
+  justify-content: space-between;
+  padding: 0.3rem 1rem;
   z-index: 3;
 `
 
 const InputWrapper = styled.span`
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #767676;
   display: flex;
+  height: fit-content;
+  padding: 0;
   position: relative;
+  transition: all 0.2ms;
   width: 100%;
+
+  &:focus-within {
+    box-shadow: 0 0 2px ${th('colorPrimary')};
+    outline: solid 2px ${th('colorPrimaryBorder')};
+    outline-offset: 1px;
+  }
 `
 
 const StyledMentionsInput = styled(MentionsInput)`
@@ -32,10 +47,16 @@ const StyledMentionsInput = styled(MentionsInput)`
   position: relative;
 
   textarea {
+    border: none;
     max-height: 70px;
     ${inputShadow};
     overflow: auto;
     padding: ${grid(1)} ${grid(10)} ${grid(1)} ${grid(2)};
+
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
   }
 
   [role='listbox'] {
@@ -56,10 +77,14 @@ const StyledMentionsInput = styled(MentionsInput)`
 `
 
 const StyledUpload = styled(Upload)`
-  position: absolute;
-  right: 70px;
-  top: 10px;
+  cursor: pointer;
+  padding-right: 0.5rem;
   transition: outline-offset 0s, outline 0s;
+
+  > div.ant-upload.ant-upload-select {
+    align-items: center;
+    display: flex;
+  }
 
   [role='button'] {
     display: inline-flex;
@@ -75,7 +100,7 @@ const StyledUpload = styled(Upload)`
 const SendButton = styled(Button)`
   border: none;
   height: 32px;
-  margin: ${grid(1)};
+  margin: ${grid(1)} 0 ${grid(1)} 1rem;
   ${props =>
     props.$inactive &&
     `color:rgba(63, 63, 63, 0.25); 
@@ -88,6 +113,11 @@ const SendButton = styled(Button)`
     `}
 `
 
+const rolesText = {
+  author: '(Author)',
+  handlingEditor: '(HE)',
+  editor: '(Editor)',
+}
 // TODO -- this needs to be a wax editor with two plugins (mention & task)
 
 const ChatInput = props => {
@@ -131,7 +161,7 @@ const ChatInput = props => {
       const content =
         inputRef.current.value.trim().length === 0
           ? ' '
-          : inputRef.current.value.replace(/\r?\n/g, '<br />')
+          : inputRef.current.value
 
       onSend(content, mentions, attachments)
       setInputValue('')
@@ -174,17 +204,9 @@ const ChatInput = props => {
             appendSpaceOnAdd
             data={participants.filter(p => p.id !== currentUser.id)}
             displayTransform={(_, display) => `@${display}`}
-            renderSuggestion={entry => {
-              if (entry.role === 'author') {
-                return <span>{`${entry.display} (Author)`}</span>
-              }
-
-              if (entry.role === 'handlingEditor') {
-                return <span>{`${entry.display} (HE)`}</span>
-              }
-
-              return <span>{entry.display}</span>
-            }}
+            renderSuggestion={entry => (
+              <span>{`${entry.display} ${rolesText[entry.role] || ''}`}</span>
+            )}
             trigger="@"
           />
         </StyledMentionsInput>
@@ -196,15 +218,15 @@ const ChatInput = props => {
           onChange={handleAttachmentChange}
           onRemove={handleRemoveAttachment}
         />
-        <SendButton
-          $inactive={inputValue.length === 0 && attachments.length === 0}
-          data-testid="send-btn"
-          onClick={handleSend}
-          type="primary"
-        >
-          <SendOutlined />
-        </SendButton>
       </InputWrapper>
+      <SendButton
+        $inactive={inputValue.length === 0 && attachments.length === 0}
+        data-testid="send-btn"
+        onClick={handleSend}
+        type="primary"
+      >
+        <SendOutlined />
+      </SendButton>
     </MainContainer>
   )
 }

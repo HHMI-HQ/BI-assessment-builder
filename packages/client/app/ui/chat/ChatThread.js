@@ -82,6 +82,7 @@ const ChatThread = props => {
     onFetchMore,
     onSendMessage,
     infiniteScroll,
+    showParticipants,
     ...rest
   } = props
 
@@ -132,18 +133,20 @@ const ChatThread = props => {
 
   return (
     <Wrapper onKeyDown={handleKeyDown} ref={wrapperRef}>
-      <StyledChatHeader>
-        <p>Participants:</p>
-        <span>
-          {participants.map((p, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <StyledParticipants key={`${p.id}-${i}`}>
-              <UserIcon alt={p.display} src={userIcon} />
-              {p.display} <small>({p.role})</small>
-            </StyledParticipants>
-          ))}
-        </span>
-      </StyledChatHeader>
+      {showParticipants && (
+        <StyledChatHeader>
+          <p>Participants:</p>
+          <span>
+            {participants.map((p, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <StyledParticipants key={`${p.id}-${i}`}>
+                <UserIcon alt={p.display} src={userIcon} />
+                {p.display} <small>({p.role})</small>
+              </StyledParticipants>
+            ))}
+          </span>
+        </StyledChatHeader>
+      )}
       <StyledChatMessageList
         hasMore={hasMore}
         infiniteScroll={infiniteScroll}
@@ -183,6 +186,7 @@ ChatThread.propTypes = {
       role: PropTypes.string,
     }),
   ),
+  showParticipants: PropTypes.bool,
 }
 
 ChatThread.defaultProps = {
@@ -194,6 +198,7 @@ ChatThread.defaultProps = {
   onSendMessage: () => {},
   participants: [],
   infiniteScroll: false,
+  showParticipants: true,
 }
 
 export default ChatThread
