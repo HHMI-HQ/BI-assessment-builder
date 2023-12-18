@@ -132,21 +132,25 @@ const MessageHeader = styled.span`
 `
 
 const MessageContent = ({ content, participants, ...rest }) => {
-  const lines = content.split('\n').map((line, i) => {
-    const parts = line.split(/(@\w+)/g)
+  const lines = content
+    .split('<br />')
+    .join('\n') // to show properly the messages that were sent before this change
+    .split('\n')
+    .map((line, i) => {
+      const parts = line.split(/(@\w+)/g)
 
-    const output = parts.map(part =>
-      part.startsWith('@') && participants.includes(part.slice(1)) ? (
-        <StyledMention data-testid="user-mention" key={uuid()}>
-          {part}
-        </StyledMention>
-      ) : (
-        part || (i !== 0 && <br key={uuid()} />) /// if line is empty and is not the first, retrun a linebreak (means user intentionally made it)
-      ),
-    )
+      const output = parts.map(part =>
+        part.startsWith('@') && participants.includes(part.slice(1)) ? (
+          <StyledMention data-testid="user-mention" key={uuid()}>
+            {part}
+          </StyledMention>
+        ) : (
+          part || (i !== 0 && <br key={uuid()} />) /// if line is empty and is not the first, retrun a linebreak (means user intentionally made it)
+        ),
+      )
 
-    return <MessageLine key={uuid()}>{output}</MessageLine>
-  })
+      return <MessageLine key={uuid()}>{output}</MessageLine>
+    })
 
   return <Content {...rest}>{lines}</Content>
 }
