@@ -68,7 +68,8 @@ describe('Testing apps responsiveness', () => {
         'making sure upload icon button is displayed instead of normal button...',
       )
 
-      cy.get('[aria-label="upload"]').should('be.visible')
+      cy.contains('[aria-label="Submit"]', 'Submit').should('be.visible')
+      cy.get('[id="exportToWord"]').should('be.visible')
       cy.get(submitQuestionButton).should('not.exist')
       cy.get(navToggle).click()
       cy.get(anchorTags.dashboard).click()
@@ -277,7 +278,7 @@ describe('Search filter', () => {
       .click()
       .then($search => {
         cy.get('ul[id="filterList"] li[id="Assigned to HE"]').last().click()
-        cy.get('ul[id="filterList"] li[id="Is"]').last().click()
+        cy.get('ul[id="filterList"] li[id="nuaduslaine"]').last().click()
         cy.get($search).type(`{enter}`)
       })
     cy.get(listItemWrapper)

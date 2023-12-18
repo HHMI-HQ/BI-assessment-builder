@@ -6,6 +6,7 @@ const {
   QuestionVersion,
   Team,
   TeamMember,
+  Identity,
 } = require('../../models')
 
 const clearDb = require('../../models/__tests__/_clearDb')
@@ -17,14 +18,14 @@ const GET_AUTHOR_DASHBOARD = `
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getAuthorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -226,7 +227,7 @@ describe('Question API authorization', () => {
         ascending: true,
         page: 1,
         pageSize: 10,
-        searchQuery: '',
+        filters: {},
       },
     })
 
@@ -250,7 +251,7 @@ describe('Question API authorization', () => {
         ascending: true,
         page: 1,
         pageSize: 10,
-        searchQuery: '',
+        filters: {},
       },
     })
 
@@ -805,6 +806,18 @@ describe('Question API authorization', () => {
       isActive: true,
     })
 
+    const author = await User.insert({
+      isActive: true,
+    })
+
+    await Identity.insert({
+      userId: author.id,
+      email: 'user@coko.foundation',
+      isSocial: false,
+      isVerified: true,
+      isDefault: true,
+    })
+
     const globalTeam = await Team.insert({
       role: 'editor',
       displayName: 'Managing Editor',
@@ -817,6 +830,19 @@ describe('Question API authorization', () => {
     })
 
     const question = await Question.insert({})
+
+    const team = await Team.insert({
+      role: 'author',
+      displayName: 'Author',
+      global: false,
+      objectId: question.id,
+      objectType: 'question',
+    })
+
+    await TeamMember.insert({
+      teamId: team.id,
+      userId: author.id,
+    })
 
     const testServer = await createGraphQLServer(user.id)
 

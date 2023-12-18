@@ -15,6 +15,7 @@ import {
   submitQuestionButton,
   anchorTags,
   ProseMirror,
+  basicButton,
 } from '../support/selectors'
 import {
   dashboard as dashboardRoute,
@@ -24,6 +25,7 @@ import {
 import { laptop } from '../support/viewport'
 
 const disableScripts = false
+
 describe('Testing questions', () => {
   const listItems = ['item1', 'item2', 'item3']
 
@@ -65,14 +67,13 @@ describe('Testing questions', () => {
         '[class="ant-modal-confirm-content"]',
         'All content will be replaced by the new item type.',
       )
-      cy.contains('button[type="button"]', 'Yes, update').click()
+      cy.contains(basicButton, 'Yes, update').click()
       cy.get('.multiple-choice-single-correct')
     })
 
     it('checking the wax editor', () => {
       // [segment]: Checking if user can submit when question is empty
       cy.log('checking if user can submit when question is empty...')
-      cy.get('[data-testid="accept-tnc"]').click()
       cy.get(submitQuestionButton).click()
       cy.contains(antModalContent, 'Item text cannot be empty')
       cy.contains(antModalContent, 'Please provide some content for your item')
@@ -138,8 +139,12 @@ describe('Testing questions', () => {
       //   today.getMinutes(),
       // ).padStart(2, 0)}`
       // cy.contains('span', time)
-      cy.get('[data-testid="accept-tnc"]').click()
+
+      // [segment]: checking if the Export to word is present
+      cy.log('checking if the Export to word is present')
+      cy.get('[id="question-actions"] [id="exportToWord"]').should('be.visible')
       cy.get(submitQuestionButton).click()
+
       cy.contains(
         antModalConfirmTitle,
         'Are you sure you want to submit this item?',
@@ -148,7 +153,15 @@ describe('Testing questions', () => {
         '[class="ant-modal-confirm-content"]',
         'This will make this item visible to editors and reviewers, and after a successful review it will be published for all users.',
       )
-      cy.contains(buttonAntModalBody, 'Submit').click()
+      cy.contains('[class="ant-modal-body"] button.ant-btn', 'Submit').should(
+        'be.disabled',
+      )
+      cy.get('[data-testid="accept-tnc"]').click()
+
+      cy.contains('[class="ant-modal-body"] button.ant-btn', 'Submit')
+        .should('not.be.disabled')
+        .click()
+
       cy.wait('@GQLReq')
       // [segment]: checking if the values are retained in the UI
       cy.visit(dashboardRoute, { method: 'GET' })
@@ -190,6 +203,7 @@ describe('Testing questions', () => {
       // checkDataWithoutParent(affectiveLevel)
       // checkDataWithoutParent(psychomotorLevel)
       checkDataWithoutParent(cognitiveLevel)
+
       cy.deleteAllQuestions(disableScripts)
     })
     it('editing the question', () => {
@@ -209,13 +223,20 @@ describe('Testing questions', () => {
         .contains(ProseMirror, 'Plants growing under direct sunlight')
         .click()
       cy.wait('@GQLReq')
-      cy.contains('button[type="button"]', 'Edit item').click()
-      cy.contains(antModalConfirmTitle, 'Warning!')
+      cy.contains(basicButton, 'Unpublish').click()
+      cy.contains(
+        antModalContent,
+        'Unpublishing an item will remove it from the Browse Items page. After an item is unpublished you can choose to edit and republish it',
+      )
+      cy.contains(buttonAntModalBody, 'Unpublish').click()
+
+      cy.contains(basicButton, 'Edit item').click()
+      cy.contains(antModalConfirmTitle, 'Edit unpublished item')
       cy.contains(
         '[class="ant-modal-confirm-content"]',
-        `You are editing a published item. Any changes you make will be automatically saved, but not automatically published. You will need to publish this item again for the edits to be reflected in the Browse Items page. After the edited item is published, the old one will not be available anymore in the Browse Items page. Do you wish to continue?`,
+        `This item is unpublished. You will need to publish this item again for the changes to be reflected in the Browse Items page. After the item is edited, the previous version will not be available. Do you wish to continue?`,
       )
-      cy.contains(buttonAntModalBody, 'Create new version').click()
+      cy.contains(buttonAntModalBody, 'Edit').click()
       cy.wait('@GQLReq')
 
       cy.get('[contenteditable="true"]', {
