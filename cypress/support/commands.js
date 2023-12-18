@@ -103,15 +103,17 @@ Cypress.Commands.add(
     selectDataWithoutParent(cognitiveLevel)
 
     // [info]: selecting multiple choice at last to avoid focus miss issue
-    cy.get(questionType.selector)
-      .scrollIntoView()
-      .type(`${questionType.value}{enter}`)
+    cy.get(questionType.selector).scrollIntoView().click()
+    cy.contains('.ant-select-item-option-content', questionType.value).click()
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000)
 
-    cy.get('.multiple-choice  .ProseMirror')
-      .first()
-      .type('Question 1', { force: true })
+    cy.get('.multiple-choice-single-correct .ProseMirror')
+      .eq(0)
+      .click()
+      .type('Question 1', {
+        force: true,
+      })
   },
 )
 

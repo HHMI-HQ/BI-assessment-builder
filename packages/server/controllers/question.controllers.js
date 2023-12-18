@@ -12,6 +12,7 @@ const {
   ComplexItemSet,
 } = require('../models')
 
+const CokoNotifier = require('../services/notify')
 const WaxToDocxConverter = require('../services/docx/hhmiDocx.service')
 const { clearTempImageFiles } = require('./helpers')
 const { labels } = require('./constants')
@@ -139,14 +140,14 @@ const getAuthor = async questionId => {
 }
 
 const getAuthorDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
+  const { orderBy, ascending, page, pageSize, filters, trx } = options
 
   return Question.findByRole(userId, 'author', {
     orderBy,
     ascending,
     page,
     pageSize,
-    searchQuery,
+    filters,
     trx,
   })
 }
@@ -180,14 +181,14 @@ const getManagingEditorDashboard = async (userId, options = {}) => {
 }
 
 const getHandlingEditorDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, searchQuery, trx } = options
+  const { orderBy, ascending, page, pageSize, filters, trx } = options
 
   return Question.findByRole(userId, 'handlingEditor', {
     orderBy,
     ascending,
     page,
     pageSize,
-    searchQuery,
+    filters,
     trx,
   })
 }
@@ -215,7 +216,9 @@ const getAuthorChatParticipants = async questionId => {
 }
 
 const getInProductionDashboard = async (userId, options = {}) => {
-  const { orderBy, ascending, page, pageSize, trx, searchQuery } = options
+  const { orderBy, ascending, page, pageSize, trx, filters } = options
+
+  const { searchQuery } = filters
 
   return Question.findByExcludingRole(userId, 'author', {
     orderBy,
@@ -428,7 +431,21 @@ const rejectQuestion = async (questionId, options = {}) => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} rejectQuestion:`
   logger.info(`${CONTROLLER_MESSAGE} rejecting question with id ${questionId}`)
 
-  return modifyQuestion(questionId, { rejected: true }, { trx: options.trx })
+  try {
+    const question = await modifyQuestion(
+      questionId,
+      { rejected: true },
+      { trx: options.trx },
+    )
+
+    const notifier = new CokoNotifier()
+    notifier.notify('hhmi.questionRejected', { questionId })
+
+    return question
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
 }
 
 const moveQuestionVersionToReview = async (questionVersionId, options = {}) => {
@@ -473,10 +490,34 @@ const publishQuestionVersion = async (questionVersionId, options = {}) => {
       submitted: true,
       inProduction: false,
       published: true,
+      unpublished: false,
       publicationDate: new Date(),
     },
     { trx: options.trx },
   )
+}
+
+const unpublishQuestionVersion = async (questionVersionId, options = {}) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} unpublishQuestionVersion:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} unpublishing question version with id ${questionVersionId}`,
+  )
+
+  const modifiedVersion = await modifyQuestionVersion(
+    questionVersionId,
+    {
+      published: false,
+      unpublished: true,
+    },
+    { trx: options.trx },
+  )
+
+  const notifier = new CokoNotifier()
+  notifier.notify('hhmi.questionUnpublished', {
+    questionId: modifiedVersion.questionId,
+  })
+
+  return modifiedVersion
 }
 
 const assignAuthorship = async (questionId, userId, options = {}) => {
@@ -871,6 +912,7 @@ module.exports = {
   moveQuestionVersionToReview,
   moveQuestionVersionToProduction,
   publishQuestionVersion,
+  unpublishQuestionVersion,
   rejectQuestion,
   submitQuestion,
   createNewQuestionVersion,

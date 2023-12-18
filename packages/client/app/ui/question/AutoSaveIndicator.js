@@ -9,6 +9,7 @@ import useBreakpoint from '../_helpers/useBreakpoint'
 
 const AutoSavingWrapper = styled.span`
   padding: 0 ${grid(4)};
+  white-space: nowrap;
 
   .anticon-check {
     color: ${th('colorSuccess')};
