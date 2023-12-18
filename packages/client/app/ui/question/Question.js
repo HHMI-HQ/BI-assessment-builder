@@ -6,7 +6,6 @@ import {
   LeftOutlined,
   RightOutlined,
   EllipsisOutlined,
-  UploadOutlined,
 } from '@ant-design/icons'
 
 import { grid, th } from '@coko/client'
@@ -95,6 +94,15 @@ const StyledButton = styled(Button)`
   }
 `
 
+const Details = styled.details`
+  cursor: pointer;
+  margin-block: ${grid(2)};
+
+  & .tnc-content {
+    padding: ${grid(2)};
+  }
+`
+
 const StyledAssignAuthorButton = styled(AssignAuthorButton)`
   margin-right: ${grid(2)};
   width: 100%;
@@ -118,7 +126,7 @@ const StyledPrevNextButton = styled(StyledButton)`
 
 const StyledWordExportButton = styled(ExportToWordButton)`
   margin-right: ${grid(2)};
-  width: 100%;
+  width: auto;
 `
 
 const StyledScormExportButton = styled(ExportToScormButton)`
@@ -344,6 +352,7 @@ const Question = props => {
     editorContent,
     leadingContent,
     complexSetEditLink,
+    complexItemSetId,
     editorView,
     facultyView,
     hasMoreMessages,
@@ -357,6 +366,8 @@ const Question = props => {
     isSubmitted,
     isUnderReview,
     isInProduction,
+    isUnpublished,
+    canUnpublish,
     canPublish,
     loading,
     loadAuthors,
@@ -365,13 +376,14 @@ const Question = props => {
     onClickAssignHE,
     onClickNextButton,
     onClickPreviousButton,
-    onCreateNewVersion,
     onEditorContentAutoSave,
     onImageUpload,
     onMetadataAutoSave,
     onMoveToProduction,
     onMoveToReview,
     onPublish,
+    onUnpublish,
+    onCreateNewVersion,
     onQuestionSubmit,
     onReject,
     onSendAuthorChatMessage,
@@ -383,6 +395,7 @@ const Question = props => {
     productionChatParticipants,
     qtiZipLoading,
     showAssignHEButton,
+    showPreviewButton,
     canAssignAuthor,
     showNextQuestionLink,
     submitting,
@@ -403,7 +416,7 @@ const Question = props => {
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
-  const { confirm, info, success, error } = modal
+  const { confirm, success, error } = modal
 
   const formRef = useRef()
   const waxRef = useRef()
@@ -412,6 +425,7 @@ const Question = props => {
   const [autoSaving, setAutoSaving] = useState(false)
   const [showMetadata, setShowMetadata] = useState(isUserLoggedIn)
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
+  const [preview, setPreview] = useState(facultyView)
 
   const readOnly =
     (editorView && !isInProduction && isSubmitted) ||
@@ -436,63 +450,6 @@ const Question = props => {
     onMetadataAutoSave(data).then(() => {
       setAutoSaving(false)
     })
-  }
-
-  const showTermsAndConditions = e => {
-    e.preventDefault()
-    const infoModal = info()
-    infoModal.update({
-      title: <ModalHeader>Accept Terms and Conditions</ModalHeader>,
-      content: (
-        <Paragraph>
-          By submitting information via the form below (the “Item Information”),
-          and clicking the “Submit” button, you agree to{' '}
-          <Link
-            as="a"
-            href="https://www.hhmi.org/terms-of-use"
-            rel="noreferrer"
-            target="_blank"
-          >
-            HHMI’s Terms of Use
-          </Link>{' '}
-          and you grant to the Howard Hughes Medical Institute (“HHMI”) and our
-          affiliates (referred to collectively with HHMI as, “we,” “us,” or
-          “our”) a royalty-free, perpetual, irrevocable, non-exclusive right and
-          license to use, publish, reproduce, modify, adapt, edit, translate,
-          create derivative works from, incorporate into other works,
-          distribute, sub-license, and otherwise exploit such Item Information,
-          and derivatives or modifications thereof, throughout the universe in
-          any form, media or technology now known or hereafter developed,
-          including without limitation sub-licensing and distributing the Item
-          Information or derivatives or modifications thereof under a Creative
-          Commons license selected by HHMI. You hereby represent, warrant and
-          covenant that the Item Information submitted by you is original to
-          you, and that neither the existence nor the exploitation thereof shall
-          infringe upon or violate any trademark, patent, copyright, trade
-          secret, right of privacy or publicity, or other common law right of
-          any third party.
-        </Paragraph>
-      ),
-      footer: [
-        <ModalFooter key="footer">
-          <Button autoFocus onClick={() => infoModal.destroy()} type="primary">
-            Ok
-          </Button>
-        </ModalFooter>,
-      ],
-      maskClosable: true,
-      afterClose: () =>
-        document.body.querySelector('#termsAndConditions').focus(),
-      width: '570px',
-      bodyStyle: {
-        marginRight: 38,
-        textAlign: 'justify',
-      },
-    })
-  }
-
-  const handleAgreeTcChange = e => {
-    setAgreedTc(!agreedTc)
   }
 
   const isEmptyEditor = () => {
@@ -530,6 +487,39 @@ const Question = props => {
     return false
   }
 
+  const TermsAndConditions = (
+    <Details>
+      <summary>Read terms and conditions</summary>
+      <Paragraph className="tnc-content">
+        By submitting information via the form below (the “Item Information”),
+        and clicking the “Submit” button, you agree to{' '}
+        <Link
+          as="a"
+          href="https://www.hhmi.org/terms-of-use"
+          rel="noreferrer"
+          target="_blank"
+        >
+          HHMI’s Terms of Use
+        </Link>{' '}
+        and you grant to the Howard Hughes Medical Institute (“HHMI”) and our
+        affiliates (referred to collectively with HHMI as, “we,” “us,” or “our”)
+        a royalty-free, perpetual, irrevocable, non-exclusive right and license
+        to use, publish, reproduce, modify, adapt, edit, translate, create
+        derivative works from, incorporate into other works, distribute,
+        sub-license, and otherwise exploit such Item Information, and
+        derivatives or modifications thereof, throughout the universe in any
+        form, media or technology now known or hereafter developed, including
+        without limitation sub-licensing and distributing the Item Information
+        or derivatives or modifications thereof under a Creative Commons license
+        selected by HHMI. You hereby represent, warrant and covenant that the
+        Item Information submitted by you is original to you, and that neither
+        the existence nor the exploitation thereof shall infringe upon or
+        violate any trademark, patent, copyright, trade secret, right of privacy
+        or publicity, or other common law right of any third party.
+      </Paragraph>
+    </Details>
+  )
+
   const handleSubmit = () => {
     if (isEmptyEditor()) return
 
@@ -538,21 +528,45 @@ const Question = props => {
       title: (
         <ModalHeader>Are you sure you want to submit this item?</ModalHeader>
       ),
-      content:
-        'This will make this item visible to editors and reviewers, and after a successful review it will be published for all users.',
+      content: (
+        <>
+          <Paragraph>
+            This will make this item visible to editors and reviewers, and after
+            a successful review it will be published for all users.
+          </Paragraph>
+          {TermsAndConditions}
+          <ModalContext.Consumer>
+            {({ agree, setAgree }) => (
+              <StyledCheckbox
+                aria-label="I accept the terms and conditions"
+                checked={agree}
+                data-testid="accept-tnc"
+                onChange={() => setAgree(!agree)}
+              >
+                Accept terms and conditions
+              </StyledCheckbox>
+            )}
+          </ModalContext.Consumer>
+        </>
+      ),
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmSubmitModal.destroy()}>Cancel</Button>
-          <Button
-            autoFocus
-            onClick={() => {
-              formRef.current.submit()
-              confirmSubmitModal.destroy()
-            }}
-            type="primary"
-          >
-            Submit
-          </Button>
+          <ModalContext.Consumer>
+            {({ agree }) => (
+              <Button
+                autoFocus
+                disabled={!agree}
+                onClick={() => {
+                  formRef.current.submit()
+                  confirmSubmitModal.destroy()
+                }}
+                type="primary"
+              >
+                Submit
+              </Button>
+            )}
+          </ModalContext.Consumer>
         </ModalFooter>,
       ],
     })
@@ -687,7 +701,7 @@ const Question = props => {
                       showDialog(
                         'error',
                         'Problem publishing this item',
-                        'There was an error while publishin this item. Please try again',
+                        'There was an error while publishing this item. Please try again',
                       )
                     })
                 }}
@@ -788,13 +802,51 @@ const Question = props => {
       })
   }
 
+  const showUnpublishModal = () => {
+    const confirmUnpublish = confirm()
+    confirmUnpublish.update({
+      title: <ModalHeader>Unpublish item</ModalHeader>,
+      content: `Unpublishing an item will remove it from the Browse Items page. 
+        After an item is unpublished you can choose to edit and republish it`,
+      footer: [
+        <ModalFooter key="footer">
+          <Button onClick={() => confirmUnpublish.destroy()}>Cancel</Button>
+          <Button
+            autoFocus
+            onClick={() => {
+              confirmUnpublish.destroy()
+              onUnpublish()
+                .then(() =>
+                  showDialog(
+                    'success',
+                    'Item unpublished successfully',
+                    'Item was unpublished and removed from Browse Itemms page.',
+                  ),
+                )
+                .catch(() =>
+                  showDialog(
+                    'error',
+                    'Problem unpublishing this item',
+                    'There was an error while unpublishing this item. Please try again!',
+                  ),
+                )
+            }}
+            status="danger"
+          >
+            Unpublish
+          </Button>
+        </ModalFooter>,
+      ],
+    })
+  }
+
   const showNewVersionModal = () => {
     const confirmNewVersion = confirm()
     confirmNewVersion.update({
-      title: <ModalHeader>Warning!</ModalHeader>,
-      content: `You are editing a published item. Any changes you make will be automatically saved, but not automatically published. 
-      You will need to publish this item again for the edits to be reflected in the Browse Items page.
-      After the edited item is published, the old one will not be available anymore in the Browse Items page. 
+      title: <ModalHeader>Edit unpublished item</ModalHeader>,
+      content: `This item is unpublished. You will need to publish this item again 
+      for the changes to be reflected in the Browse Items page.
+      After the item is edited, the previous version will not be available. 
       Do you wish to continue?`,
       footer: [
         <ModalFooter key="footer">
@@ -803,12 +855,19 @@ const Question = props => {
             autoFocus
             onClick={() => {
               confirmNewVersion.destroy()
-              // TODO: add error handling for this action
               onCreateNewVersion()
+                .then()
+                .catch(() =>
+                  showDialog(
+                    'error',
+                    'Problem updating this item',
+                    'Item cannot be updated',
+                  ),
+                )
             }}
             status="danger"
           >
-            Create new version
+            Edit
           </Button>
         </ModalFooter>,
       ],
@@ -883,35 +942,51 @@ const Question = props => {
     </StyledPrevNextButton>
   )
 
-  const isMobile = useBreakpoint('(min-width: 550px)')
+  const isMobile = useBreakpoint('(max-width: 900px)')
 
   // eslint-disable-next-line no-nested-ternary
-  const RightAreaAuthor = isSubmitted ? null : isMobile ? (
+  const RightAreaAuthor = isSubmitted ? (
+    <StyledWordExportButton
+      isIconButton={isMobile}
+      loading={wordFileLoading}
+      onExport={onClickExportToWord}
+      showMetadataOption={isUserLoggedIn}
+    />
+  ) : isMobile ? (
     <>
-      <StyledCheckbox
-        aria-label="I accept the terms and conditions"
-        checked={agreedTc}
-        data-testid="accept-tnc"
-        onChange={handleAgreeTcChange}
+      <StyledWordExportButton
+        isIconButton
+        loading={wordFileLoading}
+        onExport={onClickExportToWord}
+        showMetadataOption={isUserLoggedIn}
+      />
+
+      <Button
+        aria-label="Submit"
+        // onClick={handleSubmitButtonClick}
+
+        onClick={handleSubmit}
+        title="Submit"
+        type="primary"
       >
-        Accept{' '}
-        <Link
-          id="termsAndConditions"
-          onClick={showTermsAndConditions}
-          to="#termsAndCondition"
-        >
-          terms and conditions
-        </Link>
-      </StyledCheckbox>
+        Submit
+      </Button>
+    </>
+  ) : (
+    <>
+      <StyledWordExportButton
+        loading={wordFileLoading}
+        onExport={onClickExportToWord}
+        showMetadataOption={isUserLoggedIn}
+      />
 
       <SubmitButton
         data-testid="submit-question-btn"
         disabled={
           // !formRef.current.isFieldsTouched(true) ||
-          submitting ||
+          submitting
           // formRef.current.getFieldsError().filter(({ errors }) => errors.length)
           //   .length > 0 ||
-          !agreedTc
         }
         onClick={handleSubmit}
         type="primary"
@@ -919,69 +994,6 @@ const Question = props => {
         Submit
       </SubmitButton>
     </>
-  ) : (
-    <Button
-      aria-label="Submit"
-      icon={<UploadOutlined />}
-      // onClick={handleSubmitButtonClick}
-      onClick={() => {
-        const confirmSubmit = confirm()
-        confirmSubmit.update({
-          title: 'Ready to submit?',
-          content: (
-            <ModalContext.Consumer>
-              {({ agree, setAgree }) => (
-                <StyledCheckbox
-                  aria-label="I accept the terms and conditions"
-                  checked={agree}
-                  onChange={() => setAgree(!agree)}
-                >
-                  Accept{' '}
-                  <Link
-                    id="termsAndConditions"
-                    onClick={showTermsAndConditions}
-                    to="#termsAndCondition"
-                  >
-                    terms and conditions
-                  </Link>
-                </StyledCheckbox>
-              )}
-            </ModalContext.Consumer>
-          ),
-          footer: (
-            <ModalFooter>
-              <Button
-                onClick={() => {
-                  confirmSubmit.destroy()
-                }}
-              >
-                Cancel
-              </Button>
-              <ModalContext.Consumer>
-                {({ agree }) => (
-                  <Button
-                    autoFocus
-                    disabled={!agree}
-                    onClick={() => {
-                      confirmSubmit.destroy()
-                      handleSubmit()
-                    }}
-                    type="primary"
-                  >
-                    Submit
-                  </Button>
-                )}
-              </ModalContext.Consumer>
-            </ModalFooter>
-          ),
-          maskClosable: true,
-          // okText: 'Submit Item',
-          // onOk: handleSubmit,
-        })
-      }}
-      title="Submit"
-      type="primary"
-    />
   )
 
   const editorActionsDropdownMenu = (
@@ -1059,7 +1071,12 @@ const Question = props => {
           </StyledButton>
         </>
       )}
-      {isPublished && canCreateNewVersion && (
+      {isPublished && canUnpublish && (
+        <StyledButton onClick={showUnpublishModal} type="primary">
+          Unpublish
+        </StyledButton>
+      )}
+      {isUnpublished && canCreateNewVersion && (
         <StyledButton onClick={showNewVersionModal} type="primary">
           Edit item
         </StyledButton>
@@ -1131,32 +1148,43 @@ const Question = props => {
             Publish
           </StyledButton>
         )}
-        {isSubmitted && !isUnderReview && !isInProduction && !isPublished && (
-          <>
-            <StyledButton
-              id="doNotAccept"
-              onClick={handleReject}
-              status="danger"
-              type="primary"
-            >
-              Do not accept
-            </StyledButton>
 
-            <StyledButton
-              id="moveToReview"
-              onClick={handleMoveToReview}
-              type="primary"
-            >
-              Move to review
-            </StyledButton>
-          </>
+        {isSubmitted &&
+          !isUnderReview &&
+          !isInProduction &&
+          !isPublished &&
+          !isUnpublished && (
+            <>
+              <StyledButton
+                id="doNotAccept"
+                onClick={handleReject}
+                status="danger"
+                type="primary"
+              >
+                Do not accept
+              </StyledButton>
+
+              <StyledButton
+                id="moveToReview"
+                onClick={handleMoveToReview}
+                type="primary"
+              >
+                Move to review
+              </StyledButton>
+            </>
+          )}
+
+        {isPublished && canUnpublish && (
+          <StyledButton onClick={showUnpublishModal} type="primary">
+            Unpublish
+          </StyledButton>
         )}
-
-        {isPublished && canCreateNewVersion && (
+        {isUnpublished && canCreateNewVersion && (
           <StyledButton onClick={showNewVersionModal} type="primary">
             Edit item
           </StyledButton>
         )}
+
         {showNextQuestionLink && NextQuestion}
       </ActionsWrapper>
       <Popup
@@ -1185,6 +1213,11 @@ const Question = props => {
           lastAutoSave={updated && new Date(updated)}
         />
       )}
+      {showPreviewButton && (
+        <StyledButton onClick={() => setPreview(prev => !prev)}>
+          {!preview ? 'Preview' : 'Continue editing'}
+        </StyledButton>
+      )}
       {!isRejected &&
         (editorView && isSubmitted ? RightAreaEditor : RightAreaAuthor)}
     </RightAreaWrapper>
@@ -1203,7 +1236,12 @@ const Question = props => {
           onExport={onClickExportToQti}
         />
       )}
-      {isPublished && canCreateNewVersion && (
+      {isPublished && canUnpublish && (
+        <StyledButton onClick={showUnpublishModal} type="primary">
+          Unpublish
+        </StyledButton>
+      )}
+      {isUnpublished && canCreateNewVersion && (
         <StyledButton onClick={showNewVersionModal} type="primary">
           Edit item
         </StyledButton>
@@ -1243,7 +1281,12 @@ const Question = props => {
               onExport={onClickExportToQti}
             />
           )}
-          {isPublished && canCreateNewVersion && (
+          {isPublished && canUnpublish && (
+            <StyledButton onClick={showUnpublishModal} type="primary">
+              Unpublish
+            </StyledButton>
+          )}
+          {isUnpublished && canCreateNewVersion && (
             <StyledButton onClick={showNewVersionModal} type="primary">
               Edit item
             </StyledButton>
@@ -1304,24 +1347,34 @@ const Question = props => {
                   <>
                     {isRejected && (
                       <Ribbon status="error">
-                        This item has been rejected by the editors
+                        This item has been rejected by the editors.
+                      </Ribbon>
+                    )}
+                    {isUnpublished && (
+                      <Ribbon status="error">
+                        This item has been unpublished by the editors.
                       </Ribbon>
                     )}
                     <PanelWrapper
                       condition={false}
                       editor={
                         <QuestionEditor
+                          complexItemSetId={complexItemSetId}
                           complexSetEditLink={complexSetEditLink}
                           content={editorContent}
                           innerRef={waxRef}
-                          layout={facultyView ? TestModeLayout : HhmiLayout}
+                          layout={preview ? TestModeLayout : HhmiLayout}
                           leadingContent={leadingContent}
                           onContentChange={handleQuestionContentChange}
                           onImageUpload={onImageUpload}
-                          published={facultyView && isPublished}
-                          readOnly={readOnly || !selectedQuestionType}
+                          published={preview || isPublished}
+                          readOnly={
+                            readOnly || preview || !selectedQuestionType
+                          }
                           selectedQuestionType={selectedQuestionType}
-                          withFeedback={showMetadata}
+                          withFeedback={
+                            !preview || (showMetadata && facultyView)
+                          }
                         />
                       }
                       metadata={
@@ -1354,7 +1407,7 @@ const Question = props => {
                           </SkipToTop>
                         </>
                       }
-                      showMetadata={showMetadata}
+                      showMetadata={showMetadata && (!preview || facultyView)}
                     />
                   </>
                 ),
@@ -1433,7 +1486,6 @@ Question.propTypes = {
   onClickPreviousButton: PropTypes.func,
   onChangeAnnouncement: PropTypes.func,
   onClickNextButton: PropTypes.func,
-  onCreateNewVersion: PropTypes.func,
   onEditorContentAutoSave: PropTypes.func,
   onImageUpload: PropTypes.func,
   onQuestionSubmit: PropTypes.func.isRequired,
@@ -1441,6 +1493,8 @@ Question.propTypes = {
   onMoveToReview: PropTypes.func,
   onMoveToProduction: PropTypes.func,
   onPublish: PropTypes.func,
+  onUnpublish: PropTypes.func,
+  onCreateNewVersion: PropTypes.func,
   onReject: PropTypes.func,
   onSendAuthorChatMessage: PropTypes.func,
   onSendProductionChatMessage: PropTypes.func,
@@ -1458,10 +1512,13 @@ Question.propTypes = {
   isUnderReview: PropTypes.bool,
   isInProduction: PropTypes.bool,
   isUserLoggedIn: PropTypes.bool,
+  isUnpublished: PropTypes.bool,
+  canUnpublish: PropTypes.bool,
   editorView: PropTypes.bool,
   canPublish: PropTypes.bool,
   canAssignAuthor: PropTypes.bool,
   showAssignHEButton: PropTypes.bool,
+  showPreviewButton: PropTypes.bool,
   showNextQuestionLink: PropTypes.bool,
   facultyView: PropTypes.bool,
   metadata: PropTypes.shape({
@@ -1721,6 +1778,7 @@ Question.propTypes = {
   ),
   qtiZipLoading: PropTypes.bool,
   complexSetEditLink: PropTypes.string,
+  complexItemSetId: PropTypes.string,
   handlingEditors: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
@@ -1754,11 +1812,12 @@ Question.defaultProps = {
   authorChatMessages: [],
   productionChatMessages: [],
   onChangeAnnouncement: () => {},
-  onCreateNewVersion: () => {},
   onFetchMoreMessages: () => {},
   onMoveToReview: () => {},
   onMoveToProduction: () => {},
   onPublish: () => {},
+  onUnpublish: () => {},
+  onCreateNewVersion: () => {},
   onReject: () => {},
   onSendAuthorChatMessage: () => {},
   onSendProductionChatMessage: () => {},
@@ -1781,11 +1840,14 @@ Question.defaultProps = {
   isSubmitted: false,
   isUnderReview: false,
   isInProduction: false,
+  isUnpublished: false,
+  canUnpublish: false,
   canPublish: false,
   editorView: false,
   questionAgreedTc: false,
   canAssignAuthor: false,
   showAssignHEButton: true,
+  showPreviewButton: false,
   showNextQuestionLink: false,
   facultyView: false,
   refetchUser: () => {},
@@ -1798,6 +1860,7 @@ Question.defaultProps = {
   productionChatParticipants: [],
   qtiZipLoading: false,
   complexSetEditLink: null,
+  complexItemSetId: null,
   handlingEditors: [],
   onSearchHE: () => {},
   searchHELoading: false,

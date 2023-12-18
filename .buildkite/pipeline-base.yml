@@ -5,7 +5,7 @@ definitions:
     timeout_in_minutes: 15
   plugins:
     ecr: &ecr
-      ecr#v2.0.0:
+      ecr#v2.7.0:
         login: true
         no-include-email: true
 

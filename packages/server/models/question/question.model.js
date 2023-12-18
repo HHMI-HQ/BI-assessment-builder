@@ -105,11 +105,9 @@ class Question extends BaseModel {
     return question
   }
 
-  // TO DO -- if there is a previous versions, you should copy its contents
   static async createNewVersion(data, options = {}) {
     const previousVersions = await this.getVersions(data.questionId, {
       latestOnly: true,
-      publishedOnly: true,
     })
 
     if (previousVersions.totalCount > 0) {
@@ -145,7 +143,7 @@ class Question extends BaseModel {
           readingLevel,
           questionType,
           inProduction: true,
-          published: false,
+          unpublished: false,
         },
         { trx: options.trx },
       )
@@ -275,6 +273,7 @@ class Question extends BaseModel {
         .leftJoin('users', 'users.id', 'team_members.user_id')
         .select(
           'questions.*',
+          'question_versions.published',
           'question_versions.publication_date',
           'question_versions.topics',
           'question_versions.content_text',
@@ -286,9 +285,9 @@ class Question extends BaseModel {
           'question_versions.complex_item_set_id',
         )
         .distinctOn('questions.id')
-        .where({
-          published: true,
-        })
+        // .where({
+        //   published: true,
+        // })
         .orderBy([
           'questions.id',
           { column: 'question_versions.created', order: 'desc' },
@@ -298,7 +297,12 @@ class Question extends BaseModel {
 
       // wrapped into a parent query so that the subsequent ordering is applied to unique question versions
       // and not between versions of the same question
-      const parentQuery = Question.query(options.trx).select('*').from(query)
+      const parentQuery = Question.query(options.trx)
+        .select('*')
+        .from(query)
+        .where({
+          published: true,
+        })
 
       if (params.filters || params.searchQuery) {
         this.applyFilters(params.filters, params.searchQuery, parentQuery)
@@ -377,6 +381,7 @@ class Question extends BaseModel {
           under_review: false,
           in_production: false,
           published: false,
+          unpublished: false,
           rejected: false,
         })
         return query
@@ -392,28 +397,85 @@ class Question extends BaseModel {
     }
   }
 
+  static applyHandlingEditorFilter(userId, query) {
+    if (userId.length) {
+      // fetch results for which exists a team_member for question's 'handlingEditor' team
+      query.whereExists(builder => {
+        builder
+          .select('*')
+          .from('team_members')
+          .leftJoin('teams', 'teams.id', 'team_members.team_id')
+          .where({
+            'teams.role': 'handlingEditor',
+            'teams.global': false,
+            'team_members.user_id': userId,
+          })
+          .whereRaw('teams.object_id = q1.id')
+      })
+    } else {
+      // fetch results for which there is no team_member for question's 'handlingEditor' team
+      query.whereNotExists(builder => {
+        builder
+          .select('*')
+          .from('team_members')
+          .leftJoin('teams', 'teams.id', 'team_members.team_id')
+          .where({
+            'teams.role': 'handlingEditor',
+            'teams.global': false,
+          })
+          .whereRaw('teams.object_id = q1.id')
+      })
+    }
+  }
+
   // eg. find all questions this user is an author of
   static async findByRole(userId, role, options = {}) {
+    const { filters = {} } = options
+
+    const { status, searchQuery } = filters
+
     const query = Question.query(options.trx)
       .leftJoin('teams', 'questions.id', 'teams.object_id')
       .leftJoin('team_members', 'team_members.team_id', 'teams.id')
-      .where({ role, userId })
 
-    if (options.searchQuery) {
+    const selectFields = ['questions.*', 'teams.role', 'team_members.user_id']
+
+    if (status || searchQuery) {
       query
         .leftJoin(
           'question_versions',
-          'question_versions.question_id',
           'questions.id',
+          'question_versions.question_id',
         )
         .distinctOn('questions.id')
         .orderBy([
           'questions.id',
           { column: 'question_versions.created', order: 'desc' },
         ])
-        .where('content_text', 'ilike', `%${options.searchQuery}%`)
 
-      const queryStrings = options.searchQuery.split(' ')
+      selectFields.push(
+        'question_versions.submitted',
+        'question_versions.under_review',
+        'question_versions.in_production',
+        'question_versions.published',
+        'question_versions.unpublished',
+      )
+    }
+
+    query.select(selectFields)
+
+    // user filter
+    query.where({ 'teams.role': role, 'team_members.user_id': userId })
+
+    // status filter
+    if (status) {
+      this.applyStatusFilter(status, query)
+    }
+
+    if (searchQuery) {
+      query.where('content_text', 'ilike', `%${searchQuery}%`)
+
+      const queryStrings = searchQuery.split(' ')
       queryStrings.forEach(queryString => {
         query.orWhereJsonSupersetOf('keywords', [queryString])
       })
@@ -450,6 +512,7 @@ class Question extends BaseModel {
           'question_versions.under_review',
           'question_versions.in_production',
           'question_versions.published',
+          'question_versions.unpublished',
         ],
       )
     }
@@ -508,33 +571,7 @@ class Question extends BaseModel {
 
     // heAssigned filter
     if (typeof heAssigned !== 'undefined' && heAssigned !== null) {
-      if (heAssigned) {
-        // fetch results for which exists a team_member for question's 'handlingEditor' team
-        parentQuery.whereExists(builder => {
-          builder
-            .select('*')
-            .from('team_members')
-            .leftJoin('teams', 'teams.id', 'team_members.team_id')
-            .where({
-              'teams.role': 'handlingEditor',
-              'teams.global': false,
-            })
-            .whereRaw('teams.object_id = q1.id')
-        })
-      } else {
-        // fetch results for which there is no team_member for question's 'handlingEditor' team
-        parentQuery.whereNotExists(builder => {
-          builder
-            .select('*')
-            .from('team_members')
-            .leftJoin('teams', 'teams.id', 'team_members.team_id')
-            .where({
-              'teams.role': 'handlingEditor',
-              'teams.global': false,
-            })
-            .whereRaw('teams.object_id = q1.id')
-        })
-      }
+      this.applyHandlingEditorFilter(heAssigned, parentQuery)
     }
 
     // author filter
