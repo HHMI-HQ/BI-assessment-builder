@@ -31,7 +31,7 @@ export const editor = {
 
 export const question = {
   questionType: {
-    value: 'Multiple choice',
+    value: 'Multiple Choice',
     selector: `div[data-testid="questionType-select"]`,
   },
   mainTopic: {

@@ -7,14 +7,14 @@ export const GET_AUTHOR_DASHBOARD = gql`
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getAuthorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -27,6 +27,7 @@ export const GET_AUTHOR_DASHBOARD = gql`
           underReview
           inProduction
           published
+          unpublished
           publicationDate
 
           complexItemSetId
@@ -88,6 +89,7 @@ export const GET_EDITOR_DASHBOARD = gql`
           underReview
           inProduction
           published
+          unpublished
           publicationDate
 
           complexItemSetId
@@ -125,14 +127,14 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getHandlingEditorDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -148,6 +150,7 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
           underReview
           inProduction
           published
+          unpublished
           publicationDate
 
           complexItemSetId
@@ -178,20 +181,21 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
     }
   }
 `
+
 export const GET_PRODUCTION_DASHBOARD = gql`
   query GetInProductionDashboard(
     $orderBy: String
     $ascending: Boolean
     $page: Int
     $pageSize: Int
-    $searchQuery: String
+    $filters: DashboardFilters
   ) {
     getInProductionDashboard(
       orderBy: $orderBy
       ascending: $ascending
       page: $page
       pageSize: $pageSize
-      searchQuery: $searchQuery
+      filters: $filters
     ) {
       result {
         id
@@ -207,6 +211,7 @@ export const GET_PRODUCTION_DASHBOARD = gql`
           underReview
           inProduction
           published
+          unpublished
           publicationDate
 
           complexItemSetId
@@ -237,6 +242,7 @@ export const GET_PRODUCTION_DASHBOARD = gql`
     }
   }
 `
+
 export const ASSING_HANDLING_EDITORS = gql`
   mutation assignHandlingEditors($questionIds: [ID!]!, $userIds: [ID!]!) {
     assignHandlingEditors(questionIds: $questionIds, userIds: $userIds) {
@@ -311,6 +317,7 @@ export const QUESTION = gql`
         underReview
         inProduction
         published
+        unpublished
 
         topics {
           topic
@@ -383,7 +390,7 @@ export const UPDATE_QUESTION = gql`
         underReview
         inProduction
         published
-
+        unpublished
         leadingContent
         complexItemSetId
         questionType
@@ -500,6 +507,7 @@ export const CREATE_NEW_VERSION = gql`
         underReview
         inProduction
         published
+        unpublished
 
         topics {
           topic
@@ -532,7 +540,15 @@ export const CREATE_NEW_VERSION = gql`
     }
   }
 `
-
+export const UNPUBLISH_QUESTION_VERSION = gql`
+  mutation UnpublishQuestionVersion($questionVersionId: ID!) {
+    unpublishQuestionVersion(questionVersionId: $questionVersionId) {
+      id
+      unpublished
+      published
+    }
+  }
+`
 export const GET_PUBLISHED_QUESTIONS = gql`
   query GetPublishedQuestions(
     $params: FilterQuestionsParams

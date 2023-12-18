@@ -3,6 +3,8 @@ const config = require('config')
 const { uuid } = require('@coko/server')
 
 const {
+  getAuthorDashboard,
+  getManagingEditorDashboard,
   generateScormZip,
   getQuestionVersions,
   updateQuestion,
@@ -11,6 +13,7 @@ const {
   unassignHandlingEditor,
   getAuthorChatParticipants,
   getProductionChatParticipants,
+  getHandlingEditorDashboard,
 } = require('../question.controllers')
 
 const {
@@ -20,6 +23,7 @@ const {
 } = require('./__helpers__/questions')
 
 const {
+  createGlobalHandlingEditorTeamWithUsers,
   createGlobalEditorTeamWithUsers,
   createGlobalProductionTeamWithUsers,
 } = require('../../models/__tests__/__helpers__/teams')
@@ -299,5 +303,241 @@ describe('Question Controller', () => {
     const team = await Question.getHandlingEditors(question.id)
     expect(team.every(t => t.id !== user1.id)).toBe(true)
     expect(team.some(t => t.id === user2.id)).toBe(true)
+  })
+  test('getAuthorDashboard: returns questions the user has authored', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+    const question3 = await Question.insert({})
+
+    const user1 = await User.insert({})
+    const user2 = await User.insert({})
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      underReview: true,
+      submitted: true,
+      published: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: false,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: false,
+    })
+
+    const q1Team = await Team.insert({
+      objectId: question1.id,
+      objectType: 'question',
+      role: 'author',
+      displayName: 'Author',
+    })
+
+    const q2Team = await Team.insert({
+      objectId: question2.id,
+      objectType: 'question',
+      role: 'author',
+      displayName: 'Author',
+    })
+
+    const q3Team = await Team.insert({
+      objectId: question3.id,
+      objectType: 'question',
+      role: 'author',
+      displayName: 'Author',
+    })
+
+    await Team.addMember(q1Team.id, user1.id)
+    await Team.addMember(q2Team.id, user1.id)
+    await Team.addMember(q3Team.id, user2.id)
+
+    const { result, totalCount } = await getAuthorDashboard(user1.id)
+    expect(totalCount).toBe(2)
+    const qIds = [(question1.id, question2.id)]
+    qIds.forEach(qId => {
+      expect(
+        result.some(res => res.id === qId && res.id !== question3.id),
+      ).toBe(true)
+    })
+  })
+
+  test('getManagingEditorDashboard: returns questions excluding authored questions', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+
+    const { user: editor } = await createGlobalEditorTeamWithUsers()
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      submitted: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: true,
+    })
+
+    const q1Team = await Team.insert({
+      objectId: question1.id,
+      objectType: 'question',
+      role: 'author',
+      displayName: 'Author',
+    })
+
+    await Team.addMember(q1Team.id, editor.id)
+    const { result } = await getManagingEditorDashboard(editor.id)
+    expect(result.some(res => res.id !== question1.id)).toBe(true)
+  })
+
+  test('getManagingEditorDashboard: returns only submitted questions', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+
+    const { user: editor } = await createGlobalEditorTeamWithUsers()
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      submitted: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: false,
+    })
+
+    const { result } = await getManagingEditorDashboard(editor.id)
+    expect(result.some(res => res.id !== question2.id)).toBe(true)
+  })
+
+  test('getManagingEditorDashboard: filters questions with the given status', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+
+    const { user: editor } = await createGlobalEditorTeamWithUsers()
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      submitted: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: true,
+      underReview: true,
+    })
+
+    const { result, totalCount } = await getManagingEditorDashboard(editor.id, {
+      filters: {
+        status: 'underReview',
+      },
+    })
+
+    expect(totalCount).toEqual(1)
+    expect(result[0].id !== question1.id).toBe(true)
+  })
+
+  test('getManagingEditorDashboard: filters questions with the given HE', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+    const { user: ME } = await createGlobalEditorTeamWithUsers()
+
+    const { user: HE } = await createGlobalHandlingEditorTeamWithUsers()
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      submitted: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: false,
+    })
+
+    const q1HeTeam = await Team.insert({
+      objectId: question1.id,
+      objectType: 'question',
+      role: 'handlingEditor',
+      displayName: 'Handling Editor',
+    })
+
+    await Team.addMember(q1HeTeam.id, HE.id)
+
+    const { result, totalCount } = await getManagingEditorDashboard(ME.id, {
+      filters: {
+        heAssigned: HE.id,
+      },
+    })
+
+    expect(totalCount).toEqual(1)
+    expect(result[0].id === question1.id).toBe(true)
+  })
+
+  test('getHandlingEditorDashboard: only returns questions that are assigned to the HE', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+
+    const { user: HE } = await createGlobalHandlingEditorTeamWithUsers()
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      submitted: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: false,
+    })
+
+    const q1HeTeam = await Team.insert({
+      objectId: question1.id,
+      objectType: 'question',
+      role: 'handlingEditor',
+      displayName: 'Handling Editor',
+    })
+
+    await Team.addMember(q1HeTeam.id, HE.id)
+
+    const { result } = await getHandlingEditorDashboard(HE.id)
+    expect(result[0].id).toEqual(question1.id)
+  })
+
+  test('getHandlingEditorDashboard: filters questions with given status', async () => {
+    const question1 = await Question.insert({})
+    const question2 = await Question.insert({})
+
+    const { user: HE } = await createGlobalHandlingEditorTeamWithUsers()
+
+    await QuestionVersion.insert({
+      questionId: question1.id,
+      submitted: true,
+      inProduction: true,
+    })
+
+    await QuestionVersion.insert({
+      questionId: question2.id,
+      submitted: true,
+      underReview: true,
+    })
+
+    const q1HeTeam = await Team.insert({
+      objectId: question1.id,
+      objectType: 'question',
+      role: 'handlingEditor',
+      displayName: 'Handling Editor',
+    })
+
+    await Team.addMember(q1HeTeam.id, HE.id)
+
+    const { result, totalCount } = await getHandlingEditorDashboard(HE.id, {
+      filters: {
+        status: 'inProduction',
+      },
+    })
+
+    expect(totalCount).toEqual(1)
+    expect(result[0].id === question1.id).toBe(true)
   })
 })
