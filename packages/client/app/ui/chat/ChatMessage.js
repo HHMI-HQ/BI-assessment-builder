@@ -172,7 +172,7 @@ const ChatMessage = forwardRef((props, ref) => {
   }
 
   return (
-    <MessageWrapper own={own} tabIndex={0}>
+    <MessageWrapper data-testid="msg-container" own={own} tabIndex={0}>
       <Message
         className={className}
         content={

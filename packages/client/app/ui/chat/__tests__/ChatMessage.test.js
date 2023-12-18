@@ -55,17 +55,15 @@ describe('ChatMessage', () => {
   })
 
   it('messages are pulled to the right directions', async () => {
-    const { getByTestId, rerender } = render(
-      <MockChatMessage data-testid="msg-container" />,
-    )
+    const { getByTestId, rerender } = render(<MockChatMessage />)
 
     const msg = getByTestId('msg-container')
 
     const authorMsgStyle = getComputedStyle(msg)
-    expect(authorMsgStyle['margin-left']).toBe('')
+    expect(authorMsgStyle['flex-direction']).toBe('row')
     await waitFor(() => rerender(<MockChatMessage own />))
     const ownMsgStyle = getComputedStyle(msg)
-    expect(ownMsgStyle['margin-left']).toBe('auto')
+    expect(ownMsgStyle['flex-direction']).toBe('row-reverse')
   })
 
   it('displays attachments of the message', () => {
