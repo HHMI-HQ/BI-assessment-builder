@@ -16,7 +16,7 @@ import {
   useCurrentUser,
 } from '@coko/client'
 
-import { Header, Footer, VisuallyHiddenElement, Spin } from 'ui'
+import { Header, Footer, VisuallyHiddenElement } from 'ui'
 import GlobalStyles from './globalStyles'
 import { hasGlobalRole, MetadataProvider } from './utilities'
 
@@ -48,7 +48,7 @@ import { CURRENT_USER } from './graphql'
 const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
 `
 
 const regexPaths = [
@@ -223,14 +223,6 @@ const StyledPage = styled(Page)`
   height: calc(100% - 64px - 40px);
 `
 
-const StyledSpin = styled(Spin)`
-  display: grid;
-  height: 100vh;
-  place-content: center;
-`
-
-const Loader = () => <StyledSpin spinning />
-
 const SiteHeader = () => {
   const headerLinks = {
     homepage: '/',
@@ -312,7 +304,7 @@ const Authenticated = ({ children }) => {
 }
 
 const routes = (
-  <Authenticate currentUserQuery={CURRENT_USER} loadingComponent={<Loader />}>
+  <Authenticate currentUserQuery={CURRENT_USER}>
     <Wrapper>
       <GlobalStyles />
       <SiteHeader />
