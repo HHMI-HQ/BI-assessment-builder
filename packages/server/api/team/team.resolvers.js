@@ -7,6 +7,8 @@ const {
   revokeInvitation,
   searchForReviewers,
   acceptOrRejectInvitation,
+  reviewSubmitted,
+  user,
 } = require('../../controllers/team.controllers')
 
 const getNonTeamMemberUsersResolver = async (_, { teamId, term }, ctx) => {
@@ -60,6 +62,14 @@ const accceptOrRejectInvitationResolver = (
   return acceptOrRejectInvitation(questionVersionId, accepted, reason, ctx.user)
 }
 
+const reviewSubmittedResolver = async teamMember => {
+  return reviewSubmitted(teamMember)
+}
+
+const userResolver = async teamMember => {
+  return user(teamMember)
+}
+
 module.exports = {
   Query: {
     getNonTeamMemberUsers: getNonTeamMemberUsersResolver,
@@ -72,5 +82,9 @@ module.exports = {
     inviteReviewer: inviteReviewerResolver,
     revokeInvitation: revokeInvitationResolver,
     acceptOrRejectInvitation: accceptOrRejectInvitationResolver,
+  },
+  TeamMember: {
+    reviewSubmitted: reviewSubmittedResolver,
+    user: userResolver,
   },
 }

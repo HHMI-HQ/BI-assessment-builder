@@ -945,29 +945,40 @@ const updateReviewerPool = async (questionVersionId, reviewerIds) => {
 
   try {
     return useTransaction(async trx => {
-      const updated = await QuestionVersion.patchAndFetchById(
-        questionVersionId,
-        { reviewerPool: reviewerIds },
+      let reviewerTeam = await Team.findOne(
+        {
+          role: REVIEWER_TEAM.role,
+          objectId: questionVersionId,
+        },
+        { trx },
       )
 
-      let reviewerTeam = await Team.findOne({
-        role: REVIEWER_TEAM.role,
-        objectId: questionVersionId,
-      })
-
       if (!reviewerTeam) {
-        reviewerTeam = await Team.insert({
-          objectId: questionVersionId,
-          objectType: 'questionVersion',
-          role: REVIEWER_TEAM.role,
-          displayName: REVIEWER_TEAM.displayName,
-        })
+        reviewerTeam = await Team.insert(
+          {
+            objectId: questionVersionId,
+            objectType: 'questionVersion',
+            role: REVIEWER_TEAM.role,
+            displayName: REVIEWER_TEAM.displayName,
+          },
+          { trx },
+        )
       }
 
       await Team.updateMembershipByTeamId(reviewerTeam.id, reviewerIds, {
         trx,
         status: REVIEWER_STATUSES.added,
       })
+
+      const teamMembers = await TeamMember.find(
+        { teamId: reviewerTeam.id },
+        { trx },
+      )
+
+      const updated = await QuestionVersion.patchAndFetchById(
+        questionVersionId,
+        { reviewerPool: teamMembers.result.map(t => t.id) },
+      )
 
       return updated
     })
@@ -1088,6 +1099,13 @@ const questionVersionReviews = async (
   }
 }
 
+const reviewerPool = async questionVersion => {
+  const pool = await TeamMember.findByIds(questionVersion.reviewerPool)
+  //   console.log('reviewerPool', pool)
+
+  return pool
+}
+
 module.exports = {
   getQuestion,
   getQuestionVersions,
@@ -1138,4 +1156,5 @@ module.exports = {
   changeReviewerAutomationStatus,
   reviewerStatus,
   questionVersionReviews,
+  reviewerPool,
 }

@@ -456,6 +456,30 @@ const acceptOrRejectInvitation = async (
   })
 }
 
+const reviewSubmitted = async teamMember => {
+  const { userId, status, teamId } = teamMember
+
+  if (status !== REVIEWER_STATUSES.accepted) return false
+
+  const team = await Team.findById(teamId)
+
+  const review = await Review.findOne({
+    questionVersionId: team.objectId,
+    reviewerId: userId,
+  })
+
+  if (!review) return false
+
+  return review.status.submitted
+}
+
+const user = async teamMember => {
+  const userObj = await User.findById(teamMember.userId)
+  //   console.log('userObj', userObj)
+
+  return userObj
+}
+
 module.exports = {
   updateGlobalTeams,
   getNonTeamMemberUsers,
@@ -465,4 +489,6 @@ module.exports = {
   revokeInvitation,
   searchForReviewers,
   acceptOrRejectInvitation,
+  reviewSubmitted,
+  user,
 }

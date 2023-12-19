@@ -30,12 +30,14 @@ const {
   revokeInvitation,
   searchForReviewers,
   acceptOrRejectInvitation,
+  reviewSubmitted,
 } = require('../team.controllers')
 
 const clearDb = require('../../models/__tests__/_clearDb')
 const { REVIEWER_STATUSES } = require('../constants')
 const { updateReviewerPool } = require('../question.controllers')
 const metadata = require('../metadataValues')
+const { submitReview } = require('../review.controller')
 
 describe('Team Controller', () => {
   beforeEach(() => clearDb())
@@ -672,5 +674,82 @@ describe('Team Controller', () => {
 
     expect(teamMember2.status).toBe(REVIEWER_STATUSES.rejected)
     expect(teamMember2.description).toBe(reason)
+  })
+
+  it('reviewSubmitted returns correct review status', async () => {
+    const editor = await createUser()
+    const handlingEditor1 = await createUser()
+    const handlingEditor2 = await createUser()
+
+    await createIdentity(editor, internet.email(), false, null)
+    await createIdentity(handlingEditor1, internet.email(), false, null)
+    await createIdentity(handlingEditor2, internet.email(), false, null)
+
+    const question = await createEmptyQuestion()
+    const reviewer1 = await createUser()
+    const reviewer2 = await createUser()
+
+    const questionVersion = await QuestionVersion.findOne({
+      questionId: question.id,
+    })
+
+    const editorTeam = await Team.insert({
+      role: 'editor',
+      global: true,
+      displayName: 'Managing Editor',
+    })
+
+    await Team.updateMembershipByTeamId(editorTeam.id, [editor.id])
+
+    const handlingEditorTeam = await Team.insert({
+      role: 'handlingEditor',
+      displayName: 'Handling Editor',
+      objectId: questionVersion.questionId,
+      objectType: 'question',
+    })
+
+    await Team.updateMembershipByTeamId(handlingEditorTeam.id, [
+      handlingEditor1.id,
+      handlingEditor2.id,
+    ])
+
+    await updateReviewerPool(questionVersion.id, [reviewer1.id, reviewer2.id])
+
+    let teamMember1 = await TeamMember.findOne({ userId: reviewer1.id })
+    let teamMember2 = await TeamMember.findOne({ userId: reviewer2.id })
+
+    let result1 = await reviewSubmitted(teamMember1)
+    let result2 = await reviewSubmitted(teamMember2)
+
+    expect(result1).toBe(false)
+    expect(result2).toBe(false)
+
+    await acceptOrRejectInvitation(
+      questionVersion.id,
+      false,
+      'no',
+      reviewer1.id,
+    )
+    await acceptOrRejectInvitation(questionVersion.id, true, '', reviewer2.id)
+
+    teamMember1 = await TeamMember.findOne({ userId: reviewer1.id })
+    teamMember2 = await TeamMember.findOne({ userId: reviewer2.id })
+
+    result1 = await reviewSubmitted(teamMember1)
+    result2 = await reviewSubmitted(teamMember2)
+
+    expect(result1).toBe(false)
+    expect(result2).toBe(false)
+
+    await submitReview(questionVersion.id, 'all good', reviewer2.id)
+
+    teamMember1 = await TeamMember.findOne({ userId: reviewer1.id })
+    teamMember2 = await TeamMember.findOne({ userId: reviewer2.id })
+
+    result1 = await reviewSubmitted(teamMember1)
+    result2 = await reviewSubmitted(teamMember2)
+
+    expect(result1).toBe(false)
+    expect(result2).toBe(true)
   })
 })

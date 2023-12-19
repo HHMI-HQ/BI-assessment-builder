@@ -1,3 +1,7 @@
+extend type TeamMember {
+  reviewSubmitted: Boolean
+}
+
 type GlobalTeamMembersResponse {
   result: [User!]!
   totalCount: Int

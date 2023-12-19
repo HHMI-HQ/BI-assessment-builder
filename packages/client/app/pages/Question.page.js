@@ -47,6 +47,9 @@ import {
   UNPUBLISH_QUESTION_VERSION,
   ACCEPT_OR_REJECT_REVIEW_INVITATION,
   SUBMIT_REVIEW,
+  INVITE_REVIEWER,
+  UPDATE_REVIEWER_POOL,
+  REVOKE_REVIEWER_INVITATION,
 } from '../graphql'
 import {
   useMetadata,
@@ -614,29 +617,36 @@ const QuestionPage = props => {
 
   const [sendMessage] = useMutation(SEND_MESSAGE)
 
+  const refetchQuestionVariables = [
+    {
+      query: QUESTION,
+      variables: {
+        id,
+      },
+    },
+  ]
+
   const [acceptOrRejectInvitation] = useMutation(
     ACCEPT_OR_REJECT_REVIEW_INVITATION,
     {
-      refetchQueries: [
-        {
-          query: QUESTION,
-          variables: {
-            id,
-          },
-        },
-      ],
+      refetchQueries: refetchQuestionVariables,
     },
   )
 
   const [submitReview] = useMutation(SUBMIT_REVIEW, {
-    refetchQueries: [
-      {
-        query: QUESTION,
-        variables: {
-          id,
-        },
-      },
-    ],
+    refetchQueries: refetchQuestionVariables,
+  })
+
+  const [inviteReviewer] = useMutation(INVITE_REVIEWER, {
+    refetchQueries: refetchQuestionVariables,
+  })
+
+  const [updateReviewerPool] = useMutation(UPDATE_REVIEWER_POOL, {
+    refetchQueries: refetchQuestionVariables,
+  })
+
+  const [revokeReviewerInvitation] = useMutation(REVOKE_REVIEWER_INVITATION, {
+    refetchQueries: refetchQuestionVariables,
   })
   // #endregion hooks
 
@@ -668,11 +678,14 @@ const QuestionPage = props => {
       (isReviewer && reviewerInviteStatus === REVIEWER_STATUSES.accepted) ||
       isAdmin)
 
-  const reviews = version?.reviews
+  const reviews = version?.reviews || []
+  const amountOfReviewers = version?.amountOfReviewers || 0
 
-  const reviewSubmitted = !!reviews?.find(
+  const reviewSubmitted = !!reviews.find(
     review => review.reviewerId === id && review.status.submitted,
   )
+
+  const reviewerPool = version?.reviewerPool || []
   // #endregion user roles
 
   // #region handlers
@@ -1114,6 +1127,84 @@ const QuestionPage = props => {
     return submitReview(mutationData)
   }
 
+  const handleInviteReviewer = async reviewerId => {
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerId,
+      },
+    }
+
+    return inviteReviewer(mutationData)
+  }
+
+  const handleAddReviewers = async newReviewerIds => {
+    const currentReviewerIds = version?.reviewerPool.map(r => r.id) || []
+
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerIds: [...currentReviewerIds, ...newReviewerIds],
+      },
+    }
+
+    return updateReviewerPool(mutationData)
+  }
+
+  const handleRemoveReviewerRow = async reviewerId => {
+    const reviewerIds = version?.reviewerPool.filter(r => r.id !== reviewerId)
+
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerIds,
+      },
+    }
+
+    return updateReviewerPool(mutationData)
+  }
+
+  const handleReviewerSearch = async searchTerm => {
+    // TODO:
+    return Promise.reject()
+    // if (!searchTerm) return Promise.resolve([])
+
+    // const mutationData = {
+    //   variables: {
+    //     searchTerm,
+    //     questionVersionId: version?.id,
+    //   },
+    // }
+
+    // debounce
+
+    // return searchForReviewers(mutationData)
+  }
+
+  const handleReviewerTableChange = async tableData => {
+    const reviewerIds = tableData.map(d => d.id)
+
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerIds,
+      },
+    }
+
+    return updateReviewerPool(mutationData)
+  }
+
+  const handleRevokeReviewerInvitation = async reviewerId => {
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerId,
+      },
+    }
+
+    return revokeReviewerInvitation(mutationData)
+  }
+
   // #endregion handlers
 
   if (error) {
@@ -1181,6 +1272,7 @@ const QuestionPage = props => {
         }
         facultyView={testMode}
         handlingEditors={handlingEditors?.result || []}
+        initialAmountOfReviewers={amountOfReviewers}
         initialMetadataValues={metadataApiToUi(version, testMode)}
         // admins can always treat their questions as if they are in produciton, meaning they can edit and publish them directly,
         // unless the question has already been published
@@ -1211,6 +1303,7 @@ const QuestionPage = props => {
           !complexItemSetOptions
         }
         metadata={metadata || {}}
+        onAddReviewers={handleAddReviewers}
         onAssignAuthor={handleAssignAuthor}
         onChangeTab={persistQuestionTab}
         onClickAssignHE={handleClickAssignHE}
@@ -1222,14 +1315,19 @@ const QuestionPage = props => {
         onCreateNewVersion={handleCreateNewVersion}
         onEditorContentAutoSave={handleEditorContentAutoSave}
         onImageUpload={handleImageUpload}
+        onInviteReviewer={handleInviteReviewer}
         onMetadataAutoSave={handleMetadataAutoSave}
         onMoveToProduction={handleMoveToProduction}
         onMoveToReview={handleMoveToReview}
         onPublish={handlePublish}
         onQuestionSubmit={handleQuestionSubmit}
         onReject={handleReject}
+        onRemoveReviewerRow={handleRemoveReviewerRow}
         onReviewerAcceptInvite={handleAcceptReviewInvite}
         onReviewerRejectInvite={handleRejectReviewInvite}
+        onReviewerSearch={handleReviewerSearch}
+        onReviewerTableChange={handleReviewerTableChange}
+        onRevokeReviewerInvitation={handleRevokeReviewerInvitation}
         onSearchHE={handleSearchHE}
         onSendAuthorChatMessage={onSendAuthorChatMessage}
         onSendProductionChatMessage={onSendProductionChatMessage}
@@ -1251,6 +1349,7 @@ const QuestionPage = props => {
           currentUser?.id,
         )}
         reviewerChatParticipants={reviewerChatParticipants}
+        reviewerPool={reviewerPool}
         reviewerView={isReviewer}
         reviewInviteStatus={reviewerInviteStatus}
         reviewSubmitted={reviewSubmitted}
@@ -1262,6 +1361,7 @@ const QuestionPage = props => {
           !version?.unpublished &&
           isEditor
         }
+        showAssignReviewers={isEditor || isHandlingEditor}
         showAuthorChatTab={showAuthorChatTab}
         showNextQuestionLink={false}
         showPreviewButton={isAuthor && !version?.submitted}

@@ -38,6 +38,7 @@ import AssignAuthorButton from './AssignAuthorButton'
 import ReviewerRejectButton from './ReviewerRejectButton'
 import ReviewerAcceptButton from './ReviewerAcceptButton'
 import ReviewerSubmitButton from './ReviewerSubmitButton'
+import { AssignReviewers } from '../assignReviewers'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
 const ModalFooter = Modal.footer
@@ -366,6 +367,7 @@ PanelWrapper.propTypes = {
 const Question = props => {
   const {
     authors,
+    automateReviewerInvites,
     complexItemSetOptions,
     announcementText,
     defaultActiveKey,
@@ -382,6 +384,7 @@ const Question = props => {
     onClickExportToWord,
     onFetchMoreMessages,
     onClickExportToQti,
+    initialAmountOfReviewers,
     initialMetadataValues,
     isUserLoggedIn,
     isPublished,
@@ -395,20 +398,27 @@ const Question = props => {
     loading,
     loadAuthors,
     metadata,
+    onAddReviewers,
     onAssignAuthor,
+    onAutomateReviewerChange,
     onClickAssignHE,
     onClickNextButton,
     onClickPreviousButton,
     onEditorContentAutoSave,
     onImageUpload,
+    onInviteReviewer,
     onMetadataAutoSave,
     onMoveToProduction,
     onMoveToReview,
     onPublish,
+    onRemoveReviewerRow,
+    onRevokeReviewerInvitation,
     onUnpublish,
     onCreateNewVersion,
     onQuestionSubmit,
     onReject,
+    onReviewerSearch,
+    onReviewerTableChange,
     onSendAuthorChatMessage,
     onSendProductionChatMessage,
     onSendReviewerChatMessage,
@@ -423,6 +433,7 @@ const Question = props => {
     resources,
     reviewInviteStatus,
     reviewSubmitted,
+    reviewerPool,
     reviewerView,
     qtiZipLoading,
     showAssignHEButton,
@@ -445,6 +456,7 @@ const Question = props => {
     showAuthorChatTab,
     showProductionChatTab,
     showReviewerChatTab,
+    showAssignReviewers,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -462,6 +474,10 @@ const Question = props => {
 
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const [preview, setPreview] = useState(facultyView)
+
+  const [amountOfReviewers, setAmountOfReviewers] = useState(
+    initialAmountOfReviewers,
+  )
 
   const readOnly =
     (editorView && !isInProduction && isSubmitted) ||
@@ -800,6 +816,48 @@ const Question = props => {
     })
   }
 
+  const isReviewerActive = r =>
+    r.invited && !r.invitationRevoked && !r.rejectedInvitation
+
+  const isReviewerAvailable = r => !r.invited
+
+  const findAvailableReviewerSlots = () => {
+    const active = reviewerPool.filter(r => isReviewerActive(r))
+    const reviewerSlotsLeft = amountOfReviewers - active.length
+
+    if (reviewerSlotsLeft < 0) return 0
+    return reviewerSlotsLeft
+  }
+
+  const runAutomateInviteReviewers = async () => {
+    const reviewerSlotsLeft = findAvailableReviewerSlots()
+    const notInvited = reviewerPool.filter(r => isReviewerAvailable(r))
+
+    const reviewerIdsToInvite = notInvited
+      .slice(0, reviewerSlotsLeft)
+      .map(r => r.id)
+
+    await Promise.all(reviewerIdsToInvite.map(id => onInviteReviewer(id)))
+  }
+
+  const handleReviewerInviteAutomationChange = async toAutomate => {
+    await onAutomateReviewerChange(toAutomate)
+
+    if (toAutomate) runAutomateInviteReviewers()
+  }
+
+  const handleClickInviteReviewer = async reviewerId => {
+    if (!findAvailableReviewerSlots()) return Promise.resolve()
+
+    return onInviteReviewer(reviewerId)
+  }
+
+  const handleRevokeReviewerInvite = async reviewerId => {
+    await onRevokeReviewerInvitation(reviewerId)
+
+    if (automateReviewerInvites) await runAutomateInviteReviewers()
+  }
+
   const showDialog = (type, title, content) => {
     const dialogType = type === 'success' ? success() : error()
 
@@ -921,6 +979,8 @@ const Question = props => {
   )
 
   const ReviewerChatTab = <StyledTabItem>Reviewer chat</StyledTabItem>
+
+  const AssignReviewersTab = <StyledTabItem>Invite reviewers</StyledTabItem>
 
   const PreviousQuestion = (
     <StyledPrevNextButton
@@ -1543,6 +1603,26 @@ const Question = props => {
                   />
                 ),
               },
+              showAssignReviewers && {
+                label: AssignReviewersTab,
+                key: 'assignReviewers',
+                children: (
+                  <AssignReviewers
+                    amountOfReviewers={amountOfReviewers}
+                    automate={automateReviewerInvites}
+                    canInviteMore={!!findAvailableReviewerSlots()}
+                    onAddReviewers={onAddReviewers}
+                    onAmountOfReviewersChange={setAmountOfReviewers}
+                    onAutomationChange={handleReviewerInviteAutomationChange}
+                    onClickInvite={handleClickInviteReviewer}
+                    onClickRemoveRow={onRemoveReviewerRow}
+                    onClickRevokeInvitation={handleRevokeReviewerInvite}
+                    onSearch={onReviewerSearch}
+                    onTableChange={onReviewerTableChange}
+                    reviewerPool={reviewerPool}
+                  />
+                ),
+              },
             ]}
             onChange={handleTabChange}
             renderTabBar={(tabProps, DefaultTabBar) => {
@@ -1571,6 +1651,7 @@ Question.propTypes = {
       value: PropTypes.string,
     }),
   ),
+  automateReviewerInvites: PropTypes.bool,
   complexItemSetOptions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -1584,14 +1665,18 @@ Question.propTypes = {
   productionChatMessages: PropTypes.arrayOf(PropTypes.shape()),
   reviewerChatMessages: PropTypes.arrayOf(PropTypes.shape()),
   hasMoreMessages: PropTypes.bool,
+  initialAmountOfReviewers: PropTypes.number,
   loading: PropTypes.bool.isRequired,
   loadAuthors: PropTypes.func,
+  onAddReviewers: PropTypes.func,
   onAssignAuthor: PropTypes.func,
+  onAutomateReviewerChange: PropTypes.func,
   onClickPreviousButton: PropTypes.func,
   onChangeAnnouncement: PropTypes.func,
   onClickNextButton: PropTypes.func,
   onEditorContentAutoSave: PropTypes.func,
   onImageUpload: PropTypes.func,
+  onInviteReviewer: PropTypes.func,
   onQuestionSubmit: PropTypes.func.isRequired,
   onMetadataAutoSave: PropTypes.func,
   onMoveToReview: PropTypes.func,
@@ -1600,8 +1685,12 @@ Question.propTypes = {
   onUnpublish: PropTypes.func,
   onCreateNewVersion: PropTypes.func,
   onReject: PropTypes.func,
+  onRemoveReviewerRow: PropTypes.func,
   onReviewerAcceptInvite: PropTypes.func,
   onReviewerRejectInvite: PropTypes.func,
+  onReviewerSearch: PropTypes.func,
+  onReviewerTableChange: PropTypes.func,
+  onRevokeReviewerInvitation: PropTypes.func,
   onSendAuthorChatMessage: PropTypes.func,
   onSendProductionChatMessage: PropTypes.func,
   onSendReviewerChatMessage: PropTypes.func,
@@ -1625,6 +1714,17 @@ Question.propTypes = {
   editorView: PropTypes.bool,
   canPublish: PropTypes.bool,
   canAssignAuthor: PropTypes.bool,
+  reviewerPool: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      displayName: PropTypes.string.isRequired,
+      invited: PropTypes.bool,
+      acceptedInvitation: PropTypes.bool,
+      rejectedInvitation: PropTypes.bool,
+      invitationRevoked: PropTypes.bool,
+      reviewSubmitted: PropTypes.bool,
+    }),
+  ),
   showAssignHEButton: PropTypes.bool,
   showPreviewButton: PropTypes.bool,
   showNextQuestionLink: PropTypes.bool,
@@ -1919,25 +2019,35 @@ Question.propTypes = {
   showAuthorChatTab: PropTypes.bool,
   showProductionChatTab: PropTypes.bool,
   showReviewerChatTab: PropTypes.bool,
+  showAssignReviewers: PropTypes.bool,
 }
 
 Question.defaultProps = {
   authors: [],
+  automateReviewerInvites: false,
   complexItemSetOptions: [],
   defaultActiveKey: 'editor',
   announcementText: '',
   hasMoreMessages: false,
+  initialAmountOfReviewers: 0,
   authorChatMessages: [],
   productionChatMessages: [],
   reviewerChatMessages: [],
+  onAddReviewers: () => {},
+  onAutomateReviewerChange: () => {},
   onChangeAnnouncement: () => {},
   onFetchMoreMessages: () => {},
+  onInviteReviewer: () => {},
   onMoveToReview: () => {},
   onMoveToProduction: () => {},
   onPublish: () => {},
   onUnpublish: () => {},
   onCreateNewVersion: () => {},
   onReject: () => {},
+  onRemoveReviewerRow: () => {},
+  onReviewerSearch: () => {},
+  onReviewerTableChange: () => {},
+  onRevokeReviewerInvitation: () => {},
   onSendAuthorChatMessage: () => {},
   onSendProductionChatMessage: () => {},
   onSendReviewerChatMessage: () => {},
@@ -1977,6 +2087,7 @@ Question.defaultProps = {
   resources: [],
   reviewInviteStatus: null,
   reviewSubmitted: false,
+  reviewerPool: [],
   reviewerView: false,
   updated: '',
   isUserLoggedIn: true,
@@ -2002,6 +2113,7 @@ Question.defaultProps = {
   showAuthorChatTab: false,
   showProductionChatTab: false,
   showReviewerChatTab: false,
+  showAssignReviewers: false,
 }
 
 export default Question

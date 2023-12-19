@@ -347,6 +347,7 @@ export const EditorView = () => {
         resources={resources}
         searchHELoading={searchHELoading}
         showAssignHEButton
+        showAssignReviewers
         submitting={false}
         wordFileLoading={false}
       />

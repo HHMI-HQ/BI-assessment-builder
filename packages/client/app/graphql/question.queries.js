@@ -715,3 +715,20 @@ export const ASSIGN_QUESTION_AUTHOR = gql`
     assignAuthorship(questionId: $questionId, userId: $userId)
   }
 `
+
+export const UPDATE_REVIEWER_POOL = gql`
+  mutation UpdateReviewerPool($questionVersionId: ID!, $reviewerIds: [ID!]!) {
+    updateReviewerPool(
+      questionVersionId: $questionVersionId
+      reviewerIds: $reviewerIds
+    ) {
+      id
+      reviewerPool {
+        id
+        user {
+          id
+        }
+      }
+    }
+  }
+`

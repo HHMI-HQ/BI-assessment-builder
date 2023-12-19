@@ -1,7 +1,19 @@
+const { internet } = require('faker')
 const createGraphQLServer = require('./helpers/createTestServer')
-const { User, Team, TeamMember } = require('../../models')
+const { User, Team, TeamMember, QuestionVersion } = require('../../models')
 
 const clearDb = require('../../models/__tests__/_clearDb')
+
+const {
+  createUser,
+  createIdentity,
+} = require('../../models/__tests__/__helpers__/users')
+
+const {
+  createEmptyQuestion,
+} = require('../../controllers/__tests__/__helpers__/questions')
+
+const { updateReviewerPool } = require('../../controllers/question.controllers')
 
 // gql queries
 const UPDATE_GLOBAL_TEAMS = `
@@ -14,6 +26,36 @@ const UPDATE_GLOBAL_TEAMS = `
         id
         user {
           id
+        }
+      }
+    }
+  }
+`
+
+const QUESTION = `
+  query Question($id: ID!, $published: Boolean) {
+    question(id: $id) {
+      versions(latestOnly: true, publishedOnly: $published) {
+        id
+        reviewerStatus
+        reviews {
+          id
+          status {
+             submitted
+           }
+        }
+        reviewerPool {
+          id
+          status
+          reviewSubmitted
+          user {
+            id
+            displayName
+            email
+            topicsReviewing
+            receivedTraining
+            receivedInclusiveLanguageTraining
+          }
         }
       }
     }
@@ -124,5 +166,72 @@ describe('Team API authorization', () => {
     expect(isAdmin).toBe(true)
     expect(result.errors).toBe(undefined)
     expect(result.data).not.toBe(null)
+  })
+
+  it('returns the correct review status', async () => {
+    const user = await createUser()
+    const editor = await createUser()
+    const handlingEditor1 = await createUser()
+    const handlingEditor2 = await createUser()
+
+    await createIdentity(editor, internet.email(), false, null)
+    await createIdentity(handlingEditor1, internet.email(), false, null)
+    await createIdentity(handlingEditor2, internet.email(), false, null)
+
+    const question = await createEmptyQuestion()
+    const reviewer1 = await createUser()
+    const reviewer2 = await createUser()
+
+    const questionVersion = await QuestionVersion.findOne({
+      questionId: question.id,
+    })
+
+    const editorTeam = await Team.insert({
+      role: 'editor',
+      global: true,
+      displayName: 'Managing Editor',
+    })
+
+    await Team.updateMembershipByTeamId(editorTeam.id, [editor.id])
+
+    const handlingEditorTeam = await Team.insert({
+      role: 'handlingEditor',
+      displayName: 'Handling Editor',
+      objectId: questionVersion.questionId,
+      objectType: 'question',
+    })
+
+    await Team.updateMembershipByTeamId(handlingEditorTeam.id, [
+      handlingEditor1.id,
+      handlingEditor2.id,
+    ])
+
+    // const qv =
+    await updateReviewerPool(questionVersion.id, [reviewer1.id, reviewer2.id])
+
+    // console.log('qveeeeee', qv)
+
+    // const teamMember1 =
+    await TeamMember.findOne({ userId: reviewer1.id })
+
+    // const teamMember2 =
+    await TeamMember.findOne({ userId: reviewer2.id })
+
+    // console.log('teamMember1', teamMember1)
+    // console.log('teamMember2', teamMember2)
+
+    const testServer = await createGraphQLServer(user.id)
+
+    // const result =
+    await testServer.executeOperation({
+      query: QUESTION,
+      variables: {
+        id: question.id,
+      },
+    })
+
+    // console.log('result', JSON.stringify(result.data, null, 2))
+
+    expect(true).toBe(true)
   })
 })

@@ -135,6 +135,34 @@ const ACCEPT_OR_REJECT_REVIEW_INVITATION = gql`
   }
 `
 
+const INVITE_REVIEWER = gql`
+  mutation InviteReviewer($questionVersionId: ID!, $reviewerId: ID!) {
+    inviteReviewer(
+      questionVersionId: $questionVersionId
+      reviewerId: $reviewerId
+    ) {
+      id
+      user {
+        id
+      }
+      status
+    }
+  }
+`
+
+const REVOKE_REVIEWER_INVITATION = gql`
+  mutation RevokeInvitation($questionVersionId: ID!, $reviewerId: ID!) {
+    revokeInvitation(
+      questionVersionId: $questionVersionId
+      reviewerId: $reviewerId
+    ) {
+      reviewerPool {
+        id
+      }
+    }
+  }
+`
+
 export {
   TEAM,
   GLOBAL_TEAMS,
@@ -144,4 +172,6 @@ export {
   UPDATE_GLOBAL_TEAMS,
   FILTER_GLOBAL_TEAM_MEMBERS,
   ACCEPT_OR_REJECT_REVIEW_INVITATION,
+  INVITE_REVIEWER,
+  REVOKE_REVIEWER_INVITATION,
 }
