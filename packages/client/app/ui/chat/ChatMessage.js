@@ -90,7 +90,7 @@ const Date = styled.div`
   font-size: ${th('fontSizeBaseSmall')};
   font-style: italic;
   justify-content: flex-end;
-  padding-top: ${grid(1)};
+  padding-top: ${grid(3)};
 `
 
 const Attachments = styled.div`

@@ -33,7 +33,7 @@ const StyledChatBox = styled.span`
     content: '';
     height: 0;
     position: absolute;
-    right: calc(var(--triangle-x) - (var(--border-width)) + 1px);
+    right: calc(var(--triangle-x) - (var(--border-width)));
     transform: skewX(calc(var(--skew)));
     width: 0;
   }

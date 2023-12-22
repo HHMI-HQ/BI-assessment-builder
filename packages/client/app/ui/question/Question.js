@@ -35,6 +35,7 @@ import {
 } from '../common'
 import { extractDocumentText } from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
+import useWindowSize from '../_helpers/useWindowSize'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
 const ModalFooter = Modal.footer
@@ -71,7 +72,11 @@ const Wrapper = styled.div`
 
   .ant-tabs-nav {
     margin: 0;
-    padding: 0 ${grid(2)};
+    padding: 0;
+  }
+
+  .ant-tabs-nav-list {
+    padding: 0 0.5rem;
   }
 
   .ant-tabs-nav-operations {
@@ -113,12 +118,20 @@ const SubmitButton = styled(StyledButton)`
 `
 
 const StyledPrevNextButton = styled(StyledButton)`
-  > span:not([role='img']) {
+  background: transparent;
+  border: none;
+  font-size: ${th('fontSizeBaseSmall')};
+
+  > * + * {
+    margin-inline-end: 0;
+  }
+
+  > :nth-child(2) {
     display: none;
   }
 
   @media (min-width: ${th('mediaQueries.small')}) {
-    > span:not([role='img']) {
+    > :nth-child(2) {
       display: inline-block;
     }
   }
@@ -142,7 +155,9 @@ const StyledAssignHEButton = styled(AssignHEButton)`
 const RightAreaWrapper = styled.div`
   align-items: center;
   display: flex;
+  justify-content: space-between;
   text-transform: initial;
+  width: 100%;
 `
 
 const StyledCheckbox = styled(Checkbox)`
@@ -158,7 +173,6 @@ const PopupContentWrapper = styled.div`
 
   > button {
     margin: 0;
-    width: unset;
   }
 `
 
@@ -167,10 +181,10 @@ const FacultyHeaderWrapper = styled.div`
   background-color: ${th('colorBackgroundHue')};
   display: flex;
   flex: none;
-  height: 46px;
   justify-content: space-between;
   margin: 0;
-  padding: 0 ${grid(3)};
+  padding: 0;
+  width: 100%;
 
   > div {
     align-items: center;
@@ -215,7 +229,12 @@ const ActionsWrapper = styled.div`
 `
 
 const PopupToggle = styled(Button)`
+  align-items: center;
+  border: 1px solid ${th('colorPrimary')};
+  border-radius: 0.5rem;
+  display: flex;
   height: 32px;
+  justify-content: center;
   margin-right: 10px;
   padding: 0;
   transform: rotate(90deg);
@@ -284,6 +303,23 @@ const StyledCollapse = styled(Collapse)`
         padding: 0;
       }
     }
+  }
+`
+
+const TabContentWrapper = styled.div`
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+
+  > :first-child {
+    align-items: center;
+    border-bottom: 1px solid #0004;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
   }
 `
 
@@ -418,6 +454,7 @@ const Question = props => {
 
   const [modal, contextHolder] = Modal.useModal()
   const { confirm, success, error } = modal
+  const { width } = useWindowSize()
 
   const formRef = useRef()
   const waxRef = useRef()
@@ -907,9 +944,8 @@ const Question = props => {
           })
       }
       title="Previous Item"
-      type="primary"
     >
-      Previous Item
+      <span>Previous Item</span>
     </StyledPrevNextButton>
   )
 
@@ -937,7 +973,6 @@ const Question = props => {
           })
       }
       title="Next Item"
-      type="primary"
     >
       Next Item
     </StyledPrevNextButton>
@@ -1188,21 +1223,23 @@ const Question = props => {
 
         {showNextQuestionLink && NextQuestion}
       </ActionsWrapper>
-      <Popup
-        alignment="end"
-        data-testid="editor-actions-popup"
-        position="block-end"
-        toggle={
-          <PopupToggle
-            aria-label="More actions"
-            icon={<EllipsisOutlined />}
-            title="More actions"
-            type="primary"
-          />
-        }
-      >
-        <PopupContentWrapper>{editorActionsDropdownMenu}</PopupContentWrapper>
-      </Popup>
+      {width <= 1023 && (
+        <Popup
+          alignment="end"
+          data-testid="editor-actions-popup"
+          position="block-end"
+          toggle={
+            <PopupToggle
+              aria-label="More actions"
+              icon={<EllipsisOutlined />}
+              title="More actions"
+              type="primary"
+            />
+          }
+        >
+          <PopupContentWrapper>{editorActionsDropdownMenu}</PopupContentWrapper>
+        </Popup>
+      )}
     </>
   )
 
@@ -1308,6 +1345,7 @@ const Question = props => {
         >
           <PopupContentWrapper>{publishedQuestionActions}</PopupContentWrapper>
         </Popup>
+
         <span>{NextQuestion}</span>
       </div>
     </FacultyHeaderWrapper>
@@ -1346,7 +1384,9 @@ const Question = props => {
                 label: QuestionTab,
                 key: 'editor',
                 children: (
-                  <>
+                  <TabContentWrapper>
+                    <span>{facultyView ? FacultyHeader : RightArea}</span>
+
                     {isRejected && (
                       <Ribbon status="error">
                         This item has been rejected by the editors.
@@ -1411,49 +1451,59 @@ const Question = props => {
                       }
                       showMetadata={showMetadata && (!preview || facultyView)}
                     />
-                  </>
+                  </TabContentWrapper>
                 ),
               },
               showAuthorChatTab && {
                 label: AuthorChatTab,
                 key: 'authorChat',
                 children: (
-                  <ChatThread
-                    announcementText={announcementText}
-                    hasMore={hasMoreMessages}
-                    isActive={activeKey === 'authorChat'}
-                    messages={authorChatMessages}
-                    onFetchMore={onFetchMoreMessages}
-                    onSendMessage={onSendAuthorChatMessage}
-                    participants={authorChatParticipants}
-                  />
+                  <TabContentWrapper>
+                    <span style={{ display: 'flex' }}>
+                      {facultyView && FacultyHeader}
+                    </span>
+                    <ChatThread
+                      announcementText={announcementText}
+                      hasMore={hasMoreMessages}
+                      isActive={activeKey === 'authorChat'}
+                      messages={authorChatMessages}
+                      onFetchMore={onFetchMoreMessages}
+                      onSendMessage={onSendAuthorChatMessage}
+                      participants={authorChatParticipants}
+                    />
+                  </TabContentWrapper>
                 ),
               },
               showProductionChatTab && {
                 label: ProductionAssignmentsTab,
                 key: 'productionChat',
                 children: (
-                  <ChatThread
-                    isActive={activeKey === 'productionChat'}
-                    messages={productionChatMessages}
-                    onSendMessage={onSendProductionChatMessage}
-                    participants={productionChatParticipants}
-                  />
+                  <TabContentWrapper>
+                    <span style={{ display: 'flex' }}>
+                      {facultyView && FacultyHeader}
+                    </span>
+                    <ChatThread
+                      isActive={activeKey === 'productionChat'}
+                      messages={productionChatMessages}
+                      onSendMessage={onSendProductionChatMessage}
+                      participants={productionChatParticipants}
+                    />
+                  </TabContentWrapper>
                 ),
               },
             ]}
             onChange={handleTabChange}
-            renderTabBar={(tabProps, DefaultTabBar) => {
-              return facultyView ? (
-                FacultyHeader
-              ) : (
-                <DefaultTabBar {...tabProps} />
-              )
-            }}
-            tabBarExtraContent={{
-              // left: BackButton,
-              right: RightArea,
-            }}
+            // renderTabBar={(tabProps, DefaultTabBar) => {
+            //   return facultyView ? (
+            //     FacultyHeader
+            //   ) : (
+            //     <DefaultTabBar {...tabProps} />
+            //   )
+            // }}
+            // tabBarExtraContent={{
+            //   // left: BackButton,
+            //   right: RightArea,
+            // }}
           />
         </Spin>
       </Wrapper>
@@ -1486,7 +1536,7 @@ Question.propTypes = {
   loadAuthors: PropTypes.func,
   onAssignAuthor: PropTypes.func,
   onClickPreviousButton: PropTypes.func,
-  onChangeAnnouncement: PropTypes.func,
+  // onChangeAnnouncement: PropTypes.func,
   onClickNextButton: PropTypes.func,
   onEditorContentAutoSave: PropTypes.func,
   onImageUpload: PropTypes.func,
@@ -1798,7 +1848,7 @@ Question.propTypes = {
   ),
   loadAssignedHEs: PropTypes.func,
   onUnassignHandlingEditor: PropTypes.func,
-  chatLoading: PropTypes.bool,
+  // chatLoading: PropTypes.bool,
   selectedQuestionType: PropTypes.shape(),
   onChangeTab: PropTypes.func,
   showAuthorChatTab: PropTypes.bool,
@@ -1813,7 +1863,7 @@ Question.defaultProps = {
   hasMoreMessages: false,
   authorChatMessages: [],
   productionChatMessages: [],
-  onChangeAnnouncement: () => {},
+  // onChangeAnnouncement: () => {},
   onFetchMoreMessages: () => {},
   onMoveToReview: () => {},
   onMoveToProduction: () => {},
@@ -1870,7 +1920,7 @@ Question.defaultProps = {
   currentHandlingEditors: [],
   loadAssignedHEs: () => {},
   onUnassignHandlingEditor: () => {},
-  chatLoading: false,
+  // chatLoading: false,
   selectedQuestionType: null,
 
   onChangeTab: () => {},
