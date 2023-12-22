@@ -2,12 +2,11 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { uuid, grid, th } from '@coko/client'
+import { uuid, th } from '@coko/client'
 import {
   Button,
   ButtonGroup,
   Checkbox,
-  H1,
   Tag,
   Table,
   DateParser,
@@ -27,12 +26,23 @@ const Wrapper = styled.div`
   height: 100%;
 `
 
-const PageHeader = styled(H1)`
-  margin: 0 auto;
+const PageHeader = styled.span`
+  background: linear-gradient(to bottom, #058d96, #00a450);
+  box-shadow: 0 0 12px #0006;
+  margin: 0 0 1rem;
   text-align: center;
+  z-index: 3;
+
+  > h1 {
+    color: #fff;
+    font-size: 3rem;
+    text-shadow: 0 0 5px #0004;
+  }
 
   @media (min-width: ${th('mediaQueries.small')}) {
-    margin: ${grid(2)} auto;
+    > h1 {
+      font-size: 3.5rem;
+    }
   }
 `
 
@@ -41,10 +51,11 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: ${grid(4)};
+  padding: 0;
 
   > div:nth-child(2) {
     flex-grow: 1;
+    padding: 0 1rem;
   }
 `
 
@@ -73,9 +84,10 @@ const FooterActionsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-bottom: 10px;
+  padding: 0 1rem 10px;
 
   @media (min-width: ${th('mediaQueries.small')}) {
+    align-items: center;
     flex-direction: row;
   }
 `
@@ -328,7 +340,9 @@ const UserList = ({
     <ModalContext.Provider value={null}>
       <Wrapper className={className}>
         <StyledSection>
-          <PageHeader>User Manager</PageHeader>
+          <PageHeader>
+            <h1>User Manager</h1>
+          </PageHeader>
           <StyledTable
             columns={columns}
             dataSource={dataSource}

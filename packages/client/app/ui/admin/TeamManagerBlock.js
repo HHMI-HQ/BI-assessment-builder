@@ -9,7 +9,7 @@ import { Button as UIButton, H2, List, Select, Form } from '../common'
 const Wrapper = styled.div`
   margin: 0 auto;
   max-width: 1000px;
-  padding: ${grid(8)} 0;
+  padding: ${grid(8)};
   width: 100%;
 
   @media (min-width: ${th('mediaQueries.small')}) {

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid, th } from '@coko/client'
-import { List, H1 } from '../common'
+import { th } from '@coko/client'
+import { List } from '../common'
 import TeamManagerBlock from './TeamManagerBlock'
 
 const Wrapper = styled.div`
@@ -12,6 +12,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: 0;
 
     > div:nth-child(2) {
       flex-grow: 1;
@@ -19,18 +20,29 @@ const Wrapper = styled.div`
   }
 `
 
-const PageHeader = styled(H1)`
-  margin: 0 auto;
+const PageHeader = styled.span`
+  background: linear-gradient(to bottom, #058d96, #00a450);
+  box-shadow: 0 0 12px #0006;
+  margin: 0;
   text-align: center;
+  z-index: 3;
+
+  > h1 {
+    color: #fff;
+    font-size: 3rem;
+    text-shadow: 0 0 5px #0004;
+  }
 
   @media (min-width: ${th('mediaQueries.small')}) {
-    margin: ${grid(2)} auto;
+    > h1 {
+      font-size: 3.5rem;
+    }
   }
 `
 
 const StyledSection = styled.section`
   background: ${th('colorBackground')};
-  padding: ${grid(4)};
+  padding: 0;
 `
 
 const TeamManagerList = props => {
@@ -55,7 +67,9 @@ const TeamManagerList = props => {
   return (
     <Wrapper className={className}>
       <StyledSection>
-        <PageHeader>Team Manager</PageHeader>
+        <PageHeader>
+          <h1>Team Manager</h1>
+        </PageHeader>
 
         <List
           className={className}
