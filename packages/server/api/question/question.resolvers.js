@@ -35,6 +35,14 @@ const {
   uploadFiles,
   getImageUrls,
   getProductionChatParticipants,
+  getReviewerChatParticipants,
+
+  updateReviewerPool,
+  changeAmountOfReviewers,
+  changeReviewerAutomationStatus,
+  reviewerStatus,
+  questionVersionReviews,
+  reviewerPool,
 } = require('../../controllers/question.controllers')
 
 const questionResolver = async (_, { id, options }) => {
@@ -198,6 +206,10 @@ const productionChatThreadResolver = async question => {
   return getChatThreadForQuestion(question.id, 'productionChat')
 }
 
+const reviewerChatThreadIdResolver = async question => {
+  return getChatThreadForQuestion(question.id, 'reviewerChat')
+}
+
 const heAssignedResolver = async question => {
   const assignedHEs = await getQuestionsHandlingEditors(question.id)
   return assignedHEs.length > 0
@@ -209,6 +221,47 @@ const getAuthorChatParticipantsResolver = async (_, { id }) => {
 
 const getProductionChatParticipantsResolver = async (_, { id }) => {
   return getProductionChatParticipants(id)
+}
+
+const getReviewerChatParticipantsResolver = async (_, { id }) => {
+  return getReviewerChatParticipants(id)
+}
+
+const updateReviewerPoolResolver = async (
+  _,
+  { questionVersionId, reviewerIds },
+) => {
+  return updateReviewerPool(questionVersionId, reviewerIds)
+}
+
+const changeAmountOfReviewersResolver = async (
+  _,
+  { questionVersionId, amount },
+) => {
+  return changeAmountOfReviewers(questionVersionId, amount)
+}
+
+const changeReviewerAutomationStatusResolver = async (
+  _,
+  { questionVersionId, value },
+) => {
+  return changeReviewerAutomationStatus(questionVersionId, value)
+}
+
+const reviewerStatusResolver = async (questionVersion, _, ctx) => {
+  return reviewerStatus(questionVersion.id, ctx.user)
+}
+
+const questionVersionReviewsResolver = async (
+  questionVersion,
+  { currentUserOnly },
+  ctx,
+) => {
+  return questionVersionReviews(questionVersion.id, currentUserOnly, ctx.user)
+}
+
+const reviewerPoolResolver = async questionVersion => {
+  return reviewerPool(questionVersion)
 }
 
 module.exports = {
@@ -224,6 +277,7 @@ module.exports = {
     getAuthorChatParticipants: getAuthorChatParticipantsResolver,
     getInProductionDashboard: getInProductionDashboardResolver,
     getProductionChatParticipants: getProductionChatParticipantsResolver,
+    getReviewerChatParticipants: getReviewerChatParticipantsResolver,
   },
   Mutation: {
     createQuestion: createQuestionResolver,
@@ -243,17 +297,24 @@ module.exports = {
     uploadFiles: uploadFilesResolver,
     assignHandlingEditors: assignHandlingEditorsResolver,
     unassignHandlingEditor: unassignHandlingEditorResolver,
+    updateReviewerPool: updateReviewerPoolResolver,
+    changeAmountOfReviewers: changeAmountOfReviewersResolver,
+    changeReviewerAutomationStatus: changeReviewerAutomationStatusResolver,
   },
   Question: {
     versions: versionsResolver,
     author: authorResolver,
     authorChatThreadId: authorChatThreadResolver,
     productionChatThreadId: productionChatThreadResolver,
+    reviewerChatThreadId: reviewerChatThreadIdResolver,
     heAssigned: heAssignedResolver,
   },
   QuestionVersion: {
     question: versionQuestionResolver,
     content: contentResolver,
     leadingContent: leadingContentResolver,
+    reviewerStatus: reviewerStatusResolver,
+    reviews: questionVersionReviewsResolver,
+    reviewerPool: reviewerPoolResolver,
   },
 }

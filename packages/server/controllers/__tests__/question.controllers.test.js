@@ -329,6 +329,7 @@ describe('Question Controller', () => {
     expect(team.every(t => t.id !== user1.id)).toBe(true)
     expect(team.some(t => t.id === user2.id)).toBe(true)
   })
+
   test('getAuthorDashboard: returns questions the user has authored', async () => {
     const question1 = await Question.insert({})
     const question2 = await Question.insert({})

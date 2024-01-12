@@ -8,6 +8,7 @@ import {
   GET_AUTHOR_DASHBOARD,
   GET_EDITOR_DASHBOARD,
   GET_HANDLING_EDITOR_DASHBOARD,
+  GET_REVIEWER_DASHBOARD,
   CREATE_QUESTION,
   CURRENT_USER,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
@@ -140,12 +141,32 @@ const DashboardPage = () => {
       updateSearchResultAnnounce(data, 'getInProductionDashboard'),
   })
 
+  const [
+    reviewerQuery,
+    {
+      data: reviewerResponse,
+      loading: reviewerLoading,
+      called: reviewerCalled,
+    },
+  ] = useLazyQuery(GET_REVIEWER_DASHBOARD, {
+    fetchPolicy: 'network-only',
+    variables: {
+      ...defaultSearchOptions,
+      page: 0,
+    },
+    onCompleted: data =>
+      updateSearchResultAnnounce(data, 'getReviewerDashboard'),
+  })
+
   const authorData = authorResponse && authorResponse.getAuthorDashboard
   const editorData = editorResponse && editorResponse.getManagingEditorDashboard
   const handlingEditorData = heResponse && heResponse.getHandlingEditorDashboard
+  const reviewerData = reviewerResponse && reviewerResponse.getReviewerDashboard
 
   const productionData =
     productionResponse && productionResponse.getInProductionDashboard
+
+  const userId = currentUserResponse?.currentUser.id
 
   const mappedDataHE =
     handlingEditorData && metadata
@@ -155,6 +176,8 @@ const DashboardPage = () => {
           complexItemSetOptions,
           showAuthor: true,
           showStatus: true,
+          showStatusLabel: true,
+          userId,
         })
       : []
 
@@ -165,6 +188,7 @@ const DashboardPage = () => {
           metadata,
           complexItemSetOptions,
           showStatus: true,
+          userId,
         })
       : []
 
@@ -176,7 +200,8 @@ const DashboardPage = () => {
           complexItemSetOptions,
           showStatus: true,
           showAuthor: true,
-          showAssigned: true,
+          showStatusLabel: true,
+          userId,
         })
       : []
 
@@ -187,6 +212,19 @@ const DashboardPage = () => {
           metadata,
           complexItemSetOptions,
           showAuthor: true,
+          userId,
+        })
+      : []
+
+  const mappedDataReviewer =
+    reviewerData && metadata
+      ? dashboardDataMapper({
+          questions: reviewerData.result,
+          metadata,
+          complexItemSetOptions,
+          showStatus: true,
+          showStatusLabel: true,
+          userId,
         })
       : []
 
@@ -196,12 +234,14 @@ const DashboardPage = () => {
       editor: editorQuery,
       handlingEditor: handlingEditorQuery,
       production: productionQuery,
+      reviewer: reviewerQuery,
     },
     called: {
       author: authorCalled,
       editor: editorCalled,
       handlingEditor: heCalled,
       production: productionCalled,
+      reviewer: reviewerCalled,
     },
   }
 
@@ -295,6 +335,7 @@ const DashboardPage = () => {
   // #region data
   const loading = !currentUserResponse?.currentUser // question list loading is inside the tab
   const isEditor = hasGlobalRole(currentUserResponse?.currentUser, 'editor')
+  const isReviewer = hasGlobalRole(currentUserResponse?.currentUser, 'reviewer')
 
   const isHandlingEditor = hasGlobalRole(
     currentUserResponse?.currentUser,
@@ -341,13 +382,13 @@ const DashboardPage = () => {
       showBulkActions: false,
       loading: productionLoading,
     },
-    isProduction && {
-      label: 'Production Items',
-      value: 'production',
-      questions: mappedDataProduction,
-      totalCount: productionData && productionData.totalCount,
+    isReviewer && {
+      label: 'Reviewer Items',
+      value: 'reviewer',
+      questions: mappedDataReviewer,
+      totalCount: reviewerData?.totalCount,
       showBulkActions: false,
-      loading: productionLoading,
+      loading: reviewerLoading,
     },
   ].filter(Boolean)
 

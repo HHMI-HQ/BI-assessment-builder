@@ -9,4 +9,11 @@ module.exports = {
     MESSAGE_CREATED: 'MESSAGE_CREATED',
     NEW_NOTIFICATION: 'NEW_NOTIFICATION',
   },
+  REVIEWER_STATUSES: {
+    accepted: 'acceptedInvitation',
+    added: 'notInvited',
+    invited: 'invited',
+    rejected: 'rejectedInvitation',
+    revoked: 'invitationRevoked',
+  },
 }
