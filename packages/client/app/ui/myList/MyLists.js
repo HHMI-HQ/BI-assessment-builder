@@ -283,9 +283,10 @@ const MyLists = props => {
           title: <ModalHeader>List contains numerical answers</ModalHeader>,
           content: (
             <p>
-              The list you're about to export contains items of the type
-              "numerical answer". These items will be excluded from the final
-              export. You can export numerical answer items individually.
+              The list you're about to export contains at least one "numerical
+              answer" item. These items cannot be exported within a list and
+              will be excluded from the export. You can export numerical answer
+              items individually.
             </p>
           ),
           footer: [
@@ -309,9 +310,9 @@ const MyLists = props => {
           title: <ModalHeader>List contains numerical answers</ModalHeader>,
           content: (
             <p>
-              The list you're about to export contains only items of the type
-              "numerical answer". These items cannot be exported as a list. You
-              can export numerical answer items individually.
+              The list you're about to export contains only "numerical answer"
+              items. These items cannot be exported within a list. You can
+              export numerical answer items individually.
             </p>
           ),
           footer: [

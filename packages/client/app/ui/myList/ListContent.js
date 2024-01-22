@@ -124,12 +124,12 @@ const ListContent = ({
 
         if (nonNumericalQuestionIds.length === 0) {
           warningModal.update({
-            title: <ModalHeader>No valid items to export</ModalHeader>,
+            title: <ModalHeader>List contains numerical answers</ModalHeader>,
             content: (
               <p>
-                Your selection contains only items of the type "numerical
-                answer", which cannot be exported as a list. You can export
-                numerical answer items individually.
+                The list you're about to export contains only "numerical answer"
+                items. These items cannot be exported within a list. You can
+                export numerical answer items individually.
               </p>
             ),
             footer: [
@@ -148,16 +148,12 @@ const ListContent = ({
           })
         } else {
           warningModal.update({
-            title: (
-              <ModalHeader>
-                Numerical answers will not be included in the export
-              </ModalHeader>
-            ),
+            title: <ModalHeader>List contains numerical answers</ModalHeader>,
             content: (
               <p>
-                Your selection contains items of the type "numerical answer",
-                which cannot be included in a list export. The export will
-                contain all other selected items. You can export numerical
+                The list you're about to export contains at least one "numerical
+                answer" item. These items cannot be exported within a list and
+                will be excluded from the export. You can export numerical
                 answer items individually.
               </p>
             ),
