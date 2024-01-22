@@ -293,11 +293,11 @@ const revokeInvitation = async (questionVersionId, reviewerId) => {
         await inviteMaxReviewers(questionVersion, { trx })
       }
 
-      //   const notifier = new CokoNotifier()
-      //   notifier.notify('hhmi.revokeInvitation', {
-      //     questionId: questionVersion.questionId,
-      //     reviewerId,
-      //   })
+      const notifier = new CokoNotifier()
+      notifier.notify('hhmi.revokeInvitation', {
+        questionId: questionVersion.questionId,
+        reviewerId,
+      })
 
       return reviewer
     })
@@ -501,12 +501,14 @@ const acceptOrRejectInvitation = async (
       )
     }
 
+    const notifier = new CokoNotifier()
+
     identities.forEach(id => {
-      const notifier = new CokoNotifier()
       notifier.notify(`hhmi.${accepted ? 'accept' : 'reject'}Invitation`, {
         email: id.email,
         questionId: questionVersion.questionId,
         reviewerId: userId,
+        reason: accepted ? null : reason,
       })
     })
 
