@@ -109,12 +109,12 @@ steps:
             force-add:
               - client
             ignore:
-              - .platform/
+              - .platform
               - minio
               - server
               - drupal
               - client/.environment
-              - client/platformsh-scripts/*
+              - client/platformsh-scripts
 
   - label: ":capistrano: Deploy Server"
     key: "deploy-server"
@@ -158,10 +158,9 @@ steps:
             force-add:
               - server
             ignore:
-              - *
               - .platform/
               - minio
               - client
               - drupal
               - server/.environment
-              - server/platformsh-scripts/*
+              - server/platformsh-scripts
