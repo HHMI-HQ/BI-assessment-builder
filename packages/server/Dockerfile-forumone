@@ -8,10 +8,12 @@ RUN apt-get update \
     g++ \
     python3
 
-WORKDIR /home/node/hhmi
+WORKDIR /home/node/hhmi/server
 
-COPY package.json .
-COPY yarn.lock .
+COPY . .
+
+#COPY package.json .
+#COPY yarn.lock .
 
 RUN chown -R node:node .
 USER node

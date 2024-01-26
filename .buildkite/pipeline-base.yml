@@ -87,7 +87,7 @@ steps:
           verbose: true
           image: ${ECR_NAMESPACE}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_COMMIT}-client
           from: /home/node/app
-          to: ${DOCKERFILE_CLIENT}/client
+          to: ${DOCKERFILE_CLIENT}/
 
       # Execute a Capistrano deployment using the defined branch to
       # environment mapping.
@@ -135,7 +135,7 @@ steps:
           verbose: true
           image: ${ECR_NAMESPACE}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_COMMIT}-server
           from: /home/node/hhmi
-          to: ${DOCKERFILE_SERVER}/server
+          to: ${DOCKERFILE_SERVER}/
 
       # Execute a Capistrano deployment using the defined branch to
       # environment mapping.
