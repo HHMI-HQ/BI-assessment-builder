@@ -228,26 +228,11 @@ const DashboardPage = () => {
         })
       : []
 
-  const queryMapper = {
-    query: {
-      author: authorQuery,
-      editor: editorQuery,
-      handlingEditor: handlingEditorQuery,
-      production: productionQuery,
-      reviewer: reviewerQuery,
-    },
-    called: {
-      author: authorCalled,
-      editor: editorCalled,
-      handlingEditor: heCalled,
-      production: productionCalled,
-      reviewer: reviewerCalled,
-    },
-  }
-
   useEffect(() => {
-    runQuery(currentSearchQuery)
-  }, [currentTabKey, currentPage, currentSearchQuery])
+    if (currentUserResponse) {
+      runQuery(currentSearchQuery)
+    }
+  }, [currentTabKey, currentPage, currentSearchQuery, currentUserResponse])
 
   useEffect(() => {
     !handlingEditors &&
@@ -346,6 +331,23 @@ const DashboardPage = () => {
     currentUserResponse?.currentUser,
     'production',
   )
+
+  const queryMapper = {
+    query: {
+      author: authorQuery,
+      editor: isEditor && editorQuery,
+      handlingEditor: isHandlingEditor && handlingEditorQuery,
+      production: isProduction && productionQuery,
+      reviewer: isReviewer && reviewerQuery,
+    },
+    called: {
+      author: authorCalled,
+      editor: editorCalled,
+      handlingEditor: heCalled,
+      production: productionCalled,
+      reviewer: reviewerCalled,
+    },
+  }
 
   const tabs = [
     {

@@ -1198,13 +1198,6 @@ const resources = [
     ],
   },
   {
-    label: 'Interactive Assessment for The Biology of Skin Color',
-    value: 'interactiveAssessmentForTheBiologyOfSkinColor',
-    url: '',
-    topics: ['anatomyPhysiology'],
-    subtopics: ['skinMusculoskeletalSystem'],
-  },
-  {
     label: 'Interactive Assessment for The Origin of Birds',
     value: 'interactiveAssessmentForTheOriginOfBirds',
     url: 'https://www.biointeractive.org/classroom-resources/interactive-assessment-origin-birds',
@@ -2269,9 +2262,8 @@ const resources = [
   },
   {
     label:
-      'Interactive Case Study for Virus Hunter: Monitoring Nipah Virus in Bat Populations',
-    value:
-      'interactiveCaseStudyForVirusHunter:MonitoringNipahVirusInBatPopulations',
+      'Interactive Case Study for The Effects of Fungicides on Bumble Bee Colonies',
+    value: 'interactiveCaseStudyFortheEffectsOfFungicidesOnBumbleBeeColonies',
     url: 'https://www.biointeractive.org/node/182091',
     topics: ['sciencePractices', 'environmentalScience'],
     subtopics: ['humanPopulationImpacts', 'conservation', 'experimentalDesign'],
@@ -3418,13 +3410,6 @@ const resources = [
     url: 'https://www.biointeractive.org/node/18361',
     topics: ['genetics'],
     subtopics: ['geneExpressionRegulation'],
-  },
-  {
-    label: 'Genetically Modified Mosquitoes',
-    value: 'geneticallyModifiedMosquitoes',
-    url: 'https://www.biointeractive.org/node/159238',
-    topics: ['biochemistryMolecularBiology'],
-    subtopics: ['biotechnology'],
   },
   {
     label: 'Geological History of Oxygen',

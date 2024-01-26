@@ -73,6 +73,7 @@ const AssignReviewers = props => {
     onSearch,
     onTableChange,
     reviewerPool,
+    searchPlaceholder,
   } = props
 
   return (
@@ -91,6 +92,7 @@ const AssignReviewers = props => {
       onSearch={onSearch}
       onTableChange={onTableChange}
       reviewerPool={reviewerPool}
+      searchPlaceholder={searchPlaceholder}
       useShowEmail
     />
   )
@@ -119,6 +121,11 @@ AssignReviewers.propTypes = {
       reviewSubmitted: PropTypes.bool,
     }),
   ).isRequired,
+  searchPlaceholder: PropTypes.string,
+}
+
+AssignReviewers.defaultProps = {
+  searchPlaceholder: '',
 }
 
 export default AssignReviewers

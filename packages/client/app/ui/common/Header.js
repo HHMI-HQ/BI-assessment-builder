@@ -798,7 +798,7 @@ const Header = props => {
         'button[aria-controls="main-nav"]',
       )
 
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && !!userMenuButton) {
         if (userMenuButton.getAttribute('aria-expanded') === 'true') {
           setUserMenuOpen(false)
 
@@ -809,7 +809,7 @@ const Header = props => {
           ) {
             userMenuButton?.focus()
           }
-        } else if (navMenuButton.getAttribute('aria-expanded') === 'true') {
+        } else if (navMenuButton?.getAttribute('aria-expanded') === 'true') {
           setMainMenuOpen(false)
 
           if (
