@@ -43,6 +43,9 @@ env:
   # Define service directory were the Dockerfile is used
   DOCKERFILE_CLIENT: "./packages/client"
   DOCKERFILE_SERVER: "./packages/server"
+
+  ARTIFACT_LOCATION_CLIENT: ${DOCKERFILE_CLIENT}/artifacts
+  ARTIFACT_LOCATION_SERVER: ${DOCKERFILE_SERVER}/artifacts
 steps:
   - label: ":hammer: :docker: Building Docker Image for Client"
     key: "build-image-client"
@@ -87,14 +90,14 @@ steps:
           verbose: true
           image: ${ECR_NAMESPACE}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_COMMIT}-client
           from: /home/node/app
-          to: ${DOCKERFILE_CLIENT}/cient
+          to: ${ARTIFACT_LOCATION_CLIENT}/client
 
       # Execute a Capistrano deployment using the defined branch to
       # environment mapping.
       #- forumone/capistrano#v0.5.1:
       - forumone/artifact-push#v0.3.1:
           verbose: true
-          source-directory: ${DOCKERFILE_CLIENT}
+          source-directory: ${ARTIFACT_LOCATION_CLIENT}
           <<: *git-remote-repo
           branches:
             #            - match: live
@@ -136,14 +139,14 @@ steps:
           verbose: true
           image: ${ECR_NAMESPACE}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_COMMIT}-server
           from: /home/node/hhmi
-          to: ${DOCKERFILE_SERVER}/server
+          to: ${ARTIFACT_LOCATION_SERVER}/server
 
       # Execute a Capistrano deployment using the defined branch to
       # environment mapping.
       #- forumone/capistrano#v0.5.1:
       - forumone/artifact-push#v0.3.1:
           verbose: false
-          source-directory: ${DOCKERFILE_SERVER}
+          source-directory: ${ARTIFACT_LOCATION_SERVER}
           <<: *git-remote-repo
           branches:
             #            - match: live
