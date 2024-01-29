@@ -172,7 +172,9 @@ const Select = props => {
         open={open}
         options={options}
         showSearch={showSearch || !!onSearch}
-        suffixIcon={!options ? null : <DownOutlined />}
+        suffixIcon={
+          !options ? null : <DownOutlined onClick={() => setOpen(!open)} />
+        }
         virtual={virtual}
         {...rest}
       />
