@@ -1240,6 +1240,9 @@ const questionVersionReviews = async (
 const reviewerPool = async questionVersion => {
   const teamMemberIds = questionVersion.reviewerPool
 
+  // if a user has been removed from the global reviewers team, their memberships in team_members have been deleted
+  // therefore, fetching by the id stored in question_versions.reviewer_pool will fail
+  // in such cases, return null for that member and filter out null values when returning the result
   const pool = await Promise.all(
     teamMemberIds.map(async t => {
       try {
