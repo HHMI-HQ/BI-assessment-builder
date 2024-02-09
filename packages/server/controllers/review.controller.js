@@ -118,13 +118,22 @@ const submitReview = async (
           editors.result.map(e => e.userId),
         )
 
+      const notifier = new CokoNotifier()
+
       identities.forEach(id => {
-        const notifier = new CokoNotifier()
         notifier.notify('hhmi.submitReview', {
           attachments: emailAttachments,
           review,
           to: id.email,
         })
+      })
+
+      // send a copy of the review back to the reviewer
+      const reviewerIdentity = await Identity.findOne({ userId })
+      notifier.notify('hhmi.sendReviewCopyToReviewer', {
+        attachments: emailAttachments,
+        review,
+        to: reviewerIdentity.email,
       })
 
       return review.id

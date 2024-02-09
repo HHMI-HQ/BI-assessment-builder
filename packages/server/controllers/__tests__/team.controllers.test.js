@@ -706,7 +706,9 @@ describe('Team Controller', () => {
 
     const question = await createEmptyQuestion()
     const reviewer1 = await createUser()
+    await createIdentity(reviewer1, internet.email(), false, null)
     const reviewer2 = await createUser()
+    await createIdentity(reviewer2, internet.email(), false, null)
 
     const questionVersion = await QuestionVersion.findOne({
       questionId: question.id,

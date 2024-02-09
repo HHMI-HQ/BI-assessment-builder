@@ -1280,6 +1280,7 @@ describe('Question API authorization', () => {
     })
 
     const reviewer = await createUser()
+    await createIdentity(reviewer, internet.email(), false, null)
 
     const userTestServer = await createGraphQLServer(user.id)
 
