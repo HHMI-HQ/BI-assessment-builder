@@ -91,6 +91,8 @@ describe('Review Controller', () => {
 
     const reviewer = await createUser()
 
+    await createIdentity(reviewer, internet.email(), false, null)
+
     let review = await Review.findOne({
       questionVersionId: questionVersion.id,
       reviewerId: reviewer.id,

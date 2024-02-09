@@ -415,6 +415,45 @@ const submitReview = async ({ attachments, review, to }) => {
   }
 }
 
+const sendReviewCopyToReviewer = async ({ attachments, review, to }) => {
+  try {
+    const { questionVersionId, content: reviewContent, reviewerId } = review
+
+    const questionVersion = await QuestionVersion.findById(questionVersionId)
+    const reviewer = await User.findById(reviewerId)
+
+    const link = `${clientUrl}/question/${questionVersion.questionId}`
+    const subject = 'HHMI BioInteractive Assessment Builder: Review submitted'
+
+    const content = `
+      <p>You have completed the review of an item in the Assessment Builder.</p>
+      <p>Click on <a href="${link}">this link</a> to view the item. 
+      If you cannot see the link, copy and paste the following link into your browser.
+      <br/>
+      ${link}
+      </p>
+
+      <p>A copy of your review feedback is provided below.</p>
+      <h2>Review by ${reviewer.displayName} submitted at ${moment(
+      review.updated,
+    ).format('MMMM DD, YYYY, h:mm:ss a')}</h2>
+
+      <pre>${reviewContent}</pre>
+    `
+
+    const text = `You have completed the review of an item in the Assessment Builder.
+        \nCopy and paste the following link into your browser to view the item.
+        \n${link}`
+
+    return { attachments, content, subject, text, to }
+  } catch (e) {
+    logger.error(
+      `Failed to create email for reviewer after submitting the review: ${e}`,
+    )
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   sendEmail,
   handlers: {
@@ -429,5 +468,6 @@ module.exports = {
     'hhmi.acceptInvitation': acceptInvitation,
     'hhmi.moveQuestionVersionToReview': moveQuestionVersionToReview,
     'hhmi.submitReview': submitReview,
+    'hhmi.sendReviewCopyToReviewer': sendReviewCopyToReviewer,
   },
 }
