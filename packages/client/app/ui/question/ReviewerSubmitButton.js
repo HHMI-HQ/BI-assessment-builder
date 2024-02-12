@@ -110,7 +110,11 @@ const ReviewerSubmitButton = props => {
             label={
               <span>
                 Please read the{' '}
-                <Link rel="noreferrer noopener" target="_blank" to={link}>
+                <Link
+                  rel="noreferrer noopener"
+                  target="_blank"
+                  to={{ pathname: link }}
+                >
                   guidelines on providing feedback
                 </Link>{' '}
                 and provide your feedback below.
