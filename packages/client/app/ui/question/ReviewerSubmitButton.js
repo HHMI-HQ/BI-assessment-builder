@@ -1,13 +1,29 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 
-import { Button, Form, TextArea, Modal, Upload } from '../common'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+
+import { Button, Form, Link, TextArea, Modal, Upload } from '../common'
+
+const StyledUpload = styled(Upload)`
+  /* stylelint-disable-next-line string-quotes */
+  [role='button'] {
+    display: inline-flex;
+    height: 16px;
+
+    &:focus {
+      outline: 4px solid #71ada9;
+      outline-offset: 2px;
+    }
+  }
+`
 
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer
 const ModalContext = React.createContext(null)
 
-const link = ''
+const link =
+  'https://docs.google.com/document/d/11ouizynaBlamTANf-crPdlKL91eXhDioHdiy6rL2ArA/edit?usp=sharing'
 
 const ReviewerSubmitButton = props => {
   const { className, onSubmit, showDialog } = props
@@ -75,6 +91,9 @@ const ReviewerSubmitButton = props => {
         Submit Review
       </Button>
       <Modal
+        afterClose={() =>
+          document.getElementById('reviewerSubmitReview').focus()
+        }
         destroyOnClose
         footer={footer}
         onCancel={() => setShowModal(false)}
@@ -91,9 +110,9 @@ const ReviewerSubmitButton = props => {
             label={
               <span>
                 Please read the{' '}
-                <a href={link} rel="noreferrer" target="_blank">
+                <Link rel="noreferrer noopener" target="_blank" to={link}>
                   guidelines on providing feedback
-                </a>{' '}
+                </Link>{' '}
                 and provide your feedback below.
               </span>
             }
@@ -122,9 +141,9 @@ const ReviewerSubmitButton = props => {
             />
           </Form.Item>
           <Form.Item name="attachments">
-            <Upload
+            <StyledUpload
               accept="image/*,.pdf,.docx,.odt"
-              aria-label="upload-attachments"
+              aria-label="Upload attachments"
               files={attachments}
               multiple
               onChange={handleAttachmentChange}

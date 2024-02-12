@@ -1436,7 +1436,7 @@ const Question = props => {
   )
 
   const FacultyHeader = (
-    <FacultyHeaderWrapper>
+    <FacultyHeaderWrapper id="question-actions" tabIndex="-1">
       <div>
         {/* {BackButton} */}
         {PreviousQuestion}
