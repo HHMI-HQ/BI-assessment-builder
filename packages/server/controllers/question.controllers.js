@@ -1179,29 +1179,31 @@ const reviewerStatus = async (questionVersionId, reviewerId) => {
   )
 
   try {
-    return useTransaction(async trx => {
-      const team = await Team.findOne(
-        {
-          objectId: questionVersionId,
-          role: REVIEWER_TEAM.role,
-        },
-        { trx },
-      )
+    return reviewerId
+      ? useTransaction(async trx => {
+          const team = await Team.findOne(
+            {
+              objectId: questionVersionId,
+              role: REVIEWER_TEAM.role,
+            },
+            { trx },
+          )
 
-      if (!team) return null
+          if (!team) return null
 
-      const teamMember = await TeamMember.findOne(
-        {
-          teamId: team.id,
-          userId: reviewerId,
-        },
-        { trx },
-      )
+          const teamMember = await TeamMember.findOne(
+            {
+              teamId: team.id,
+              userId: reviewerId,
+            },
+            { trx },
+          )
 
-      if (!teamMember) return null
+          if (!teamMember) return null
 
-      return teamMember.status
-    })
+          return teamMember.status
+        })
+      : null
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} error: ${e}`)
     throw new Error(e)
