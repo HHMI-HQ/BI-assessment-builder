@@ -58,6 +58,7 @@ export const NotificationsProvider = ({ children }) => {
   const { currentUser } = useCurrentUser()
 
   useQuery(GET_UNREAD_NOTIFICATIONS_COUNT, {
+    skip: !currentUser?.id,
     onCompleted: data =>
       setUnreadMentions(data?.getUnreadNotificationsCount[0]?.count),
   })
