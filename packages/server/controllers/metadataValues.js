@@ -13874,7 +13874,7 @@ const metadata = {
               learningObjectives: [
                 {
                   label:
-                    'Compare and contrast the five major mass extinction events, and evaluate the claim that a mass extinction event is currently underway.',
+                    'Using evidence from the five major mass extinction events, evaluate the claim that a mass extinction event is currently underway.',
                   value: 'ibm-u4-t5-lo1',
                 },
                 {
