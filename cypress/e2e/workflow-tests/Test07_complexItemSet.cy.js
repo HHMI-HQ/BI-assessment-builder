@@ -20,7 +20,7 @@ import {
 
 const disableScripts = false
 
-describe('Complex item set workflows', () => {
+describe('Context-dependent item set workflows', () => {
   before(() => {
     cy.resetDB(disableScripts)
     cy.seedUser(disableScripts, admin)
