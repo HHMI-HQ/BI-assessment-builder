@@ -10,8 +10,10 @@ RUN apt-get update \
 
 WORKDIR /home/node/hhmi
 
-COPY package.json .
-COPY yarn.lock .
+COPY . .
+
+#COPY package.json .
+#COPY yarn.lock .
 
 RUN chown -R node:node .
 USER node

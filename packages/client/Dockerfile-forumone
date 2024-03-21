@@ -33,4 +33,6 @@ RUN npm install --global serve
 
 USER node
 
-COPY --from=0 /home/node/app/_build ./_build
+#COPY --from=0 /home/node/app/_build ./_build
+RUN mkdir client
+RUN cp -rf . client
