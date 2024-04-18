@@ -300,9 +300,9 @@ class Question extends BaseModel {
           'question_versions.complex_item_set_id',
         )
         .distinctOn('questions.id')
-        .where({
-          published: true,
-        })
+        // .where({
+        //   published: true,
+        // })
         .orderBy([
           'questions.id',
           { column: 'question_versions.created', order: 'desc' },
