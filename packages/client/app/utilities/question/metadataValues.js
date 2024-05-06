@@ -14056,7 +14056,7 @@ const metadata = {
               ],
             },
             {
-              label: 'Cimate Change',
+              label: 'Climate Change',
               value: 'ibm-u5-t6',
               learningObjectives: [
                 {
