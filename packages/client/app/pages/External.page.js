@@ -43,7 +43,7 @@ const External = props => {
         const href = node.getAttribute('href')
 
         // find all anchor tags that link to pages inside the website
-        if (!href.toLowerCase().startsWith('http') /* || contains  */) {
+        if (href && !href.toLowerCase().startsWith('http') /* || contains  */) {
           // make them post message to the parent window and handle it from our app
           // eslint-disable-next-line no-param-reassign
           node.onclick = e => {
