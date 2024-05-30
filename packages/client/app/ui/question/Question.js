@@ -928,7 +928,8 @@ const Question = props => {
         <>
           <p>
             Unpublishing an item will remove it from the Browse Items page.
-            After an item is unpublished you can choose to edit and republish it
+            After an item is unpublished you can choose to edit and republish
+            it.
           </p>
           {hasDeletedAuthor && (
             <p>
@@ -951,7 +952,7 @@ const Question = props => {
                   showDialog(
                     'success',
                     'Item unpublished successfully',
-                    'Item was unpublished and removed from Browse Itemms page.',
+                    'Item was unpublished and removed from Browse Items page.',
                   ),
                 )
                 .catch(() =>

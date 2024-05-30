@@ -13552,7 +13552,7 @@ const metadata = {
                 },
                 {
                   label:
-                    'Given information on parental and offspring phenotypes, determine the inheritance patterns of the alleles involved. ',
+                    'Analyze data or a scenario to determine inheritance patterns.',
                   value: 'ibm-u3-t3-lo3',
                 },
                 {
@@ -13574,6 +13574,11 @@ const metadata = {
                   label:
                     'Based on the data in a pedigree, predict parental and offspring phenotypes and determine the inheritance patterns of the alleles involved.',
                   value: 'ibm-u3-t3-lo7',
+                },
+                {
+                  label:
+                    'Explain the characteristics of single-gene and polygenic inheritance patterns.',
+                  value: 'ibm-u3-t3-lo8',
                 },
               ],
             },
