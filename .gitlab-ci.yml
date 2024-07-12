@@ -147,7 +147,7 @@ end to end tests:
     - wait-on --timeout 30000 http://localhost:3000/healthcheck && yarn cypress run --record --env CLIENT_SHOW_EMAIL_LOGIN_OPTION=true
 
 # PUBLISH PRODUCTION
-.publish client:
+publish client:
   stage: Publish production
   image: docker:23
   services:
@@ -164,7 +164,7 @@ end to end tests:
   only:
     - staging
 
-.publish server:
+publish server:
   stage: Publish production
   image: docker:23
   services:
@@ -181,7 +181,7 @@ end to end tests:
   only:
     - staging
 
-.build & publish storybook:
+build & publish storybook:
   stage: Publish production
   image: docker:23
   services:
@@ -201,47 +201,29 @@ end to end tests:
 # DEPLOY PRODUCTION
 
 deploy production:
-  # image: debian:bullseye-slim
-  image: $CI_REGISTRY/cokoinfra/ansible-deployer
-  services:
-    - docker:23-dind
+  image: debian:bullseye-slim
   stage: Deploy production
-  # needs:
-  #   - publish server
-  #   - publish client
-  # before_script:
-  #   - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-  #   - eval $(ssh-agent -s)
-  #   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  #   - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
-  #   - chmod 700 ~/.ssh
-  #   - ssh-keyscan -p $SSH_PORT $SSH_URL >> ~/.ssh/known_hosts
-  #   - chmod 644 ~/.ssh/known_hosts
-  variables:
-    ANSCOMPOSE_POSTGRES_ALLOW_SELF_SIGNED_CERTIFICATES: true
-    ANSCOMPOSE_CLIENT_SHOW_EMAIL_LOGIN_OPTION: true
-    COMPOSE_SERVICES: client,server
-    COMPOSE_SERVICES_SERVER_URL: hhmi-server-staging.coko.app
-    COMPOSE_SERVICES_SERVER_IMAGE: $IMAGE_ORG/$IMAGE_NAME_SERVER_PRODUCTION:latest
-    COMPOSE_SERVICES_CLIENT_URL: hhmi-staging.coko.app
-    COMPOSE_SERVICES_CLIENT_IMAGE: $IMAGE_ORG/$IMAGE_NAME_CLIENT_PRODUCTION:latest
-    DEPLOY_COMPOSE_FILE: docker-compose.deploy.yml
-  # script:
-  #   - |
-  #     ssh ${SSH_USER}@${SSH_URL} -p ${SSH_PORT} \
-  #     "docker pull $IMAGE_ORG/$IMAGE_NAME_SERVER_PRODUCTION:latest && \
-  #     docker pull $IMAGE_ORG/$IMAGE_NAME_CLIENT_PRODUCTION:latest && \
-  #     sudo systemctl restart hhmi.service"
+  needs:
+    - publish server
+    - publish client
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -p $SSH_PORT $SSH_URL >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
   script:
-    - kubectl config get-contexts
-    - kubectl config use-context coko-org/products/hhmi/agent:agent-1
-    - cp $DEPLOY_COMPOSE_FILE /ansible
-    - cd /ansible
-    - ANSIBLE_FORCE_COLOR=true ansible-playbook bootstrap.yml -e "compose_file=$DEPLOY_COMPOSE_FILE"
+    - |
+      ssh ${SSH_USER}@${SSH_URL} -p ${SSH_PORT} \
+      "docker pull $IMAGE_ORG/$IMAGE_NAME_SERVER_PRODUCTION:latest && \
+      docker pull $IMAGE_ORG/$IMAGE_NAME_CLIENT_PRODUCTION:latest && \
+      sudo systemctl restart hhmi.service"
   only:
     - staging
 
-.deploy storybook:
+deploy storybook:
   image: debian:bullseye-slim
   stage: Deploy production
   needs:
