@@ -243,7 +243,7 @@ deploy production:
     COMPOSE_SERVICES_SERVER_IMAGE: $IMAGE_ORG/$IMAGE_NAME_SERVER_PRODUCTION:latest
     COMPOSE_SERVICES_STORYBOOK_URL: hhmi-storybook.coko.app
     COMPOSE_SERVICES_STORYBOOK_IMAGE: $IMAGE_ORG/$IMAGE_NAME_STORYBOOK:latest
-    DEPLOY_COMPOSE_FILE: docker-compose.deploy.yml
+    DEPLOY_COMPOSE_FILE: docker-compose.cluster.yml
   script:
     - kubectl config get-contexts
     - kubectl config use-context coko-org/products/hhmi/agent:agent-1
