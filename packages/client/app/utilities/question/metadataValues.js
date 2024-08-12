@@ -14179,11 +14179,6 @@ const metadata = {
               learningObjectives: [
                 {
                   label:
-                    'Describe the fundamental traits shared across all domains of life, which provide evidence of common ancestry.',
-                  value: 'ibm-u6-t2-lo1',
-                },
-                {
-                  label:
                     'Given a taxonomic group, describe the shared fundamental traits which provide evidence of common ancestry.',
                   value: 'ibm-u6-t2-lo2',
                 },
