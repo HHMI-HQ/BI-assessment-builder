@@ -99,7 +99,7 @@ stages:
 
 # BUILD PRODUCTION
 
-build server:
+.build server:
   stage: Build production
   image: docker:26
   services:
@@ -114,7 +114,7 @@ build server:
     - docker push $IMAGE_ORG/$IMAGE_NAME_SERVER_PREPRODUCTION:$CI_COMMIT_SHA
     - docker push $IMAGE_ORG/$IMAGE_NAME_SERVER_PREPRODUCTION:latest
 
-build client:
+.build client:
   stage: Build production
   image: docker:26
   services:
@@ -148,7 +148,7 @@ build client:
 
 # PUBLISH PRODUCTION
 
-publish client:
+.publish client:
   stage: Publish production
   image: docker:26
   services:
@@ -165,7 +165,7 @@ publish client:
   only:
     - staging
 
-publish server:
+.publish server:
   stage: Publish production
   image: docker:26
   services:
@@ -235,6 +235,11 @@ deploy production:
   variables:
     ANSCOMPOSE_POSTGRES_ALLOW_SELF_SIGNED_CERTIFICATES: true
     ANSCOMPOSE_CLIENT_SHOW_EMAIL_LOGIN_OPTION: true
+    ANSCOMPOSE_MAILER_SENDER: $MAILER_SENDER
+    ANSCOMPOSE_MAILER_HOSTNAME: $MAILER_HOSTNAME
+    ANSCOMPOSE_MAILER_PORT: $MAILER_PORT
+    ANSCOMPOSE_MAILER_USER: $MAILER_USER
+    ANSCOMPOSE_MAILER_PASSWORD: $MAILER_PASSWORD
     ANSCOMPOSE_STORYBOOK_PORT: 5000
     COMPOSE_SERVICES: client,server,storybook
     COMPOSE_SERVICES_CLIENT_URL: hhmi.coko.app
