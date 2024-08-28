@@ -99,7 +99,7 @@ stages:
 
 # BUILD PRODUCTION
 
-.build server:
+build server:
   stage: Build production
   image: docker:26
   services:
@@ -114,7 +114,7 @@ stages:
     - docker push $IMAGE_ORG/$IMAGE_NAME_SERVER_PREPRODUCTION:$CI_COMMIT_SHA
     - docker push $IMAGE_ORG/$IMAGE_NAME_SERVER_PREPRODUCTION:latest
 
-.build client:
+build client:
   stage: Build production
   image: docker:26
   services:
@@ -148,7 +148,7 @@ stages:
 
 # PUBLISH PRODUCTION
 
-.publish client:
+publish client:
   stage: Publish production
   image: docker:26
   services:
@@ -165,7 +165,7 @@ stages:
   only:
     - staging
 
-.publish server:
+publish server:
   stage: Publish production
   image: docker:26
   services:
@@ -229,9 +229,9 @@ deploy production:
   image: $CI_REGISTRY/cokoinfra/ansible-deployer
   services:
     - docker:26-dind
-  # needs:
-  #   - publish server
-  #   - publish client
+  needs:
+    - publish server
+    - publish client
   variables:
     ANSCOMPOSE_POSTGRES_ALLOW_SELF_SIGNED_CERTIFICATES: true
     ANSCOMPOSE_CLIENT_SHOW_EMAIL_LOGIN_OPTION: true
