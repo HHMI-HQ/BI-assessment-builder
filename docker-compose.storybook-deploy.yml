@@ -1,6 +1,8 @@
 version: '3'
 
 services:
+  storybook:
+    image: cokoapps/hhmi-storybook
   storybook-static:
     image: cokoapps/hhmi-storybook:latest
     ports:
