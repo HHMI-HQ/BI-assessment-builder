@@ -6,8 +6,6 @@ const { labels } = require('./constants')
 const { Report, Team, TeamMember, Identity, User } = require('../models')
 const { getFileUrl } = require('./file.controllers')
 
-const { version: abVersionNumber } = require('../package.json')
-
 const ADMIN_TEAM = config.teams.global.admin
 
 const BASE_MESSAGE = `${labels.QUESTION_CONTROLLERS}:`
@@ -91,7 +89,6 @@ const reportIssue = async (questionId, content, attachments, userId) => {
           reporterDisplayName: reporter.displayName,
           reporterEmail: reporterIdenitity.email,
           reportContent: content,
-          abVersionNumber,
           attachments: emailAttachments,
           questionId,
           to: id.email,

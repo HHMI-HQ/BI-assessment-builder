@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { grid, th } from '@coko/client'
 // import logo from '../../../static/hhmi-ab-logo-sm.svg'
 // import logoSmall from '../../../static/hhmi-logo-white-sm.svg'
-import packageData from '../../../package.json'
 
 const StyledFooter = styled.footer`
   background-color: ${th('colorBody')};
@@ -97,17 +96,6 @@ const FooterList = styled.ul`
   }
 `
 
-const VersionWrapper = styled.span`
-  display: none;
-
-  @media screen and (min-width: ${th('mediaQueries.small')}) {
-    color: ${th('colorTextReverse')};
-    display: block;
-    font-size: ${th('fontSizeBaseSmall')};
-    margin: 0 ${grid(2)};
-  }
-`
-
 const Footer = props => {
   const {
     links: {
@@ -117,8 +105,6 @@ const Footer = props => {
     },
     ...rest
   } = props
-
-  const { version: abVersionNumber } = packageData
 
   return (
     <StyledFooter role="contentinfo" {...rest}>
@@ -135,8 +121,6 @@ const Footer = props => {
           </a>
         </li>
       </FooterList>
-
-      <VersionWrapper>v {abVersionNumber}</VersionWrapper>
 
       {/* <SiteLogo rel="Home" title="Home" to={homepage}>
         <h1>Assesment Builder</h1>
