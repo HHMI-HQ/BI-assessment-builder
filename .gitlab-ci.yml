@@ -223,7 +223,6 @@ deploy production:
       sudo systemctl restart hhmi.service"
   only:
     - staging
-
 # deploy production:
 #   stage: Deploy production
 #   image: $CI_REGISTRY/cokoinfra/ansible-deployer
