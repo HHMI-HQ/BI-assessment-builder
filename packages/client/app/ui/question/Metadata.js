@@ -173,8 +173,6 @@ const Metadata = React.forwardRef((props, ref) => {
     }
   }
 
-  const getSelectedTopics = topics => topics.filter(t => !!t)
-
   // need to reset fields when course choice changes, because it enter a recursive loop when done inside metadata components
   const resetCourseFields = (value, index, key, remove) => {
     const cloned = [...form.getFieldValue(key)]
@@ -451,76 +449,62 @@ const Metadata = React.forwardRef((props, ref) => {
           </Form.Item>
 
           {showTopicAndSubtopicFields ? (
-            <>
-              <Form.List name={topicsKey} noStyle>
-                {(_, { add, remove }) => (
-                  <StyledSupplementaryFieldsContainer>
-                    {topicsIndexes.map(index => (
-                      <div key={`supplementaryTopic-${index}`}>
-                        <TopicAndSubtopic
-                          getFieldValue={form.getFieldValue}
-                          index={index}
-                          isRequired
-                          readOnly={readOnly}
-                          setFieldsValue={form.setFieldsValue}
-                          supplementaryKey={topicsKey}
-                          topicsMetadata={metadata.topics}
-                        />
-                      </div>
-                    ))}
-                    {!readOnly && (
-                      <>
-                        {topicsIndexes.length < 2 && (
-                          <Button
-                            disabled={readOnly}
-                            onClick={() => {
-                              handleSupplementaryAdd(add, topicsKey)
-                            }}
-                            type="primary"
-                          >
-                            Add a second topic
-                          </Button>
-                        )}
-                        {topicsIndexes.length > 1 && (
-                          <Button
-                            data-testid="remove-second-topic"
-                            disabled={readOnly}
-                            onClick={() => {
-                              handleSupplementaryRemove(remove, topicsKey)
-                            }}
-                            status="danger"
-                            type="primary"
-                          >
-                            Remove second topic
-                          </Button>
-                        )}
-                      </>
-                    )}
-                  </StyledSupplementaryFieldsContainer>
-                )}
-              </Form.List>
-
-              <Form.Item
-                dependencies={[
-                  [topicsKey, 0, 'topic'],
-                  [topicsKey, 1, 'topic'],
-                ]}
-                noStyle
-              >
-                {({ getFieldValue }) => (
-                  <Resources
-                    getFieldValue={form.getFieldValue}
-                    readOnly={readOnly}
-                    resources={resources}
-                    selectedTopics={getSelectedTopics([
-                      getFieldValue([topicsKey, 0, 'topic']),
-                      getFieldValue([topicsKey, 1, 'topic']),
-                    ])}
-                  />
-                )}
-              </Form.Item>
-            </>
+            <Form.List name={topicsKey} noStyle>
+              {(_, { add, remove }) => (
+                <StyledSupplementaryFieldsContainer>
+                  {topicsIndexes.map(index => (
+                    <div key={`supplementaryTopic-${index}`}>
+                      <TopicAndSubtopic
+                        getFieldValue={form.getFieldValue}
+                        index={index}
+                        isRequired
+                        readOnly={readOnly}
+                        setFieldsValue={form.setFieldsValue}
+                        supplementaryKey={topicsKey}
+                        topicsMetadata={metadata.topics}
+                      />
+                    </div>
+                  ))}
+                  {!readOnly && (
+                    <>
+                      {topicsIndexes.length < 2 && (
+                        <Button
+                          disabled={readOnly}
+                          onClick={() => {
+                            handleSupplementaryAdd(add, topicsKey)
+                          }}
+                          type="primary"
+                        >
+                          Add a second topic
+                        </Button>
+                      )}
+                      {topicsIndexes.length > 1 && (
+                        <Button
+                          data-testid="remove-second-topic"
+                          disabled={readOnly}
+                          onClick={() => {
+                            handleSupplementaryRemove(remove, topicsKey)
+                          }}
+                          status="danger"
+                          type="primary"
+                        >
+                          Remove second topic
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </StyledSupplementaryFieldsContainer>
+              )}
+            </Form.List>
           ) : null}
+
+          <Form.Item noStyle>
+            <Resources
+              getFieldValue={form.getFieldValue}
+              readOnly={readOnly}
+              resources={resources}
+            />
+          </Form.Item>
         </Form>
       </Wrapper>
       {contextHolder}
