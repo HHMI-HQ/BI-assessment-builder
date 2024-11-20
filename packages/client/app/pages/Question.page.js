@@ -1116,11 +1116,11 @@ const QuestionPage = props => {
           },
         })
         break
-      // case 'reviewerChat':
-      //   cancelEmailNotification({
-      //     variables: { chatThreadId: reviewerChatThread?.id },
-      //   })
-      //   break
+      case 'reviewerChat':
+        cancelEmailNotification({
+          variables: { chatThreadId: reviewerChatThread?.id },
+        })
+        break
       default:
         break
     }
