@@ -329,11 +329,10 @@ const SiteHeader = () => {
   const logout = () => {
     setCurrentUser(null)
     client.cache.reset()
+    localStorage.clear()
 
-    localStorage.removeItem('token')
-    localStorage.removeItem('dashboardLastUsedTab')
-
-    history.push('/login')
+    // refresh to unmount notification provider
+    window.location.href = '/login'
   }
 
   const isAdmin = hasGlobalRole(currentUser, 'admin')
