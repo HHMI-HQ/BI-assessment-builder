@@ -5,6 +5,7 @@ import {
   handlingEditor1,
   productionMember1,
   productionMember2,
+  reviewer,
 } from '../support/credentials'
 import { laptop } from '../support/viewport'
 import {
@@ -256,6 +257,79 @@ describe('ChatThreads', () => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(4000)
       })
+    })
+  })
+
+  describe('Reviewer chat', () => {
+    before(() => {
+      cy.seedUser(disableScripts, reviewer)
+      cy.seedQuestion(
+        disableScripts,
+        user2.username,
+        -3,
+        'anatomy',
+        'underReview',
+        handlingEditor1.username,
+      )
+    })
+    beforeEach(() => {
+      cy.viewport(laptop.preset)
+    })
+
+    it('Editor can chat with one reviewer at a time', () => {
+      cy.login(editor)
+      cy.contains(antTabs, 'Editor Items').click()
+      cy.get(listItemWrapper)
+        .eq(0)
+        .contains(ProseMirror, 'What substance')
+        .click()
+      cy.reload()
+      cy.contains(antTabs, 'Reviewer chat').click()
+      cy.reload()
+      cy.contains('strong', 'No reviewer selected').should('exist')
+      cy.contains('p', 'Select a reviewer to chat').should('exist')
+
+      // Invite reviewer
+      cy.contains(antTabs, 'Invite reviewers').click()
+      cy.get('[id*=assignReviewers] .ant-select-selection-overflow').type(
+        reviewer.username,
+      )
+      cy.get('.ant-select-item-option-content').click()
+      cy.contains('Add User').click()
+
+      cy.contains('button', 'Invite').click()
+      cy.logout()
+
+      // Reviewer accepts invitation
+      cy.login({ ...reviewer })
+      cy.contains(antTabs, 'Reviewer Items').click()
+      cy.get(listItemWrapper)
+        .eq(0)
+        .contains(ProseMirror, 'What substance')
+        .click()
+
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(5000)
+      cy.contains('Accept Invite').click()
+      cy.contains('Invite accepted successfully').should('exist')
+      cy.logout()
+
+      // Editor chats with reviewer
+      cy.login(editor)
+      cy.contains(antTabs, 'Editor Items').click()
+      cy.get(listItemWrapper)
+        .eq(0)
+        .contains(ProseMirror, 'What substance')
+        .click()
+      cy.reload()
+      cy.contains(antTabs, 'Reviewer chat').click()
+      cy.contains('strong', 'No reviewer selected').should('exist')
+      cy.get('#selectReviewer').click()
+      cy.reload()
+      cy.get('#selectReviewer').click()
+      cy.contains('clementroman').click()
+      cy.contains('No conversations yet').should('exist')
+      cy.get('[placeholder="Write to clementroman"]').type('Hi! Editor here.')
     })
   })
 
