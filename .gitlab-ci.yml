@@ -21,7 +21,7 @@ stages:
 
 # BUILD DEVELOPMENT
 
-client build development:
+.client build development:
   stage: Build development
   image: docker:26
   services:
@@ -33,7 +33,7 @@ client build development:
     - docker build --tag $IMAGE_ORG/$IMAGE_NAME_CLIENT_DEVELOPMENT:$CI_COMMIT_SHA ./packages/client -f packages/client/Dockerfile-development
     - docker push $IMAGE_ORG/$IMAGE_NAME_CLIENT_DEVELOPMENT:$CI_COMMIT_SHA
 
-server build development:
+.server build development:
   stage: Build development
   image: docker:26
   services:
@@ -47,7 +47,7 @@ server build development:
 
 # LINT & UNIT TEST
 
-client lint:
+.client lint:
   stage: Lint & Unit test
   needs:
     - client build development
@@ -56,7 +56,7 @@ client lint:
     - cd $WORKDIR_CLIENT
     - yarn coko-lint run
 
-client unit test:
+.client unit test:
   stage: Lint & Unit test
   needs:
     - client build development
@@ -65,7 +65,7 @@ client unit test:
     - cd $WORKDIR_CLIENT
     - yarn jest
 
-server lint:
+.server lint:
   stage: Lint & Unit test
   needs:
     - server build development
@@ -74,7 +74,7 @@ server lint:
     - cd $WORKDIR_SERVER
     - yarn coko-lint run --skip-stylelint
 
-server unit test:
+.server unit test:
   stage: Lint & Unit test
   needs:
     - server build development
@@ -128,7 +128,7 @@ build client:
 
 # END TO END TEST
 
-end to end tests:
+.end to end tests:
   stage: End to end test
   image: cokoapps/cypress:18
   services:
@@ -182,7 +182,7 @@ publish server:
   only:
     - staging
 
-build & publish storybook:
+.build & publish storybook:
   stage: Publish production
   image: docker:26
   services:
