@@ -218,7 +218,11 @@ const QuestionPage = props => {
   const { testMode } = props
 
   // #region hooks
-  const { id } = useParams()
+  // check if url fragment has been included in id param; if so, remove it
+  const { id: rawId } = useParams()
+  const hasIndex = rawId.indexOf('#')
+  const id = hasIndex > -1 ? rawId.substring(0, hasIndex) : rawId
+
   const history = useHistory()
   const { metadata } = useMetadata()
 
@@ -1543,6 +1547,7 @@ const QuestionPage = props => {
           currentUser?.id,
         )}
         reviewerChatParticipants={reviewerChatParticipants}
+        reviewerId={location.state?.reviewerId}
         reviewerPool={reviewerPool}
         reviewerView={isReviewer && isUnderReview}
         reviewInviteStatus={reviewerInviteStatus}
