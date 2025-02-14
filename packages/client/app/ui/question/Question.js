@@ -1642,6 +1642,9 @@ const Question = props => {
                   readOnly={readOnly}
                   resources={resources}
                   selectedQuestionType={selectedQuestionType?.metadataValue}
+                  showIBoptionalFields={
+                    isInProduction || isPublished || isUnpublished
+                  }
                   showTopicAndSubtopicFields={
                     isInProduction || isPublished || isUnpublished
                   }
