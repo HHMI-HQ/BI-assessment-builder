@@ -21,6 +21,7 @@ import {
 import { grid, th } from '@coko/client'
 import { Button, Table, Modal, Form, Input } from '../common'
 
+// #region styled
 const StyledSection = styled.section`
   background: ${th('colorBackground')};
   display: flex;
@@ -98,6 +99,7 @@ const DynamicFormItemWrapper = styled.div`
     }
   }
 `
+// #endregion styled
 
 const courseDataToUi = (data, type, isLast) => {
   if (!data) return []
@@ -618,7 +620,8 @@ const CourseMetadataTable = props => {
     newMetadataForm
       .validateFields()
       .then(v => {
-        onMetadataAdd(v).then(() => {
+        const { biSubtopic, ...rest } = v
+        onMetadataAdd(rest).then(() => {
           dialog.destroy()
         })
       })
