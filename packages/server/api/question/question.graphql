@@ -329,7 +329,7 @@ extend type Mutation {
     questionIds: [ID!]!
     isArchiving: Boolean!
     role: String!
-  ): Boolean
+  ): Int!
 
   editQuestion(questionId: ID!, questionVersionId: ID!): QuestionVersion!
 }

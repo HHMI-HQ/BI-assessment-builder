@@ -363,7 +363,7 @@ const DashboardPage = () => {
   const [changeArchiveStatusForItems] = useMutation(
     CHANGE_ARCHIVE_STATUS_FOR_ITEMS,
     {
-      onCompleted: () => {
+      onCompleted: ({ changeArchiveStatusForItems: itemsAffected }) => {
         const currentData =
           authorData ||
           editorData ||
@@ -371,7 +371,7 @@ const DashboardPage = () => {
           reviewerData ||
           productionData
 
-        if (currentData.result.length === 1 && currentPage > 1) {
+        if (currentData.result.length === itemsAffected && currentPage > 1) {
           setCurrentPage(currentPage - 1)
           setSearchParams({
             ...searchParams,

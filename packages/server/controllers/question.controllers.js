@@ -1363,10 +1363,17 @@ const changeArchiveStatusForItems = async (
           { trx },
         )
 
-        return !!archiveResults
+        return archiveResults?.length
       }
 
-      return ArchivedItem.unarchiveQuestions(questionIds, userId, role, { trx })
+      const unarchiveResults = await ArchivedItem.unarchiveQuestions(
+        questionIds,
+        userId,
+        role,
+        { trx },
+      )
+
+      return unarchiveResults && questionIds.length
     })
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} ${e}`)
