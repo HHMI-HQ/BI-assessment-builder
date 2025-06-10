@@ -28,6 +28,7 @@ import {
   hasGlobalRole,
   MetadataProvider,
   NotificationsProvider,
+  FiltersProvider,
   useNotifications,
 } from './utilities'
 
@@ -394,232 +395,234 @@ const routes = (
       <NotificationsProvider>
         <SiteHeader />
         <MetadataProvider>
-          <StyledPage fadeInPages={false} padPages={false}>
-            <StyledMain id="main-content" tabIndex="-1">
-              <Switch>
-                <Route
-                  exact
-                  path="/signup-profile"
-                  render={() => (
-                    <Authenticated>
-                      <UserProfile signup />
-                    </Authenticated>
-                  )}
-                />
+          <FiltersProvider>
+            <StyledPage fadeInPages={false} padPages={false}>
+              <StyledMain id="main-content" tabIndex="-1">
+                <Switch>
+                  <Route
+                    exact
+                    path="/signup-profile"
+                    render={() => (
+                      <Authenticated>
+                        <UserProfile signup />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/dashboard"
-                  render={() => (
-                    <Authenticated>
-                      <Dashboard />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/dashboard"
+                    render={() => (
+                      <Authenticated>
+                        <Dashboard />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/discover"
-                  render={() => (
-                    <Authenticated>
-                      <Discover />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/discover"
+                    render={() => (
+                      <Authenticated>
+                        <Discover />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/lists"
-                  render={() => (
-                    <Authenticated>
-                      <Lists />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/lists"
+                    render={() => (
+                      <Authenticated>
+                        <Lists />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/list/:id"
-                  render={() => (
-                    <Authenticated>
-                      <ListContent />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/list/:id"
+                    render={() => (
+                      <Authenticated>
+                        <ListContent />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/question/:id/test"
-                  render={() => (
-                    <Authenticated>
-                      <Question testMode />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/question/:id/test"
+                    render={() => (
+                      <Authenticated>
+                        <Question testMode />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/question/:id"
-                  render={() => (
-                    <Authenticated>
-                      <Question />
-                    </Authenticated>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/manage-users"
-                  render={() => (
-                    <Authenticated>
-                      <ManageUsers />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/question/:id"
+                    render={() => (
+                      <Authenticated>
+                        <Question />
+                      </Authenticated>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/manage-users"
+                    render={() => (
+                      <Authenticated>
+                        <ManageUsers />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/manage-teams"
-                  render={() => (
-                    <Authenticated>
-                      <TeamManager />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/manage-teams"
+                    render={() => (
+                      <Authenticated>
+                        <TeamManager />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/manage-resources"
-                  render={() => (
-                    <Authenticated>
-                      <ManageResources />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/manage-resources"
+                    render={() => (
+                      <Authenticated>
+                        <ManageResources />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/manage-metadata"
-                  render={() => (
-                    <Authenticated>
-                      <ManageMetadata />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/manage-metadata"
+                    render={() => (
+                      <Authenticated>
+                        <ManageMetadata />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/profile"
-                  render={() => (
-                    <Authenticated>
-                      <UserProfile />
-                    </Authenticated>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/profile/:id"
-                  render={() => (
-                    <Authenticated>
-                      <UserProfile />
-                    </Authenticated>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/profile"
+                    render={() => (
+                      <Authenticated>
+                        <UserProfile />
+                      </Authenticated>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/profile/:id"
+                    render={() => (
+                      <Authenticated>
+                        <UserProfile />
+                      </Authenticated>
+                    )}
+                  />
 
-                <Route component={Login} exact path="/login" />
-                <Route component={Signup} exact path="/signup" />
-                <Route
-                  component={VerifyEmail}
-                  exact
-                  path="/email-verification/:token"
-                />
-                <Route
-                  component={RequestPasswordReset}
-                  exact
-                  path="/request-password-reset"
-                />
-                <Route
-                  component={ResetPassword}
-                  exact
-                  path="/password-reset/:token"
-                />
-                <Route
-                  component={VerifyCheck}
-                  exact
-                  path="/ensure-verified-login"
-                />
-                <Route
-                  component={BioInteractiveOauth}
-                  exact
-                  path="/biointeractive-oauth"
-                />
-                <Route
-                  exact
-                  path="/sets"
-                  render={() => (
-                    <Authenticated>
-                      <ComplexItemSetsList />
-                    </Authenticated>
-                  )}
-                />
-                <Route
-                  path="/notifications/"
-                  render={() => (
-                    <Authenticated>
-                      <Notifications />
-                    </Authenticated>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/set/new"
-                  render={() => (
-                    <Authenticated>
-                      <ComplexItemSet />
-                    </Authenticated>
-                  )}
-                />
-                {/* individual sets and their questions can be viewed by all visitors */}
-                <Route
-                  exact
-                  path="/set/:id"
-                  render={() => (
-                    <Authenticated>
-                      <ComplexItemSet />
-                    </Authenticated>
-                  )}
-                />
-                <Route component={DeactivatedUser} path="/deactivated-user" />
-                {/* Static pages hosted elsewhere */}
-                <Route
-                  component={() => (
-                    <External ariaLabel="Home page" src="/drupal/" />
-                  )}
-                  exact
-                  path="/"
-                />
-                <Route
-                  component={() => (
-                    <External ariaLabel="About page" src="/drupal/about" />
-                  )}
-                  exact
-                  path="/about"
-                />
-                <Route
-                  component={() => (
-                    <External
-                      ariaLabel="Proffessional learning page"
-                      src="/drupal/professional-learning"
-                    />
-                  )}
-                  exact
-                  path="/learning"
-                />
-                <Route component={PageNotFound} path="/404" />
-                <Route component={PageNotFound} path="*" />
-              </Switch>
-            </StyledMain>
-            <ToastNotifications />
-          </StyledPage>
+                  <Route component={Login} exact path="/login" />
+                  <Route component={Signup} exact path="/signup" />
+                  <Route
+                    component={VerifyEmail}
+                    exact
+                    path="/email-verification/:token"
+                  />
+                  <Route
+                    component={RequestPasswordReset}
+                    exact
+                    path="/request-password-reset"
+                  />
+                  <Route
+                    component={ResetPassword}
+                    exact
+                    path="/password-reset/:token"
+                  />
+                  <Route
+                    component={VerifyCheck}
+                    exact
+                    path="/ensure-verified-login"
+                  />
+                  <Route
+                    component={BioInteractiveOauth}
+                    exact
+                    path="/biointeractive-oauth"
+                  />
+                  <Route
+                    exact
+                    path="/sets"
+                    render={() => (
+                      <Authenticated>
+                        <ComplexItemSetsList />
+                      </Authenticated>
+                    )}
+                  />
+                  <Route
+                    path="/notifications/"
+                    render={() => (
+                      <Authenticated>
+                        <Notifications />
+                      </Authenticated>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/set/new"
+                    render={() => (
+                      <Authenticated>
+                        <ComplexItemSet />
+                      </Authenticated>
+                    )}
+                  />
+                  {/* individual sets and their questions can be viewed by all visitors */}
+                  <Route
+                    exact
+                    path="/set/:id"
+                    render={() => (
+                      <Authenticated>
+                        <ComplexItemSet />
+                      </Authenticated>
+                    )}
+                  />
+                  <Route component={DeactivatedUser} path="/deactivated-user" />
+                  {/* Static pages hosted elsewhere */}
+                  <Route
+                    component={() => (
+                      <External ariaLabel="Home page" src="/drupal/" />
+                    )}
+                    exact
+                    path="/"
+                  />
+                  <Route
+                    component={() => (
+                      <External ariaLabel="About page" src="/drupal/about" />
+                    )}
+                    exact
+                    path="/about"
+                  />
+                  <Route
+                    component={() => (
+                      <External
+                        ariaLabel="Proffessional learning page"
+                        src="/drupal/professional-learning"
+                      />
+                    )}
+                    exact
+                    path="/learning"
+                  />
+                  <Route component={PageNotFound} path="/404" />
+                  <Route component={PageNotFound} path="*" />
+                </Switch>
+              </StyledMain>
+              <ToastNotifications />
+            </StyledPage>
+          </FiltersProvider>
         </MetadataProvider>
       </NotificationsProvider>
 
