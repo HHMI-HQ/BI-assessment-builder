@@ -259,9 +259,6 @@ create_release_from_ui:
       git remote set-url origin "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
   script:
     - |
-      # Bump root version
-      npm install --ignore-scripts
-      npm version $VERSION_BUMP_TYPE -m "chore(release): bump version to %s [skip ci]"
       # Bump client version
       cd packages/client
       npm version $VERSION_BUMP_TYPE -m "chore(release): bump client version to %s [skip ci]"
