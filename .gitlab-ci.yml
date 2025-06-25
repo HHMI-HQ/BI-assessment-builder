@@ -254,9 +254,10 @@ create_release_from_ui:
   before_script:
     - |
       rm -rf .husky || true
-      git config --global user.email "gitlab-ci@${CI_PROJECT_ID}.example.com"
-      git config --global user.name "GitLab CI"
-      git remote set-url origin "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+      apt-get update && apt-get install -y git >/dev/null
+      git config --global user.email ${GITLAB_USER_EMAIL}
+      git config --global user.name ${GITLAB_USER_NAME}
+      git remote set-url origin https://oauth2:${AUTOMATION_ACCESS_TOKEN}@${CI_PROJECT_URL#https://}.git
   script:
     - |
       # Bump client version
