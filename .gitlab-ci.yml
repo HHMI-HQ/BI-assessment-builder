@@ -299,7 +299,6 @@ bump version:
   script:
     - |
       # Bump client version
-      npm version $VERSION_BUMP_TYPE
       cd packages/client
       npm version $VERSION_BUMP_TYPE
       # Bump server version
