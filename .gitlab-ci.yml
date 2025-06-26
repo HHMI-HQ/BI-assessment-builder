@@ -312,8 +312,6 @@ bump version:
       git push --tags
       # echo "NEW_VERSION=${NEW_VERSION}" > version.env
       echo Release version: ${NEW_VERSION}
-  only:
-    - master
   # artifacts:
   #   paths:
   #     - version.env
@@ -337,5 +335,3 @@ create_release:
     description: 'Automatic release for version ${NEW_VERSION}'
     tag_name: '${NEW_VERSION}'
     ref: '$CI_COMMIT_SHA'
-  only:
-    - master
