@@ -268,6 +268,9 @@ bump version:
   stage: Version
   # image: registry.gitlab.com/gitlab-org/release-cli:latest
   image: node:20-bullseye
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual  
   variables:
     VERSION_BUMP_TYPE: "patch" # Default, can be overridden
     HUSKY: "0"  # Disable Husky
@@ -322,6 +325,9 @@ create_release:
   image: registry.gitlab.com/gitlab-org/cli:latest
   needs: 
     - bump version
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual      
   before_script:
     - source version.env
   script:
