@@ -434,13 +434,13 @@ const permissions = {
     acceptOrRejectInvitation: isReviewer,
     submitReview: isReviewer,
     // Chats
-    sendMessage: isActive,
-    editMessage: isActive,
-    deleteMessage: isActive,
+    // sendChatMessage: isActive,
+    // editMessage: isActive,
+    // deleteMessage: isActive,
     // v4?
-    //     sendChatMessage: isActive,
-    // editChatMessage: isActive,
-    // deleteChatMessage: isActive,
+    sendChatMessage: isActive,
+    editChatMessage: isActive,
+    deleteChatMessage: isActive,
     // Metadata
     updateResource: isAdmin,
     deleteResource: isAdmin,
