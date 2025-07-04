@@ -122,7 +122,7 @@ steps:
   - label: ":capistrano: Deploy Server"
     key: "deploy-server"
     depends_on: deploy-client
-    timeout_in_minutes: 15
+    timeout_in_minutes: 25
     concurrency: 1
     concurrency_group: '$BUILDKITE_PIPELINE_SLUG/$BUILDKITE_BRANCH/deploy-server'
     branches:
