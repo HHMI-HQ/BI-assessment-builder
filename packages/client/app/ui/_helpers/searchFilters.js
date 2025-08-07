@@ -105,3 +105,16 @@ export const notificationMessageFilters = [
     values: [{ label: '%', value: '%' }],
   },
 ]
+
+export const userRoleFilters = [
+  {
+    key: { label: 'Role', value: 'role' },
+    values: [
+      { label: 'Managing Editor', value: 'editor' },
+      { label: 'Handling Editor', value: 'handlingEditor' },
+      { label: 'Reviewer', value: 'reviewer' },
+      { label: 'Production', value: 'production' },
+      { label: 'Admin', value: 'admin' },
+    ],
+  },
+]

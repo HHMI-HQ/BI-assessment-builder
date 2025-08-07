@@ -368,6 +368,7 @@ const permissions = {
     updatePassword: canUpdateProfile,
     deleteUsers: canDeleteOrDeactivateUsers,
     deactivateUsers: canDeleteOrDeactivateUsers,
+    downloadUsersData: isAdmin,
     deleteUsersRelatedItems: canDeleteOrDeactivateUsers,
     activateUsers: isAdmin,
     sendPasswordResetEmail: allow,
