@@ -52,6 +52,15 @@ const StyledTable = styled(Table)`
   .ant-table-content {
     overflow-x: auto;
   }
+
+  ul.ant-pagination:has(.ant-pagination-total-text) {
+    display: flex;
+
+    .ant-pagination-total-text {
+      color: ${th('colorPrimary')};
+      margin-inline-end: auto;
+    }
+  }
 `
 
 const StyledCheckbox = styled(Checkbox)`
@@ -117,6 +126,7 @@ const UserList = ({
   onBulkDeactivate,
   onBulkDelete,
   onBulkDownload,
+  onChangePageSize,
   onPageChange,
   onSearch,
   pageSize,
@@ -232,12 +242,31 @@ const UserList = ({
       }),
   }
 
+  const calculateSizeOptions = () => {
+    const defaultSizes = [10, 20, 50]
+
+    const options = defaultSizes.filter(
+      threshold => totalUserCount >= threshold,
+    )
+
+    if (totalUserCount > 10 && !options.includes(totalUserCount)) {
+      options.push(totalUserCount)
+    }
+
+    return options
+  }
+
+  const pageSizeOptions = calculateSizeOptions()
+
   const pagination = {
     current: currentPage,
     onChange: handlePageChange,
+    onShowSizeChange: onChangePageSize,
     pageSize,
-    showSizeChanger: false,
+    pageSizeOptions,
+    showSizeChanger: pageSizeOptions.length > 0,
     total: totalUserCount,
+    showTotal: t => `Showing ${dataSource.length} users out of ${t}`,
   }
 
   // MODALS
@@ -463,6 +492,7 @@ UserList.propTypes = {
   onBulkDelete: PropTypes.func.isRequired,
   onBulkDownload: PropTypes.func.isRequired,
   onClickShowDeactivated: PropTypes.func.isRequired,
+  onChangePageSize: PropTypes.func,
   onPageChange: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   pageSize: PropTypes.number,
@@ -484,6 +514,7 @@ UserList.defaultProps = {
   totalUserCount: 0,
   filters: [],
   withFilters: false,
+  onChangePageSize: () => {},
   expertiseOptions: [],
 }
 
