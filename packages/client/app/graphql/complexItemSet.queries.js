@@ -21,6 +21,7 @@ export const GET_COMPLEX_ITEM_SETS = gql`
         }
         created
         updated
+        deletedAuthor
       }
       totalCount
     }

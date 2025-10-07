@@ -157,7 +157,9 @@ const getAuthorForComplexItemSet = async (complexItemSetId, options = {}) => {
 
     return Promise.all(
       authors.map(author => {
-        return User.findById(author.userId)
+        return author.userId
+          ? User.findById(author.userId)
+          : { displayName: '[DELETED]' }
       }),
     )
   } catch (e) {

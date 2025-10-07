@@ -12,10 +12,18 @@ const transform = data => {
   return result.map(set => {
     const leadingContent = extractDocumentText(set.leadingContent)
 
+    const authors = set.authors
+      ?.map(a =>
+        a.displayName !== '[DELETED]'
+          ? a.displayName
+          : set.deletedAuthor || a.displayName,
+      )
+      .join(', ')
+
     const metadata = [
       {
         label: 'author',
-        value: set.authors?.map(a => a.displayName).join(', '),
+        value: authors,
       },
       {
         label: 'created at',
