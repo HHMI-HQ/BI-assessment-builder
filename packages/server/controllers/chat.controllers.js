@@ -163,6 +163,31 @@ const cancelEmailNotification = (userId, chatThreadId) => {
   return true
 }
 
+const notifyMentionees = async (mentions, message) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} notifyMentionees:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} notify mentioned users for message ${message.id}`,
+  )
+
+  try {
+    const notifier = new CokoNotifier()
+
+    mentions.forEach(mention => {
+      notifier.notify(
+        'hhmi.chatMention',
+        {
+          mention,
+          message,
+        },
+        'notification',
+      )
+    })
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   createChatThread,
   getAttachments,
@@ -171,4 +196,5 @@ module.exports = {
   sendMessage,
   getMessage,
   cancelEmailNotification,
+  notifyMentionees,
 }
