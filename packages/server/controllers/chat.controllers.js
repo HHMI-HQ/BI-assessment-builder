@@ -1,10 +1,12 @@
 const { logger, useTransaction } = require('@coko/server')
 const { createFile } = require('@coko/server')
+const config = require('config')
 const { ChatThread, ChatMessage, File } = require('@coko/server/src/models')
-const { User } = require('../models')
+const { User, TeamMember } = require('../models')
 const { getFileUrl } = require('./file.controllers')
 const CokoNotifier = require('../services/notify')
 
+const ADMIN_TEAM = config.teams.global.admin
 const BASE_MESSAGE = '[CHAT CONTROLLER]'
 
 const globalTimeouts = {}
@@ -163,7 +165,7 @@ const cancelEmailNotification = (userId, chatThreadId) => {
   return true
 }
 
-const notifyMentionees = async (mentions, message) => {
+const notifyMentionees = async (message, mentions) => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} notifyMentionees:`
   logger.info(
     `${CONTROLLER_MESSAGE} notify mentioned users for message ${message.id}`,
@@ -188,6 +190,43 @@ const notifyMentionees = async (mentions, message) => {
   }
 }
 
+const notifyAdmins = async (message, mentionees, currentUser) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} notifyAdmins:`
+  logger.info(`${CONTROLLER_MESSAGE} notify admin for message ${message.id}`)
+
+  try {
+    // get admin that are not current user or already mentioned
+    const admins = await TeamMember.query()
+      .leftJoin('teams', 'teams.id', 'team_members.team_id')
+      .select('team_members.user_id')
+      .where({
+        'teams.role': ADMIN_TEAM.role,
+        'teams.global': true,
+      })
+      .whereNot('team_members.user_id', currentUser)
+      .whereNotIn('team_members.user_id', mentionees)
+
+    if (admins.length) {
+      const notifier = new CokoNotifier()
+
+      // notify all retrieved admins
+      admins.forEach(admin => {
+        notifier.notify(
+          'hhmi.chatMention',
+          {
+            mention: admin?.userId,
+            message,
+          },
+          'notification',
+        )
+      })
+    }
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   createChatThread,
   getAttachments,
@@ -197,4 +236,5 @@ module.exports = {
   getMessage,
   cancelEmailNotification,
   notifyMentionees,
+  notifyAdmins,
 }

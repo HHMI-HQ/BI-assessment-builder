@@ -12,6 +12,7 @@ const {
   getMessage,
   cancelEmailNotification,
   notifyMentionees,
+  notifyAdmins,
 } = require('../../controllers/chat.controllers')
 
 const createChatThreadResolver = async (_, { input }) => {
@@ -50,7 +51,9 @@ const sendMessageResolver = async (_, { input }, ctx) => {
     pubsub.publish(`${actions.MESSAGE_CREATED}.${chatThreadId}`, message.id)
 
     // send notification to all mentioned users
-    await notifyMentionees(mentions, message)
+    await notifyMentionees(message, mentions)
+    // send notification to admins
+    await notifyAdmins(message, mentions, ctx.user)
 
     return message
   } catch (e) {
