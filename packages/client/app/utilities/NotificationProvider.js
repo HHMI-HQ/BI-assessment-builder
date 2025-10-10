@@ -1,9 +1,18 @@
 import React, { useContext, useMemo, useState } from 'react'
-import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
+import {
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
+} from '@apollo/client'
 import { useCurrentUser } from '@coko/client'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { GET_USER_NOTIFICATIONS, NOTIFICATION_SUBSCRIPTION } from '../graphql'
+import {
+  GET_USER_NOTIFICATIONS,
+  NOTIFICATION_SUBSCRIPTION,
+  MARK_AS,
+} from '../graphql'
 import theme from '../theme'
 import { ellipsis } from './utilities'
 import messagesIcon from '../../static/messagesIcon.svg'
@@ -72,6 +81,28 @@ export const NotificationsProvider = ({ children }) => {
       setUnreadMentions(userNotifications?.result)
     },
   })
+
+  const [markMentionsAs] = useMutation(MARK_AS, {
+    refetchQueries: [
+      {
+        query: GET_USER_NOTIFICATIONS,
+        variables: {
+          type: 'mention',
+          options: {
+            pageSize: 1000,
+            page: 0,
+            read: false,
+            orderBy: 'created',
+            ascending: false,
+          },
+        },
+      },
+    ],
+  })
+
+  const markAsRead = async data => {
+    await markMentionsAs(data)
+  }
 
   useSubscription(NOTIFICATION_SUBSCRIPTION, {
     skip: !currentUser?.id,
@@ -145,6 +176,7 @@ export const NotificationsProvider = ({ children }) => {
       setTabKey,
       setMessageToPreview,
       setUnreadMentionsCount,
+      markAsRead,
     }
   }, [
     newNotification,

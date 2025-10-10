@@ -70,6 +70,7 @@ import {
   REVIEWER_STATUSES,
   flattenReviewerPool,
   flattenReviewerSearchResults,
+  useNotifications,
 } from '../utilities'
 
 const AUTOSAVE_DELAY = 500
@@ -193,6 +194,12 @@ const messagesApiToUi = (messages, currentUser = null) => {
       )
     : []
 }
+
+const notificationsApiResponse = (notifications, questionId) => {
+  return notifications
+    .map(n => ({ id: n.id, content: JSON.parse(n.content) }))
+    .filter(n => questionId === n.content.questionId)
+}
 // #endregion transformations
 
 const scanContentForQuestionType = content => {
@@ -234,6 +241,7 @@ const QuestionPage = props => {
 
   const history = useHistory()
   const { metadata } = useMetadata()
+  const { unreadMentions, markAsRead } = useNotifications()
 
   const requestedTab = window.location.hash.substring(1)
   const [selectedReviewerId, setSelectedReviewerId] = useState(uuid())
@@ -1008,6 +1016,19 @@ const QuestionPage = props => {
     )
   }
 
+  const handleMarkAsRead = async notificationIds => {
+    if (notificationIds.length) {
+      const mutationData = {
+        variables: {
+          read: true,
+          notificationIds,
+        },
+      }
+
+      await markAsRead(mutationData)
+    }
+  }
+
   const navigateToNextQuestion = (which, idsList) => {
     if (idsList?.length) {
       const currentIndex = relatedQuestionIds.indexOf(id)
@@ -1691,6 +1712,7 @@ const QuestionPage = props => {
         onEditorContentAutoSave={!testMode ? handleEditorContentAutoSave : null}
         onImageUpload={handleImageUpload}
         onInviteReviewer={handleInviteReviewer}
+        onMarkAsRead={handleMarkAsRead}
         onMetadataAutoSave={handleMetadataAutoSave}
         onMoveToProduction={handleMoveToProduction}
         onMoveToReview={handleMoveToReview}
@@ -1745,6 +1767,7 @@ const QuestionPage = props => {
         showPreviewButton={isAuthor && !version?.submitted}
         showProductionChatTab={showProductionChatTab}
         showReviewerChatTab={showReviewerChatTab}
+        unreadMentions={notificationsApiResponse(unreadMentions, id)}
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
       />
