@@ -3,10 +3,7 @@ import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 import { useCurrentUser } from '@coko/client'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import {
-  GET_UNREAD_NOTIFICATIONS_COUNT,
-  NOTIFICATION_SUBSCRIPTION,
-} from '../graphql'
+import { GET_USER_NOTIFICATIONS, NOTIFICATION_SUBSCRIPTION } from '../graphql'
 import theme from '../theme'
 import { ellipsis } from './utilities'
 import messagesIcon from '../../static/messagesIcon.svg'
@@ -50,17 +47,30 @@ export const useNotifications = () => useContext(NotificationsContext)
 export const NotificationsProvider = ({ children }) => {
   const [tabKey, setTabKey] = useState('messages')
   const client = useApolloClient()
-  const [unreadMentions, setUnreadMentions] = useState(0)
+  const [unreadMentionsCount, setUnreadMentionsCount] = useState(0)
+  const [unreadMentions, setUnreadMentions] = useState([])
 
   const [messageToPreview, setMessageToPreview] = useState({})
   const [updatedMentions, setUpdatedMentions] = useState([])
   const [newNotification, setNewNotification] = useState(null)
   const { currentUser } = useCurrentUser()
 
-  useQuery(GET_UNREAD_NOTIFICATIONS_COUNT, {
+  useQuery(GET_USER_NOTIFICATIONS, {
     skip: !currentUser,
-    onCompleted: data =>
-      setUnreadMentions(data?.getUnreadNotificationsCount[0]?.count),
+    variables: {
+      type: 'mention',
+      options: {
+        pageSize: 1000,
+        page: 0,
+        read: false,
+        orderBy: 'created',
+        ascending: false,
+      },
+    },
+    onCompleted: ({ userNotifications }) => {
+      setUnreadMentionsCount(userNotifications?.result.length)
+      setUnreadMentions(userNotifications?.result)
+    },
   })
 
   useSubscription(NOTIFICATION_SUBSCRIPTION, {
@@ -126,6 +136,7 @@ export const NotificationsProvider = ({ children }) => {
     return {
       newNotification,
       updatedMentions,
+      unreadMentionsCount,
       unreadMentions,
       tabKey,
       messageToPreview,
@@ -133,17 +144,18 @@ export const NotificationsProvider = ({ children }) => {
       setUpdatedMentions,
       setTabKey,
       setMessageToPreview,
-      setUnreadMentions,
+      setUnreadMentionsCount,
     }
   }, [
     newNotification,
     updatedMentions,
+    unreadMentionsCount,
     unreadMentions,
     tabKey,
     messageToPreview,
     setNewNotification,
     setUpdatedMentions,
-    setUnreadMentions,
+    setUnreadMentionsCount,
     setTabKey,
     setMessageToPreview,
   ])
