@@ -1,6 +1,5 @@
 const { pubsubManager } = require('@coko/server')
 const { actions } = require('../../controllers/constants')
-const CokoNotifier = require('../../services/notify')
 
 const { getPubsub } = pubsubManager
 
@@ -12,6 +11,8 @@ const {
   sendMessage,
   getMessage,
   cancelEmailNotification,
+  notifyMentionees,
+  notifyAdmins,
 } = require('../../controllers/chat.controllers')
 
 const createChatThreadResolver = async (_, { input }) => {
@@ -50,18 +51,9 @@ const sendMessageResolver = async (_, { input }, ctx) => {
     pubsub.publish(`${actions.MESSAGE_CREATED}.${chatThreadId}`, message.id)
 
     // send notification to all mentioned users
-    const notifier = new CokoNotifier()
-
-    mentions.forEach(mention => {
-      notifier.notify(
-        'hhmi.chatMention',
-        {
-          mention,
-          message,
-        },
-        'notification',
-      )
-    })
+    await notifyMentionees(message, mentions)
+    // send notification to admins
+    await notifyAdmins(message, mentions, ctx.user)
 
     return message
   } catch (e) {

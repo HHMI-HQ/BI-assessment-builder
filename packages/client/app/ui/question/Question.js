@@ -489,6 +489,8 @@ const Question = props => {
     loadingAddToList,
     loadingCreateList,
     dependencyOptions,
+    unreadMentions,
+    onMarkAsRead,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1921,6 +1923,24 @@ const Question = props => {
     showAssignReviewers,
   ])
 
+  useEffect(() => {
+    let toMarkAsRead
+
+    switch (activeKey) {
+      case 'authorChat':
+      case 'productionChat':
+      case 'reviewerChat':
+        toMarkAsRead = unreadMentions
+          .filter(({ content }) => content.chatType === activeKey)
+          .map(({ id }) => id)
+
+        onMarkAsRead(toMarkAsRead)
+        break
+      default:
+        break
+    }
+  }, [activeKey])
+
   return (
     <ModalContext.Provider value={contextValue}>
       <Wrapper>
@@ -2350,6 +2370,8 @@ Question.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
     }),
   ),
+  unreadMentions: PropTypes.arrayOf(PropTypes.shape()),
+  onMarkAsRead: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -2463,6 +2485,8 @@ Question.defaultProps = {
   loadingAddToList: false,
   loadingCreateList: false,
   dependencyOptions: [],
+  unreadMentions: [],
+  onMarkAsRead: null,
 }
 
 export default Question
