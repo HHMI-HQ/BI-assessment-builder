@@ -70,6 +70,8 @@ import {
   REVIEWER_STATUSES,
   flattenReviewerPool,
   flattenReviewerSearchResults,
+  useNotifications,
+  notificationsMapper,
 } from '../utilities'
 
 const AUTOSAVE_DELAY = 500
@@ -234,6 +236,8 @@ const QuestionPage = props => {
 
   const history = useHistory()
   const { metadata } = useMetadata()
+  const { unreadMentions, markAsRead } = useNotifications()
+  const unread = notificationsMapper(unreadMentions, id)
 
   const requestedTab = window.location.hash.substring(1)
   const [selectedReviewerId, setSelectedReviewerId] = useState(uuid())
@@ -661,6 +665,21 @@ const QuestionPage = props => {
     // }
   }, [question, version])
 
+  useEffect(() => {
+    const currentChat =
+      localStorage.getItem(id) === 'reviewerChat'
+        ? `${localStorage.getItem(id)}-${selectedReviewerId}`
+        : localStorage.getItem(id)
+
+    const currentChatActivity = unread.filter(
+      n => n.content.questionId === id && n.content.chatType === currentChat,
+    )
+
+    if (currentChatActivity) {
+      handleMarkAsRead(currentChatActivity.map(n => n.id))
+    }
+  }, [unread])
+
   // declare lazy query to be called when no `relatedQuestionsIds` from previous state
   const [getPublishedQuestionIds] = useLazyQuery(GET_PUBLISHED_QUESTIONS_IDS)
 
@@ -1006,6 +1025,19 @@ const QuestionPage = props => {
         })
       },
     )
+  }
+
+  const handleMarkAsRead = async notificationIds => {
+    if (notificationIds.length) {
+      const mutationData = {
+        variables: {
+          read: true,
+          notificationIds,
+        },
+      }
+
+      await markAsRead(mutationData)
+    }
   }
 
   const navigateToNextQuestion = (which, idsList) => {
@@ -1691,6 +1723,7 @@ const QuestionPage = props => {
         onEditorContentAutoSave={!testMode ? handleEditorContentAutoSave : null}
         onImageUpload={handleImageUpload}
         onInviteReviewer={handleInviteReviewer}
+        onMarkAsRead={handleMarkAsRead}
         onMetadataAutoSave={handleMetadataAutoSave}
         onMoveToProduction={handleMoveToProduction}
         onMoveToReview={handleMoveToReview}
@@ -1745,6 +1778,7 @@ const QuestionPage = props => {
         showPreviewButton={isAuthor && !version?.submitted}
         showProductionChatTab={showProductionChatTab}
         showReviewerChatTab={showReviewerChatTab}
+        unreadMentions={unread}
         updated={version?.lastEdit}
         wordFileLoading={generateWordFileLoading}
       />
