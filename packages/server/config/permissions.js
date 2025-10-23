@@ -374,7 +374,6 @@ const permissions = {
     signUp: allow,
     verifyEmail: allow,
     resendVerificationEmail: allow,
-    resendVerificationEmailFromLogin: allow,
     resendVerificationEmailAfterLogin: isAuthenticated,
     resetPassword: allow,
     // Users
