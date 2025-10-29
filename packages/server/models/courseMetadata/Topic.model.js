@@ -1,6 +1,6 @@
 const {
   BaseModel,
-  modelTypes: { stringNotEmpty },
+  modelJsonSchemaTypes: { stringNotEmpty },
 } = require('@coko/server')
 
 const LearningObjective = require('./LearningObjective.model')

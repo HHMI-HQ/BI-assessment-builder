@@ -1,4 +1,4 @@
-const { logger } = require('@coko/server')
+const { logger, subscriptionManager } = require('@coko/server')
 
 const {
   updateUserProfile,
@@ -10,14 +10,29 @@ const {
   getUserTeams,
   downloadUsersCSV,
   reviewerStats,
+  deleteUsers,
+  deactivateUsers,
+  getUser,
 } = require('../../controllers/user.controllers')
 
+const broadcastUserUpdated = async userId => {
+  try {
+    const updatedUser = await getUser(userId)
+
+    return subscriptionManager.publish('USER_UPDATED', {
+      userUpdated: updatedUser,
+    })
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
 const updateUserProfileResolver = async (_, { input }, ctx) => {
-  return updateUserProfile(ctx.user, input)
+  return updateUserProfile(ctx.userId, input)
 }
 
 const submitQuestionnaireResolver = async (_, { input }, ctx) => {
-  return submitQuestionnaire(ctx.user, input)
+  return submitQuestionnaire(ctx.userId, input)
 }
 
 const filterUsersResolver = async (_, { params, options }, _ctx) => {
@@ -42,8 +57,48 @@ const bioInteractiveLoginResolver = async (_, { authCode }, ctx) => {
   }
 }
 
+const deactivateUsersResolver = async (_, { ids }) => {
+  try {
+    logger.info(`[USER RESOLVER] - deactivateUsers`)
+    const deactivatedUsers = await deactivateUsers(ids)
+
+    await Promise.all(
+      deactivatedUsers.map(async user => broadcastUserUpdated(user.id)),
+    )
+
+    return deactivatedUsers
+  } catch (e) {
+    logger.error(`[USER RESOLVER] - deactivateUsers: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
+const deleteUsersResolver = async (_, { ids }) => {
+  try {
+    logger.info(`[USER RESOLVER] - deleteUsers`)
+    const deltedUsers = await deleteUsers(ids)
+
+    await Promise.all(
+      ids.map(userId => {
+        return subscriptionManager.publish(`USER_DELETED.${userId}`, userId)
+      }),
+    )
+
+    return deltedUsers
+  } catch (e) {
+    logger.error(`[USER RESOLVER] - deleteUsers: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 const deleteUsersRelatedItemsResolver = async (_, { ids }) => {
-  return deleteUsersRelatedItems(ids)
+  try {
+    await deleteUsersRelatedItems(ids)
+
+    return true
+  } catch (e) {
+    throw new Error(e.message)
+  }
 }
 
 const teamsResolver = async user => {
@@ -65,6 +120,8 @@ module.exports = {
     bioInteractiveLogin: bioInteractiveLoginResolver,
     deleteUsersRelatedItems: deleteUsersRelatedItemsResolver,
     downloadUsersData: downloadUsersDataResolver,
+    deleteUsers: deleteUsersResolver,
+    deactivateUsers: deactivateUsersResolver,
   },
   Query: {
     filterUsers: filterUsersResolver,
@@ -73,5 +130,13 @@ module.exports = {
     displayName: displayNameResolver,
     teams: teamsResolver,
     reviewerStats: reviewerStatsResolver,
+  },
+  Subscription: {
+    userDeleted: {
+      resolve: userId => userId,
+      subscribe: async (_payload, _vars, ctx) => {
+        return subscriptionManager.asyncIterator(`USER_DELETED.${ctx.userId}`)
+      },
+    },
   },
 }
