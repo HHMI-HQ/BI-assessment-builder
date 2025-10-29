@@ -85,7 +85,7 @@ export const UPDATE_PROFILE = gql`
 `
 
 export const FILTER_USERS = gql`
-  query FilterUsers($params: UsersQueryParams, $options: UserFilterOptions) {
+  query FilterUsers($params: UserFilter, $options: UserFilterOptions) {
     filterUsers(params: $params, options: $options) {
       result {
         id
@@ -110,7 +110,7 @@ export const FILTER_USERS = gql`
 `
 
 export const FILTER_USERS_OPTIONS = gql`
-  query FilterUsers($params: UsersQueryParams) {
+  query FilterUsers($params: UserFilter) {
     filterUsers(params: $params) {
       result {
         value: id
@@ -166,5 +166,11 @@ export const GET_USER_DATA = gql`
 export const DOWNLOAD_USERS_DATA = gql`
   mutation DownloadUsersData($userIds: [ID!]!) {
     downloadUsersData(userIds: $userIds)
+  }
+`
+
+export const DELETED_SUBSCRIPTION = gql`
+  subscription UserDeleted {
+    userDeleted
   }
 `
