@@ -86,6 +86,14 @@ const UPDATE_GLOBAL_TEAMS = gql`
   }
 `
 
+const REMOVE_TEAM_MEMBER = gql`
+  mutation RemoveTeamMember($teamId: ID!, $userId: ID!) {
+    removeTeamMember(teamId: $teamId, userId: $userId) {
+      id
+    }
+  }
+`
+
 const FILTER_GLOBAL_TEAM_MEMBERS = gql`
   query FilterTeamMembers(
     $role: String!
@@ -171,4 +179,5 @@ export {
   INVITE_REVIEWER,
   REVOKE_REVIEWER_INVITATION,
   SEARCH_FOR_REVIEWERS,
+  REMOVE_TEAM_MEMBER,
 }

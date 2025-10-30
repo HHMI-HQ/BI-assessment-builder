@@ -391,6 +391,7 @@ const permissions = {
 
     // Teams
     updateTeamMembership: isAdmin,
+    removeTeamMember: isAdmin,
 
     // Questions
     createQuestion: isActive,

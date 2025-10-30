@@ -8,6 +8,7 @@ import {
   GLOBAL_TEAMS,
   NON_TEAM_MEMBER_USERS,
   UPDATE_GLOBAL_TEAMS,
+  REMOVE_TEAM_MEMBER,
 } from '../graphql'
 import { TeamManagerList, Result } from '../ui'
 
@@ -39,6 +40,11 @@ const TeamManagerPage = () => {
   ] = useMutation(UPDATE_GLOBAL_TEAMS, {
     refetchQueries: [{ query: GLOBAL_TEAMS }],
   })
+
+  const [
+    removeTeamMember,
+    // { loading: updatingGlobalTeams, error: updateGlobalTeamsError },
+  ] = useMutation(REMOVE_TEAM_MEMBER)
 
   const teams = teamsData?.teams.result.map(t => {
     const { members, ...rest } = t
@@ -90,22 +96,26 @@ const TeamManagerPage = () => {
     updateGlobalTeams(mutationData).catch(e => console.error(e))
   }
 
-  const handleRemove = (teamId, opts) => {
+  const handleRemove = async (teamId, opts) => {
     const team = teams.find(t => t.id === teamId)
     const existingMemberIds = team.members.map(m => m.id)
-    const newMembers = existingMemberIds.filter(id => !opts.includes(id))
+    const remainingMembers = existingMemberIds.filter(id => !opts.includes(id))
 
     const mutationData = {
       variables: {
         teamId,
-        members: newMembers,
+        members: remainingMembers,
         // input: {
         //   removedMembers: opts,
         // },
       },
     }
 
-    updateGlobalTeams(mutationData).catch(e => console.error(e))
+    await updateGlobalTeams(mutationData).catch(e => console.error(e))
+    // notify
+    await Promise.all(
+      opts.map(userId => removeTeamMember({ variables: { teamId, userId } })),
+    )
   }
 
   const handleSearch = (teamId, searchValue) => {
