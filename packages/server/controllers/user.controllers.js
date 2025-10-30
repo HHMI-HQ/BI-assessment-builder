@@ -1,4 +1,12 @@
-const { logger, useTransaction, uuid, createJWT } = require('@coko/server')
+const {
+  logger,
+  useTransaction,
+  uuid,
+  createJWT,
+  ChatChannel,
+  ChatMessage,
+} = require('@coko/server')
+
 const axios = require('axios').default
 const crypto = require('node:crypto')
 const qs = require('node:querystring')
@@ -6,7 +14,6 @@ const path = require('path')
 const { writeFile } = require('fs').promises
 const config = require('config')
 
-const { ChatThread, ChatMessage } = require('@coko/server/src/models')
 const { roles } = require('../constants')
 const { getProfileOptions } = require('./courseMetadata.controller')
 
@@ -18,9 +25,10 @@ const {
   Question,
   QuestionVersion,
   Review,
+  ComplexItemSet,
 } = require('../models')
 
-const REVIEWER_TEAM = config.teams.nonGlobal.reviewer
+const REVIEWER_TEAM = config.teams.nonGlobal.find(t => t.role === 'reviewer')
 
 const submitQuestionnaire = async (userId, profileData) => {
   const data = {
@@ -312,21 +320,21 @@ const deleteUsersRelatedItems = async (ids, options = {}) => {
                   })
 
                   // get all chat threads for questions
-                  const chatThreads = await ChatThread.find({
-                    relatedObjectId: question.id,
-                  })
+                  // const chatThreads = await ChatChannel.find({
+                  //   relatedObjectId: question.id,
+                  // })
 
-                  const chatThreadsIds = chatThreads.result.map(
-                    chatThread => chatThread.id,
-                  )
+                  // const chatThreadsIds = chatThreads.result.map(
+                  //   chatThread => chatThread.id,
+                  // )
 
-                  // delete all chat messages in those threads
-                  await ChatMessage.query(trx)
-                    .delete()
-                    .whereIn('chatThreadId', chatThreadsIds)
+                  // // delete all chat messages in those threads
+                  // await ChatMessage.query(trx)
+                  //   .delete()
+                  //   .whereIn('chatThreadId', chatThreadsIds)
 
                   // delete the chat threads
-                  await ChatThread.query(trx).delete().where({
+                  await ChatChannel.query(trx).delete().where({
                     relatedObjectId: question.id,
                   })
 
@@ -335,6 +343,28 @@ const deleteUsersRelatedItems = async (ids, options = {}) => {
                 }
               }),
             )
+          }),
+        )
+
+        await Promise.all(
+          ids.map(async id => {
+            const userData = await User.findById(id)
+            const authorDisplayName = await User.getDisplayName(userData)
+            const userTeams = await User.getTeams(id)
+
+            const authoredSetsIds = userTeams
+              .filter(
+                team =>
+                  team.role === 'author' &&
+                  team.objectType === 'complexItemSet',
+              )
+              .map(team => team.objectId)
+
+            const authoredSets = await ComplexItemSet.query(trx)
+              .update({ deletedAuthor: `${authorDisplayName} (deleted)` })
+              .whereIn('id', authoredSetsIds)
+
+            return authoredSets
           }),
         )
 
@@ -467,6 +497,48 @@ const reviewerStats = async user => {
   })
 }
 
+const deactivateUsers = async (ids, options = {}) => {
+  const USER_CONTROLLER = `[USER CONTROLLER] -`
+
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} deactivateUsers: deactivating users with id ${ids}`,
+        )
+        return User.deactivateUsers(ids, { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} deactivateUsers: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
+const deleteUsers = async (ids, options = {}) => {
+  return User.deleteByIds(ids)
+}
+
+const getUser = async (id, options = {}) => {
+  const USER_CONTROLLER = `[USER CONTROLLER] -`
+
+  try {
+    const { trx, ...restOptions } = options
+    return useTransaction(
+      async tr => {
+        logger.info(`${USER_CONTROLLER} getUser: fetching user with id ${id}`)
+        return User.findById(id, { trx: tr, ...restOptions })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} getUser: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   submitQuestionnaire,
   updateUserProfile,
@@ -477,4 +549,7 @@ module.exports = {
   getUserTeams,
   downloadUsersCSV,
   reviewerStats,
+  deleteUsers,
+  deactivateUsers,
+  getUser,
 }

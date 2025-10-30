@@ -12,24 +12,26 @@ const {
   exportSetQuestions,
   exportSetsQTI,
   exportSetQuestionsQTI,
+  deleteComplexItemSet,
+  deleteComplexItemSets,
 } = require('../../controllers/complexItemSet.controller')
 
 const { getImageUrls } = require('../../controllers/utils')
 
 const complexItemSetsResolver = async (_, { params, options }, ctx) => {
-  return getComplexItemSets(ctx.user, params, options)
+  return getComplexItemSets(ctx.userId, params, options)
 }
 
 const complexItemSetResolver = async (_, { id, questionsOptions }, ctx) => {
   const complexItemSet = await getComplexItemSet(id)
-  complexItemSet.filter = { userId: ctx.user, questionsOptions }
+  complexItemSet.filter = { userId: ctx.userId, questionsOptions }
   return complexItemSet
 }
 
 const availableSetsResolver = async (_, { publishedOnly }, ctx) => {
   // pass current user if we're asking for sets that a user can assign question to
   // (so set that are not necessarily published)
-  const userId = publishedOnly ? null : ctx.user
+  const userId = publishedOnly ? null : ctx.userId
   return getAvailableSets(userId)
 }
 
@@ -38,7 +40,7 @@ const createComplexItemSetResolver = async (
   { title, leadingContent },
   ctx,
 ) => {
-  return createComplexItemSet(ctx.user, title, leadingContent)
+  return createComplexItemSet(ctx.userId, title, leadingContent)
 }
 
 const editComplexItemSetResolver = async (
@@ -63,7 +65,7 @@ const assignSetAuthorResolver = async (_, { setId, userIds }) => {
 }
 
 const exportSetsResolver = async (_, { setIds, options }, ctx) => {
-  return exportSets(setIds, ctx.user, options)
+  return exportSets(setIds, ctx.userId, options)
 }
 
 const exportSetQuestionsResolver = async (
@@ -74,7 +76,7 @@ const exportSetQuestionsResolver = async (
 }
 
 const exportSetsQTIResolver = async (_, { setIds, options }, ctx) => {
-  return exportSetsQTI(setIds, ctx.user, options)
+  return exportSetsQTI(setIds, ctx.userId, options)
 }
 
 const exportSetQuestionsQTIResolver = async (
@@ -96,7 +98,13 @@ const containsSubmissionsResolver = async complexItemSet => {
   return containsSubmissions(complexItemSet)
 }
 
-const deleteComplexItemSetResolver = () => {}
+const deleteComplexItemSetResolver = async (_, { id }) => {
+  return deleteComplexItemSet(id)
+}
+
+const deleteComplexItemSetsResolver = async (_, { ids }) => {
+  return deleteComplexItemSets(ids)
+}
 
 module.exports = {
   Query: {
@@ -108,6 +116,7 @@ module.exports = {
     createComplexItemSet: createComplexItemSetResolver,
     editComplexItemSet: editComplexItemSetResolver,
     deleteComplexItemSet: deleteComplexItemSetResolver,
+    deleteComplexItemSets: deleteComplexItemSetsResolver,
     assignSetAuthor: assignSetAuthorResolver,
     exportSets: exportSetsResolver,
     exportSetQuestions: exportSetQuestionsResolver,

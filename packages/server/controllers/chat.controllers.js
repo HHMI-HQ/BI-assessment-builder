@@ -1,17 +1,18 @@
-const { logger, useTransaction } = require('@coko/server')
-const { createFile } = require('@coko/server')
-const { ChatThread, ChatMessage, File } = require('@coko/server/src/models')
-const { User } = require('../models')
+const config = require('config')
+const { logger, useTransaction, createFile } = require('@coko/server')
+const { ChatChannel, ChatMessage, File } = require('@coko/server/src/models')
+const { User, TeamMember } = require('../models')
 const { getFileUrl } = require('./file.controllers')
 const CokoNotifier = require('../services/notify')
 
+const ADMIN_TEAM = config.get('teams.global').find(t => t.role === 'admin')
 const BASE_MESSAGE = '[CHAT CONTROLLER]'
 
 const globalTimeouts = {}
 
-const createChatThread = async (input = {}, options = {}) => {
+const createChatChannel = async (input = {}, options = {}) => {
   const { relatedObjectId, chatType } = input
-  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} createChatThread:`
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} createChatChannel:`
   logger.info(
     `${CONTROLLER_MESSAGE} Create chat thread for question ${relatedObjectId}`,
   )
@@ -19,7 +20,7 @@ const createChatThread = async (input = {}, options = {}) => {
   try {
     return useTransaction(
       async tr => {
-        return ChatThread.insert({ relatedObjectId, chatType }, { trx: tr })
+        return ChatChannel.insert({ relatedObjectId, chatType }, { trx: tr })
       },
       { trx: options.trx, passedTrxOnly: true },
     )
@@ -30,7 +31,7 @@ const createChatThread = async (input = {}, options = {}) => {
 }
 
 const sendMessage = async (
-  chatThreadId,
+  chatChannelId,
   content,
   userId,
   mentions = [],
@@ -46,11 +47,11 @@ const sendMessage = async (
     const newMessage = await useTransaction(
       async tr => {
         logger.info(
-          `${CONTROLLER_MESSAGE} creating a new message for chat thread with id ${chatThreadId}`,
+          `${CONTROLLER_MESSAGE} creating a new message for chat channel with id ${chatChannelId}`,
         )
 
         const chatMessage = await ChatMessage.insert(
-          { chatThreadId, userId, content, mentions },
+          { chatChannelId, userId, content, mentions },
           { trx: tr, ...restOptions },
         )
 
@@ -63,7 +64,7 @@ const sendMessage = async (
 
     mentions.forEach(mention => {
       // setup a timeout to send emails with delay (and possibility of being canceled)
-      globalTimeouts[`${mention}-${chatThreadId}`] = setTimeout(() => {
+      globalTimeouts[`${mention}-${chatChannelId}`] = setTimeout(() => {
         notifier.notify('hhmi.chatMention', { mention, newMessage }, 'email')
       }, 10000)
     })
@@ -112,7 +113,7 @@ const getMessages = async (threadId, options = {}) => {
 
   try {
     return (
-      await ChatMessage.query(options.trx).where('chatThreadId', threadId)
+      await ChatMessage.query(options.trx).where('chatChannelId', threadId)
     ).map(({ id, created, content, userId, mentions }) => ({
       id,
       content,
@@ -163,12 +164,76 @@ const cancelEmailNotification = (userId, chatThreadId) => {
   return true
 }
 
+const notifyMentionees = async (message, mentions) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} notifyMentionees:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} notify mentioned users for message ${message.id}`,
+  )
+
+  try {
+    const notifier = new CokoNotifier()
+
+    mentions.forEach(mention => {
+      notifier.notify(
+        'hhmi.chatMention',
+        {
+          mention,
+          message,
+        },
+        'notification',
+      )
+    })
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
+const notifyAdmins = async (message, mentionees, currentUser) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} notifyAdmins:`
+  logger.info(`${CONTROLLER_MESSAGE} notify admin for message ${message.id}`)
+
+  try {
+    // get admin that are not current user or already mentioned
+    const admins = await TeamMember.query()
+      .leftJoin('teams', 'teams.id', 'team_members.team_id')
+      .select('team_members.user_id')
+      .where({
+        'teams.role': ADMIN_TEAM.role,
+        'teams.global': true,
+      })
+      .whereNot('team_members.user_id', currentUser)
+      .whereNotIn('team_members.user_id', mentionees)
+
+    if (admins.length) {
+      const notifier = new CokoNotifier()
+
+      // notify all retrieved admins
+      admins.forEach(admin => {
+        notifier.notify(
+          'hhmi.chatMention',
+          {
+            mention: admin?.userId,
+            message,
+          },
+          'notification',
+        )
+      })
+    }
+  } catch (e) {
+    logger.error(e)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
-  createChatThread,
+  createChatChannel,
   getAttachments,
   getMessages,
   getMessageAuthor,
   sendMessage,
   getMessage,
   cancelEmailNotification,
+  notifyMentionees,
+  notifyAdmins,
 }

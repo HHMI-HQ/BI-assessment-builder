@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const {
   rule,
   isAuthenticated,
@@ -6,50 +7,50 @@ const {
 } = require('@coko/server/authorization')
 
 const isActive = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return user.isActive
 })
 
 const isEditor = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return user.isActive && user.hasGlobalRole('editor')
 })
 
 const isProduction = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return user.isActive && user.hasGlobalRole('production')
 })
 
 const isHandlingEditor = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return user.isActive && user.hasGlobalRole('handlingEditor')
 })
 
 const isReviewer = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return user.isActive && user.hasGlobalRole('reviewer')
 })
 
 const canSubmitReview = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   const isUserReviewer = await user.hasGlobalRole('reviewer')
   const isUserEditor = await user.hasGlobalRole('editor')
@@ -62,22 +63,22 @@ const canSubmitReview = rule()(async (_, __, ctx) => {
 })
 
 const isAdmin = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return user.isActive && user.hasGlobalRole('admin')
 })
 
 const isAuthor = rule()(async (_, { questionId }, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User, Team } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   if (!user.isActive) return false
 
-  return isQuestionAuthor(ctx.connectors.Team.model, ctx.user, questionId)
+  return isQuestionAuthor(Team, ctx.userId, questionId)
 })
 
 const isQuestionAuthor = async (teamModel, user, questionId) => {
@@ -97,16 +98,16 @@ const isQuestionAuthor = async (teamModel, user, questionId) => {
 const canUpdateQuestion = rule()(
   async (_, { questionId, questionVersionId }, ctx) => {
     // must be logged in
-    if (!ctx.user) return false
+    if (!ctx.userId) return false
 
-    const UserModel = ctx.connectors.User.model
-    const user = await UserModel.query().findById(ctx.user)
+    const { User, Team } = require('@coko/server')
+    const { Question } = require('../models')
+
+    const user = await User.query().findById(ctx.userId)
     // must be active
     if (!user.isActive) return false
 
-    const QuestionModel = ctx.connectors.Question.model
-
-    const question = await QuestionModel.query()
+    const question = await Question.query()
       .leftJoin(
         'question_versions',
         'questions.id',
@@ -132,7 +133,7 @@ const canUpdateQuestion = rule()(
 
     if (!question.submitted || question.editing) {
       // needs to be the author
-      return isQuestionAuthor(ctx.connectors.Team.model, ctx.user, questionId)
+      return isQuestionAuthor(Team, ctx.userId, questionId)
     }
 
     if (question.accepted) {
@@ -160,11 +161,11 @@ const canUpdateQuestion = rule()(
 
 // editors or handling editors can move to review
 const canMoveToReview = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   return (
     user.isActive &&
@@ -175,11 +176,11 @@ const canMoveToReview = rule()(async (_, __, ctx) => {
 
 // editors or handling editors (aslo reviewers?) can move to production
 const canMoveToProduction = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   return (
     user.isActive &&
@@ -190,11 +191,11 @@ const canMoveToProduction = rule()(async (_, __, ctx) => {
 
 // editors, handling editors, and admins (also production team?) can publish
 const canPublish = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   return (
     user.isActive &&
@@ -206,10 +207,10 @@ const canPublish = rule()(async (_, __, ctx) => {
 
 // only editors and admins can create new question verions
 const canCreateNewVersion = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   return (
     user.isActive &&
@@ -219,14 +220,13 @@ const canCreateNewVersion = rule()(async (_, __, ctx) => {
 
 // editors and handlingEditors can accept questions
 const canAcceptQuestion = rule()(async (_, { questionVersionId }, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const { QuestionVersion } = require('../models')
+  const user = await User.query().findById(ctx.userId)
 
-  const QuestionVersionModel = ctx.connectors.QuestionVersion.model
-
-  const questionVersion = await QuestionVersionModel.query().findById(
+  const questionVersion = await QuestionVersion.query().findById(
     questionVersionId,
   )
 
@@ -240,21 +240,20 @@ const canAcceptQuestion = rule()(async (_, { questionVersionId }, ctx) => {
 
 const canEditQuestion = rule()(
   async (_, { questionId, questionVersionId }, ctx) => {
-    if (!ctx.user) return false
+    if (!ctx.userId) return false
 
-    const UserModel = ctx.connectors.User.model
-    const user = await UserModel.query().findById(ctx.user)
+    const { User, Team } = require('@coko/server')
+    const { QuestionVersion } = require('../models')
+    const user = await User.query().findById(ctx.userId)
 
     if (!user.isActive) return false
 
-    const QuestionVersionModel = ctx.connectors.QuestionVersion.model
-
-    const questionVersion = await QuestionVersionModel.query().findById(
+    const questionVersion = await QuestionVersion.query().findById(
       questionVersionId,
     )
 
     return (
-      isQuestionAuthor(ctx.connectors.Team.model, ctx.user, questionId) &&
+      isQuestionAuthor(Team, ctx.userId, questionId) &&
       !questionVersion.accepted
     )
   },
@@ -262,10 +261,10 @@ const canEditQuestion = rule()(
 
 // editors and handlingEditors can reject questions
 const canRejectQuestion = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   return (
     user.isActive &&
@@ -275,10 +274,10 @@ const canRejectQuestion = rule()(async (_, __, ctx) => {
 })
 
 const canUnpublishQuestion = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   return (
     user.isActive &&
@@ -287,15 +286,17 @@ const canUnpublishQuestion = rule()(async (_, __, ctx) => {
 })
 
 const canAssignAuthor = rule()(async (_, { questionId }, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User /* Team */ } = require('@coko/server')
+  const { Question } = require('../models')
+  const user = await User.query().findById(ctx.userId)
   const userIsAdmin = await user.hasGlobalRole('admin')
 
-  const QuestionModel = ctx.connectors.Question.model
-  const question = await QuestionModel.query().findById(questionId)
+  const question = await Question.query().findById(questionId)
 
+  // const adminAndAuthor =
+  //   userIsAdmin && (await isQuestionAuthor(Team, ctx.userId, questionId))
   const adminOrEditorAndDeletedAuthor =
     !!question.deletedAuthorName &&
     (userIsAdmin || (await user.hasGlobalRole('editor')))
@@ -304,10 +305,10 @@ const canAssignAuthor = rule()(async (_, { questionId }, ctx) => {
 })
 
 const canArchiveQuestions = rule()(async (_, { questionIds }, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User, Team } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
   if (
     user.isActive &&
@@ -317,29 +318,27 @@ const canArchiveQuestions = rule()(async (_, { questionIds }, ctx) => {
   }
 
   const result = await Promise.all(
-    questionIds.map(qId =>
-      isQuestionAuthor(ctx.connectors.Team.model, ctx.user, qId),
-    ),
+    questionIds.map(qId => isQuestionAuthor(Team, ctx.userId, qId)),
   )
 
   return result.every(r => r)
 })
 
 const isAdminOrEditor = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   const userIsAdmin = await user.hasGlobalRole('admin')
 
   return userIsAdmin || user.hasGlobalRole('editor')
 })
 
 const isAdminOrEditorOrHE = rule()(async (_, __, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   const userIsAdmin = await user.hasGlobalRole('admin')
   const userIsEditor = await user.hasGlobalRole('editor')
   const userIsHE = await user.hasGlobalRole('handlingEditor')
@@ -348,21 +347,23 @@ const isAdminOrEditorOrHE = rule()(async (_, __, ctx) => {
 })
 
 const canUpdateProfile = rule()(async (_, { input: { id } }, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
 
-  return user.isActive && id === ctx.user
+  return user.isActive && id === ctx.userId
 })
 
 const canDeleteOrDeactivateUsers = rule()(async (_, { ids }, ctx) => {
-  if (!ctx.user) return false
+  if (!ctx.userId) return false
 
-  const UserModel = ctx.connectors.User.model
-  const user = await UserModel.query().findById(ctx.user)
+  const { User } = require('@coko/server')
+  const user = await User.query().findById(ctx.userId)
   return (
-    user.isActive && user.hasGlobalRole('admin') && ids.indexOf(ctx.user) === -1
+    user.isActive &&
+    user.hasGlobalRole('admin') &&
+    ids.indexOf(ctx.userId) === -1
   )
 })
 
@@ -375,7 +376,6 @@ const permissions = {
     signUp: allow,
     verifyEmail: allow,
     resendVerificationEmail: allow,
-    resendVerificationEmailFromLogin: allow,
     resendVerificationEmailAfterLogin: isAuthenticated,
     resetPassword: allow,
     // Users
@@ -390,9 +390,7 @@ const permissions = {
     sendPasswordResetEmail: allow,
 
     // Teams
-    addTeamMember: isActive,
-    updateTeamMembership: isActive,
-    updateGlobalTeams: isAdmin,
+    updateTeamMembership: isAdmin,
 
     // Questions
     createQuestion: isActive,
@@ -437,7 +435,8 @@ const permissions = {
     // Sets
     createComplexItemSet: isActive,
     editComplexItemSet: isActive,
-    deleteComplexItemSet: isActive,
+    deleteComplexItemSet: isAdmin,
+    deleteComplexItemSets: isAdmin,
     assignSetAuthor: isAdmin,
     exportSets: isActive,
     exportSetQuestions: isActive,
@@ -451,9 +450,13 @@ const permissions = {
     acceptOrRejectInvitation: isReviewer,
     submitReview: canSubmitReview,
     // Chats
-    sendMessage: isActive,
-    editMessage: isActive,
-    deleteMessage: isActive,
+    // sendChatMessage: isActive,
+    // editMessage: isActive,
+    // deleteMessage: isActive,
+    // v4?
+    sendChatMessage: isActive,
+    editChatMessage: isActive,
+    deleteChatMessage: isActive,
     // Metadata
     updateResource: isAdmin,
     deleteResource: isAdmin,
@@ -469,6 +472,7 @@ const permissions = {
     getLoginConfig: allow,
     getMetadata: allow,
     getMetadataOld: allow,
+    getMetadataOptimized: allow,
     getResources: allow,
     // Lists
     myLists: isActive,
@@ -478,7 +482,7 @@ const permissions = {
     filterUsers: isAdminOrEditor,
     user: isAdmin,
     // Teams
-    getGlobalTeams: isAdmin,
+    teams: isAdmin,
     getNonTeamMemberUsers: isAdmin,
     filterGlobalTeamMembers: isActive,
     searchForReviewers: isAdminOrEditorOrHE,
@@ -493,8 +497,8 @@ const permissions = {
     getPublishedQuestionsIds: isActive,
     getQuestionsHandlingEditors: isAdminOrEditor,
     // chats
-    chatThread: isActive,
-    chatThreads: isActive,
+    chatChannel: isActive,
+    chatChannels: isActive,
     getAuthorChatParticipants: isActive,
     getProductionChatParticipants: isActive,
     getReviewerChatParticipants: isActive,

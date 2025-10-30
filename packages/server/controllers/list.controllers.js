@@ -19,7 +19,7 @@ const { labels } = require('./constants')
 const WaxToDocxConverter = require('../services/docx/hhmiDocx.service')
 const WaxToQTIConverter = require('../services/qti/qti.service')
 
-const AUTHOR_TEAM = config.teams.nonGlobal.author
+const AUTHOR_TEAM = config.teams.nonGlobal.find(t => t.role === 'author')
 const BASE_MESSAGE = `${labels.LIST_CONTROLLERS}:`
 
 const getList = async (_user, listId) => {
@@ -182,30 +182,35 @@ const deleteFromList = async (listId, questionIds, options = {}) => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} deleteFromList:`
 
   try {
-    const listMembers = await ListMember.findListMembersByQuestionId(
-      listId,
-      questionIds,
-      options,
-    )
-
-    let deletedMemberIds = []
-
-    if (listMembers.length) {
-      deletedMemberIds = await ListMember.deleteByIds(
-        listMembers.map(member => member.id),
+    return useTransaction(async tr => {
+      const listMembers = await ListMember.findListMembersByQuestionId(
+        listId,
+        questionIds,
+        options,
       )
-    }
 
-    // remove questionIds from customOrder field
-    const list = await List.findById(listId)
+      let deletedMembers
 
-    const newCustomOrder = list.customOrder.filter(
-      id => questionIds.indexOf(id) === -1,
-    )
+      if (listMembers.length) {
+        deletedMembers = await ListMember.deleteByIds(
+          listMembers.map(member => member.id),
+          { trx: tr },
+        )
 
-    await reorderList(listId, newCustomOrder, options)
+        // remove questionIds from customOrder field
+        const list = await List.findById(listId)
 
-    return deletedMemberIds
+        const newCustomOrder = list.customOrder.filter(
+          id => questionIds.indexOf(id) === -1,
+        )
+
+        await reorderList(listId, newCustomOrder, { trx: tr })
+
+        return deletedMembers
+      }
+
+      return 0
+    })
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
     throw new Error(e)
