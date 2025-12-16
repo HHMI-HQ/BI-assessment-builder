@@ -180,7 +180,16 @@ class WaxToQTIConverter {
 
   #tableCellHandler = content => {
     return {
-      td: this.#contentParser(content.content),
+      td: [
+        {
+          _attr: {
+            // hard code border styles to show on qti import
+            style: 'border: 1px solid black',
+          },
+        },
+        ...this.#contentParser(content.content),
+      ],
+      // td: this.#contentParser(content.content),
     }
   }
 
