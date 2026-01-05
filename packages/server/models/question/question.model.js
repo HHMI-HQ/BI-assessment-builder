@@ -319,7 +319,6 @@ class Question extends BaseModel {
           'users.given_names as author_name',
           'users.surname as author_surname',
           'question_versions.complex_item_set_id',
-          'question_versions.complex_item_set_id',
           'question_versions.biointeractive_resources',
         )
         .distinctOn('questions.id')
