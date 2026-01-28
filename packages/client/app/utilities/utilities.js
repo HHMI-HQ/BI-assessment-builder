@@ -1469,6 +1469,9 @@ const dashboardDataMapper = ({
       reviewerStatus,
       reviews,
       dependsOn,
+      submittedOn,
+      submitted,
+      published,
     } = latestVersion
 
     const parsedContent = extractDocumentText(content)
@@ -1518,7 +1521,16 @@ const dashboardDataMapper = ({
               },
             ]
           : []),
-        ...(latestVersion.published || showPublishedDate
+        ...(submitted && submittedOn && !published
+          ? [
+              {
+                label: 'submitted on',
+                value: submittedOn,
+                type: 'date', // let the ui handle the format if type === 'date'
+              },
+            ]
+          : []),
+        ...(published || showPublishedDate
           ? [
               {
                 label: 'published date',
@@ -1526,13 +1538,16 @@ const dashboardDataMapper = ({
                 value: publicationDate,
               },
             ]
-          : [
+          : []),
+        ...(notificationsMapper(newMessages, id)?.length
+          ? [
               {
                 label: 'New messages',
                 type: 'badge',
                 value: notificationsMapper(newMessages, id)?.length,
               },
-            ]),
+            ]
+          : []),
       ],
       content: parsedContent,
       status,

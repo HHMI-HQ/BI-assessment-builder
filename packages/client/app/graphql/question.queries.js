@@ -32,6 +32,7 @@ export const GET_AUTHOR_DASHBOARD = gql`
           published
           unpublished
           publicationDate
+          submittedOn
 
           complexItemSetId
           topics {
@@ -98,6 +99,7 @@ export const GET_EDITOR_DASHBOARD = gql`
           published
           unpublished
           publicationDate
+          submittedOn
 
           complexItemSetId
           topics {
@@ -163,6 +165,7 @@ export const GET_HANDLING_EDITOR_DASHBOARD = gql`
           published
           unpublished
           publicationDate
+          submittedOn
 
           complexItemSetId
           topics {
