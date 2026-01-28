@@ -468,7 +468,14 @@ const submitQuestion = async (
   })
 
   const resubmission = currentQv?.submitted
-  const newData = { ...versionData, submitted: true, editing: false }
+
+  const newData = {
+    ...versionData,
+    submitted: true,
+    editing: false,
+    submittedOn: new Date(),
+  }
+
   // set submitted = true in QuestionVersion
   await modifyQuestionVersion(
     questionVersionId,
