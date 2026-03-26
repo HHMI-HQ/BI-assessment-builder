@@ -332,61 +332,61 @@ class WaxToQTIConverter {
 
     this.#correctAnswers.trueFalseSolutions[responseIdentifier] = []
 
-    return {
-      matchInteraction: [
-        {
-          _attr: {
-            maxAssociations: content.content.length - 1,
-            minAssociations: content.content.length - 1,
-            responseIdentifier,
-            shuffle: 'false',
+    return [
+      // put the prompt (question stem) outside the matchInteraction object
+      { div: [...this.#contentParser([content.content[0]])] },
+      {
+        matchInteraction: [
+          {
+            _attr: {
+              maxAssociations: content.content.length - 1,
+              minAssociations: content.content.length - 1,
+              responseIdentifier,
+              shuffle: 'false',
+            },
           },
-        },
-        // the prompt
-        ...this.#contentParser([content.content[0]]),
-        // the set of options to be marked as true or false
-        {
-          simpleMatchSet: [
-            ...this.#contentParser(content.content.slice(1), {
-              trueFalseGroupId: responseIdentifier,
-            }),
-          ],
-        },
-        // the true/false choices
-        {
-          simpleMatchSet: [
-            {
-              simpleAssociableChoice: [
-                {
-                  _attr: {
-                    identifier: 'false',
-                    matchMax: 0,
+          // the set of options to be marked as true or false
+          {
+            simpleMatchSet: [
+              ...this.#contentParser(content.content.slice(1), {
+                trueFalseGroupId: responseIdentifier,
+              }),
+            ],
+          },
+          // the true/false choices
+          {
+            simpleMatchSet: [
+              {
+                simpleAssociableChoice: [
+                  {
+                    _attr: {
+                      identifier: 'false',
+                      matchMax: 0,
+                    },
                   },
-                },
-                'False',
-              ],
-            },
-            {
-              simpleAssociableChoice: [
-                {
-                  _attr: {
-                    identifier: 'true',
-                    matchMax: singleCorrect ? 1 : 0,
+                  'False',
+                ],
+              },
+              {
+                simpleAssociableChoice: [
+                  {
+                    _attr: {
+                      identifier: 'true',
+                      matchMax: singleCorrect ? 1 : 0,
+                    },
                   },
-                },
-                'True',
-              ],
-            },
-          ],
-        },
-      ],
-    }
+                  'True',
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]
   }
 
   #trueFalseQuestionHandler = (content, options) => {
-    return {
-      prompt: this.#contentParser(content.content, options),
-    }
+    return this.#contentParser(content.content, options)
   }
 
   #trueFalseOptionHandler = (content, options) => {
