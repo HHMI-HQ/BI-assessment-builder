@@ -878,6 +878,7 @@ const QuestionPage = props => {
   const isPublished = version?.published
 
   const isArchived = question?.isArchived && !testMode
+  // condition for faculty view when in test mode or reviewer view
   const facultyView = testMode || (isReviewer && isUnderReview)
   const [preview, setPreview] = useState(facultyView)
 
@@ -1698,6 +1699,7 @@ const QuestionPage = props => {
       return modified
     }
 
+    setFirstRender(false)
     return JSON.parse(content)
   }
 
