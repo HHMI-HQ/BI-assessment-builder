@@ -878,6 +878,8 @@ const QuestionPage = props => {
   const isPublished = version?.published
 
   const isArchived = question?.isArchived && !testMode
+  const facultyView = testMode || (isReviewer && isUnderReview)
+  const [preview, setPreview] = useState(facultyView)
 
   const reviewerInviteStatus = isReviewer ? version?.reviewerStatus : null
 
@@ -1630,8 +1632,7 @@ const QuestionPage = props => {
 
   useEffect(async () => {
     setFirstRender(true)
-    refetchQuestion()
-  }, [isMobile])
+  }, [isMobile, preview])
 
   if (error) {
     return (
@@ -1754,7 +1755,7 @@ const QuestionPage = props => {
           isAdmin
         }
         existingLists={existingLists}
-        facultyView={testMode || (isReviewer && isUnderReview)}
+        facultyView={facultyView}
         handlingEditors={handlingEditors?.result || []}
         hasDeletedAuthor={!!question?.deletedAuthorName}
         hasGeneralReviewerChatId={
@@ -1840,6 +1841,7 @@ const QuestionPage = props => {
         onSubmitReview={handleSubmitReview}
         onUnassignHandlingEditor={handleUnassignHE}
         onUnpublish={handleUnpublish}
+        preview={preview}
         productionChatMessages={messagesApiToUi(
           productionChatMessages,
           currentUser?.id,
@@ -1861,6 +1863,7 @@ const QuestionPage = props => {
         reviewSubmitted={reviewSubmitted}
         searchHELoading={loadingSearchHE}
         selectedQuestionType={selectedQuestionType}
+        setPreview={setPreview}
         showAssignHEButton={
           version?.submitted &&
           !version?.published &&

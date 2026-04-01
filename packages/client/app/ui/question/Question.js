@@ -481,6 +481,8 @@ const Question = props => {
     unreadMentions,
     onMarkAsRead,
     isMobile,
+    preview,
+    setPreview,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -495,7 +497,6 @@ const Question = props => {
   const [showMetadata, setShowMetadata] = useState(isUserLoggedIn)
 
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
-  const [preview, setPreview] = useState(facultyView)
   const [refreshEditorContent, setRefreshEditorContent] = useState(false)
 
   const [imageLongDescs, setImageLongDescs] = useState([])
@@ -2360,6 +2361,8 @@ Question.propTypes = {
   unreadMentions: PropTypes.arrayOf(PropTypes.shape()),
   onMarkAsRead: PropTypes.func,
   isMobile: PropTypes.bool,
+  preview: PropTypes.bool,
+  setPreview: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -2476,6 +2479,8 @@ Question.defaultProps = {
   unreadMentions: [],
   onMarkAsRead: null,
   isMobile: false,
+  preview: false,
+  setPreview: null,
 }
 
 export default Question
