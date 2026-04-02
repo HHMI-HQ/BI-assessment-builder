@@ -48,7 +48,7 @@ jobs:
       - name: Run tests on built image
         run: |
           docker run \
-            --network hhmi_default \
+            --network BI-assessment-builder_default \
             -e POSTGRES_HOST=db \
             -e POSTGRES_PORT=5432 \
             -e POSTGRES_DB=hhmi_dev \
