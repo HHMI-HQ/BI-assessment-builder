@@ -1699,7 +1699,9 @@ const QuestionPage = props => {
       return modified
     }
 
-    setFirstRender(false)
+    setTimeout(() => {
+      setFirstRender(false)
+    }, 3000)
     return JSON.parse(content)
   }
 
