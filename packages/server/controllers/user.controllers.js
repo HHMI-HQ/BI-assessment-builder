@@ -418,8 +418,8 @@ const downloadUsersCSV = async userIds => {
       const globalRoles = `"${globalTeams.map(t => t.displayName).join(', ')}"`
 
       const expertiseSelection = globalRoles.includes('Reviewer')
-        ? user.topicsReviewing
-        : user.coursesTeaching
+        ? user.topicsReviewing || []
+        : user.coursesTeaching || []
 
       const expertise = `"${expertiseSelection
         .map(course => expertiseOptions.find(c => c.value === course)?.label)
@@ -428,7 +428,8 @@ const downloadUsersCSV = async userIds => {
       let reviewerRecord = 'N/A'
 
       if (globalRoles.includes('Reviewer')) {
-        reviewerRecord = await reviewerStats(user)
+        // attach isReviewer to user object to emulate response from filterUsers
+        reviewerRecord = await reviewerStats({ ...user, isReviewer: true })
       }
 
       return {
@@ -436,7 +437,7 @@ const downloadUsersCSV = async userIds => {
         email: defaultIdentity?.email,
         roles: globalRoles,
         expertise,
-        reviewerRecord,
+        reviewerRecord: `"${reviewerRecord}"`, // avoid split cells cause by comma in "invited, not submitted"
       }
     }),
   )
@@ -467,33 +468,40 @@ const downloadUsersCSV = async userIds => {
 
 const reviewerStats = async user => {
   return useTransaction(async tr => {
-    const reviewTeams = await Team.query(tr).where({
-      role: REVIEWER_TEAM.role,
-      global: false,
-    })
+    if (user.isReviewer) {
+      const reviewTeams = await Team.query(tr).where({
+        role: REVIEWER_TEAM.role,
+        global: false,
+      })
 
-    const userTeams = await TeamMember.query(tr)
-      .whereIn(
-        'teamId',
-        reviewTeams.map(({ id }) => id),
+      const userTeams = await TeamMember.query(tr)
+        .whereIn(
+          'teamId',
+          reviewTeams.map(({ id }) => id),
+        )
+        .where('userId', user.id)
+
+      const hasBeenInvited = userTeams
+        .map(({ status }) => status)
+        .some(t =>
+          ['invited', 'acceptedInvitation', 'rejectedInvitation'].includes(t),
+        )
+
+      const submittedReviews = await Review.query(tr).where(
+        'reviewerId',
+        user.id,
       )
-      .where('userId', user.id)
 
-    const hasBeenInvited = userTeams
-      .map(({ status }) => status)
-      .some(t =>
-        ['invited', 'acceptedInvitation', 'rejectedInvitation'].includes(t),
+      const hasSubmitted = submittedReviews.some(
+        ({ status }) => status.submitted === true,
       )
 
-    const submittedReviews = await Review.query(tr).where('reviewerId', user.id)
+      if (hasSubmitted) return 'Submitted'
+      if (hasBeenInvited) return 'Invited, not submitted'
+      return 'Not invited'
+    }
 
-    const hasSubmitted = submittedReviews.some(
-      ({ status }) => status.submitted === true,
-    )
-
-    if (hasSubmitted) return 'Submitted'
-    if (hasBeenInvited) return 'Invited, not submitted'
-    return 'Not invited'
+    return ''
   })
 }
 

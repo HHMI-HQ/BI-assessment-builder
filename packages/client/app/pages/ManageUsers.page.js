@@ -67,6 +67,7 @@ const ManageUsers = () => {
         ...sortOptions,
       },
     },
+    fetchPolicy: 'network-only',
     onCompleted: () => {
       setSelectedRows([])
     },
@@ -159,9 +160,14 @@ const ManageUsers = () => {
     setPageSize(newPageSize)
   }
 
-  const handleSearch = ({ role, searchQuery: search, expertise }) => {
+  const handleSearch = ({
+    role,
+    searchQuery: search,
+    expertise,
+    reviewerRecord,
+  }) => {
     setCurrentPage(0)
-    setSearchParams({ role, search, expertise })
+    setSearchParams({ role, search, expertise, reviewerRecord })
   }
 
   const handleSortChange = (_, __, { columnKey, order }) => {
@@ -214,6 +220,17 @@ const ManageUsers = () => {
       values: expertiseOptions,
     },
   ]
+
+  if (searchParams.role === 'reviewer') {
+    filters.push({
+      key: { label: 'Reviewer record', value: 'reviewerRecord' },
+      values: [
+        { label: 'Submitted', value: 'submitted' },
+        { label: 'Invited but not submitted', value: 'invited' },
+        { label: 'Not invited', value: 'notInvited' },
+      ],
+    })
+  }
 
   return (
     <UserList
