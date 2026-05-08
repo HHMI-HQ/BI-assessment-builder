@@ -23,13 +23,15 @@ const AttachmentItem = styled.a`
   border-radius: 5px;
   color: inherit;
   cursor: pointer;
-  display: inline-flex;
-  gap: ${grid(1)};
   max-inline-size: 200px;
   overflow: hidden;
   padding: ${grid(1)};
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  > .anticon {
+    margin-inline-end: ${grid(1)};
+  }
 
   &:focus {
     outline: 2px solid ${th('colorPrimaryBorder')};

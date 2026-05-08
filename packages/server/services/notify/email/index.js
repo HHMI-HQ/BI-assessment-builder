@@ -389,24 +389,24 @@ const submitReview = async ({ attachments, review, to }) => {
     const subject = 'HHMI BioInteractive Assessment Builder: Review submitted'
 
     const content = `
-	<p>
-		${
-      reviewer.displayName
-    } has completed the review of an item in the Assessment Builder.
-	</p>
-	<p>
-		Click on <a href="${link}">this link</a> to view the item.
-		If you cannot see the link, copy and paste the following link into your browser.
-		<br/>
-		${link}
-	</p>
-	<h2>
-		Review by ${reviewer.displayName} submitted at ${moment(review.updated).format(
-      'MMMM DD, YYYY, h:mm:ss a',
-    )}
-	</h2>
-	<pre>${reviewContent}</pre>
-	`
+    	<h2>
+        Review by ${reviewer.displayName} submitted at ${moment(
+      review.updated,
+    ).format('MMMM DD, YYYY, h:mm:ss a')}
+      </h2>
+      ${reviewContent ? `<pre>${reviewContent}</pre>` : ''}
+      <p>
+        ${
+          reviewer.displayName
+        } has completed the review of an item in the Assessment Builder.
+      </p>
+      <p>
+        Click on <a href="${link}">this link</a> to view the item.
+        If you cannot see the link, copy and paste the following link into your browser.
+        <br/>
+        ${link}
+      </p>
+	  `
 
     const text = `${reviewer.displayName} has completed the review of an item in the Assessment Builder.
 	\nCopy and paste the following link into your browser to view the item.
