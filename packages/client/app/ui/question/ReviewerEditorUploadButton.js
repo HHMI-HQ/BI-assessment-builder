@@ -35,7 +35,7 @@ const StyledUpload = styled(Upload)`
   }
 
   .ant-upload-list.ant-upload-list-text {
-    display: grid;
+    display: block;
     position: relative;
     top: 5px;
 
