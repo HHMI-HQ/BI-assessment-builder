@@ -160,7 +160,7 @@ const IntroToBioCourseMetadata = props => {
             label="Course Topic"
             name={topicName}
             rules={[
-              isRequired
+              isRequired && filterCourseTopicOptions()?.length
                 ? { required: true, message: 'Course Topic is required' }
                 : {},
             ]}
@@ -168,7 +168,11 @@ const IntroToBioCourseMetadata = props => {
             <Select
               allowClear={filterMode}
               data-testid="course-topic-select"
-              disabled={readOnly || (!filterMode && !getFieldValue(unitField))}
+              disabled={
+                readOnly ||
+                (!filterMode && !getFieldValue(unitField)) ||
+                (isRequired && filterCourseTopicOptions()?.length === 0)
+              }
               onChange={handleFrameworkTopicChange}
               optionFilterProp="label"
               options={filterCourseTopicOptions()}
