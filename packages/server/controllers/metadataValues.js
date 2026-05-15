@@ -310,12 +310,12 @@ const metadata = {
           label: 'Models & Simulations',
           value: 'modelsSimulations',
         },
+        // {
+        //   label: 'Careers in Science',
+        //   value: 'careersInScience',
+        // },
         {
-          label: 'Careers in Science',
-          value: 'careersInScience',
-        },
-        {
-          label: 'Science & Society',
+          label: 'Evaluation & Communication of Information',
           value: 'scienceSociety',
         },
         {
