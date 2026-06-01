@@ -24,7 +24,7 @@ const StyledRadioGroup = styled(AntRadio.Group)`
  * Props are the same as Ant's RadioGroup https://ant.design/components/radio/#RadioGroup
  * with the addition of `vertical` and a slightly modified `onChange`.
  */
-const Radio = props => {
+const Radio = React.forwardRef((props, ref) => {
   const { className, onChange, vertical, ...rest } = props
 
   const handleChange = e => onChange(e.target.value)
@@ -33,13 +33,14 @@ const Radio = props => {
     <StyledRadioGroup
       className={className}
       onChange={handleChange}
+      ref={ref}
       role="radiogroup"
       vertical={vertical}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
     />
   )
-}
+})
 
 Radio.propTypes = {
   /** Handle change. First argument is the incoming `value`. */

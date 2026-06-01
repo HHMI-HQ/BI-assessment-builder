@@ -1,4 +1,4 @@
-const { useTransaction, logger, createFile } = require('@coko/server')
+const { useTransaction, logger } = require('@coko/server')
 const { File, Identity } = require('@coko/server/src/models')
 const config = require('config')
 
@@ -17,12 +17,43 @@ const reviewSubmittedStatus = {
 
 const baseMessage = 'Review controller:'
 
-const submitReview = async (
-  questionVersionId,
-  content,
-  userId,
-  attachments = [],
-) => {
+const getReview = async (questionVersionId, reviewerId) => {
+  const CONTROLLER_MESSAGE = `${baseMessage} getReview:`
+
+  try {
+    logger.info(
+      `${CONTROLLER_MESSAGE} fetching review for questionVersion ${questionVersionId} by user ${reviewerId}`,
+    )
+
+    return Review.findOne({ questionVersionId, reviewerId })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const saveReview = async (questionVersionId, userId, responses) => {
+  const CONTROLLER_MESSAGE = `${baseMessage} saveReview:`
+
+  try {
+    return useTransaction(async trx => {
+      logger.info(
+        `${CONTROLLER_MESSAGE} saving review for questionVersion ${questionVersionId} by user ${userId}`,
+      )
+
+      return Review.updateReview(
+        questionVersionId,
+        userId,
+        JSON.parse(responses),
+        { trx },
+      )
+    })
+  } catch (error) {
+    logger.error(`${CONTROLLER_MESSAGE} ${error.message}`)
+    throw new Error(error)
+  }
+}
+
+const submitReview = async (questionVersionId, userId) => {
   const CONTROLLER_MESSAGE = `${baseMessage} submitReview:`
 
   try {
@@ -36,36 +67,36 @@ const submitReview = async (
         { trx },
       )
 
-      const attachmentData = await Promise.all(attachments)
+      // const attachmentData = await Promise.all(attachments)
 
-      const review = await Review.createReview(
+      const review = await Review.submitReview(
         questionVersionId,
         userId,
-        content,
+        // content,
         reviewSubmittedStatus,
         { trx },
       )
 
-      const uploadedAttachments = await Promise.all(
-        attachmentData.map(async attachment => {
-          const stream = attachment.createReadStream()
+      // const uploadedAttachments = await Promise.all(
+      //   attachmentData.map(async attachment => {
+      //     const stream = attachment.createReadStream()
 
-          const storedFile = await createFile(
-            stream,
-            attachment.filename,
-            null,
-            null,
-            [],
-            review.id,
-            { trx },
-          )
+      //     const storedFile = await createFile(
+      //       stream,
+      //       attachment.filename,
+      //       null,
+      //       null,
+      //       [],
+      //       review.id,
+      //       { trx },
+      //     )
 
-          return storedFile
-        }),
-      )
+      //     return storedFile
+      //   }),
+      // )
 
       const emailAttachments = await Promise.all(
-        uploadedAttachments.map(async file => {
+        [].map(async file => {
           const url = await getFileUrl(file, 'medium')
           return {
             href: url,
@@ -213,6 +244,8 @@ const getAttachments = async reviewId => {
 }
 
 module.exports = {
+  getReview,
+  saveReview,
   submitReview,
   inviteMaxReviewers,
   getAttachments,
