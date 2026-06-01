@@ -1,8 +1,12 @@
 input SubmitReviewInput {
   questionVersionId: ID!
-  content: String
-  attachments: [Upload!]
   reviewerId: ID
+}
+
+input SaveReviewInput {
+  questionVersionId: ID!
+  reviewerId: ID!
+  responses: String
 }
 
 type ReviewStatus {
@@ -18,12 +22,18 @@ type Review {
   content: String
   attachments: [Attachment!]
   status: ReviewStatus
+  responses: String
 }
 
-# extend type Query {
-#   reviews(questionId: ID!, reviewerId: ID!): [Review!]!
-# }
+extend type Query {
+  getReview(questionVersionId: ID!, reviewerId: ID!): Review!
+}
 
 extend type Mutation {
+  saveReview(
+    questionVersionId: ID!
+    reviewerId: ID!
+    responses: String!
+  ): Review!
   submitReview(input: SubmitReviewInput!): ID!
 }

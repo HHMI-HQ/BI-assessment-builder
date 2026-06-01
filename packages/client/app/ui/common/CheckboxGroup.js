@@ -22,17 +22,17 @@ const VerticalWrapper = styled.div`
   }
 `
 
-const CheckboxGroup = props => {
+const CheckboxGroup = React.forwardRef((props, ref) => {
   const { className, vertical, ...rest } = props
 
   const group = (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <StyledGroup className={className} {...rest} />
+    <StyledGroup className={className} ref={ref} {...rest} />
   )
 
   if (vertical) return <VerticalWrapper>{group}</VerticalWrapper>
   return group
-}
+})
 
 CheckboxGroup.propTypes = {
   /** Arrange items vertically instead of inline. */

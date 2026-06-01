@@ -1,7 +1,7 @@
 /* stylelint-disable string-quotes */
 import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import {
   LeftOutlined,
   RightOutlined,
@@ -36,11 +36,16 @@ import {
 } from '../common'
 import { REVIEWER_STATUSES, extractDocumentText } from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
-import ReviewerRejectButton from './ReviewerRejectButton'
-import ReviewerAcceptButton from './ReviewerAcceptButton'
-import ReviewerSubmitButton from './ReviewerSubmitButton'
+import {
+  ReviewerRejectButton,
+  ReviewerAcceptButton,
+  ReviewFormToggle,
+  ReviewerForm,
+} from '../review'
+
 import ReviewerChats from './ReviewerChats'
 import { AssignReviewers } from '../assignReviewers'
+import SubmitTestBar from './SubmitTestBar'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
 const ModalFooter = Modal.footer
@@ -154,7 +159,7 @@ const StyledReviewerAcceptInviteButton = styled(ReviewerAcceptButton)`
   width: 100%;
 `
 
-const StyledSubmitReviewButton = styled(ReviewerSubmitButton)`
+const StyledReviewFormToggle = styled(ReviewFormToggle)`
   width: 100%;
 `
 
@@ -220,8 +225,29 @@ const StyledTabItem = styled.div`
 const QuestionWrapper = styled.div`
   background-color: ${th('colorBackground')};
   display: grid;
-  grid-template-columns: ${props => (props.showMetadata ? `2fr 1fr` : '2fr')};
+  grid-template-rows: 1fr auto;
   height: 100%;
+  ${props => {
+    const { showMetadata, showReviewForm } = props
+
+    if (!showMetadata) {
+      return showReviewForm
+        ? css`
+            grid-template-columns: 3fr 2fr;
+          `
+        : css`
+            grid-template-columns: 1fr;
+          `
+    }
+
+    return showReviewForm
+      ? css`
+          grid-template-columns: 3fr 1fr 2fr;
+        `
+      : css`
+          grid-template-columns: 2fr 1fr;
+        `
+  }}
 `
 
 const StyledTabs = styled(Tabs)`
@@ -292,10 +318,16 @@ const SkipToTop = styled.a`
 // #endregion styled
 
 // #region Question Panel
-const StyledCollapse = styled(Collapse)`
+const CollapseWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`
+
+const StyledCollapse = styled(Collapse)`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 
   // overwrite background and padding inherited from role="tablist"
   // (might also remove role="tablist" itself be removing accordion prop and reimplementing its functionality)
@@ -315,6 +347,8 @@ const StyledCollapse = styled(Collapse)`
       overflow: auto;
 
       .ant-collapse-content-box {
+        display: flex;
+        flex-direction: column;
         height: 100%;
         padding: 0;
       }
@@ -322,44 +356,89 @@ const StyledCollapse = styled(Collapse)`
   }
 `
 
-const PanelWrapper = ({ editor, metadata, showMetadata, isMobile }) => {
+const PanelWrapper = ({
+  editor,
+  metadata,
+  showMetadata,
+  submitTestBar,
+  showReviewForm,
+  isMobile,
+  isPublished,
+  reviewerForm,
+}) => {
+  const showSubmitBar = isPublished || (!isPublished && !showMetadata)
+  const [activePanel, setActivePanel] = useState('editor')
+
+  const onPanelClick = val => {
+    if (val[0]) setActivePanel(val[0])
+  }
+
+  useEffect(() => {
+    if (showReviewForm) setActivePanel('review')
+  }, [showReviewForm])
+
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
-  if (!isMobile || !showMetadata) {
+  if (!isMobile || (!showMetadata && !showReviewForm)) {
     return (
-      <QuestionWrapper showMetadata={showMetadata}>
+      <QuestionWrapper
+        showMetadata={showMetadata}
+        showReviewForm={showReviewForm}
+      >
         {editor}
         {showMetadata && metadata}
+        {showReviewForm ? reviewerForm : null}
+        {showSubmitBar && submitTestBar}
       </QuestionWrapper>
     )
   }
 
+  const items = [
+    {
+      key: 'editor',
+      label: 'Editor',
+      children: editor,
+      forceRender: true,
+    },
+  ]
+
+  if (showMetadata)
+    items.push({
+      key: 'metadata',
+      label: 'Metadata',
+      children: metadata,
+      forceRender: true,
+    })
+
+  if (showReviewForm)
+    items.push({
+      key: 'review',
+      label: 'Reviewer Form',
+      children: reviewerForm,
+      forceRender: true,
+    })
+
   return (
-    <StyledCollapse accordion defaultActiveKey="editor">
-      <Collapse.Panel
-        data-testid="editor-collapse"
-        forceRender
-        header="Editor"
-        key="editor"
-      >
-        {editor}
-      </Collapse.Panel>
-      <Collapse.Panel
-        data-testid="metadata-collapse"
-        forceRender
-        header="Metadata"
-        key="metadata"
-      >
-        {metadata}
-      </Collapse.Panel>
-    </StyledCollapse>
+    <CollapseWrapper>
+      <StyledCollapse
+        accordion
+        activeKey={activePanel}
+        items={items}
+        onChange={onPanelClick}
+      />
+      {!showReviewForm && submitTestBar}
+    </CollapseWrapper>
   )
 }
 
 PanelWrapper.propTypes = {
   editor: PropTypes.shape().isRequired,
   metadata: PropTypes.shape().isRequired,
+  reviewerForm: PropTypes.shape().isRequired,
+  submitTestBar: PropTypes.shape().isRequired,
   showMetadata: PropTypes.bool.isRequired,
+  showReviewForm: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  isPublished: PropTypes.bool.isRequired,
 }
 // #endregion Question Panel
 
@@ -483,6 +562,8 @@ const Question = props => {
     isMobile,
     preview,
     setPreview,
+    reviewResponses,
+    saveReview,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -498,6 +579,7 @@ const Question = props => {
 
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const [refreshEditorContent, setRefreshEditorContent] = useState(false)
+  const [showReviewForm, setShowReviewForm] = useState(false)
 
   const [imageLongDescs, setImageLongDescs] = useState([])
 
@@ -1056,6 +1138,11 @@ const Question = props => {
       ],
     })
   }
+
+  const toggleReviewForm = () => {
+    setActiveKey('editor')
+    setShowReviewForm(prev => !prev)
+  }
   // #endregion handlers
 
   // #region components
@@ -1496,13 +1583,13 @@ const Question = props => {
           />
         </>
       )}
-      {reviewInviteStatus === REVIEWER_STATUSES.accepted &&
-        !reviewSubmitted && (
-          <StyledSubmitReviewButton
-            onSubmit={onSubmitReview}
-            showDialog={showDialog}
-          />
-        )}
+      {reviewInviteStatus === REVIEWER_STATUSES.accepted && (
+        <StyledReviewFormToggle
+          reviewSubmitted={reviewSubmitted}
+          showReviewForm={showReviewForm}
+          toggleReviewForm={toggleReviewForm}
+        />
+      )}
     </ReviewerActionsWrapper>
   )
 
@@ -1700,6 +1787,52 @@ const Question = props => {
     }
   }
 
+  // #region test submission controls
+  const withFeedback =
+    !(preview || reviewerView) || (showMetadata && facultyView)
+
+  const [showFeedBack, setShowFeedBack] = useState(false)
+  const [testContent, setTestContent] = useState(editorContent)
+
+  useEffect(() => {
+    setTestContent(editorContent)
+  }, [editorContent])
+
+  useEffect(() => {
+    if (withFeedback) {
+      setShowFeedBack(false)
+      setTestMode(false)
+    } else {
+      setShowFeedBack(false)
+      setTestMode(true)
+    }
+
+    // reset original content after switching views
+    setTestContent(editorContent)
+  }, [withFeedback])
+
+  const [testMode, setTestMode] = useState(
+    isPublished && !showFeedBack && !withFeedback,
+  )
+
+  const submitTest = () => {
+    setShowFeedBack(true)
+    setTestMode(false)
+
+    const contentFeedback = JSON.parse(
+      JSON.stringify(waxRef?.current?.getContent()),
+    )
+
+    setTestContent(contentFeedback)
+  }
+
+  const resetTest = () => {
+    setShowFeedBack(false)
+    setTestMode(true)
+    setTestContent(editorContent)
+  }
+  // #endregion test submission controls
+
   const tabItems = [
     {
       label: QuestionTab,
@@ -1737,26 +1870,25 @@ const Question = props => {
               <QuestionEditor
                 complexItemSetId={complexItemSetId}
                 complexSetEditLink={complexSetEditLink}
-                content={editorContent}
+                content={withFeedback ? editorContent : testContent}
                 innerRef={waxRef}
                 layout={preview || reviewerView ? TestModeLayout : HhmiLayout}
                 leadingContent={leadingContent}
                 onContentChange={handleQuestionContentChange}
                 onImageUpload={onImageUpload}
-                onSubmitReport={onSubmitReport}
                 published={isPublished}
                 readOnly={
                   readOnly || preview || !selectedQuestionType //
                 }
                 refreshEditorContent={refreshEditorContent}
                 selectedQuestionType={selectedQuestionType}
-                showDialog={showDialog}
-                withFeedback={
-                  !(preview || reviewerView) || (showMetadata && facultyView)
-                }
+                showFeedBack={showFeedBack}
+                testMode={testMode}
+                withFeedback={withFeedback}
               />
             }
             isMobile={isMobile}
+            isPublished={isPublished}
             metadata={
               <>
                 <StyledMetadata
@@ -1790,7 +1922,29 @@ const Question = props => {
                 </SkipToTop>
               </>
             }
+            reviewerForm={
+              <ReviewerForm
+                questionType={selectedQuestionType}
+                responses={reviewResponses}
+                reviewSubmitted={reviewSubmitted}
+                saveReview={saveReview}
+                showDialog={showDialog}
+                submitReview={onSubmitReview}
+              />
+            }
             showMetadata={showMetadata && (!preview || facultyView)}
+            showReviewForm={showReviewForm}
+            submitTestBar={
+              <SubmitTestBar
+                isPublished={isPublished}
+                onSubmitReport={onSubmitReport}
+                resetTest={resetTest}
+                showDialog={showDialog}
+                showFeedBack={showFeedBack}
+                submitTest={submitTest}
+                withFeedback={withFeedback}
+              />
+            }
           />
           <VisuallyHiddenElement as="div">
             {imageLongDescs.map(longDesc => (
@@ -2363,6 +2517,8 @@ Question.propTypes = {
   isMobile: PropTypes.bool,
   preview: PropTypes.bool,
   setPreview: PropTypes.func,
+  reviewResponses: PropTypes.shape(),
+  saveReview: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -2481,6 +2637,8 @@ Question.defaultProps = {
   isMobile: false,
   preview: false,
   setPreview: null,
+  reviewResponses: {},
+  saveReview: null,
 }
 
 export default Question

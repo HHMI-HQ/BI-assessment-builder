@@ -46,7 +46,61 @@ class Review extends BaseModel {
 
         content: stringNullable,
         status: object,
+        responses: object,
       },
+    }
+  }
+
+  static async updateReview(
+    questionVersionId,
+    reviewerId,
+    responses,
+    options = {},
+  ) {
+    try {
+      const { trx } = options
+
+      const existingReview = await this.findOne({
+        questionVersionId,
+        reviewerId,
+      })
+
+      if (existingReview)
+        return this.patchAndFetchById(
+          existingReview.id,
+          {
+            questionVersionId,
+            reviewerId,
+            responses: { ...existingReview.responses, ...responses },
+          },
+          { trx },
+        )
+
+      return this.insert({ questionVersionId, reviewerId, responses }, { trx })
+    } catch (error) {
+      logger.error(error)
+      throw new Error(error)
+    }
+  }
+
+  static async submitReview(questionVersionId, reviewerId, status, options) {
+    try {
+      const { trx } = options
+
+      const existingReview = await this.findOne({
+        questionVersionId,
+        reviewerId,
+      })
+
+      // if (existingReview) {
+      return this.patchAndFetchById(
+        existingReview.id,
+        { questionVersionId, reviewerId, status },
+        { trx },
+      )
+      // }
+    } catch (error) {
+      throw new Error(error)
     }
   }
 

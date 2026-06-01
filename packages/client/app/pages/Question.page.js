@@ -46,7 +46,9 @@ import {
   CANCEL_EMAIL_NOTIFICATION,
   UNPUBLISH_QUESTION_VERSION,
   ACCEPT_OR_REJECT_REVIEW_INVITATION,
+  SAVE_REVIEW,
   SUBMIT_REVIEW,
+  GET_REVIEW,
   INVITE_REVIEWER,
   UPDATE_REVIEWER_POOL,
   REVOKE_REVIEWER_INVITATION,
@@ -243,7 +245,7 @@ const QuestionPage = props => {
   const requestedTab = window.location.hash.substring(1)
   const [selectedReviewerId, setSelectedReviewerId] = useState(uuid())
   const [reviewerChatThread, setReviewerChatThread] = useState()
-  const isMobile = useBreakpoint('(max-width: 900px)')
+  const isMobile = useBreakpoint('(max-width: 992px)')
 
   const {
     data: { question } = {},
@@ -603,6 +605,17 @@ const QuestionPage = props => {
     fetchPolicy: 'network-only',
   })
 
+  const { data: { getReview } = {} } = useQuery(GET_REVIEW, {
+    skip:
+      !currentUser ||
+      !version?.underReview ||
+      !hasRole(currentUser, 'reviewer', version?.id),
+    variables: {
+      questionVersionId: version?.id,
+      reviewerId: currentUser?.id,
+    },
+  })
+
   useEffect(() => {
     if (version && metadata) {
       // udpate title for published questions
@@ -852,6 +865,10 @@ const QuestionPage = props => {
   )
 
   const [submitReport] = useMutation(SUBMIT_REPORT)
+
+  const [saveReview] = useMutation(SAVE_REVIEW, {
+    skip: !getReview,
+  })
   // #endregion hooks
 
   // #region user roles
@@ -925,7 +942,10 @@ const QuestionPage = props => {
       const submittedReview = reviews.find(r => r.reviewerId === rev.id)
 
       if (submittedReview) {
-        return { ...rev, submitted: submittedReview.attachments }
+        return {
+          ...rev,
+          submitted: rev.reviewSubmitted ? submittedReview.responses : null,
+        }
       }
 
       return rev
@@ -1442,16 +1462,12 @@ const QuestionPage = props => {
     return acceptOrRejectInvitation(mutationData)
   }
 
-  const handleSubmitReview = async ({ attachments, content, reviewerId }) => {
-    const fileObjects = attachments.map(attachment => attachment.originFileObj)
-
+  const handleSubmitReview = async () => {
     const mutationData = {
       variables: {
         input: {
           questionVersionId: version?.id,
-          attachments: fileObjects,
-          content,
-          reviewerId: isReviewer ? null : reviewerId,
+          // reviewerId: isReviewer ? null : reviewerId,
         },
       },
     }
@@ -1616,6 +1632,18 @@ const QuestionPage = props => {
         else reject()
       })
     })
+  }
+
+  const handleSaveReview = values => {
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerId: currentUser?.id,
+        responses: JSON.stringify(values),
+      },
+    }
+
+    saveReview(mutationData)
   }
   // #endregion handlers
 
@@ -1864,7 +1892,9 @@ const QuestionPage = props => {
         reviewerPool={reviewerPool}
         reviewerView={isReviewer && isUnderReview}
         reviewInviteStatus={reviewerInviteStatus}
+        reviewResponses={getReview && JSON.parse(getReview.responses)}
         reviewSubmitted={reviewSubmitted}
+        saveReview={handleSaveReview}
         searchHELoading={loadingSearchHE}
         selectedQuestionType={selectedQuestionType}
         setPreview={setPreview}
