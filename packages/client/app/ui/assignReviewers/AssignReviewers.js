@@ -6,7 +6,7 @@ import { PaperClipOutlined } from '@ant-design/icons'
 import UIAssignReviewers from '@coko/client/dist/ui/assignReviewers/AssignReviewers'
 import { grid, th } from '@coko/client'
 import { profileOptions } from '../../utilities'
-import ReviewerEditorUploadButton from '../question/ReviewerEditorUploadButton'
+import { ReviewerEditorUploadButton } from '../review'
 import { Modal, Button } from '../common'
 
 const AttachmentsWrapper = styled.div`
