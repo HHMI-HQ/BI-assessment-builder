@@ -2,9 +2,6 @@ import React, { useEffect, useState, createContext, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
-import ReportIssueButton from './ReportIssueButton'
-
-import Button from '../common/Button'
 import Wax from '../wax/Wax'
 import { config } from '../wax/config'
 
@@ -23,18 +20,6 @@ const EditorWrapper = styled.section`
 const EditorScrollContainer = styled.div`
   flex-grow: 1;
   overflow: auto;
-`
-
-const SubmitTestBar = styled.div`
-  background-color: ${th('colorBackground')};
-  border-top: 1px solid ${th('colorBorder')};
-  display: flex;
-  justify-content: ${({ withFeedback }) =>
-    withFeedback ? 'start' : 'space-between'};
-  margin: auto;
-  /* max-width: 100ch; */
-  padding: ${grid(2)} ${grid(2)};
-  width: 100%;
 `
 
 const MissingQuestionTypeAlert = styled.div`
@@ -65,51 +50,23 @@ const QuestionEditor = props => {
     onImageUpload,
     readOnly,
     published,
-    withFeedback,
     leadingContent,
     complexSetEditLink,
     complexItemSetId,
     selectedQuestionType,
     refreshEditorContent,
-    showDialog,
-    onSubmitReport,
+    showFeedBack,
+    testMode,
   } = props
 
-  const [showFeedBack, setShowFeedBack] = useState(false)
-  const [editorContent, setEditorContent] = useState(content)
   const updateKey = useRef(0)
-
-  const [testMode, setTestMode] = useState(
-    published && !showFeedBack && !withFeedback,
-  )
-
   const [customValues, setCustomValues] = useState({ showFeedBack, testMode })
-
-  // only for users taking the test in student view
-  const preserveLocalState = !withFeedback
-
-  useEffect(() => {
-    setEditorContent(content)
-  }, [content])
 
   useEffect(() => {
     if (refreshEditorContent) {
       updateKey.current += 1
     }
   }, [refreshEditorContent])
-
-  useEffect(() => {
-    if (withFeedback) {
-      setShowFeedBack(false)
-      setTestMode(false)
-    } else {
-      setShowFeedBack(false)
-      setTestMode(true)
-    }
-
-    // reset original content after switching views
-    setEditorContent(content)
-  }, [withFeedback])
 
   // changing customValues will rerender the editor
   // avoid rerendering if testMode or showFeedBack don't change
@@ -123,23 +80,6 @@ const QuestionEditor = props => {
       setCustomValues({ testMode, showFeedBack })
     }
   }, [testMode, showFeedBack, published, content])
-
-  const submitTest = () => {
-    setShowFeedBack(true)
-    setTestMode(false)
-
-    const contentFeedback = JSON.parse(
-      JSON.stringify(innerRef?.current?.getContent()),
-    )
-
-    setEditorContent(contentFeedback)
-  }
-
-  const resetTest = () => {
-    setShowFeedBack(false)
-    setTestMode(true)
-    setEditorContent(content)
-  }
 
   const contextValue = React.useMemo(
     () => ({
@@ -156,7 +96,8 @@ const QuestionEditor = props => {
         <ComplexItemSetContext.Provider value={contextValue}>
           <Wax
             config={config}
-            content={preserveLocalState ? editorContent : content}
+            // content={preserveLocalState ? editorContent : content}
+            content={content && Object.keys(content).length ? content : null}
             customValues={customValues}
             innerRef={innerRef}
             key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
@@ -167,23 +108,6 @@ const QuestionEditor = props => {
           />
         </ComplexItemSetContext.Provider>
       </EditorScrollContainer>
-
-      <SubmitTestBar withFeedback={withFeedback}>
-        <ReportIssueButton
-          onSubmitReport={onSubmitReport}
-          showDialog={showDialog}
-        />
-        {!withFeedback &&
-          (showFeedBack ? (
-            <Button onClick={resetTest} type="primary">
-              Reset
-            </Button>
-          ) : (
-            <Button onClick={submitTest} type="primary">
-              Submit
-            </Button>
-          ))}
-      </SubmitTestBar>
 
       {!selectedQuestionType && (
         <MissingQuestionTypeAlert data-testid="missing-question-text">
@@ -211,14 +135,13 @@ QuestionEditor.propTypes = {
   onContentChange: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func,
   readOnly: PropTypes.bool,
-  withFeedback: PropTypes.bool,
   published: PropTypes.bool,
   complexSetEditLink: PropTypes.string,
   complexItemSetId: PropTypes.string,
   selectedQuestionType: PropTypes.shape(),
   refreshEditorContent: PropTypes.bool,
-  onSubmitReport: PropTypes.func,
-  showDialog: PropTypes.func,
+  showFeedBack: PropTypes.bool,
+  testMode: PropTypes.bool,
 }
 
 QuestionEditor.defaultProps = {
@@ -228,13 +151,12 @@ QuestionEditor.defaultProps = {
   innerRef: null,
   onImageUpload: () => {},
   published: false,
-  withFeedback: true,
   complexSetEditLink: null,
   complexItemSetId: null,
   selectedQuestionType: null,
   refreshEditorContent: false,
-  onSubmitReport: () => {},
-  showDialog: () => {},
+  showFeedBack: false,
+  testMode: false,
 }
 
 export default QuestionEditor
