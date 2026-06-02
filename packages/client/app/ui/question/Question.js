@@ -40,12 +40,12 @@ import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
   ReviewerSubmitButton,
+  // ReviewerForm,
 } from '../review'
-// import  from '../review/ReviewerRejectButton'
-// import  from '../review/ReviewerAcceptButton'
-// import  from '../review/ReviewerSubmitButton'
+
 import ReviewerChats from './ReviewerChats'
 import { AssignReviewers } from '../assignReviewers'
+import SubmitTestBar from './SubmitTestBar'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
 const ModalFooter = Modal.footer
@@ -226,6 +226,7 @@ const QuestionWrapper = styled.div`
   background-color: ${th('colorBackground')};
   display: grid;
   grid-template-columns: ${props => (props.showMetadata ? `2fr 1fr` : '2fr')};
+  grid-template-rows: 1fr 47px;
   height: 100%;
 `
 
@@ -297,10 +298,16 @@ const SkipToTop = styled.a`
 // #endregion styled
 
 // #region Question Panel
-const StyledCollapse = styled(Collapse)`
+const CollapseWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`
+
+const StyledCollapse = styled(Collapse)`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 
   // overwrite background and padding inherited from role="tablist"
   // (might also remove role="tablist" itself be removing accordion prop and reimplementing its functionality)
@@ -327,42 +334,53 @@ const StyledCollapse = styled(Collapse)`
   }
 `
 
-const PanelWrapper = ({ editor, metadata, showMetadata, isMobile }) => {
+const PanelWrapper = ({
+  editor,
+  metadata,
+  showMetadata,
+  isMobile,
+  submitTestBar,
+}) => {
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
   if (!isMobile || !showMetadata) {
     return (
       <QuestionWrapper showMetadata={showMetadata}>
         {editor}
         {showMetadata && metadata}
+        {submitTestBar}
       </QuestionWrapper>
     )
   }
 
   return (
-    <StyledCollapse accordion defaultActiveKey="editor">
-      <Collapse.Panel
-        data-testid="editor-collapse"
-        forceRender
-        header="Editor"
-        key="editor"
-      >
-        {editor}
-      </Collapse.Panel>
-      <Collapse.Panel
-        data-testid="metadata-collapse"
-        forceRender
-        header="Metadata"
-        key="metadata"
-      >
-        {metadata}
-      </Collapse.Panel>
-    </StyledCollapse>
+    <CollapseWrapper>
+      <StyledCollapse accordion defaultActiveKey="editor">
+        <Collapse.Panel
+          data-testid="editor-collapse"
+          forceRender
+          header="Editor"
+          key="editor"
+        >
+          {editor}
+        </Collapse.Panel>
+        <Collapse.Panel
+          data-testid="metadata-collapse"
+          forceRender
+          header="Metadata"
+          key="metadata"
+        >
+          {metadata}
+        </Collapse.Panel>
+      </StyledCollapse>
+      {submitTestBar}
+    </CollapseWrapper>
   )
 }
 
 PanelWrapper.propTypes = {
   editor: PropTypes.shape().isRequired,
   metadata: PropTypes.shape().isRequired,
+  submitTestBar: PropTypes.shape().isRequired,
   showMetadata: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
 }
@@ -1705,6 +1723,52 @@ const Question = props => {
     }
   }
 
+  // #region test submission controls
+  const withFeedback =
+    !(preview || reviewerView) || (showMetadata && facultyView)
+
+  const [showFeedBack, setShowFeedBack] = useState(false)
+  const [testContent, setTestContent] = useState(editorContent)
+
+  useEffect(() => {
+    setTestContent(editorContent)
+  }, [editorContent])
+
+  useEffect(() => {
+    if (withFeedback) {
+      setShowFeedBack(false)
+      setTestMode(false)
+    } else {
+      setShowFeedBack(false)
+      setTestMode(true)
+    }
+
+    // reset original content after switching views
+    setTestContent(editorContent)
+  }, [withFeedback])
+
+  const [testMode, setTestMode] = useState(
+    isPublished && !showFeedBack && !withFeedback,
+  )
+
+  const submitTest = () => {
+    setShowFeedBack(true)
+    setTestMode(false)
+
+    const contentFeedback = JSON.parse(
+      JSON.stringify(waxRef?.current?.getContent()),
+    )
+
+    setTestContent(contentFeedback)
+  }
+
+  const resetTest = () => {
+    setShowFeedBack(false)
+    setTestMode(true)
+    setTestContent(editorContent)
+  }
+  // #endregion test submission controls
+
   const tabItems = [
     {
       label: QuestionTab,
@@ -1742,23 +1806,21 @@ const Question = props => {
               <QuestionEditor
                 complexItemSetId={complexItemSetId}
                 complexSetEditLink={complexSetEditLink}
-                content={editorContent}
+                content={withFeedback ? editorContent : testContent}
                 innerRef={waxRef}
                 layout={preview || reviewerView ? TestModeLayout : HhmiLayout}
                 leadingContent={leadingContent}
                 onContentChange={handleQuestionContentChange}
                 onImageUpload={onImageUpload}
-                onSubmitReport={onSubmitReport}
                 published={isPublished}
                 readOnly={
                   readOnly || preview || !selectedQuestionType //
                 }
                 refreshEditorContent={refreshEditorContent}
                 selectedQuestionType={selectedQuestionType}
-                showDialog={showDialog}
-                withFeedback={
-                  !(preview || reviewerView) || (showMetadata && facultyView)
-                }
+                showFeedBack={showFeedBack}
+                testMode={testMode}
+                withFeedback={withFeedback}
               />
             }
             isMobile={isMobile}
@@ -1796,6 +1858,16 @@ const Question = props => {
               </>
             }
             showMetadata={showMetadata && (!preview || facultyView)}
+            submitTestBar={
+              <SubmitTestBar
+                onSubmitReport={onSubmitReport}
+                resetTest={resetTest}
+                showDialog={showDialog}
+                showFeedBack={showFeedBack}
+                submitTest={submitTest}
+                withFeedback={withFeedback}
+              />
+            }
           />
           <VisuallyHiddenElement as="div">
             {imageLongDescs.map(longDesc => (
