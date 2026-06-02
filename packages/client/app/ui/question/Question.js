@@ -36,9 +36,14 @@ import {
 } from '../common'
 import { REVIEWER_STATUSES, extractDocumentText } from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
-import ReviewerRejectButton from './ReviewerRejectButton'
-import ReviewerAcceptButton from './ReviewerAcceptButton'
-import ReviewerSubmitButton from './ReviewerSubmitButton'
+import {
+  ReviewerRejectButton,
+  ReviewerAcceptButton,
+  ReviewerSubmitButton,
+} from '../review'
+// import  from '../review/ReviewerRejectButton'
+// import  from '../review/ReviewerAcceptButton'
+// import  from '../review/ReviewerSubmitButton'
 import ReviewerChats from './ReviewerChats'
 import { AssignReviewers } from '../assignReviewers'
 
