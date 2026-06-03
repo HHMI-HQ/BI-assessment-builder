@@ -243,7 +243,7 @@ const QuestionPage = props => {
   const requestedTab = window.location.hash.substring(1)
   const [selectedReviewerId, setSelectedReviewerId] = useState(uuid())
   const [reviewerChatThread, setReviewerChatThread] = useState()
-  const isMobile = useBreakpoint('(max-width: 900px)')
+  const isMobile = useBreakpoint('(max-width: 992px)')
 
   const {
     data: { question } = {},
