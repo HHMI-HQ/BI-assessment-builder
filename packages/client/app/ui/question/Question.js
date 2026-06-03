@@ -1,7 +1,7 @@
 /* stylelint-disable string-quotes */
 import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import {
   LeftOutlined,
   RightOutlined,
@@ -40,7 +40,7 @@ import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
   ReviewerSubmitButton,
-  // ReviewerForm,
+  ReviewerForm,
 } from '../review'
 
 import ReviewerChats from './ReviewerChats'
@@ -225,9 +225,29 @@ const StyledTabItem = styled.div`
 const QuestionWrapper = styled.div`
   background-color: ${th('colorBackground')};
   display: grid;
-  grid-template-columns: ${props => (props.showMetadata ? `2fr 1fr` : '2fr')};
   grid-template-rows: 1fr 47px;
   height: 100%;
+  ${props => {
+    const { showMetadata, showReviewForm } = props
+
+    if (!showMetadata) {
+      return showReviewForm
+        ? css`
+            grid-template-columns: 3fr 2fr;
+          `
+        : css`
+            grid-template-columns: 1fr;
+          `
+    }
+
+    return showReviewForm
+      ? css`
+          grid-template-columns: 3fr 1fr 2fr;
+        `
+      : css`
+          grid-template-columns: 2fr 1fr;
+        `
+  }}
 `
 
 const StyledTabs = styled(Tabs)`
@@ -327,6 +347,7 @@ const StyledCollapse = styled(Collapse)`
       overflow: auto;
 
       .ant-collapse-content-box {
+        display: flex;
         height: 100%;
         padding: 0;
       }
@@ -338,15 +359,20 @@ const PanelWrapper = ({
   editor,
   metadata,
   showMetadata,
-  isMobile,
   submitTestBar,
+  showReviewForm,
+  isMobile,
 }) => {
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
-  if (!isMobile || !showMetadata) {
+  if (!isMobile || (!showMetadata && !showReviewForm)) {
     return (
-      <QuestionWrapper showMetadata={showMetadata}>
+      <QuestionWrapper
+        showMetadata={showMetadata}
+        showReviewForm={showReviewForm}
+      >
         {editor}
         {showMetadata && metadata}
+        {showReviewForm ? <ReviewerForm /> : null}
         {submitTestBar}
       </QuestionWrapper>
     )
@@ -363,14 +389,26 @@ const PanelWrapper = ({
         >
           {editor}
         </Collapse.Panel>
-        <Collapse.Panel
-          data-testid="metadata-collapse"
-          forceRender
-          header="Metadata"
-          key="metadata"
-        >
-          {metadata}
-        </Collapse.Panel>
+        {showMetadata && (
+          <Collapse.Panel
+            data-testid="metadata-collapse"
+            forceRender
+            header="Metadata"
+            key="metadata"
+          >
+            {metadata}
+          </Collapse.Panel>
+        )}
+        {showReviewForm && (
+          <Collapse.Panel
+            data-testid="review-form-collapse"
+            forceRender
+            header="Submit review"
+            key="review"
+          >
+            <ReviewerForm />
+          </Collapse.Panel>
+        )}
       </StyledCollapse>
       {submitTestBar}
     </CollapseWrapper>
@@ -382,6 +420,7 @@ PanelWrapper.propTypes = {
   metadata: PropTypes.shape().isRequired,
   submitTestBar: PropTypes.shape().isRequired,
   showMetadata: PropTypes.bool.isRequired,
+  showReviewForm: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
 }
 // #endregion Question Panel
@@ -521,6 +560,7 @@ const Question = props => {
 
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const [refreshEditorContent, setRefreshEditorContent] = useState(false)
+  const [showReviewForm, setShowReviewForm] = useState(false)
 
   const [imageLongDescs, setImageLongDescs] = useState([])
 
@@ -1079,6 +1119,10 @@ const Question = props => {
       ],
     })
   }
+
+  const toggleReviewForm = () => {
+    setShowReviewForm(prev => !prev)
+  }
   // #endregion handlers
 
   // #region components
@@ -1524,6 +1568,7 @@ const Question = props => {
           <StyledSubmitReviewButton
             onSubmit={onSubmitReview}
             showDialog={showDialog}
+            toggleReviewForm={toggleReviewForm}
           />
         )}
     </ReviewerActionsWrapper>
@@ -1858,6 +1903,7 @@ const Question = props => {
               </>
             }
             showMetadata={showMetadata && (!preview || facultyView)}
+            showReviewForm={showReviewForm}
             submitTestBar={
               <SubmitTestBar
                 onSubmitReport={onSubmitReport}
