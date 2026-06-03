@@ -17,6 +17,23 @@ const reviewSubmittedStatus = {
 
 const baseMessage = 'Review controller:'
 
+const saveReview = async (questionVersionId, userId, responses) => {
+  const CONTROLLER_MESSAGE = `${baseMessage} saveReview:`
+
+  try {
+    return useTransaction(async trx => {
+      logger.info(
+        `${CONTROLLER_MESSAGE} saving review for questionVersion ${questionVersionId} by user ${userId}`,
+      )
+
+      return Review.updateReview(questionVersionId, userId, responses, { trx })
+    })
+  } catch (error) {
+    logger.error(`${CONTROLLER_MESSAGE} ${error.message}`)
+    throw new Error(error)
+  }
+}
+
 const submitReview = async (
   questionVersionId,
   content,
@@ -216,4 +233,5 @@ module.exports = {
   submitReview,
   inviteMaxReviewers,
   getAttachments,
+  saveReview,
 }
