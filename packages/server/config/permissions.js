@@ -501,6 +501,7 @@ const permissions = {
     inviteReviewer: canMoveToReview, // editors and handling editors
     revokeInvitation: canMoveToReview, // editors and handling editors
     acceptOrRejectInvitation: isReviewer,
+    saveReview: canSubmitReview,
     submitReview: canSubmitReview,
     // Chats
     // sendChatMessage: isActive,
