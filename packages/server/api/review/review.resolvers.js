@@ -1,6 +1,7 @@
 const {
   getAttachments,
   submitReview,
+  saveReview,
 } = require('../../controllers/review.controller')
 
 const submitReviewResolver = async (_, { input }, ctx) => {
@@ -13,12 +14,18 @@ const submitReviewResolver = async (_, { input }, ctx) => {
   )
 }
 
+const saveReviewResolver = async (_, { input }, ctx) => {
+  const { questionVersionId, reviewerId, responses } = input
+  return saveReview(questionVersionId, reviewerId || ctx.userId, responses)
+}
+
 const attachmentsResolver = async ({ id }) => {
   return getAttachments(id)
 }
 
 module.exports = {
   Mutation: {
+    saveReview: saveReviewResolver,
     submitReview: submitReviewResolver,
   },
   Review: {
