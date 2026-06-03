@@ -1,11 +1,8 @@
-/* stylelint-disable declaration-no-important */
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
-import { Steps } from 'antd'
-import { Button } from '../common'
+import { Button, Steps } from '../common'
 
 const Wrapper = styled.section`
   border-left: 1px solid ${th('colorBorder')};
@@ -13,21 +10,6 @@ const Wrapper = styled.section`
   flex-direction: column;
   padding: ${grid(4)};
   width: 100%;
-`
-
-const StyledSteps = styled(Steps)`
-  display: flex !important;
-
-  .ant-steps-item {
-    flex: 1 !important;
-  }
-
-  .ant-steps-item-icon {
-    font-size: 14px;
-    height: 30px;
-    line-height: 30px;
-    width: 30px;
-  }
 `
 
 const FormHeading = styled.h3`
@@ -47,9 +29,7 @@ const ReviewerForm = props => {
   const { submitReview } = props
 
   const [current, setCurrent] = useState(0)
-  const [answers, setAnswers] = useState({})
-
-  const content = 'Reviewer form'
+  //   const [answers, setAnswers] = useState({})
 
   const previousStep = () => {
     if (current > 0) setCurrent(c => c - 1)
@@ -81,13 +61,21 @@ const ReviewerForm = props => {
     }
   }
 
+  const onStepClick = step => {
+    if (step < current) {
+      setCurrent(step)
+    } else if (step === current + 1) {
+      // validate current step form, if filled out move to next step
+    }
+  }
+
   return (
     <Wrapper>
-      <StyledSteps
+      <Steps
         current={current}
         items={[{}, {}, {}, {}]}
+        onChange={onStepClick}
         type="inline"
-        //   onChange={onChange}
       />
 
       {renderFormStep()}
