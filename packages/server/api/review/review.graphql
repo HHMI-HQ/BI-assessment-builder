@@ -27,9 +27,9 @@ type Review {
   responses: String
 }
 
-# extend type Query {
-#   reviews(questionId: ID!, reviewerId: ID!): [Review!]!
-# }
+extend type Query {
+  getReview(questionVersionId: ID!, reviewerId: ID!): Review!
+}
 
 extend type Mutation {
   saveReview(input: SaveReviewInput!): Review!
