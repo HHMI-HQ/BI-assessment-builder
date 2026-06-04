@@ -567,6 +567,8 @@ const permissions = {
     // Notifications
     getUnreadNotificationsCount: isActive,
     userNotifications: isActive,
+    // Reviews
+    getReview: isReviewer,
   },
 }
 

@@ -17,6 +17,20 @@ const reviewSubmittedStatus = {
 
 const baseMessage = 'Review controller:'
 
+const getReview = async (questionVersionId, reviewerId) => {
+  const CONTROLLER_MESSAGE = `${baseMessage} getReview:`
+
+  try {
+    logger.info(
+      `${CONTROLLER_MESSAGE} fetching review for questionVersion ${questionVersionId} by user ${reviewerId}`,
+    )
+
+    return Review.findOne({ questionVersionId, reviewerId })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 const saveReview = async (questionVersionId, userId, responses) => {
   const CONTROLLER_MESSAGE = `${baseMessage} saveReview:`
 
@@ -230,8 +244,9 @@ const getAttachments = async reviewId => {
 }
 
 module.exports = {
+  getReview,
+  saveReview,
   submitReview,
   inviteMaxReviewers,
   getAttachments,
-  saveReview,
 }
