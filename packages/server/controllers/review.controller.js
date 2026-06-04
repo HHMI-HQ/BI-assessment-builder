@@ -40,7 +40,12 @@ const saveReview = async (questionVersionId, userId, responses) => {
         `${CONTROLLER_MESSAGE} saving review for questionVersion ${questionVersionId} by user ${userId}`,
       )
 
-      return Review.updateReview(questionVersionId, userId, responses, { trx })
+      return Review.updateReview(
+        questionVersionId,
+        userId,
+        JSON.parse(responses),
+        { trx },
+      )
     })
   } catch (error) {
     logger.error(`${CONTROLLER_MESSAGE} ${error.message}`)
