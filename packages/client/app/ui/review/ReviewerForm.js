@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
-import { Button, Steps } from '../common'
+import { Button, Steps, Form } from '../common'
+import RevewerStep1 from './ReviewerStep1'
 
 const Wrapper = styled.section`
   border-left: 1px solid ${th('colorBorder')};
@@ -29,22 +30,22 @@ const ReviewerForm = props => {
   const { submitReview } = props
 
   const [current, setCurrent] = useState(0)
-  //   const [answers, setAnswers] = useState({})
+  const [form] = Form.useForm()
 
   const previousStep = () => {
     if (current > 0) setCurrent(c => c - 1)
   }
 
   const nextStep = () => {
-    if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
+    form.validateFields().then(() => {
+      if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
+    })
   }
 
   const renderFormStep = () => {
     switch (current) {
       case 0:
-        return (
-          <FormHeading>Analyze the Assessment Item in Learner Mode</FormHeading>
-        )
+        return <RevewerStep1 />
       case 1:
         return <FormHeading>Evaluate the Content in Educator Mode</FormHeading>
       case 2:
@@ -78,7 +79,9 @@ const ReviewerForm = props => {
         type="inline"
       />
 
-      {renderFormStep()}
+      <Form form={form} layout="vertical">
+        {renderFormStep()}
+      </Form>
 
       <Footer>
         {current > 0 ? (
@@ -86,8 +89,12 @@ const ReviewerForm = props => {
         ) : (
           <span />
         )}
-        {current < 3 && <Button onClick={nextStep}>Next</Button>}
-        {current === 3 && <Button onClick={submitReview}>Submit Review</Button>}
+        {current < MAX_STEP_INDEX && <Button onClick={nextStep}>Next</Button>}
+        {current === MAX_STEP_INDEX && (
+          <Button onClick={submitReview} type="primary">
+            Submit Review
+          </Button>
+        )}
       </Footer>
     </Wrapper>
   )
