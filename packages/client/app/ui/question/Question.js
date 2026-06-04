@@ -362,6 +362,8 @@ const PanelWrapper = ({
   submitTestBar,
   showReviewForm,
   isMobile,
+  reviewResponses,
+  saveReview,
 }) => {
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
   if (!isMobile || (!showMetadata && !showReviewForm)) {
@@ -372,7 +374,9 @@ const PanelWrapper = ({
       >
         {editor}
         {showMetadata && metadata}
-        {showReviewForm ? <ReviewerForm /> : null}
+        {showReviewForm ? (
+          <ReviewerForm responses={reviewResponses} saveReview={saveReview} />
+        ) : null}
         {submitTestBar}
       </QuestionWrapper>
     )
@@ -422,6 +426,8 @@ PanelWrapper.propTypes = {
   showMetadata: PropTypes.bool.isRequired,
   showReviewForm: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  reviewResponses: PropTypes.shape().isRequired,
+  saveReview: PropTypes.func.isRequired,
 }
 // #endregion Question Panel
 
@@ -545,6 +551,8 @@ const Question = props => {
     isMobile,
     preview,
     setPreview,
+    reviewResponses,
+    saveReview,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1902,6 +1910,8 @@ const Question = props => {
                 </SkipToTop>
               </>
             }
+            reviewResponses={reviewResponses}
+            saveReview={saveReview}
             showMetadata={showMetadata && (!preview || facultyView)}
             showReviewForm={showReviewForm}
             submitTestBar={
@@ -2486,6 +2496,8 @@ Question.propTypes = {
   isMobile: PropTypes.bool,
   preview: PropTypes.bool,
   setPreview: PropTypes.func,
+  reviewResponses: PropTypes.shape(),
+  saveReview: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -2604,6 +2616,8 @@ Question.defaultProps = {
   isMobile: false,
   preview: false,
   setPreview: null,
+  reviewResponses: {},
+  saveReview: null,
 }
 
 export default Question
