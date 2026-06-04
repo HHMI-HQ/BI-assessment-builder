@@ -9,8 +9,8 @@ const getReviewResolver = async (_, { questionVersionId, reviewerId }, ctx) => {
   return getReview(questionVersionId, reviewerId || ctx.userId)
 }
 
-const saveReviewResolver = async (_, { input }, ctx) => {
-  const { questionVersionId, reviewerId, responses } = input
+const saveReviewResolver = async (_, variables, ctx) => {
+  const { questionVersionId, reviewerId, responses } = variables
   return saveReview(questionVersionId, reviewerId || ctx.userId, responses)
 }
 
