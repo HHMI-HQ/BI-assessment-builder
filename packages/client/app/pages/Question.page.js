@@ -46,7 +46,9 @@ import {
   CANCEL_EMAIL_NOTIFICATION,
   UNPUBLISH_QUESTION_VERSION,
   ACCEPT_OR_REJECT_REVIEW_INVITATION,
+  SAVE_REVIEW,
   SUBMIT_REVIEW,
+  GET_REVIEW,
   INVITE_REVIEWER,
   UPDATE_REVIEWER_POOL,
   REVOKE_REVIEWER_INVITATION,
@@ -603,6 +605,17 @@ const QuestionPage = props => {
     fetchPolicy: 'network-only',
   })
 
+  const { data: { getReview } = {} } = useQuery(GET_REVIEW, {
+    skip:
+      !currentUser ||
+      !version?.underReview ||
+      !hasRole(currentUser, 'reviewer', version?.id),
+    variables: {
+      questionVersionId: version?.id,
+      reviewerId: currentUser?.id,
+    },
+  })
+
   useEffect(() => {
     if (version && metadata) {
       // udpate title for published questions
@@ -852,6 +865,10 @@ const QuestionPage = props => {
   )
 
   const [submitReport] = useMutation(SUBMIT_REPORT)
+
+  const [saveReview] = useMutation(SAVE_REVIEW, {
+    skip: !getReview,
+  })
   // #endregion hooks
 
   // #region user roles
@@ -1617,6 +1634,18 @@ const QuestionPage = props => {
       })
     })
   }
+
+  const handleSaveReview = values => {
+    const mutationData = {
+      variables: {
+        questionVersionId: version?.id,
+        reviewerId: currentUser?.id,
+        responses: JSON.stringify(values),
+      },
+    }
+
+    saveReview(mutationData)
+  }
   // #endregion handlers
 
   useEffect(() => {
@@ -1864,7 +1893,9 @@ const QuestionPage = props => {
         reviewerPool={reviewerPool}
         reviewerView={isReviewer && isUnderReview}
         reviewInviteStatus={reviewerInviteStatus}
+        reviewResponses={getReview && JSON.parse(getReview.responses)}
         reviewSubmitted={reviewSubmitted}
+        saveReview={handleSaveReview}
         searchHELoading={loadingSearchHE}
         selectedQuestionType={selectedQuestionType}
         setPreview={setPreview}

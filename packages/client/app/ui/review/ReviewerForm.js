@@ -27,7 +27,7 @@ const Footer = styled.footer`
 const MAX_STEP_INDEX = 3
 
 const ReviewerForm = props => {
-  const { submitReview } = props
+  const { saveReview, submitReview, responses } = props
 
   const [current, setCurrent] = useState(0)
   const [form] = Form.useForm()
@@ -70,6 +70,10 @@ const ReviewerForm = props => {
     }
   }
 
+  const handleValuesChange = values => {
+    saveReview(values)
+  }
+
   return (
     <Wrapper>
       <Steps
@@ -79,7 +83,13 @@ const ReviewerForm = props => {
         type="inline"
       />
 
-      <Form form={form} layout="vertical">
+      <Form
+        autoSave
+        form={form}
+        initialValues={responses}
+        layout="vertical"
+        onAutoSave={handleValuesChange}
+      >
         {renderFormStep()}
       </Form>
 
@@ -101,11 +111,15 @@ const ReviewerForm = props => {
 }
 
 ReviewerForm.propTypes = {
+  saveReview: PropTypes.func,
   submitReview: PropTypes.func,
+  responses: PropTypes.shape(),
 }
 
 ReviewerForm.defaultProps = {
+  saveReview: () => {},
   submitReview: () => {},
+  responses: null,
 }
 
 export default ReviewerForm

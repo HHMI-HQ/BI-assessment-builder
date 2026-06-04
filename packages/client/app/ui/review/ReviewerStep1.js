@@ -95,7 +95,10 @@ const Step1 = props => {
             vertical
           />
         </StyledFormItem>
-        <StyledFormItem label="Were there any barriers or points of confusion for you in answering this item?">
+        <StyledFormItem
+          label="Were there any barriers or points of confusion for you in answering this item?"
+          name="barriers"
+        >
           <TextArea />
         </StyledFormItem>
         <StyledFormItem
