@@ -9,6 +9,7 @@ const Wrapper = styled.section`
   border-left: 1px solid ${th('colorBorder')};
   display: flex;
   flex-direction: column;
+  grid-row: span 2;
   padding: ${grid(4)};
   width: 100%;
 `
@@ -37,9 +38,14 @@ const ReviewerForm = props => {
   }
 
   const nextStep = () => {
-    form.validateFields().then(() => {
-      if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
-    })
+    form
+      .validateFields()
+      .then(() => {
+        if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
+      })
+      .catch(e => {
+        console.error(e)
+      })
   }
 
   const renderFormStep = () => {

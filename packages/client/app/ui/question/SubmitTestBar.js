@@ -10,13 +10,14 @@ const Wrapper = styled.div`
   background-color: ${th('colorBackground')};
   border-top: 1px solid ${th('colorBorder')};
   display: flex;
-  grid-column: 1 / -1;
-  justify-content: ${({ withFeedback }) =>
-    withFeedback ? 'start' : 'space-between'};
+  grid-column: ${({ withFeedback }) => (withFeedback ? '1 / 3' : '1 / 2')};
   margin: auto;
-  /* max-width: 100ch; */
   padding: ${grid(2)} ${grid(2)};
   width: 100%;
+`
+
+const SubmitTest = styled.div`
+  margin-inline-start: auto;
 `
 
 const SubmitTestBar = props => {
@@ -27,24 +28,29 @@ const SubmitTestBar = props => {
     showDialog,
     resetTest,
     submitTest,
+    isPublished,
   } = props
 
   return (
     <Wrapper withFeedback={withFeedback}>
-      <ReportIssueButton
-        onSubmitReport={onSubmitReport}
-        showDialog={showDialog}
-      />
-      {!withFeedback &&
-        (showFeedBack ? (
-          <Button onClick={resetTest} type="primary">
-            Reset
-          </Button>
-        ) : (
-          <Button onClick={submitTest} type="primary">
-            Submit
-          </Button>
-        ))}
+      {isPublished && (
+        <ReportIssueButton
+          onSubmitReport={onSubmitReport}
+          showDialog={showDialog}
+        />
+      )}
+      <SubmitTest>
+        {!withFeedback &&
+          (showFeedBack ? (
+            <Button onClick={resetTest} type="primary">
+              Reset
+            </Button>
+          ) : (
+            <Button onClick={submitTest} type="primary">
+              Submit
+            </Button>
+          ))}
+      </SubmitTest>
     </Wrapper>
   )
 }
@@ -52,6 +58,7 @@ const SubmitTestBar = props => {
 SubmitTestBar.propTypes = {
   withFeedback: PropTypes.bool,
   showFeedBack: PropTypes.bool,
+  isPublished: PropTypes.bool,
   onSubmitReport: PropTypes.func,
   showDialog: PropTypes.func,
   resetTest: PropTypes.func,
@@ -61,6 +68,7 @@ SubmitTestBar.propTypes = {
 SubmitTestBar.defaultProps = {
   withFeedback: true,
   showFeedBack: false,
+  isPublished: false,
   onSubmitReport: null,
   showDialog: null,
   resetTest: null,
