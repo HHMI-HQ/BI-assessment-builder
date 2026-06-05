@@ -225,7 +225,7 @@ const StyledTabItem = styled.div`
 const QuestionWrapper = styled.div`
   background-color: ${th('colorBackground')};
   display: grid;
-  grid-template-rows: 1fr 47px;
+  grid-template-rows: 1fr auto;
   height: 100%;
   ${props => {
     const { showMetadata, showReviewForm } = props
@@ -348,6 +348,7 @@ const StyledCollapse = styled(Collapse)`
 
       .ant-collapse-content-box {
         display: flex;
+        flex-direction: column;
         height: 100%;
         padding: 0;
       }
@@ -364,7 +365,10 @@ const PanelWrapper = ({
   isMobile,
   reviewResponses,
   saveReview,
+  isPublished,
 }) => {
+  const showSubmitBar = isPublished || (!isPublished && !showMetadata)
+
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
   if (!isMobile || (!showMetadata && !showReviewForm)) {
     return (
@@ -377,7 +381,7 @@ const PanelWrapper = ({
         {showReviewForm ? (
           <ReviewerForm responses={reviewResponses} saveReview={saveReview} />
         ) : null}
-        {submitTestBar}
+        {showSubmitBar && submitTestBar}
       </QuestionWrapper>
     )
   }
@@ -392,6 +396,7 @@ const PanelWrapper = ({
           key="editor"
         >
           {editor}
+          {showReviewForm && submitTestBar}
         </Collapse.Panel>
         {showMetadata && (
           <Collapse.Panel
@@ -414,7 +419,7 @@ const PanelWrapper = ({
           </Collapse.Panel>
         )}
       </StyledCollapse>
-      {submitTestBar}
+      {!showReviewForm && submitTestBar}
     </CollapseWrapper>
   )
 }
@@ -428,6 +433,7 @@ PanelWrapper.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   reviewResponses: PropTypes.shape().isRequired,
   saveReview: PropTypes.func.isRequired,
+  isPublished: PropTypes.bool.isRequired,
 }
 // #endregion Question Panel
 
@@ -1876,6 +1882,7 @@ const Question = props => {
               />
             }
             isMobile={isMobile}
+            isPublished={isPublished}
             metadata={
               <>
                 <StyledMetadata
@@ -1915,6 +1922,7 @@ const Question = props => {
             showReviewForm={showReviewForm}
             submitTestBar={
               <SubmitTestBar
+                isPublished={isPublished}
                 onSubmitReport={onSubmitReport}
                 resetTest={resetTest}
                 showDialog={showDialog}
