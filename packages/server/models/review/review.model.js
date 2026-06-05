@@ -68,7 +68,11 @@ class Review extends BaseModel {
       if (existingReview)
         return this.patchAndFetchById(
           existingReview.id,
-          { questionVersionId, reviewerId, responses },
+          {
+            questionVersionId,
+            reviewerId,
+            responses: { ...existingReview.responses, ...responses },
+          },
           { trx },
         )
 
