@@ -11,7 +11,7 @@ const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
   grid-row: span 2;
-  padding: ${grid(4)};
+  padding: ${grid(4)} ${grid(4)} ${grid(2)};
   width: 100%;
 `
 
@@ -28,10 +28,27 @@ const Footer = styled.footer`
 
 const MAX_STEP_INDEX = 3
 
+const inferStep = data => {
+  let step = 0
+
+  if (data.answeredCorrectly && data.difficulty) {
+    step += 1
+  }
+
+  if (
+    !data.hasIssues ||
+    (data.hasIssues && data.issuesIdentification && data.issuesDetails)
+  ) {
+    step += 1
+  }
+
+  return step
+}
+
 const ReviewerForm = props => {
   const { saveReview, submitReview, responses } = props
 
-  const [current, setCurrent] = useState(0)
+  const [current, setCurrent] = useState(inferStep(responses))
   const [form] = Form.useForm()
 
   const previousStep = () => {
@@ -69,11 +86,26 @@ const ReviewerForm = props => {
     }
   }
 
+  const renderFormButtons = () => {
+    if (current === MAX_STEP_INDEX || (current === 1 && responses.hasIssues)) {
+      return (
+        <Button onClick={submitReview} type="primary">
+          Submit Review
+        </Button>
+      )
+    }
+
+    return <Button onClick={nextStep}>Next</Button>
+  }
+
   const onStepClick = step => {
-    if (step < current) {
+    if (
+      step < current ||
+      (step > current &&
+        step <= inferStep(responses) &&
+        !(responses.hasIssues && step > 1))
+    ) {
       setCurrent(step)
-    } else if (step === current + 1) {
-      // validate current step form, if filled out move to next step
     }
   }
 
@@ -106,12 +138,14 @@ const ReviewerForm = props => {
         ) : (
           <span />
         )}
-        {current < MAX_STEP_INDEX && <Button onClick={nextStep}>Next</Button>}
+        {renderFormButtons()}
+        {/* {current < MAX_STEP_INDEX ||
+          (responses.hasIssues && <Button onClick={nextStep}>Next</Button>)}
         {current === MAX_STEP_INDEX && (
           <Button onClick={submitReview} type="primary">
             Submit Review
           </Button>
-        )}
+        )} */}
       </Footer>
     </Wrapper>
   )
