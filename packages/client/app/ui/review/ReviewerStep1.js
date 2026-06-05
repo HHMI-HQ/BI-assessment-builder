@@ -78,7 +78,7 @@ const Step1 = props => {
       <Divider />
       <InputWraper>
         <StyledFormItem
-          label="Did you answer the item correctly"
+          label="Did you answer the item correctly?"
           name="answeredCorrectly"
           rules={[
             {
@@ -87,7 +87,6 @@ const Step1 = props => {
           ]}
         >
           <StyledRadio
-            // aria-label="Do you teach AP/IB courses?"
             name="answeredCorrectly"
             options={yesOrNoOptions}
             vertical
@@ -108,12 +107,7 @@ const Step1 = props => {
             },
           ]}
         >
-          <StyledRadio
-            // aria-label="Do you teach AP/IB courses?"
-            name="difficulty"
-            options={difficultyOptions}
-            vertical
-          />
+          <StyledRadio name="difficulty" options={difficultyOptions} vertical />
         </StyledFormItem>
       </InputWraper>
     </>

@@ -415,7 +415,7 @@ const PanelWrapper = ({
             header="Submit review"
             key="review"
           >
-            <ReviewerForm />
+            <ReviewerForm responses={reviewResponses} saveReview={saveReview} />
           </Collapse.Panel>
         )}
       </StyledCollapse>

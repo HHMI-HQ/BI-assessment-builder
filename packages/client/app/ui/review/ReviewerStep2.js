@@ -66,7 +66,7 @@ const hasIssuesOptions = [
   },
 ]
 
-const issues = [
+const issuesOptions = [
   {
     label: 'There is a factual error in the stem',
     value: 'factualError',
@@ -133,9 +133,8 @@ const Step2 = props => {
               ]}
             >
               <StyledCheckboxGroup
-                // aria-label="Do you teach AP/IB courses?"
                 name="issuesIdentification"
-                options={issues}
+                options={issuesOptions}
                 vertical
               />
             </StyledFormItem>

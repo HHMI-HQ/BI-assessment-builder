@@ -5,6 +5,7 @@ import { grid, th } from '@coko/client'
 import { Button, Steps, Form } from '../common'
 import RevewerStep1 from './ReviewerStep1'
 import RevewerStep2 from './ReviewerStep2'
+import ReviewerSubmitButton from './ReviewerSubmitButton'
 
 const Wrapper = styled.section`
   border-left: 1px solid ${th('colorBorder')};
@@ -36,8 +37,8 @@ const inferStep = data => {
   }
 
   if (
-    !data.hasIssues ||
-    (data.hasIssues && data.issuesIdentification && data.issuesDetails)
+    data.hasIssues === false
+    // || (data.hasIssues && data.issuesIdentification && data.issuesDetails)
   ) {
     step += 1
   }
@@ -89,9 +90,7 @@ const ReviewerForm = props => {
   const renderFormButtons = () => {
     if (current === MAX_STEP_INDEX || (current === 1 && responses.hasIssues)) {
       return (
-        <Button onClick={submitReview} type="primary">
-          Submit Review
-        </Button>
+        <ReviewerSubmitButton onSubmit={submitReview} responses={responses} />
       )
     }
 
