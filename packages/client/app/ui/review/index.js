@@ -2,5 +2,5 @@
 export { default as ReviewerForm } from './ReviewerForm'
 export { default as ReviewerAcceptButton } from './ReviewerAcceptButton'
 export { default as ReviewerRejectButton } from './ReviewerRejectButton'
-export { default as ReviewerSubmitButton } from './ReviewerSubmitButton'
+export { default as ReviewFormToggle } from './ReviewFormToggle'
 export { default as ReviewerEditorUploadButton } from './ReviewerEditorUploadButton'

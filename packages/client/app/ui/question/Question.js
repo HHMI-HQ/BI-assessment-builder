@@ -39,7 +39,7 @@ import AssignAuthorButton from './AssignAuthorButton'
 import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
-  ReviewerSubmitButton,
+  ReviewFormToggle,
   ReviewerForm,
 } from '../review'
 
@@ -159,7 +159,7 @@ const StyledReviewerAcceptInviteButton = styled(ReviewerAcceptButton)`
   width: 100%;
 `
 
-const StyledSubmitReviewButton = styled(ReviewerSubmitButton)`
+const StyledReviewFormToggle = styled(ReviewFormToggle)`
   width: 100%;
 `
 
@@ -1573,9 +1573,8 @@ const Question = props => {
       )}
       {reviewInviteStatus === REVIEWER_STATUSES.accepted &&
         !reviewSubmitted && (
-          <StyledSubmitReviewButton
-            onSubmit={onSubmitReview}
-            showDialog={showDialog}
+          <StyledReviewFormToggle
+            showReviewForm={showReviewForm}
             toggleReviewForm={toggleReviewForm}
           />
         )}
