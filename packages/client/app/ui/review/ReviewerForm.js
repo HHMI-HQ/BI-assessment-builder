@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { grid, th } from '@coko/client'
 import { Button, Steps, Form } from '../common'
 import RevewerStep1 from './ReviewerStep1'
+import RevewerStep2 from './ReviewerStep2'
 
 const Wrapper = styled.section`
   border-left: 1px solid ${th('colorBorder')};
@@ -53,7 +54,7 @@ const ReviewerForm = props => {
       case 0:
         return <RevewerStep1 />
       case 1:
-        return <FormHeading>Evaluate the Content in Educator Mode</FormHeading>
+        return <RevewerStep2 hasIssues={responses.hasIssues} />
       case 2:
         return <FormHeading>Evaluate the Item in Educator Mode</FormHeading>
       case 3:
