@@ -34,6 +34,10 @@ const MAX_STEP_INDEX = 3
 const checkProps = (data, keys) =>
   keys.every(key => Object.prototype.hasOwnProperty.call(data, key))
 
+const checkConditionally = (data, keys, antecedent, consequent) =>
+  (keys.some(key => key === antecedent) && !!consequent) ||
+  keys.every(key => key !== antecedent)
+
 const inferStep = data => {
   let step = 0
 
@@ -55,13 +59,24 @@ const inferStep = data => {
       'questionType',
       'feedbackEvaluation',
     ]) &&
-    ((['multipleChoiceSingleCorrect', 'multipleChoice'].some(
-      k => k === data.questionType,
+    checkConditionally(
+      data,
+      ['multipleChoiceSingleCorrect', 'multipleChoice'],
+      data.questionType,
+      data.distractors,
     ) &&
-      data.distractors) ||
-      ['multipleChoiceSingleCorrect', 'multipleChoice'].every(
-        k => k !== data.questionType,
-      ))
+    checkConditionally(
+      data,
+      ['hasIssues'],
+      data.feedbackEvaluation,
+      data.feedbackIssuesDetails.length > 0,
+    ) &&
+    checkConditionally(
+      data,
+      data.feedbackIssuesDetails,
+      'other',
+      data.otherIssues,
+    )
   ) {
     step += 1
   }
@@ -97,7 +112,13 @@ const ReviewerForm = props => {
       case 1:
         return <RevewerStep2 hasIssues={responses.hasIssues} />
       case 2:
-        return <ReviewerStep3 questionType={responses.questionType} />
+        return (
+          <ReviewerStep3
+            feedbackEvaluation={responses.feedbackEvaluation}
+            feedbackIssues={responses.feedbackIssuesDetails}
+            questionType={responses.questionType}
+          />
+        )
       case 3:
         return (
           <FormHeading>

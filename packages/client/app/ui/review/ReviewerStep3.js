@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid } from '@coko/client'
 import { Divider, TextArea } from '@coko/client/dist/ui'
-import { Form, Radio } from '../common'
+import { Form, Radio, CheckboxGroup, Input } from '../common'
 
 const FormHeading = styled.h3`
   text-align: center;
@@ -35,6 +35,19 @@ const StyledRadio = styled(Radio)`
 
   label:not(:first-child) {
     margin-block-start: ${grid(1)};
+  }
+`
+
+const StyledCheckboxGroup = styled(CheckboxGroup)`
+  padding-inline: ${grid(2)};
+
+  label:not(:first-child) {
+    margin-block-start: ${grid(1)};
+  }
+
+  .ant-checkbox {
+    align-self: self-start;
+    margin-top: 3px;
   }
 `
 
@@ -121,12 +134,40 @@ const distractorsOptions = [
   },
 ]
 
+const feedbackIssuesDetailsOptions = [
+  {
+    value: 'factualErrors',
+    label: 'The feedback contains one or more factual errors',
+  },
+  {
+    value: 'detailsLacking',
+    label: 'The feedback lacks details or is not fully explanatory',
+  },
+  {
+    value: 'hintsToCorrectAnswer',
+    label:
+      'Incorrect response feedback includes information for the correct answer, thereby limiting multiple attempts at the same item',
+  },
+  {
+    value: 'other',
+    label: 'There are other feedback-related issues',
+  },
+]
+
 const Step3 = props => {
-  const { questionType } = props
+  const { questionType, feedbackEvaluation, feedbackIssues } = props
 
   const [distractors, setDistractors] = useState(
     questionType === 'multipleChoiceSingleCorrect' ||
       questionType === 'multipleChoice',
+  )
+
+  const [hasFeedbackIssues, setHasFeedbackIssues] = useState(
+    feedbackEvaluation === 'hasIssues',
+  )
+
+  const [hasOtherIssues, setHasOtherIssues] = useState(
+    feedbackIssues.indexOf('other') > -1,
   )
 
   const handleQuestionTypeChange = val => {
@@ -134,6 +175,22 @@ const Step3 = props => {
       setDistractors(true)
     } else {
       setDistractors(false)
+    }
+  }
+
+  const handleFeedbackIssueChange = val => {
+    if (val === 'hasIssues') {
+      setHasFeedbackIssues(true)
+    } else {
+      setHasFeedbackIssues(false)
+    }
+  }
+
+  const handlefeedbackIssuesDetailsChange = vals => {
+    if (vals.indexOf('other') > -1) {
+      setHasOtherIssues(true)
+    } else {
+      setHasOtherIssues(false)
     }
   }
 
@@ -225,10 +282,44 @@ const Step3 = props => {
         >
           <StyledRadio
             name="feedbackEvaluation"
+            onChange={handleFeedbackIssueChange}
             options={feedbackEvaluationOptions}
             vertical
           />
         </StyledFormItem>
+        {hasFeedbackIssues && (
+          <>
+            <StyledFormItem
+              label="You identified feedback-related issues; please select all that apply:"
+              name="feedbackIssuesDetails"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <StyledCheckboxGroup
+                name="feedbackIssuesDetails"
+                onChange={handlefeedbackIssuesDetailsChange}
+                options={feedbackIssuesDetailsOptions}
+                vertical
+              />
+            </StyledFormItem>
+            {hasOtherIssues && (
+              <StyledFormItem
+                label="Specify other feedback-related issues:"
+                name="otherIssues"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Input />
+              </StyledFormItem>
+            )}
+          </>
+        )}
       </InputWraper>
     </>
   )
@@ -236,10 +327,14 @@ const Step3 = props => {
 
 Step3.propTypes = {
   questionType: PropTypes.string,
+  feedbackEvaluation: PropTypes.string,
+  feedbackIssues: PropTypes.arrayOf(PropTypes.string),
 }
 
 Step3.defaultProps = {
   questionType: '',
+  feedbackEvaluation: 'noIssues',
+  feedbackIssues: [],
 }
 
 export default Step3
