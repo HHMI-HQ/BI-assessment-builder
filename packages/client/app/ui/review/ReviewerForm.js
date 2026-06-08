@@ -5,6 +5,7 @@ import { grid, th } from '@coko/client'
 import { Button, Steps, Form } from '../common'
 import RevewerStep1 from './ReviewerStep1'
 import RevewerStep2 from './ReviewerStep2'
+import ReviewerStep3 from './ReviewerStep3'
 import ReviewerSubmitButton from './ReviewerSubmitButton'
 
 const Wrapper = styled.section`
@@ -12,6 +13,7 @@ const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
   grid-row: span 2;
+  overflow: auto;
   padding: ${grid(4)} ${grid(4)} ${grid(2)};
   width: 100%;
 `
@@ -29,16 +31,30 @@ const Footer = styled.footer`
 
 const MAX_STEP_INDEX = 3
 
+const checkProps = (data, keys) =>
+  keys.every(key => Object.prototype.hasOwnProperty.call(data, key))
+
 const inferStep = data => {
   let step = 0
 
-  if (data.answeredCorrectly && data.difficulty) {
+  if (checkProps(data, ['answeredCorrectly', 'difficulty'])) {
     step += 1
   }
 
   if (
     data.hasIssues === false
     // || (data.hasIssues && data.issuesIdentification && data.issuesDetails)
+  ) {
+    step += 1
+  }
+
+  if (
+    checkProps(data, [
+      'curriculaAlignment',
+      'bloomLevel',
+      'feedbackEvaluation',
+    ]) &&
+    data.questionType.length
   ) {
     step += 1
   }
@@ -74,7 +90,7 @@ const ReviewerForm = props => {
       case 1:
         return <RevewerStep2 hasIssues={responses.hasIssues} />
       case 2:
-        return <FormHeading>Evaluate the Item in Educator Mode</FormHeading>
+        return <ReviewerStep3 />
       case 3:
         return (
           <FormHeading>
