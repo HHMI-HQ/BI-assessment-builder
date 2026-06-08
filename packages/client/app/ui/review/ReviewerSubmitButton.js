@@ -78,7 +78,7 @@ const renderAnswer = (options, answer) => {
 const renderAnswersList = (options, answers) => {
   const labels = options
     .filter(o => answers.indexOf(o.value) >= 0)
-    .map(a => <li>{a.label}</li>)
+    .map(a => <li key={a.label}>{a.label}</li>)
 
   return <ul>{labels}</ul>
 }
