@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid } from '@coko/client'
 import { Divider, TextArea } from '@coko/client/dist/ui'
-import { Form, Radio, CheckboxGroup } from '../common'
+import { Form, Radio } from '../common'
 
 const FormHeading = styled.h3`
   text-align: center;
@@ -34,19 +35,6 @@ const StyledRadio = styled(Radio)`
 
   label:not(:first-child) {
     margin-block-start: ${grid(1)};
-  }
-`
-
-const StyledCheckboxGroup = styled(CheckboxGroup)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-
-  .ant-checkbox {
-    align-self: self-start;
-    margin-top: 3px;
   }
 `
 
@@ -112,7 +100,43 @@ const questionTypes = [
   },
 ]
 
+const distractorsOptions = [
+  {
+    value: 'appropriate',
+    label: 'The distractors are appropriate',
+  },
+  {
+    value: 'multipleDistractors',
+    label:
+      'There are multiple correct answers, or it is not clear which answer is correct',
+  },
+  {
+    value: 'externalKnowledge',
+    label:
+      'Knowledge outside the assessed LO is needed to eliminate distractors',
+  },
+  {
+    value: 'misconceptions',
+    label: 'Not all distractors address common misconceptions of the content',
+  },
+]
+
 const Step3 = props => {
+  const { questionType } = props
+
+  const [distractors, setDistractors] = useState(
+    questionType === 'multipleChoiceSingleCorrect' ||
+      questionType === 'multipleChoice',
+  )
+
+  const handleQuestionTypeChange = val => {
+    if (val === 'multipleChoiceSingleCorrect' || val === 'multipleChoice') {
+      setDistractors(true)
+    } else {
+      setDistractors(false)
+    }
+  }
+
   return (
     <>
       <FormHeading>Evaluate the Item in Educator Mode</FormHeading>
@@ -166,12 +190,30 @@ const Step3 = props => {
             },
           ]}
         >
-          <StyledCheckboxGroup
+          <StyledRadio
             name="questionType"
+            onChange={handleQuestionTypeChange}
             options={questionTypes}
             vertical
           />
         </StyledFormItem>
+        {distractors && (
+          <StyledFormItem
+            label="Evaluating item distractors"
+            name="distractors"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <StyledRadio
+              name="distractors"
+              options={distractorsOptions}
+              vertical
+            />
+          </StyledFormItem>
+        )}
         <StyledFormItem
           label="Evaluating the feedback for the correct and incorrect options."
           name="feedbackEvaluation"
@@ -190,6 +232,14 @@ const Step3 = props => {
       </InputWraper>
     </>
   )
+}
+
+Step3.propTypes = {
+  questionType: PropTypes.string,
+}
+
+Step3.defaultProps = {
+  questionType: '',
 }
 
 export default Step3

@@ -52,9 +52,16 @@ const inferStep = data => {
     checkProps(data, [
       'curriculaAlignment',
       'bloomLevel',
+      'questionType',
       'feedbackEvaluation',
     ]) &&
-    data.questionType.length
+    ((['multipleChoiceSingleCorrect', 'multipleChoice'].some(
+      k => k === data.questionType,
+    ) &&
+      data.distractors) ||
+      ['multipleChoiceSingleCorrect', 'multipleChoice'].every(
+        k => k !== data.questionType,
+      ))
   ) {
     step += 1
   }
@@ -90,7 +97,7 @@ const ReviewerForm = props => {
       case 1:
         return <RevewerStep2 hasIssues={responses.hasIssues} />
       case 2:
-        return <ReviewerStep3 />
+        return <ReviewerStep3 questionType={responses.questionType} />
       case 3:
         return (
           <FormHeading>
