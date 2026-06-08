@@ -62,18 +62,7 @@ const yesOrNoOptions = [
   },
 ]
 
-const feedbackEvaluationOptions = [
-  {
-    label: 'There are NO issues related to the feedback',
-    value: 'noIssues',
-  },
-  {
-    label: 'There are issues with the feedback',
-    value: 'hasIssues',
-  },
-]
-
-const questionTypes = [
+const questionTypesOptions = [
   {
     value: 'essay',
     label: 'Essay',
@@ -131,6 +120,17 @@ const distractorsOptions = [
   {
     value: 'misconceptions',
     label: 'Not all distractors address common misconceptions of the content',
+  },
+]
+
+const feedbackEvaluationOptions = [
+  {
+    label: 'There are NO issues related to the feedback',
+    value: 'noIssues',
+  },
+  {
+    label: 'There are issues with the feedback',
+    value: 'hasIssues',
   },
 ]
 
@@ -208,15 +208,23 @@ const Step3 = props => {
             },
           ]}
         >
-          <StyledRadio
-            // aria-label="Do you teach AP/IB courses?"
-            name="hasIssues"
-            options={yesOrNoOptions}
-            vertical
-          />
+          <StyledRadio name="hasIssues" options={yesOrNoOptions} vertical />
         </StyledFormItem>
         <StyledFormItem
-          label="Do you think that the item targets the Bloom’s level as written? See Bloom's Taxonomy document for reference, if needed."
+          label={
+            <span>
+              Do you think that the item targets the Bloom’s level as written?
+              See{' '}
+              <a
+                href="https://drive.google.com/file/d/1CvwdVchs06nl94ICbIcgz-sVsjblFAcS/view"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Bloom&#39;s Taxonomy document
+              </a>{' '}
+              for reference, if needed.
+            </span>
+          }
           name="bloomLevel"
           rules={[
             {
@@ -224,12 +232,7 @@ const Step3 = props => {
             },
           ]}
         >
-          <StyledRadio
-            // aria-label="Do you teach AP/IB courses?"
-            name="bloomLevel"
-            options={yesOrNoOptions}
-            vertical
-          />
+          <StyledRadio name="bloomLevel" options={yesOrNoOptions} vertical />
         </StyledFormItem>
 
         <StyledFormItem
@@ -250,13 +253,13 @@ const Step3 = props => {
           <StyledRadio
             name="questionType"
             onChange={handleQuestionTypeChange}
-            options={questionTypes}
+            options={questionTypesOptions}
             vertical
           />
         </StyledFormItem>
         {distractors && (
           <StyledFormItem
-            label="Evaluating item distractors"
+            label="Evaluating item distractors:"
             name="distractors"
             rules={[
               {
