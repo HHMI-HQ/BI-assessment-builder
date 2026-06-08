@@ -114,7 +114,6 @@ const Step2 = props => {
           ]}
         >
           <StyledRadio
-            // aria-label="Do you teach AP/IB courses?"
             name="hasIssues"
             onChange={handleIssuesDetection}
             options={hasIssuesOptions}
