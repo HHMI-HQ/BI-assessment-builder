@@ -69,14 +69,9 @@ const inferStep = data => {
       data,
       ['hasIssues'],
       data.feedbackEvaluation,
-      data.feedbackIssuesDetails.length > 0,
+      data.feedbackIssues.length > 0 && data.feedbackIssuesDetails,
     ) &&
-    checkConditionally(
-      data,
-      data.feedbackIssuesDetails,
-      'other',
-      data.otherIssues,
-    )
+    checkConditionally(data, data.feedbackIssues, 'other', data.otherIssues)
   ) {
     step += 1
   }
@@ -115,7 +110,7 @@ const ReviewerForm = props => {
         return (
           <ReviewerStep3
             feedbackEvaluation={responses.feedbackEvaluation}
-            feedbackIssues={responses.feedbackIssuesDetails}
+            feedbackIssues={responses.feedbackIssues}
             questionType={responses.questionType}
           />
         )

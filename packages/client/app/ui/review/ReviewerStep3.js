@@ -291,7 +291,7 @@ const Step3 = props => {
           <>
             <StyledFormItem
               label="You identified feedback-related issues; please select all that apply:"
-              name="feedbackIssuesDetails"
+              name="feedbackIssues"
               rules={[
                 {
                   required: true,
@@ -299,7 +299,7 @@ const Step3 = props => {
               ]}
             >
               <StyledCheckboxGroup
-                name="feedbackIssuesDetails"
+                name="feedbackIssues"
                 onChange={handlefeedbackIssuesDetailsChange}
                 options={feedbackIssuesDetailsOptions}
                 vertical
@@ -318,6 +318,17 @@ const Step3 = props => {
                 <Input />
               </StyledFormItem>
             )}
+            <StyledFormItem
+              label="Please explain the issue(s) in greater detail:"
+              name="feedbackIssuesDetails"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <TextArea />
+            </StyledFormItem>
           </>
         )}
       </InputWraper>
