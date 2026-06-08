@@ -6,6 +6,7 @@ import { Button, Steps, Form } from '../common'
 import RevewerStep1 from './ReviewerStep1'
 import RevewerStep2 from './ReviewerStep2'
 import ReviewerStep3 from './ReviewerStep3'
+import ReviewerStep4 from './ReviewerStep4'
 import ReviewerSubmitButton from './ReviewerSubmitButton'
 
 const Wrapper = styled.section`
@@ -16,11 +17,6 @@ const Wrapper = styled.section`
   overflow: auto;
   padding: ${grid(4)} ${grid(4)} ${grid(2)};
   width: 100%;
-`
-
-const FormHeading = styled.h3`
-  text-align: center;
-  text-wrap: balance;
 `
 
 const Footer = styled.footer`
@@ -116,9 +112,10 @@ const ReviewerForm = props => {
         )
       case 3:
         return (
-          <FormHeading>
-            Evaluate the Formatin & Writing Style in Educator Mode
-          </FormHeading>
+          <ReviewerStep4
+            concerns={responses.concerns}
+            concernsSpecifics={responses.concernsSpecifics}
+          />
         )
 
       default:

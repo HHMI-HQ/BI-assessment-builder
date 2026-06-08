@@ -51,157 +51,67 @@ const StyledCheckboxGroup = styled(CheckboxGroup)`
   }
 `
 
-const yesOrNoOptions = [
+const concernsOptions = [
   {
-    label: 'Yes',
-    value: true,
-  },
-  {
-    label: 'No',
+    label: 'No clarity, grammatical, structural, or other concerns',
     value: false,
   },
-]
-
-const feedbackEvaluationOptions = [
   {
-    label: 'There are NO issues related to the feedback',
-    value: 'noIssues',
-  },
-  {
-    label: 'There are issues with the feedback',
-    value: 'hasIssues',
+    label: 'Clarity, grammatical, structural, or other concerns',
+    value: true,
   },
 ]
 
-const questionTypes = [
+const concernsSpecificsOptions = [
   {
-    value: 'essay',
-    label: 'Essay',
+    label: 'Clarity concerns',
+    value: 'clarity',
   },
   {
-    value: 'matching',
-    label: 'Matching',
+    label: 'Grammatical or structural concerns',
+    value: 'gramatical',
   },
   {
-    value: 'multipleChoiceSingleCorrect',
-    label: 'Multiple Choice',
-  },
-  {
-    value: 'multipleChoice',
-    label: 'Multiple Answers',
-  },
-  {
-    value: 'trueFalse',
-    label: 'Multiple True / False',
-  },
-  {
-    value: 'numerical',
-    label: 'Numerical Answer',
-  },
-  {
-    value: 'trueFalseSingleCorrect',
-    label: 'True / False',
-  },
-
-  {
-    value: 'fillInTheBlank',
-    label: 'Fill-in-the-blank',
-  },
-  {
-    value: 'multipleDropdowns',
-    label: 'Multiple Dropdowns',
-  },
-]
-
-const distractorsOptions = [
-  {
-    value: 'appropriate',
-    label: 'The distractors are appropriate',
-  },
-  {
-    value: 'multipleDistractors',
-    label:
-      'There are multiple correct answers, or it is not clear which answer is correct',
-  },
-  {
-    value: 'externalKnowledge',
-    label:
-      'Knowledge outside the assessed LO is needed to eliminate distractors',
-  },
-  {
-    value: 'misconceptions',
-    label: 'Not all distractors address common misconceptions of the content',
-  },
-]
-
-const feedbackIssuesOptions = [
-  {
-    value: 'factualErrors',
-    label: 'The feedback contains one or more factual errors',
-  },
-  {
-    value: 'detailsLacking',
-    label: 'The feedback lacks details or is not fully explanatory',
-  },
-  {
-    value: 'hintsToCorrectAnswer',
-    label:
-      'Incorrect response feedback includes information for the correct answer, thereby limiting multiple attempts at the same item',
-  },
-  {
+    label: 'Other Item construction concerns',
     value: 'other',
-    label: 'There are other feedback-related issues',
   },
 ]
 
 const Step3 = props => {
-  const { questionType, feedbackEvaluation, feedbackIssues } = props
+  const { concerns, concernsSpecifics } = props
 
-  const [distractors, setDistractors] = useState(
-    questionType === 'multipleChoiceSingleCorrect' ||
-      questionType === 'multipleChoice',
+  const [hasConcerns, setHasConcerns] = useState(concerns)
+
+  const [otherConcerns, setOtherConcerns] = useState(
+    concernsSpecifics?.indexOf('other') > -1,
   )
 
-  const [hasFeedbackIssues, setHasFeedbackIssues] = useState(
-    feedbackEvaluation === 'hasIssues',
-  )
-
-  const [hasOtherIssues, setHasOtherIssues] = useState(
-    feedbackIssues.indexOf('other') > -1,
-  )
-
-  const handleQuestionTypeChange = val => {
-    if (val === 'multipleChoiceSingleCorrect' || val === 'multipleChoice') {
-      setDistractors(true)
+  const handleConcernsChange = val => {
+    if (val) {
+      setHasConcerns(true)
     } else {
-      setDistractors(false)
+      setHasConcerns(false)
     }
   }
 
-  const handleFeedbackIssueChange = val => {
-    if (val === 'hasIssues') {
-      setHasFeedbackIssues(true)
-    } else {
-      setHasFeedbackIssues(false)
-    }
-  }
-
-  const handlefeedbackIssuesChange = vals => {
+  const handleConcernsSpecificsChange = vals => {
     if (vals.indexOf('other') > -1) {
-      setHasOtherIssues(true)
+      setOtherConcerns(true)
     } else {
-      setHasOtherIssues(false)
+      setOtherConcerns(false)
     }
   }
 
   return (
     <>
-      <FormHeading>Evaluate the Item in Educator Mode</FormHeading>
+      <FormHeading>
+        Evaluate the Formatin & Writing Style in Educator Mode
+      </FormHeading>
       <Divider />
       <InputWraper>
         <StyledFormItem
-          label="Is the item aligned to the appropriate Learning Objective or Bioskills?"
-          name="curriculaAlignment"
+          label="The construction of this item has:"
+          name="concerns"
           rules={[
             {
               required: true,
@@ -209,13 +119,65 @@ const Step3 = props => {
           ]}
         >
           <StyledRadio
-            // aria-label="Do you teach AP/IB courses?"
-            name="hasIssues"
-            options={yesOrNoOptions}
+            name="concerns"
+            onChange={handleConcernsChange}
+            options={concernsOptions}
             vertical
           />
         </StyledFormItem>
+        {hasConcerns && (
+          <>
+            <StyledFormItem
+              label="Which clarity, grammatical, structural, or other item construction concerns do you have? Select all that apply."
+              name="concernsSpecifics"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <StyledCheckboxGroup
+                name="concernsSpecifics"
+                onChange={handleConcernsSpecificsChange}
+                options={concernsSpecificsOptions}
+                vertical
+              />
+            </StyledFormItem>
+            {otherConcerns && (
+              <StyledFormItem
+                label="Specify other concerns about item construction:"
+                name="otherConcerns"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Input />
+              </StyledFormItem>
+            )}
+            <StyledFormItem
+              label="Please explain the clarity-related issue(s) in greater detail:"
+              name="concernsDetails"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <TextArea />
+            </StyledFormItem>
+          </>
+        )}
+
         <StyledFormItem
+          label="Do you have any additional suggestions for improving the item as written?"
+          name="suggestions"
+        >
+          <TextArea />
+        </StyledFormItem>
+
+        {/* <StyledFormItem
           label="Do you think that the item targets the Bloom’s level as written? See Bloom's Taxonomy document for reference, if needed."
           name="bloomLevel"
           rules={[
@@ -300,8 +262,8 @@ const Step3 = props => {
             >
               <StyledCheckboxGroup
                 name="feedbackIssues"
-                onChange={handlefeedbackIssuesChange}
-                options={feedbackIssuesOptions}
+                onChange={handlefeedbackIssuesDetailsChange}
+                options={feedbackIssuesDetailsOptions}
                 vertical
               />
             </StyledFormItem>
@@ -330,22 +292,20 @@ const Step3 = props => {
               <TextArea />
             </StyledFormItem>
           </>
-        )}
+        )} */}
       </InputWraper>
     </>
   )
 }
 
 Step3.propTypes = {
-  questionType: PropTypes.string,
-  feedbackEvaluation: PropTypes.string,
-  feedbackIssues: PropTypes.arrayOf(PropTypes.string),
+  concerns: PropTypes.bool,
+  concernsSpecifics: PropTypes.arrayOf(PropTypes.string),
 }
 
 Step3.defaultProps = {
-  questionType: '',
-  feedbackEvaluation: 'noIssues',
-  feedbackIssues: [],
+  concerns: false,
+  concernsSpecifics: [],
 }
 
 export default Step3
