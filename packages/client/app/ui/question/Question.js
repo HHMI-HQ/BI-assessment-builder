@@ -363,9 +363,8 @@ const PanelWrapper = ({
   submitTestBar,
   showReviewForm,
   isMobile,
-  reviewResponses,
-  saveReview,
   isPublished,
+  reviewerForm,
 }) => {
   const showSubmitBar = isPublished || (!isPublished && !showMetadata)
 
@@ -378,9 +377,7 @@ const PanelWrapper = ({
       >
         {editor}
         {showMetadata && metadata}
-        {showReviewForm ? (
-          <ReviewerForm responses={reviewResponses} saveReview={saveReview} />
-        ) : null}
+        {showReviewForm ? reviewerForm : null}
         {showSubmitBar && submitTestBar}
       </QuestionWrapper>
     )
@@ -415,7 +412,7 @@ const PanelWrapper = ({
             header="Submit review"
             key="review"
           >
-            <ReviewerForm responses={reviewResponses} saveReview={saveReview} />
+            {reviewerForm}
           </Collapse.Panel>
         )}
       </StyledCollapse>
@@ -427,12 +424,11 @@ const PanelWrapper = ({
 PanelWrapper.propTypes = {
   editor: PropTypes.shape().isRequired,
   metadata: PropTypes.shape().isRequired,
+  reviewerForm: PropTypes.shape().isRequired,
   submitTestBar: PropTypes.shape().isRequired,
   showMetadata: PropTypes.bool.isRequired,
   showReviewForm: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
-  reviewResponses: PropTypes.shape().isRequired,
-  saveReview: PropTypes.func.isRequired,
   isPublished: PropTypes.bool.isRequired,
 }
 // #endregion Question Panel
@@ -1577,13 +1573,13 @@ const Question = props => {
           />
         </>
       )}
-      {reviewInviteStatus === REVIEWER_STATUSES.accepted &&
-        !reviewSubmitted && (
-          <StyledReviewFormToggle
-            showReviewForm={showReviewForm}
-            toggleReviewForm={toggleReviewForm}
-          />
-        )}
+      {reviewInviteStatus === REVIEWER_STATUSES.accepted && (
+        <StyledReviewFormToggle
+          reviewSubmitted={reviewSubmitted}
+          showReviewForm={showReviewForm}
+          toggleReviewForm={toggleReviewForm}
+        />
+      )}
     </ReviewerActionsWrapper>
   )
 
@@ -1916,8 +1912,15 @@ const Question = props => {
                 </SkipToTop>
               </>
             }
-            reviewResponses={reviewResponses}
-            saveReview={saveReview}
+            reviewerForm={
+              <ReviewerForm
+                responses={reviewResponses}
+                reviewSubmitted={reviewSubmitted}
+                saveReview={saveReview}
+                showDialog={showDialog}
+                submitReview={onSubmitReview}
+              />
+            }
             showMetadata={showMetadata && (!preview || facultyView)}
             showReviewForm={showReviewForm}
             submitTestBar={
