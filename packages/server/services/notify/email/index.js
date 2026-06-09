@@ -5,6 +5,7 @@ const config = require('config')
 
 const { Question, Identity, User, QuestionVersion } = require('../../../models')
 const flatten = require('../../../controllers/flattenMetadataValues')
+const parseReview = require('../../../controllers/parseReview')
 
 const send = data => {
   const { attachments, content, subject, text, to } = data
@@ -380,7 +381,7 @@ const moveQuestionVersionToReview = async context => {
 
 const submitReview = async ({ attachments, review, to }) => {
   try {
-    const { questionVersionId, content: reviewContent, reviewerId } = review
+    const { questionVersionId, reviewerId, responses } = review
 
     const questionVersion = await QuestionVersion.findById(questionVersionId)
     const reviewer = await User.findById(reviewerId)
@@ -394,7 +395,6 @@ const submitReview = async ({ attachments, review, to }) => {
       review.updated,
     ).format('MMMM DD, YYYY, h:mm:ss a')}
       </h2>
-      ${reviewContent ? `<pre>${reviewContent}</pre>` : ''}
       <p>
         ${
           reviewer.displayName
@@ -406,7 +406,9 @@ const submitReview = async ({ attachments, review, to }) => {
         <br/>
         ${link}
       </p>
-	  `
+      <hr />
+      <div>${`${parseReview(responses)}`}</div>
+      `
 
     const text = `${reviewer.displayName} has completed the review of an item in the Assessment Builder.
 	\nCopy and paste the following link into your browser to view the item.
