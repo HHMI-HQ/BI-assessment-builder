@@ -1459,16 +1459,12 @@ const QuestionPage = props => {
     return acceptOrRejectInvitation(mutationData)
   }
 
-  const handleSubmitReview = async ({ attachments, content, reviewerId }) => {
-    const fileObjects = attachments.map(attachment => attachment.originFileObj)
-
+  const handleSubmitReview = async () => {
     const mutationData = {
       variables: {
         input: {
           questionVersionId: version?.id,
-          attachments: fileObjects,
-          content,
-          reviewerId: isReviewer ? null : reviewerId,
+          // reviewerId: isReviewer ? null : reviewerId,
         },
       },
     }
