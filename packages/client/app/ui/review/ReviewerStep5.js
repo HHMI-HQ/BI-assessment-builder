@@ -40,16 +40,22 @@ const renderAnswersList = (options, answers) => {
 }
 
 const Step5 = props => {
-  const { responses } = props
+  const { responses, reviewSubmitted } = props
 
   return (
     <>
-      <FormHeading>Review your responses</FormHeading>
-      <ExplanatoryParagraph>
-        Below you can review your responses. If you are comfortable with them,
-        please submit this form. Alternatively, you can close the form and come
-        back at a later time.
-      </ExplanatoryParagraph>
+      {reviewSubmitted ? (
+        <FormHeading>Your review has been submitted</FormHeading>
+      ) : (
+        <>
+          <FormHeading>Review your responses</FormHeading>
+          <ExplanatoryParagraph>
+            Below you can review your responses. If you are comfortable with
+            them, please submit this form. Alternatively, you can close the form
+            and come back at a later time.
+          </ExplanatoryParagraph>
+        </>
+      )}
 
       <InputWraper>
         <Label>Did you answer the item correctly?</Label>
@@ -193,10 +199,12 @@ const Step5 = props => {
 
 Step5.propTypes = {
   responses: PropTypes.shape(),
+  reviewSubmitted: PropTypes.bool,
 }
 
 Step5.defaultProps = {
   responses: null,
+  reviewSubmitted: false,
 }
 
 export default Step5

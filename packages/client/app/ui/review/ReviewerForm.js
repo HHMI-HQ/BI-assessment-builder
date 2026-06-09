@@ -66,7 +66,7 @@ const inferStep = data => {
       data,
       ['hasIssues'],
       data.feedbackEvaluation,
-      data.feedbackIssues.length > 0 && data.feedbackIssuesDetails,
+      data.feedbackIssues?.length > 0 && data.feedbackIssuesDetails,
     ) &&
     checkConditionally(data, data.feedbackIssues, 'other', data.otherIssues)
   ) {
@@ -81,7 +81,8 @@ const inferStep = data => {
 }
 
 const ReviewerForm = props => {
-  const { saveReview, submitReview, responses, showDialog } = props
+  const { saveReview, submitReview, responses, showDialog, reviewSubmitted } =
+    props
 
   const [current, setCurrent] = useState(inferStep(responses))
   const [form] = Form.useForm()
@@ -102,6 +103,10 @@ const ReviewerForm = props => {
   }
 
   const renderFormStep = () => {
+    if (reviewSubmitted) {
+      return <ReviewerStep5 responses={responses} reviewSubmitted />
+    }
+
     switch (current) {
       case 0:
         return <RevewerStep1 />
@@ -131,13 +136,39 @@ const ReviewerForm = props => {
   }
 
   const renderFormButtons = () => {
-    if (current === MAX_STEP_INDEX || (current === 1 && responses.hasIssues)) {
+    if (!reviewSubmitted) {
+      const leftButton =
+        current > 0 ? (
+          <Button onClick={previousStep}>Previous</Button>
+        ) : (
+          <span />
+        )
+
+      let rightButton
+
+      if (
+        current === MAX_STEP_INDEX ||
+        (current === 1 && responses.hasIssues)
+      ) {
+        rightButton = (
+          <ReviewerSubmitButton
+            onSubmit={submitReview}
+            showDialog={showDialog}
+          />
+        )
+      }
+
+      rightButton = <Button onClick={nextStep}>Next</Button>
+
       return (
-        <ReviewerSubmitButton onSubmit={submitReview} showDialog={showDialog} />
+        <>
+          {leftButton}
+          {rightButton}
+        </>
       )
     }
 
-    return <Button onClick={nextStep}>Next</Button>
+    return null
   }
 
   const onStepClick = step => {
@@ -157,12 +188,14 @@ const ReviewerForm = props => {
 
   return (
     <Wrapper>
-      <Steps
-        current={current}
-        items={[{}, {}, {}, {}, {}]}
-        onChange={onStepClick}
-        type="inline"
-      />
+      {!reviewSubmitted && (
+        <Steps
+          current={current}
+          items={[{}, {}, {}, {}, {}]}
+          onChange={onStepClick}
+          type="inline"
+        />
+      )}
 
       <Form
         autoSave
@@ -174,21 +207,7 @@ const ReviewerForm = props => {
         {renderFormStep()}
       </Form>
 
-      <Footer>
-        {current > 0 ? (
-          <Button onClick={previousStep}>Previous</Button>
-        ) : (
-          <span />
-        )}
-        {renderFormButtons()}
-        {/* {current < MAX_STEP_INDEX ||
-          (responses.hasIssues && <Button onClick={nextStep}>Next</Button>)}
-        {current === MAX_STEP_INDEX && (
-          <Button onClick={submitReview} type="primary">
-            Submit Review
-          </Button>
-        )} */}
-      </Footer>
+      <Footer>{renderFormButtons()}</Footer>
     </Wrapper>
   )
 }
@@ -198,6 +217,7 @@ ReviewerForm.propTypes = {
   submitReview: PropTypes.func,
   showDialog: PropTypes.func,
   responses: PropTypes.shape(),
+  reviewSubmitted: PropTypes.bool,
 }
 
 ReviewerForm.defaultProps = {
@@ -205,6 +225,7 @@ ReviewerForm.defaultProps = {
   submitReview: () => {},
   showDialog: () => {},
   responses: null,
+  reviewSubmitted: false,
 }
 
 export default ReviewerForm
