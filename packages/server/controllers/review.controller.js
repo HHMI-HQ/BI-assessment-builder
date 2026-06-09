@@ -1,4 +1,4 @@
-const { useTransaction, logger, createFile } = require('@coko/server')
+const { useTransaction, logger } = require('@coko/server')
 const { File, Identity } = require('@coko/server/src/models')
 const config = require('config')
 
@@ -53,12 +53,7 @@ const saveReview = async (questionVersionId, userId, responses) => {
   }
 }
 
-const submitReview = async (
-  questionVersionId,
-  content,
-  userId,
-  attachments = [],
-) => {
+const submitReview = async (questionVersionId, userId) => {
   const CONTROLLER_MESSAGE = `${baseMessage} submitReview:`
 
   try {
@@ -72,36 +67,36 @@ const submitReview = async (
         { trx },
       )
 
-      const attachmentData = await Promise.all(attachments)
+      // const attachmentData = await Promise.all(attachments)
 
-      const review = await Review.createReview(
+      const review = await Review.submitReview(
         questionVersionId,
         userId,
-        content,
+        // content,
         reviewSubmittedStatus,
         { trx },
       )
 
-      const uploadedAttachments = await Promise.all(
-        attachmentData.map(async attachment => {
-          const stream = attachment.createReadStream()
+      // const uploadedAttachments = await Promise.all(
+      //   attachmentData.map(async attachment => {
+      //     const stream = attachment.createReadStream()
 
-          const storedFile = await createFile(
-            stream,
-            attachment.filename,
-            null,
-            null,
-            [],
-            review.id,
-            { trx },
-          )
+      //     const storedFile = await createFile(
+      //       stream,
+      //       attachment.filename,
+      //       null,
+      //       null,
+      //       [],
+      //       review.id,
+      //       { trx },
+      //     )
 
-          return storedFile
-        }),
-      )
+      //     return storedFile
+      //   }),
+      // )
 
       const emailAttachments = await Promise.all(
-        uploadedAttachments.map(async file => {
+        [].map(async file => {
           const url = await getFileUrl(file, 'medium')
           return {
             href: url,
