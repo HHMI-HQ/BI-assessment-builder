@@ -88,14 +88,18 @@ const ReviewerForm = props => {
   const [form] = Form.useForm()
 
   const previousStep = () => {
-    if (current > 0) setCurrent(c => c - 1)
+    if (responses.hasIssues && current === MAX_STEP_INDEX) {
+      setCurrent(1)
+    } else if (current > 0) setCurrent(c => c - 1)
   }
 
   const nextStep = () => {
     form
       .validateFields()
       .then(() => {
-        if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
+        if (current === 1 && responses.hasIssues) {
+          setCurrent(MAX_STEP_INDEX)
+        } else if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
       })
       .catch(e => {
         console.error(e)
@@ -146,19 +150,16 @@ const ReviewerForm = props => {
 
       let rightButton
 
-      if (
-        current === MAX_STEP_INDEX ||
-        (current === 1 && responses.hasIssues)
-      ) {
+      if (current === MAX_STEP_INDEX) {
         rightButton = (
           <ReviewerSubmitButton
             onSubmit={submitReview}
             showDialog={showDialog}
           />
         )
+      } else {
+        rightButton = <Button onClick={nextStep}>Next</Button>
       }
-
-      rightButton = <Button onClick={nextStep}>Next</Button>
 
       return (
         <>
@@ -172,7 +173,9 @@ const ReviewerForm = props => {
   }
 
   const onStepClick = step => {
-    if (
+    if (responses.hasIssues && step > 1) {
+      setCurrent(MAX_STEP_INDEX)
+    } else if (
       step < current ||
       (step > current &&
         step <= inferStep(responses) &&
