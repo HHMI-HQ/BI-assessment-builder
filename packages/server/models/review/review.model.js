@@ -83,6 +83,27 @@ class Review extends BaseModel {
     }
   }
 
+  static async submitReview(questionVersionId, reviewerId, status, options) {
+    try {
+      const { trx } = options
+
+      const existingReview = await this.findOne({
+        questionVersionId,
+        reviewerId,
+      })
+
+      // if (existingReview) {
+      return this.patchAndFetchById(
+        existingReview.id,
+        { questionVersionId, reviewerId, status },
+        { trx },
+      )
+      // }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   static async createReview(
     questionVersionId,
     reviewerId,

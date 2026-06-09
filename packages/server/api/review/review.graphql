@@ -1,7 +1,5 @@
 input SubmitReviewInput {
   questionVersionId: ID!
-  content: String
-  attachments: [Upload!]
   reviewerId: ID
 }
 

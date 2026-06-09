@@ -15,13 +15,8 @@ const saveReviewResolver = async (_, variables, ctx) => {
 }
 
 const submitReviewResolver = async (_, { input }, ctx) => {
-  const { questionVersionId, content, attachments, reviewerId } = input
-  return submitReview(
-    questionVersionId,
-    content,
-    reviewerId || ctx.userId,
-    attachments,
-  )
+  const { questionVersionId, reviewerId } = input
+  return submitReview(questionVersionId, reviewerId || ctx.userId)
 }
 
 const attachmentsResolver = async ({ id }) => {
