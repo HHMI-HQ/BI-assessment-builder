@@ -51,7 +51,7 @@ const Step5 = props => {
           <FormHeading>Review your responses</FormHeading>
           <ExplanatoryParagraph>
             Below you can review your responses. If you are comfortable with
-            them, please submit this form. Alternatively, you can close the form
+            them, please submit the form. Alternatively, you can close the form
             and come back at a later time.
           </ExplanatoryParagraph>
         </>
@@ -150,46 +150,44 @@ const Step5 = props => {
 
                 <Label>Please explain the issue(s) in greater detail:</Label>
                 <Answer>{responses.feedbackIssuesDetails}</Answer>
+              </>
+            )}
 
-                {/* step 4 */}
-                <Label>The construction of this item has:</Label>
+            {/* step 4 */}
+            <Label>The construction of this item has:</Label>
+            <Answer>{renderAnswer(concernsOptions, responses.concerns)}</Answer>
+            {responses.concerns && (
+              <>
+                <Label>
+                  Which clarity, grammatical, structural, or other item
+                  construction concerns do you have? Select all that apply.
+                </Label>
                 <Answer>
-                  {renderAnswer(concernsOptions, responses.concerns)}
+                  {renderAnswersList(
+                    concernsSpecificsOptions,
+                    responses.concernsSpecifics,
+                  )}
                 </Answer>
-                {responses.concerns && (
+                {responses.concernsSpecifics?.indexOf('other') > -1 && (
                   <>
                     <Label>
-                      Which clarity, grammatical, structural, or other item
-                      construction concerns do you have? Select all that apply.
+                      Specify other concerns about item construction:
                     </Label>
-                    <Answer>
-                      {renderAnswersList(
-                        concernsSpecificsOptions,
-                        responses.concernsSpecifics,
-                      )}
-                    </Answer>
-                    {responses.concernsSpecifics?.indexOf('other') > -1 && (
-                      <>
-                        <Label>
-                          Specify other concerns about item construction:
-                        </Label>
-                        <Answer>{responses.otherConcerns}</Answer>
-                      </>
-                    )}
-                    <Label>
-                      Please explain the clarity-related issue(s) in greater
-                      detail:
-                    </Label>
-                    <Answer>{responses.concernsDetails}</Answer>
+                    <Answer>{responses.otherConcerns}</Answer>
                   </>
                 )}
                 <Label>
-                  Do you have any additional suggestions for improving the item
-                  as written?
+                  Please explain the clarity-related issue(s) in greater detail:
                 </Label>
-                <Answer>{responses.suggestions || '-'}</Answer>
+                <Answer>{responses.concernsDetails}</Answer>
               </>
             )}
+            <Label>
+              Do you have any additional suggestions for improving the item as
+              written?
+            </Label>
+            <Answer>{responses.suggestions || '-'}</Answer>
+            {/* </> */}
           </>
         )}
       </InputWraper>

@@ -77,6 +77,12 @@ const inferStep = data => {
     step += 1
   }
 
+  if (
+    checkProps(data, ['hasIssues', 'issuesIdentification', 'issuesDetails'])
+  ) {
+    step = MAX_STEP_INDEX
+  }
+
   return step
 }
 
