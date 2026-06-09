@@ -1,81 +1,18 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid } from '@coko/client'
 import { Divider, TextArea } from '@coko/client/dist/ui'
-import { Form, Radio, CheckboxGroup, Input } from '../common'
+import { Input } from '../common'
 
-const FormHeading = styled.h3`
-  text-align: center;
-  text-wrap: balance;
-`
-
-const InputWraper = styled.div`
-  padding: ${grid(2)};
-`
-
-const StyledFormItem = styled(Form.Item)`
-  margin-block-end: ${grid(8)};
-
-  .ant-form-item-label {
-    margin-block-end: ${grid(4)};
-
-    label {
-      align-items: flex-start;
-
-      &::before {
-        margin-block-start: ${grid(1)};
-      }
-    }
-  }
-`
-
-const StyledRadio = styled(Radio)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-`
-
-const StyledCheckboxGroup = styled(CheckboxGroup)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-
-  .ant-checkbox {
-    align-self: self-start;
-    margin-top: 3px;
-  }
-`
-
-const concernsOptions = [
-  {
-    label: 'No clarity, grammatical, structural, or other concerns',
-    value: false,
-  },
-  {
-    label: 'Clarity, grammatical, structural, or other concerns',
-    value: true,
-  },
-]
-
-const concernsSpecificsOptions = [
-  {
-    label: 'Clarity concerns',
-    value: 'clarity',
-  },
-  {
-    label: 'Grammatical or structural concerns',
-    value: 'gramatical',
-  },
-  {
-    label: 'Other Item construction concerns',
-    value: 'other',
-  },
-]
+import {
+  FormHeading,
+  InputWraper,
+  StyledFormItem,
+  StyledRadio,
+  StyledCheckboxGroup,
+  // options
+  concernsOptions,
+  concernsSpecificsOptions,
+} from './reviewerFormUI'
 
 const Step3 = props => {
   const { concerns, concernsSpecifics } = props

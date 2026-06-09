@@ -1,71 +1,16 @@
 import React from 'react'
-import styled from 'styled-components'
-import { grid } from '@coko/client'
 import { Divider, TextArea } from '@coko/client/dist/ui'
-import { Form, Radio } from '../common'
 
-const FormHeading = styled.h3`
-  text-align: center;
-  text-wrap: balance;
-`
-
-const ExplanatoryParagraph = styled.p`
-  padding-inline: ${grid(2)};
-`
-
-const InputWraper = styled.div`
-  padding: ${grid(2)};
-`
-
-const StyledFormItem = styled(Form.Item)`
-  margin-block-end: ${grid(8)};
-
-  .ant-form-item-label {
-    margin-block-end: ${grid(4)};
-
-    label {
-      align-items: flex-start;
-
-      &::before {
-        margin-block-start: ${grid(1)};
-      }
-    }
-  }
-`
-
-const StyledRadio = styled(Radio)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-`
-
-const yesOrNoOptions = [
-  {
-    label: 'Yes',
-    value: true,
-  },
-  {
-    label: 'No',
-    value: false,
-  },
-]
-
-const difficultyOptions = [
-  {
-    label: 'Appropriate',
-    value: 'appropriate',
-  },
-  {
-    label: 'Too difficult',
-    value: 'difficult',
-  },
-  {
-    label: 'Too simple',
-    value: 'simple',
-  },
-]
+import {
+  FormHeading,
+  ExplanatoryParagraph,
+  InputWraper,
+  StyledFormItem,
+  StyledRadio,
+  // options
+  yesOrNoOptions,
+  difficultyOptions,
+} from './reviewerFormUI'
 
 const Step1 = props => {
   return (

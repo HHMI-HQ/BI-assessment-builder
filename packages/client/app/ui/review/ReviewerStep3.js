@@ -1,158 +1,21 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid } from '@coko/client'
 import { Divider, TextArea } from '@coko/client/dist/ui'
-import { Form, Radio, CheckboxGroup, Input } from '../common'
+import { Input } from '../common'
 
-const FormHeading = styled.h3`
-  text-align: center;
-  text-wrap: balance;
-`
-
-const InputWraper = styled.div`
-  padding: ${grid(2)};
-`
-
-const StyledFormItem = styled(Form.Item)`
-  margin-block-end: ${grid(8)};
-
-  .ant-form-item-label {
-    margin-block-end: ${grid(4)};
-
-    label {
-      align-items: flex-start;
-
-      &::before {
-        margin-block-start: ${grid(1)};
-      }
-    }
-  }
-`
-
-const StyledRadio = styled(Radio)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-`
-
-const StyledCheckboxGroup = styled(CheckboxGroup)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-
-  .ant-checkbox {
-    align-self: self-start;
-    margin-top: 3px;
-  }
-`
-
-const yesOrNoOptions = [
-  {
-    label: 'Yes',
-    value: true,
-  },
-  {
-    label: 'No',
-    value: false,
-  },
-]
-
-const questionTypesOptions = [
-  {
-    value: 'essay',
-    label: 'Essay',
-  },
-  {
-    value: 'matching',
-    label: 'Matching',
-  },
-  {
-    value: 'multipleChoiceSingleCorrect',
-    label: 'Multiple Choice',
-  },
-  {
-    value: 'multipleChoice',
-    label: 'Multiple Answers',
-  },
-  {
-    value: 'trueFalse',
-    label: 'Multiple True / False',
-  },
-  {
-    value: 'numerical',
-    label: 'Numerical Answer',
-  },
-  {
-    value: 'trueFalseSingleCorrect',
-    label: 'True / False',
-  },
-
-  {
-    value: 'fillInTheBlank',
-    label: 'Fill-in-the-blank',
-  },
-  {
-    value: 'multipleDropdowns',
-    label: 'Multiple Dropdowns',
-  },
-]
-
-const distractorsOptions = [
-  {
-    value: 'appropriate',
-    label: 'The distractors are appropriate',
-  },
-  {
-    value: 'multipleDistractors',
-    label:
-      'There are multiple correct answers, or it is not clear which answer is correct',
-  },
-  {
-    value: 'externalKnowledge',
-    label:
-      'Knowledge outside the assessed LO is needed to eliminate distractors',
-  },
-  {
-    value: 'misconceptions',
-    label: 'Not all distractors address common misconceptions of the content',
-  },
-]
-
-const feedbackEvaluationOptions = [
-  {
-    label: 'There are NO issues related to the feedback',
-    value: 'noIssues',
-  },
-  {
-    label: 'There are issues with the feedback',
-    value: 'hasIssues',
-  },
-]
-
-const feedbackIssuesOptions = [
-  {
-    value: 'factualErrors',
-    label: 'The feedback contains one or more factual errors',
-  },
-  {
-    value: 'detailsLacking',
-    label: 'The feedback lacks details or is not fully explanatory',
-  },
-  {
-    value: 'hintsToCorrectAnswer',
-    label:
-      'Incorrect response feedback includes information for the correct answer, thereby limiting multiple attempts at the same item',
-  },
-  {
-    value: 'other',
-    label: 'There are other feedback-related issues',
-  },
-]
+import {
+  FormHeading,
+  InputWraper,
+  StyledFormItem,
+  StyledRadio,
+  StyledCheckboxGroup,
+  // options
+  yesOrNoOptions,
+  questionTypesOptions,
+  distractorsOptions,
+  feedbackEvaluationOptions,
+  feedbackIssuesOptions,
+} from './reviewerFormUI'
 
 const Step3 = props => {
   const { questionType, feedbackEvaluation, feedbackIssues } = props
