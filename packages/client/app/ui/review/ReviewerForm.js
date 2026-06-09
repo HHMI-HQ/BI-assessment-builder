@@ -7,6 +7,7 @@ import RevewerStep1 from './ReviewerStep1'
 import RevewerStep2 from './ReviewerStep2'
 import ReviewerStep3 from './ReviewerStep3'
 import ReviewerStep4 from './ReviewerStep4'
+import ReviewerStep5 from './ReviewerStep5'
 import ReviewerSubmitButton from './ReviewerSubmitButton'
 
 const Wrapper = styled.section`
@@ -25,7 +26,7 @@ const Footer = styled.footer`
   margin-block-start: auto;
 `
 
-const MAX_STEP_INDEX = 3
+const MAX_STEP_INDEX = 4
 
 const checkProps = (data, keys) =>
   keys.every(key => Object.prototype.hasOwnProperty.call(data, key))
@@ -72,11 +73,15 @@ const inferStep = data => {
     step += 1
   }
 
+  if (checkConditionally(data, [true], data.concerns, data.concernsSpecifics)) {
+    step += 1
+  }
+
   return step
 }
 
 const ReviewerForm = props => {
-  const { saveReview, submitReview, responses } = props
+  const { saveReview, submitReview, responses, showDialog } = props
 
   const [current, setCurrent] = useState(inferStep(responses))
   const [form] = Form.useForm()
@@ -117,6 +122,8 @@ const ReviewerForm = props => {
             concernsSpecifics={responses.concernsSpecifics}
           />
         )
+      case 4:
+        return <ReviewerStep5 responses={responses} />
 
       default:
         return null
@@ -126,7 +133,7 @@ const ReviewerForm = props => {
   const renderFormButtons = () => {
     if (current === MAX_STEP_INDEX || (current === 1 && responses.hasIssues)) {
       return (
-        <ReviewerSubmitButton onSubmit={submitReview} responses={responses} />
+        <ReviewerSubmitButton onSubmit={submitReview} showDialog={showDialog} />
       )
     }
 
@@ -152,7 +159,7 @@ const ReviewerForm = props => {
     <Wrapper>
       <Steps
         current={current}
-        items={[{}, {}, {}, {}]}
+        items={[{}, {}, {}, {}, {}]}
         onChange={onStepClick}
         type="inline"
       />
@@ -189,12 +196,14 @@ const ReviewerForm = props => {
 ReviewerForm.propTypes = {
   saveReview: PropTypes.func,
   submitReview: PropTypes.func,
+  showDialog: PropTypes.func,
   responses: PropTypes.shape(),
 }
 
 ReviewerForm.defaultProps = {
   saveReview: () => {},
   submitReview: () => {},
+  showDialog: () => {},
   responses: null,
 }
 
