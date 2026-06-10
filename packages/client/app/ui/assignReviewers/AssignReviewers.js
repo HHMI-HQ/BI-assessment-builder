@@ -1,42 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { PaperClipOutlined } from '@ant-design/icons'
-// eslint-disable-next-line import/no-unresolved
+import { CloseOutlined } from '@ant-design/icons'
 import UIAssignReviewers from '@coko/client/dist/ui/assignReviewers/AssignReviewers'
 import { grid, th } from '@coko/client'
 import { profileOptions } from '../../utilities'
-import { ReviewerEditorUploadButton } from '../review'
+import { ReviewerEditorUploadButton, ReviewSummary } from '../review'
 import { Modal, Button } from '../common'
 
-const AttachmentsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  > :last-child:not(:first-child) {
-    margin-block-start: ${grid(2)};
-  }
+const SubmittedReview = styled.section`
+  background-color: white;
+  border-left: 1px solid ${th('colorBorder')};
+  max-height: 100%;
+  overflow: auto;
+  padding: ${grid(4)};
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  z-index: 5;
 `
 
-const AttachmentItem = styled.a`
-  border: 1px solid white;
-  border-radius: 5px;
-  color: inherit;
-  cursor: pointer;
-  max-inline-size: 200px;
-  overflow: hidden;
-  padding: ${grid(1)};
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  > .anticon {
-    margin-inline-end: ${grid(1)};
-  }
-
-  &:focus {
-    outline: 2px solid ${th('colorPrimaryBorder')};
-    outline-offset: 1px;
-  }
+const CloseBtn = styled(Button)`
+  border: none;
+  position: absolute;
+  right: ${grid(4)};
 `
 
 const StyledAssignReviewers = styled(UIAssignReviewers)`
@@ -54,6 +42,11 @@ const StyledAssignReviewers = styled(UIAssignReviewers)`
         display: none;
       }
     }
+  }
+
+  tr td:nth-child(2) span {
+    max-width: unset;
+    white-space: nowrap;
   }
 `
 
@@ -97,6 +90,7 @@ const AssignReviewers = props => {
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
+  const [showReview, setShowReview] = useState(null)
 
   const handleClickRemoveRow = id => {
     const reviewerToRemove = reviewerPool.find(r => r.id === id)
@@ -134,30 +128,27 @@ const AssignReviewers = props => {
     }
   }
 
+  const onShowReview = (val, record) => {
+    if (!showReview) {
+      setShowReview({
+        ...JSON.parse(val),
+        reviewerName: record.displayName,
+        reviewerEmail: record.email,
+      })
+    } else {
+      setShowReview(null)
+    }
+  }
+
   const additionalReviewerColumns = [
     {
       title: 'Submitted reviews',
       dataIndex: 'submitted',
-      render: (val, record) =>
-        val ? (
-          <AttachmentsWrapper>
-            {val.map(att => (
-              <AttachmentItem
-                data-testid="message-attachment"
-                href={att.url}
-                key={att.name}
-                target="_blank"
-              >
-                <PaperClipOutlined />
-                {att.name}
-              </AttachmentItem>
-            ))}
-            <ReviewerEditorUploadButton
-              onSubmit={onUploadReview}
-              reviewerId={record.id}
-              showDialog={showDialog}
-            />
-          </AttachmentsWrapper>
+      render: (val, record) => {
+        return val ? (
+          <Button onClick={() => onShowReview(val, record)}>
+            {showReview ? 'Close' : 'Show'} review
+          </Button>
         ) : (
           record.acceptedInvitation && (
             <ReviewerEditorUploadButton
@@ -166,7 +157,8 @@ const AssignReviewers = props => {
               showDialog={showDialog}
             />
           )
-        ),
+        )
+      },
     },
     {
       title: 'Topics',
@@ -208,6 +200,15 @@ const AssignReviewers = props => {
         searchPlaceholder={searchPlaceholder}
         useShowEmail
       />
+      {showReview && (
+        <SubmittedReview>
+          <CloseBtn
+            icon={<CloseOutlined />}
+            onClick={() => setShowReview(null)}
+          />
+          <ReviewSummary responses={showReview} reviewSubmitted />
+        </SubmittedReview>
+      )}
       {contextHolder}
     </ModalContext.Provider>
   )
