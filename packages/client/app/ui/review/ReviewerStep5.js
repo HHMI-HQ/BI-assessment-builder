@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid } from '@coko/client'
+import { Divider } from '@coko/client/dist/ui/common'
 import {
   FormHeading,
   InputWraper,
@@ -27,6 +28,12 @@ const Answer = styled.div`
   margin-block-start: ${grid(1)};
 `
 
+const InfoWrapper = styled.div`
+  p {
+    margin-top: 0;
+  }
+`
+
 const renderAnswer = (options, answer) => {
   return options.find(o => o.value === answer)?.label
 }
@@ -42,22 +49,41 @@ const renderAnswersList = (options, answers) => {
 const Step5 = props => {
   const { responses, reviewSubmitted } = props
 
+  const renderHeader = () => {
+    if (reviewSubmitted) {
+      return <FormHeading>Your review has been submitted</FormHeading>
+    }
+
+    return (
+      <>
+        <FormHeading>Review your responses</FormHeading>
+        <ExplanatoryParagraph>
+          Below you can review your responses. If you are comfortable with them,
+          please submit the form. Alternatively, you can close the form and come
+          back at a later time.
+        </ExplanatoryParagraph>
+      </>
+    )
+  }
+
   return (
     <>
-      {reviewSubmitted ? (
-        <FormHeading>Your review has been submitted</FormHeading>
-      ) : (
-        <>
-          <FormHeading>Review your responses</FormHeading>
-          <ExplanatoryParagraph>
-            Below you can review your responses. If you are comfortable with
-            them, please submit the form. Alternatively, you can close the form
-            and come back at a later time.
-          </ExplanatoryParagraph>
-        </>
-      )}
+      {!responses.reviewerName && renderHeader()}
 
       <InputWraper>
+        {responses.reviewerName && (
+          <InfoWrapper>
+            <p>
+              <strong>Reviewer: </strong>
+              {responses.reviewerName}
+            </p>
+            <p>
+              <strong>Email: </strong>
+              {responses.reviewerEmail}
+            </p>
+            <Divider />
+          </InfoWrapper>
+        )}
         <Label>Did you answer the item correctly?</Label>
         <Answer>
           {renderAnswer(yesOrNoOptions, responses.answeredCorrectly)}

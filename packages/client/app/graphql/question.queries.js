@@ -487,6 +487,7 @@ export const QUESTION = gql`
             name
             url
           }
+          responses
           status {
             submitted
           }

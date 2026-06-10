@@ -942,7 +942,10 @@ const QuestionPage = props => {
       const submittedReview = reviews.find(r => r.reviewerId === rev.id)
 
       if (submittedReview) {
-        return { ...rev, submitted: submittedReview.attachments }
+        return {
+          ...rev,
+          submitted: rev.reviewSubmitted ? submittedReview.responses : null,
+        }
       }
 
       return rev
