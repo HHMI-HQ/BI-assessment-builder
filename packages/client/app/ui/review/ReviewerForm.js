@@ -42,14 +42,12 @@ const inferStep = data => {
     step += 1
   }
 
-  if (
-    data.hasIssues === false
-    // || (data.hasIssues && data.issuesIdentification && data.issuesDetails)
-  ) {
+  if (step === 1 && data.hasIssues === false) {
     step += 1
   }
 
   if (
+    step === 2 &&
     checkProps(data, [
       'curriculaAlignment',
       'bloomLevel',
@@ -73,7 +71,10 @@ const inferStep = data => {
     step += 1
   }
 
-  if (checkConditionally(data, [true], data.concerns, data.concernsSpecifics)) {
+  if (
+    step === 3 &&
+    checkConditionally(data, [true], data.concerns, data.concernsSpecifics)
+  ) {
     step += 1
   }
 
