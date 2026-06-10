@@ -367,6 +367,15 @@ const PanelWrapper = ({
   reviewerForm,
 }) => {
   const showSubmitBar = isPublished || (!isPublished && !showMetadata)
+  const [activePanel, setActivePanel] = useState('editor')
+
+  const onPanelClick = val => {
+    if (val[0]) setActivePanel(val[0])
+  }
+
+  useEffect(() => {
+    if (showReviewForm) setActivePanel('review')
+  }, [showReviewForm])
 
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
   if (!isMobile || (!showMetadata && !showReviewForm)) {
@@ -388,6 +397,7 @@ const PanelWrapper = ({
       key: 'editor',
       label: 'Editor',
       children: editor,
+      forceRender: true,
     },
   ]
 
@@ -396,6 +406,7 @@ const PanelWrapper = ({
       key: 'metadata',
       label: 'Metadata',
       children: metadata,
+      forceRender: true,
     })
 
   if (showReviewForm)
@@ -403,11 +414,17 @@ const PanelWrapper = ({
       key: 'review',
       label: 'Reviewer Form',
       children: reviewerForm,
+      forceRender: true,
     })
 
   return (
     <CollapseWrapper>
-      <StyledCollapse accordion defaultActiveKey="editor" items={items} />
+      <StyledCollapse
+        accordion
+        activeKey={activePanel}
+        items={items}
+        onChange={onPanelClick}
+      />
       {!showReviewForm && submitTestBar}
     </CollapseWrapper>
   )
