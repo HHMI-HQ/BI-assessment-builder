@@ -32,8 +32,8 @@ const checkProps = (data, keys) =>
   keys.every(key => Object.prototype.hasOwnProperty.call(data, key))
 
 const checkConditionally = (data, keys, antecedent, consequent) =>
-  (keys.some(key => key === antecedent) && !!consequent) ||
-  keys.every(key => key !== antecedent)
+  (keys?.some(key => key === antecedent) && !!consequent) ||
+  keys?.every(key => key !== antecedent)
 
 const inferStep = data => {
   let step = 0

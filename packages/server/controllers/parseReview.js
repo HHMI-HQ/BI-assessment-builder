@@ -181,6 +181,7 @@ const renderAnswersList = (options, answers) => {
   const labels = options
     .filter(o => answers.indexOf(o.value) >= 0)
     .map(a => `<li>${a.label}</li>`)
+    .join('')
 
   return `<ul>${labels}</ul>`
 }
