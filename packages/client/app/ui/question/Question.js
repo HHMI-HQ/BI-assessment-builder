@@ -383,39 +383,31 @@ const PanelWrapper = ({
     )
   }
 
+  const items = [
+    {
+      key: 'editor',
+      label: 'Editor',
+      children: editor,
+    },
+  ]
+
+  if (showMetadata)
+    items.push({
+      key: 'metadata',
+      label: 'Metadata',
+      children: metadata,
+    })
+
+  if (showReviewForm)
+    items.push({
+      key: 'review',
+      label: 'Reviewer Form',
+      children: reviewerForm,
+    })
+
   return (
     <CollapseWrapper>
-      <StyledCollapse accordion defaultActiveKey="editor">
-        <Collapse.Panel
-          data-testid="editor-collapse"
-          forceRender
-          header="Editor"
-          key="editor"
-        >
-          {editor}
-          {showReviewForm && submitTestBar}
-        </Collapse.Panel>
-        {showMetadata && (
-          <Collapse.Panel
-            data-testid="metadata-collapse"
-            forceRender
-            header="Metadata"
-            key="metadata"
-          >
-            {metadata}
-          </Collapse.Panel>
-        )}
-        {showReviewForm && (
-          <Collapse.Panel
-            data-testid="review-form-collapse"
-            forceRender
-            header="Submit review"
-            key="review"
-          >
-            {reviewerForm}
-          </Collapse.Panel>
-        )}
-      </StyledCollapse>
+      <StyledCollapse accordion defaultActiveKey="editor" items={items} />
       {!showReviewForm && submitTestBar}
     </CollapseWrapper>
   )
@@ -1131,6 +1123,7 @@ const Question = props => {
   }
 
   const toggleReviewForm = () => {
+    setActiveKey('editor')
     setShowReviewForm(prev => !prev)
   }
   // #endregion handlers
