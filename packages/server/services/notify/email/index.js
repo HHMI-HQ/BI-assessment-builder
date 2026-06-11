@@ -1,8 +1,5 @@
 const { logger, clientUrl, ChatChannel, sendEmail } = require('@coko/server')
-const moment = require('moment')
-
 const config = require('config')
-
 const { Question, Identity, User, QuestionVersion } = require('../../../models')
 const flatten = require('../../../controllers/flattenMetadataValues')
 const parseReview = require('../../../controllers/parseReview')
@@ -387,18 +384,15 @@ const submitReview = async ({ attachments, review, to }) => {
     const reviewer = await User.findById(reviewerId)
 
     const link = `${clientUrl}/question/${questionVersion.questionId}`
-    const subject = 'HHMI BioInteractive Assessment Builder: Review submitted'
+
+    const subject = `HHMI BioInteractive Assessment Builder: Review submitted by ${reviewer.displayName}`
+    // at ${moment(review.updated).format('MMMM DD, YYYY, h:mm:ss a')}
 
     const content = `
-    	<h2>
-        Review by ${reviewer.displayName} submitted at ${moment(
-      review.updated,
-    ).format('MMMM DD, YYYY, h:mm:ss a')}
-      </h2>
-      <p>
-        ${
-          reviewer.displayName
-        } has completed the review of an item in the Assessment Builder.
+      <p>Dear Assessment Builder team,</p>
+      <p>${
+        reviewer.displayName
+      } has submitted a review for an item an item in the Assessment Builder.
       </p>
       <p>
         Click on <a href="${link}">this link</a> to view the item.
@@ -410,10 +404,9 @@ const submitReview = async ({ attachments, review, to }) => {
       <div>${`${parseReview(responses)}`}</div>
       `
 
-    const text = `${reviewer.displayName} has completed the review of an item in the Assessment Builder.
-	\nCopy and paste the following link into your browser to view the item.
-	\n${link}
-	`
+    const text = `${reviewer.displayName} submitted a review for an item: ${link}.
+        \nPlease see your response in the AB tool.
+      `
 
     return { attachments, content, subject, text, to }
   } catch (e) {
@@ -424,10 +417,9 @@ const submitReview = async ({ attachments, review, to }) => {
 
 const sendReviewCopyToReviewer = async ({ attachments, review, to }) => {
   try {
-    const { questionVersionId, content: reviewContent, reviewerId } = review
+    const { questionVersionId, responses } = review
 
     const questionVersion = await QuestionVersion.findById(questionVersionId)
-    const reviewer = await User.findById(reviewerId)
 
     const link = `${clientUrl}/question/${questionVersion.questionId}`
     const subject = 'HHMI BioInteractive Assessment Builder: Review submitted'
@@ -440,12 +432,9 @@ const sendReviewCopyToReviewer = async ({ attachments, review, to }) => {
       ${link}
       </p>
 
-      <p>A copy of your review feedback is provided below.</p>
-      <h2>Review by ${reviewer.displayName} submitted at ${moment(
-      review.updated,
-    ).format('MMMM DD, YYYY, h:mm:ss a')}</h2>
-
-      <pre>${reviewContent}</pre>
+      <p>A copy of your responses is provided below.</p>
+      <hr />
+      <div>${`${parseReview(responses)}`}</div>
     `
 
     const text = `You have completed the review of an item in the Assessment Builder.
