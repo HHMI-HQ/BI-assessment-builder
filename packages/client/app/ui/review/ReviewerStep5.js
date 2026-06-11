@@ -47,7 +47,7 @@ const Step5 = props => {
 
   const renderHeader = () => {
     if (reviewSubmitted) {
-      return <FormHeading>Your review has been submitted</FormHeading>
+      return <FormHeading>Your responses have been submitted.</FormHeading>
     }
 
     return (

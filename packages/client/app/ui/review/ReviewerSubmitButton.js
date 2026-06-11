@@ -14,7 +14,7 @@ const ReviewerSubmitButton = props => {
         showDialog(
           'success',
           'Review submitted successfully',
-          'The review was submitted successfully',
+          'Thank you for reviewing this assessment item; your responses have been submitted.',
         )
       })
       .catch(() => {
