@@ -35,66 +35,6 @@ const hasIssuesOptions = [
   },
 ]
 
-const issuesOptions = [
-  {
-    label: 'There is a factual error in the stem',
-    value: 'factualError',
-  },
-  {
-    label: 'Sufficient detail to answer the item is lacking',
-    value: 'insufficientDetail',
-  },
-  {
-    label:
-      'The content of this item does not incorporate the most up-to-date understanding in the field',
-    value: 'outdated',
-  },
-  {
-    label: 'There are other content-related issues',
-    value: 'simple',
-  },
-]
-
-const questionTypesOptions = [
-  {
-    value: 'essay',
-    label: 'Essay',
-  },
-  {
-    value: 'matching',
-    label: 'Matching',
-  },
-  {
-    value: 'multipleChoiceSingleCorrect',
-    label: 'Multiple Choice',
-  },
-  {
-    value: 'multipleChoice',
-    label: 'Multiple Answers',
-  },
-  {
-    value: 'trueFalse',
-    label: 'Multiple True / False',
-  },
-  {
-    value: 'numerical',
-    label: 'Numerical Answer',
-  },
-  {
-    value: 'trueFalseSingleCorrect',
-    label: 'True / False',
-  },
-
-  {
-    value: 'fillInTheBlank',
-    label: 'Fill-in-the-blank',
-  },
-  {
-    value: 'multipleDropdowns',
-    label: 'Multiple Dropdowns',
-  },
-]
-
 const distractorsOptions = [
   {
     value: 'appropriate',
@@ -127,48 +67,21 @@ const feedbackEvaluationOptions = [
   },
 ]
 
-const feedbackIssuesOptions = [
-  {
-    value: 'factualErrors',
-    label: 'The feedback contains one or more factual errors',
-  },
-  {
-    value: 'detailsLacking',
-    label: 'The feedback lacks details or is not fully explanatory',
-  },
-  {
-    value: 'hintsToCorrectAnswer',
-    label:
-      'Incorrect response feedback includes information for the correct answer, thereby limiting multiple attempts at the same item',
-  },
-  {
-    value: 'other',
-    label: 'There are other feedback-related issues',
-  },
-]
-
 const concernsOptions = [
   {
     label: 'No clarity, grammatical, structural, or other concerns',
-    value: false,
+    value: 'noConcerns',
   },
   {
-    label: 'Clarity, grammatical, structural, or other concerns',
-    value: true,
-  },
-]
-
-const concernsSpecificsOptions = [
-  {
-    label: 'Clarity concerns',
+    label: 'Clarity, concerns',
     value: 'clarity',
   },
   {
     label: 'Grammatical or structural concerns',
-    value: 'gramatical',
+    value: 'grammatical',
   },
   {
-    label: 'Other Item construction concerns',
+    label: 'Other item construction concerns',
     value: 'other',
   },
 ]
@@ -205,102 +118,57 @@ const parseReview = responses => {
   // step 2 (also the last item above)
   if (responses.hasIssues) {
     content += `        
-        <p><strong>You identified content-related issues; please select all that apply:</strong></p>
-        <p>${renderAnswersList(
-          issuesOptions,
-          responses.issuesIdentification,
-        )}</p>
-        
-        <p><strong>Please explain the issue(s) in greater detail:</strong></p>
+        <p><strong>You identified content-related issues; please explain in greater detail:</strong></p>
         <p>${responses.issuesDetails}</p>
-        `
+      `
   } else {
     // step 3
-    content += `
-        <p><strong>Is the item aligned to the appropriate Learning Objective or Bioskills?</strong></p>
-        <p>${renderAnswer(yesOrNoOptions, responses.curriculaAlignment)}</p>
-
-        <p><strong>Do you think that the item targets the Bloom’s level as written?</strong></p>
-        <p>${renderAnswer(yesOrNoOptions, responses.bloomLevel)}</p>
-
-        <p><strong>Please provide feedback about the Learning Objective, Bioskills alignment, or Bloom's level.</strong></p>
-        <p>${responses.alignmentFeedback || '-'}</p>
-
-        <p><strong>What is the item type that you are reviewing?</strong></p>
-        <p>${renderAnswer(
-          questionTypesOptions,
-          responses.questionType,
-        )}</p>        
-        `
-
-    if (
-      responses.questionType === 'multipleChoiceSingleCorrect' ||
-      responses.questionType === 'multipleChoice'
-    ) {
+    if (responses.distractors) {
       content += `
-                <p><strong>Evaluating item distractors:</strong></p>
-                <p>${renderAnswer(
-                  distractorsOptions,
-                  responses.distractors,
-                )}</p>
-            `
+            <p><strong>Evaluating item distractors:</strong></p>
+            <p>${renderAnswer(distractorsOptions, responses.distractors)}</p>
+        `
     }
 
     content += `
-        <p><strong>Evaluating the feedback for the correct and incorrect options.</strong></p>
-        <p>${renderAnswer(
-          feedbackEvaluationOptions,
-          responses.feedbackEvaluation,
-        )}</p>
-    `
+          <p><strong>Evaluating the feedback for the correct and incorrect options.</strong></p>
+          <p>${renderAnswer(
+            feedbackEvaluationOptions,
+            responses.feedbackEvaluation,
+          )}</p>
+      `
 
     if (responses.feedbackEvaluation === 'hasIssues') {
       content += `
-            <p><strong>You identified feedback-related issues; please select all that apply:</strong></p>
-            <p>${renderAnswersList(
-              feedbackIssuesOptions,
-              responses.feedbackIssues,
-            )}</p>
+            <p><strong>You identified feedback-related issues; please explain the issue(s) in greater detail:</strong></p>
+            <p>${responses.feedbackIssuesDetails}</p>
         `
-
-      if (responses.feedbackIssues.indexOf('other') > -1) {
-        content += `
-                <p><strong>Specify other feedback-related issues:</strong></p>
-                <p>${responses.otherIssues}</p>
-            `
-      }
-
-      content += `
-                <p><strong>Please explain the issue(s) in greater detail:</strong></p>
-                <p>${responses.feedbackIssuesDetails}</p>
-            `
     }
 
     // step 4
     content += `
-        <p><strong>The construction of this item has:</strong></p>
-        <p>${renderAnswer(concernsOptions, responses.concerns)}</p>
-    `
+          <p><strong>The construction of this item has:</strong></p>
+          <p>${renderAnswersList(concernsOptions, responses.concerns)}</p>
+      `
 
-    if (responses.concerns) {
+    if (responses.concerns.includes('clarity')) {
       content += `
-            <p><strong>Which clarity, grammatical, structural, or other item construction concerns do you have? Select all that apply.</strong></p>
-            <p>${renderAnswersList(
-              concernsSpecificsOptions,
-              responses.concernsSpecifics,
-            )}</p>
+            <p><strong>If clarity-related issue(s) are noted, please explain in detail.</strong></p>
+            <p>${responses.clarityConcerns}</p>
         `
+    }
 
-      if (responses.concernsSpecifics?.indexOf('other') > -1) {
-        content += `
-                  <p><strong>Specify other concerns about item construction:</strong></p>
-                  <p>${responses.otherConcerns}</p>
-              `
-      }
-
+    if (responses.concerns.includes('grammatical')) {
       content += `
-            <p><strong>Please explain the clarity-related issue(s) in greater detail:</strong></p>
-            <p>${responses.concernsDetails}</p>
+            <p><strong>If grammatical or structural issues are noted, please explain in detail</strong></p>
+            <p>${responses.grammaticalConcerns}</p>
+        `
+    }
+
+    if (responses.concerns.includes('other')) {
+      content += `
+            <p><strong>If other item construction concerns are noted, please explain in detail.</strong></p>
+            <p>${responses.otherConcerns}</p>
         `
     }
 
