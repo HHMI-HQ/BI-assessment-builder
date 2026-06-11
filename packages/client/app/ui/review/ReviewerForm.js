@@ -9,6 +9,7 @@ import ReviewerStep3 from './ReviewerStep3'
 import ReviewerStep4 from './ReviewerStep4'
 import ReviewerStep5 from './ReviewerStep5'
 import ReviewerSubmitButton from './ReviewerSubmitButton'
+import { itemsWithDistractors } from './reviewerFormUI'
 
 const Wrapper = styled.section`
   border-left: 1px solid ${th('colorBorder')};
@@ -35,7 +36,7 @@ const checkConditionally = (data, keys, antecedent, consequent) =>
   (keys?.some(key => key === antecedent) && !!consequent) ||
   keys?.every(key => key !== antecedent)
 
-const inferStep = data => {
+const inferStep = (data, questionType) => {
   let step = 0
 
   if (checkProps(data, ['answeredCorrectly', 'difficulty'])) {
@@ -48,39 +49,39 @@ const inferStep = data => {
 
   if (
     step === 2 &&
-    checkProps(data, [
-      'curriculaAlignment',
-      'bloomLevel',
-      'questionType',
-      'feedbackEvaluation',
-    ]) &&
     checkConditionally(
       data,
-      ['multipleChoiceSingleCorrect', 'multipleChoice'],
-      data.questionType,
+      itemsWithDistractors,
+      questionType,
       data.distractors,
     ) &&
+    checkProps(data, ['feedbackEvaluation']) &&
     checkConditionally(
       data,
       ['hasIssues'],
       data.feedbackEvaluation,
-      data.feedbackIssues?.length > 0 && data.feedbackIssuesDetails,
-    ) &&
-    checkConditionally(data, data.feedbackIssues, 'other', data.otherIssues)
+      data.feedbackIssuesDetails,
+    )
   ) {
     step += 1
   }
 
   if (
     step === 3 &&
-    checkConditionally(data, [true], data.concerns, data.concernsSpecifics)
+    checkProps(data, ['concerns']) &&
+    checkConditionally(data, data.concerns, 'clarity', data.clarityConcerns) &&
+    checkConditionally(
+      data,
+      data.concerns,
+      'grammatical',
+      data.grammaticalConcerns,
+    ) &&
+    checkConditionally(data, data.concerns, 'other', data.otherConcerns)
   ) {
     step += 1
   }
 
-  if (
-    checkProps(data, ['hasIssues', 'issuesIdentification', 'issuesDetails'])
-  ) {
+  if (checkProps(data, ['hasIssues', 'issuesDetails'])) {
     step = MAX_STEP_INDEX
   }
 
@@ -88,10 +89,16 @@ const inferStep = data => {
 }
 
 const ReviewerForm = props => {
-  const { saveReview, submitReview, responses, showDialog, reviewSubmitted } =
-    props
+  const {
+    questionType,
+    saveReview,
+    submitReview,
+    responses,
+    showDialog,
+    reviewSubmitted,
+  } = props
 
-  const [current, setCurrent] = useState(inferStep(responses))
+  const [current, setCurrent] = useState(inferStep(responses, questionType))
   const [form] = Form.useForm()
 
   const previousStep = () => {
@@ -128,7 +135,7 @@ const ReviewerForm = props => {
           <ReviewerStep3
             feedbackEvaluation={responses.feedbackEvaluation}
             feedbackIssues={responses.feedbackIssues}
-            questionType={responses.questionType}
+            questionType={questionType}
           />
         )
       case 3:
@@ -185,7 +192,7 @@ const ReviewerForm = props => {
     } else if (
       step < current ||
       (step > current &&
-        step <= inferStep(responses) &&
+        step <= inferStep(responses, questionType) &&
         !(responses.hasIssues && step > 1))
     ) {
       setCurrent(step)
@@ -228,6 +235,7 @@ ReviewerForm.propTypes = {
   showDialog: PropTypes.func,
   responses: PropTypes.shape(),
   reviewSubmitted: PropTypes.bool,
+  questionType: PropTypes.shape(),
 }
 
 ReviewerForm.defaultProps = {
@@ -236,6 +244,7 @@ ReviewerForm.defaultProps = {
   showDialog: () => {},
   responses: null,
   reviewSubmitted: false,
+  questionType: {},
 }
 
 export default ReviewerForm

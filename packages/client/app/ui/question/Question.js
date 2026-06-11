@@ -1924,6 +1924,7 @@ const Question = props => {
             }
             reviewerForm={
               <ReviewerForm
+                questionType={selectedQuestionType}
                 responses={reviewResponses}
                 reviewSubmitted={reviewSubmitted}
                 saveReview={saveReview}

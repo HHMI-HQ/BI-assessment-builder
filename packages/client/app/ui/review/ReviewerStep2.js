@@ -7,10 +7,8 @@ import {
   InputWraper,
   StyledFormItem,
   StyledRadio,
-  StyledCheckboxGroup,
   // options
   hasIssuesOptions,
-  issuesOptions,
 } from './reviewerFormUI'
 
 const Step2 = props => {
@@ -26,8 +24,8 @@ const Step2 = props => {
     <>
       <FormHeading>Evaluate the Content in Educator Mode</FormHeading>
       <ExplanatoryParagraph>
-        Now, toggle your view to Educator mode to complete the rest of your
-        review.
+        Now, toggle your view to Educator to complete the rest of your review
+        for this item.
       </ExplanatoryParagraph>
       <Divider />
       <InputWraper>
@@ -48,34 +46,17 @@ const Step2 = props => {
           />
         </StyledFormItem>
         {hasIssues && (
-          <>
-            <StyledFormItem
-              label="You identified content-related issues; please select all that apply:"
-              name="issuesIdentification"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <StyledCheckboxGroup
-                name="issuesIdentification"
-                options={issuesOptions}
-                vertical
-              />
-            </StyledFormItem>
-            <StyledFormItem
-              label="Please explain the issue(s) in greater detail:"
-              name="issuesDetails"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <TextArea />
-            </StyledFormItem>
-          </>
+          <StyledFormItem
+            label="You identified content-related issues; please explain in greater detail:"
+            name="issuesDetails"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <TextArea />
+          </StyledFormItem>
         )}
       </InputWraper>
     </>
