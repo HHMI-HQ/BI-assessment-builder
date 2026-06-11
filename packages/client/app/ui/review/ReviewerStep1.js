@@ -17,8 +17,7 @@ const Step1 = props => {
     <>
       <FormHeading>Analyze the Assessment Item in Learner Mode</FormHeading>
       <ExplanatoryParagraph>
-        You should be viewing the item as a learner would. Please attempt to
-        answer the item and complete the questions below.
+        View the item as a learner would and attempt to answer it.
       </ExplanatoryParagraph>
       <Divider />
       <InputWraper>

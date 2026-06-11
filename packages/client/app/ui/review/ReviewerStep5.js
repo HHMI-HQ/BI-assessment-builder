@@ -10,13 +10,9 @@ import {
   yesOrNoOptions,
   difficultyOptions,
   hasIssuesOptions,
-  issuesOptions,
-  questionTypesOptions,
   distractorsOptions,
   feedbackEvaluationOptions,
-  feedbackIssuesOptions,
   concernsOptions,
-  concernsSpecificsOptions,
 } from './reviewerFormUI'
 
 const Label = styled.div`
@@ -58,9 +54,9 @@ const Step5 = props => {
       <>
         <FormHeading>Review your responses</FormHeading>
         <ExplanatoryParagraph>
-          Below you can review your responses. If you are comfortable with them,
-          please submit the form. Alternatively, you can close the form and come
-          back at a later time.
+          If you are comfortable with your responses, please submit your review.
+          Alternatively, you may go back and modify your answers or come back to
+          this item review at a later time.
         </ExplanatoryParagraph>
       </>
     )
@@ -84,6 +80,7 @@ const Step5 = props => {
             <Divider />
           </InfoWrapper>
         )}
+        {/* step 1 */}
         <Label>Did you answer the item correctly?</Label>
         <Answer>
           {renderAnswer(yesOrNoOptions, responses.answeredCorrectly)}
@@ -98,46 +95,21 @@ const Step5 = props => {
           item is:
         </Label>
         <Answer>{renderAnswer(difficultyOptions, responses.difficulty)}</Answer>
+        {/* step 2 */}
         <Label>Evaluating content</Label>
         <Answer>{renderAnswer(hasIssuesOptions, responses.hasIssues)}</Answer>
         {responses.hasIssues ? (
           <>
             <Label>
-              You identified content-related issues; please select all that
-              apply:
+              You identified content-related issues; please explain in greater
+              detail:
             </Label>
-            <Answer>
-              {renderAnswersList(issuesOptions, responses.issuesIdentification)}
-            </Answer>
-            <Label>Please explain the issue(s) in greater detail:</Label>
             <Answer>{responses.issuesDetails}</Answer>
           </>
         ) : (
           <>
-            <Label>
-              Is the item aligned to the appropriate Learning Objective or
-              Bioskills?
-            </Label>
-            <Answer>
-              {renderAnswer(yesOrNoOptions, responses.curriculaAlignment)}
-            </Answer>
-            <Label>
-              Do you think that the item targets the Bloom’s level as written?
-            </Label>
-            <Answer>
-              {renderAnswer(yesOrNoOptions, responses.bloomLevel)}
-            </Answer>
-            <Label>
-              Please provide feedback about the Learning Objective, Bioskills
-              alignment, or Bloom&#39;s level.
-            </Label>
-            <Answer>{responses.alignmentFeedback || '-'}</Answer>
-            <Label>What is the item type that you are reviewing?</Label>
-            <Answer>
-              {renderAnswer(questionTypesOptions, responses.questionType)}
-            </Answer>
-            {(responses.questionType === 'multipleChoiceSingleCorrect' ||
-              responses.questionType === 'multipleChoice') && (
+            {/*  step 3 */}
+            {responses.distractors && (
               <>
                 <Label>Evaluating item distractors:</Label>
                 <Answer>
@@ -157,55 +129,43 @@ const Step5 = props => {
             {responses.feedbackEvaluation === 'hasIssues' && (
               <>
                 <Label>
-                  You identified feedback-related issues; please select all that
-                  apply:
+                  You identified feedback-related issues; please explain the
+                  issue(s) in greater detail:
                 </Label>
-                <Answer>
-                  {renderAnswersList(
-                    feedbackIssuesOptions,
-                    responses.feedbackIssues,
-                  )}
-                </Answer>
-
-                {responses.feedbackIssues.indexOf('other') > -1 && (
-                  <>
-                    <Label>Specify other feedback-related issues:</Label>
-                    <Answer>{responses.otherIssues}</Answer>
-                  </>
-                )}
-
-                <Label>Please explain the issue(s) in greater detail:</Label>
                 <Answer>{responses.feedbackIssuesDetails}</Answer>
               </>
             )}
 
             {/* step 4 */}
             <Label>The construction of this item has:</Label>
-            <Answer>{renderAnswer(concernsOptions, responses.concerns)}</Answer>
-            {responses.concerns && (
+            <Answer>
+              {renderAnswersList(concernsOptions, responses.concerns)}
+            </Answer>
+            {responses.concerns.includes('clarity') && (
               <>
                 <Label>
-                  Which clarity, grammatical, structural, or other item
-                  construction concerns do you have? Select all that apply.
+                  If clarity-related issue(s) are noted, please explain in
+                  detail.
                 </Label>
-                <Answer>
-                  {renderAnswersList(
-                    concernsSpecificsOptions,
-                    responses.concernsSpecifics,
-                  )}
-                </Answer>
-                {responses.concernsSpecifics?.indexOf('other') > -1 && (
-                  <>
-                    <Label>
-                      Specify other concerns about item construction:
-                    </Label>
-                    <Answer>{responses.otherConcerns}</Answer>
-                  </>
-                )}
+                <Answer>{responses.clarityConcerns}</Answer>
+              </>
+            )}
+            {responses.concerns.includes('grammatical') && (
+              <>
                 <Label>
-                  Please explain the clarity-related issue(s) in greater detail:
+                  If grammatical or structural issues are noted, please explain
+                  in detail.
                 </Label>
-                <Answer>{responses.concernsDetails}</Answer>
+                <Answer>{responses.grammaticalConcerns}</Answer>
+              </>
+            )}
+            {responses.concerns.includes('other') && (
+              <>
+                <Label>
+                  If other item construction concerns are noted, please explain
+                  in detail.
+                </Label>
+                <Answer>{responses.otherConcerns}</Answer>
               </>
             )}
             <Label>
@@ -213,7 +173,6 @@ const Step5 = props => {
               written?
             </Label>
             <Answer>{responses.suggestions || '-'}</Answer>
-            {/* </> */}
           </>
         )}
       </InputWraper>
