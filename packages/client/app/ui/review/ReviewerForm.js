@@ -81,7 +81,7 @@ const inferStep = (data, questionType) => {
     step += 1
   }
 
-  if (checkProps(data, ['hasIssues', 'issuesDetails'])) {
+  if (data.hasIssues && !!data.issuesDetails) {
     step = MAX_STEP_INDEX
   }
 
@@ -187,7 +187,7 @@ const ReviewerForm = props => {
   }
 
   const onStepClick = step => {
-    if (responses.hasIssues && step > 1) {
+    if (responses.hasIssues && responses.issuesDetails && step > 1) {
       setCurrent(MAX_STEP_INDEX)
     } else if (
       step < current ||
