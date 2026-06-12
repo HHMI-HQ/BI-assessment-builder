@@ -36,7 +36,7 @@ const renderAnswer = (options, answer) => {
 
 const renderAnswersList = (options, answers) => {
   const labels = options
-    .filter(o => answers.indexOf(o.value) >= 0)
+    .filter(o => answers?.includes(o.value))
     .map(a => <li key={a.label}>{a.label}</li>)
 
   return <ul>{labels}</ul>
@@ -141,7 +141,7 @@ const Step5 = props => {
             <Answer>
               {renderAnswersList(concernsOptions, responses.concerns)}
             </Answer>
-            {responses.concerns.includes('clarity') && (
+            {responses.concerns?.includes('clarity') && (
               <>
                 <Label>
                   If clarity-related issue(s) are noted, please explain in
@@ -150,7 +150,7 @@ const Step5 = props => {
                 <Answer>{responses.clarityConcerns}</Answer>
               </>
             )}
-            {responses.concerns.includes('grammatical') && (
+            {responses.concerns?.includes('grammatical') && (
               <>
                 <Label>
                   If grammatical or structural issues are noted, please explain
@@ -159,7 +159,7 @@ const Step5 = props => {
                 <Answer>{responses.grammaticalConcerns}</Answer>
               </>
             )}
-            {responses.concerns.includes('other') && (
+            {responses.concerns?.includes('other') && (
               <>
                 <Label>
                   If other item construction concerns are noted, please explain
