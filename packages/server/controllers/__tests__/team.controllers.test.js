@@ -37,7 +37,22 @@ const clearDb = require('../../models/__tests__/_clearDb')
 const { REVIEWER_STATUSES } = require('../constants')
 const { updateReviewerPool } = require('../question.controllers')
 const metadata = require('../metadataValues')
-const { submitReview } = require('../review.controller')
+const { submitReview, saveReview } = require('../review.controller')
+
+const reviewResponses = {
+  barriers: 'A',
+  concerns: ['grammatical'],
+  hasIssues: false,
+  difficulty: 'appropriate',
+  suggestions: 'qqqq',
+  issuesDetails: 'ISSUES',
+  otherConcerns: 'O',
+  clarityConcerns: 'C',
+  answeredCorrectly: true,
+  feedbackEvaluation: 'hasIssues',
+  grammaticalConcerns: 'Grammatical',
+  feedbackIssuesDetails: 'qq',
+}
 
 describe('Team Controller', () => {
   beforeEach(() => clearDb())
@@ -789,7 +804,12 @@ describe('Team Controller', () => {
     expect(result1).toBe(false)
     expect(result2).toBe(false)
 
-    await submitReview(questionVersion.id, 'all good', reviewer2.id)
+    await saveReview(
+      questionVersion.id,
+      reviewer2.id,
+      JSON.stringify(reviewResponses),
+    )
+    await submitReview(questionVersion.id, reviewer2.id)
 
     teamMember1 = await TeamMember.findOne({ userId: reviewer1.id })
     teamMember2 = await TeamMember.findOne({ userId: reviewer2.id })
