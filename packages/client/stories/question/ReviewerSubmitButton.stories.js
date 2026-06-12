@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import React from 'react'
-import ReviewerSubmitButton from '../../app/ui/question/ReviewerSubmitButton'
+import ReviewerSubmitButton from '../../app/ui/review/ReviewerSubmitButton'
 import { Button, Modal } from '../../app/ui/common'
 
 const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
