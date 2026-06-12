@@ -96,11 +96,11 @@ const Step3 = props => {
 }
 
 Step3.propTypes = {
-  concerns: PropTypes.bool,
+  concerns: PropTypes.arrayOf(PropTypes.string),
 }
 
 Step3.defaultProps = {
-  concerns: false,
+  concerns: [],
 }
 
 export default Step3

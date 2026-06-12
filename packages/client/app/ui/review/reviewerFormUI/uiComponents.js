@@ -11,14 +11,6 @@ export const ExplanatoryParagraph = styled.p`
   padding-inline: ${grid(2)};
 `
 
-export const StyledRadio = styled(Radio)`
-  padding-inline: ${grid(2)};
-
-  label:not(:first-child) {
-    margin-block-start: ${grid(1)};
-  }
-`
-
 export const InputWraper = styled.div`
   padding: ${grid(2)};
 `
@@ -36,6 +28,14 @@ export const StyledFormItem = styled(Form.Item)`
         margin-block-start: ${grid(1)};
       }
     }
+  }
+`
+
+export const StyledRadio = styled(Radio)`
+  padding-inline: ${grid(2)};
+
+  label:not(:first-child) {
+    margin-block-start: ${grid(1)};
   }
 `
 
