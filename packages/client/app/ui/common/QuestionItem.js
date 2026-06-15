@@ -1,16 +1,11 @@
+/* stylelint-disable declaration-no-important */
 /* stylelint-disable string-quotes */
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-
 import { uuid, th, grid } from '@coko/client'
 import { DateParser } from '@coko/client/dist/ui'
-
 import { LinkOutlined } from '@ant-design/icons'
-
-import WaxWrapper from '../wax/Wax'
-import { DashLayout } from '../wax/layout'
-import { dashConfig } from '../wax/config'
 import Link from './HhmiLink'
 import Status from './Status'
 
@@ -29,14 +24,20 @@ const FirstRow = styled.div`
   margin-bottom: ${grid(2)};
 `
 
-const WaxContainer = styled(Link)`
+const ItemLink = styled(Link)`
+  && {
+    color: ${th('colorText')};
+  }
   flex-grow: 1;
   overflow: hidden;
-  /* transition: outline ease 200ms; */
 
   /* &:hover, */
   &:focus {
     outline: 1px solid ${th('colorPrimary')};
+  }
+
+  p {
+    margin-block: 0;
   }
 
   * {
@@ -194,21 +195,14 @@ const QuestionItem = props => {
         `}
       </style>
       <FirstRow>
-        <WaxContainer
-          data-testid="wax-container"
+        <ItemLink
           to={{
             pathname: href,
             state,
           }}
         >
-          <WaxWrapper
-            autoFocus={false}
-            config={dashConfig}
-            content={content}
-            layout={DashLayout}
-            readOnly
-          />
-        </WaxContainer>
+          <p>{content}</p>
+        </ItemLink>
         {status ? (
           <StatusContainer>
             <Status
