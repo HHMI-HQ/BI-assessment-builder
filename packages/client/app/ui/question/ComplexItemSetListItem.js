@@ -3,16 +3,15 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th, uuid } from '@coko/client'
 import { Link, DateParser } from '../common'
-import Wax from '../wax/Wax'
-import { simpleConfig } from '../wax/config'
-import { DashLayout } from '../wax/layout'
 
 const Wrapper = styled.article`
   padding: ${grid(4)} ${grid(3)};
 `
 
 const LinkWrapper = styled(Link)`
-  /* padding: ${grid(4)} ${grid(3)}; */
+  && {
+    color: ${th('colorText')};
+  }
   display: block;
   margin-block-end: ${grid(2)};
   padding-inline: ${grid(1)};
@@ -23,6 +22,10 @@ const LinkWrapper = styled(Link)`
   h2 {
     font-size: ${th('fontSizeBase')};
     margin-block: ${grid(2)};
+  }
+
+  p {
+    margin-block: 0;
   }
 `
 
@@ -70,13 +73,7 @@ const ComplexItemSetListItem = props => {
     <Wrapper id={id}>
       <LinkWrapper to={href}>
         <h2>{title}</h2>
-        <Wax
-          autoFocus={false}
-          config={simpleConfig}
-          content={leadingContent}
-          layout={DashLayout}
-          readOnly
-        />
+        <p>{leadingContent}</p>
       </LinkWrapper>
       <MetadataTable>
         <tbody>

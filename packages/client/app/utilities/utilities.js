@@ -220,23 +220,24 @@ const extractDocumentText = data => {
   allContent =
     allContent.length === maxLength ? `${allContent} ...` : allContent
   if (!allContent) allContent = '(empty)'
-  return {
-    type: 'doc',
-    content: [
-      {
-        type: 'paragraph',
-        attrs: {
-          class: 'paragraph',
-        },
-        content: [
-          {
-            type: 'text',
-            text: allContent,
-          },
-        ],
-      },
-    ],
-  }
+  return allContent
+  // return {
+  //   type: 'doc',
+  //   content: [
+  //     {
+  //       type: 'paragraph',
+  //       attrs: {
+  //         class: 'paragraph',
+  //       },
+  //       content: [
+  //         {
+  //           type: 'text',
+  //           text: allContent,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // }
 }
 
 const extractTopicsAndSubtopics = (topics, topicsMetadata) =>

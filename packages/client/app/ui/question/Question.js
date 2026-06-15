@@ -636,7 +636,7 @@ const Question = props => {
       JSON.stringify(waxRef.current.getContent()),
     )
 
-    const isEditorEmpty = questionText.content[0].content[0].text === '(empty)'
+    const isEditorEmpty = questionText === '(empty)'
 
     if (isEditorEmpty) {
       const emptyEditorErrorModal = error()
