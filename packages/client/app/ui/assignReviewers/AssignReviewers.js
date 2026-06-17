@@ -11,6 +11,7 @@ import { Modal, Button } from '../common'
 const SubmittedReview = styled.section`
   background-color: white;
   border-left: 1px solid ${th('colorBorder')};
+  height: 100%;
   max-height: 100%;
   overflow: auto;
   padding: ${grid(4)};
@@ -19,6 +20,10 @@ const SubmittedReview = styled.section`
   top: 0;
   width: 50%;
   z-index: 5;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `
 
 const CloseBtn = styled(Button)`
@@ -129,7 +134,7 @@ const AssignReviewers = props => {
   }
 
   const onShowReview = (val, record) => {
-    if (!showReview) {
+    if (!showReview || showReview?.reviewerEmail !== record.email) {
       setShowReview({
         ...JSON.parse(val),
         reviewerName: record.displayName,
@@ -147,7 +152,10 @@ const AssignReviewers = props => {
       render: (val, record) => {
         return val ? (
           <Button onClick={() => onShowReview(val, record)}>
-            {showReview ? 'Close' : 'Show'} review
+            {showReview && showReview.reviewerEmail === record.email
+              ? 'Close'
+              : 'Show'}{' '}
+            review
           </Button>
         ) : (
           record.acceptedInvitation && (
