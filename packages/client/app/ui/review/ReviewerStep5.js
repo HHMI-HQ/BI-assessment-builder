@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid } from '@coko/client'
 import { Divider } from '@coko/client/dist/ui/common'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 import {
   FormHeading,
   InputWraper,
@@ -14,6 +15,7 @@ import {
   feedbackEvaluationOptions,
   concernsOptions,
 } from './reviewerFormUI'
+import { Button } from '../common'
 
 const Label = styled.div`
   font-weight: bold;
@@ -30,6 +32,17 @@ const InfoWrapper = styled.div`
   }
 `
 
+const ResponsesNavigator = styled.p`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    border: none;
+    box-shadow: none;
+  }
+`
+
 const renderAnswer = (options, answer) => {
   return options.find(o => o.value === answer)?.label
 }
@@ -43,7 +56,8 @@ const renderAnswersList = (options, answers) => {
 }
 
 const Step5 = props => {
-  const { responses, reviewSubmitted } = props
+  const { responses, reviewSubmitted, numberOfResponses, setReviewerIndex } =
+    props
 
   const renderHeader = () => {
     if (reviewSubmitted) {
@@ -62,6 +76,14 @@ const Step5 = props => {
     )
   }
 
+  const navigateReviews = dir => {
+    dir < 0
+      ? setReviewerIndex(
+          val => (val + numberOfResponses - 1) % numberOfResponses,
+        )
+      : setReviewerIndex(val => (val + 1) % numberOfResponses)
+  }
+
   return (
     <>
       {!responses.reviewerName && renderHeader()}
@@ -69,6 +91,18 @@ const Step5 = props => {
       <InputWraper>
         {responses.reviewerName && (
           <InfoWrapper>
+            {numberOfResponses > 1 && (
+              <ResponsesNavigator>
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => navigateReviews(-1)}
+                />
+                <Button
+                  icon={<ArrowRightOutlined />}
+                  onClick={() => navigateReviews(1)}
+                />
+              </ResponsesNavigator>
+            )}
             <p>
               <strong>Reviewer: </strong>
               {responses.reviewerName}
@@ -183,11 +217,15 @@ const Step5 = props => {
 Step5.propTypes = {
   responses: PropTypes.shape(),
   reviewSubmitted: PropTypes.bool,
+  numberOfResponses: PropTypes.number,
+  setReviewerIndex: PropTypes.func,
 }
 
 Step5.defaultProps = {
   responses: null,
   reviewSubmitted: false,
+  numberOfResponses: 1,
+  setReviewerIndex: () => {},
 }
 
 export default Step5

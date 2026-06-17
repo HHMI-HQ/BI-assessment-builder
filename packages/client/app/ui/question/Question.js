@@ -580,6 +580,21 @@ const Question = props => {
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const [refreshEditorContent, setRefreshEditorContent] = useState(false)
   const [showReviewForm, setShowReviewForm] = useState(false)
+  const [currentReviewResponses, setCurrentReviewResponses] = useState({})
+  const [reviewerIndex, setReviewerIndex] = useState(0)
+
+  useEffect(() => {
+    if (isInProduction && reviewerPool.length) {
+      setCurrentReviewResponses({
+        ...JSON.parse(reviewerPool[reviewerIndex].submitted),
+        reviewerName: reviewerPool[reviewerIndex].displayName,
+        reviewerEmail: reviewerPool[reviewerIndex].email,
+      })
+    } else if (isUnderReview) {
+      setCurrentReviewResponses(reviewResponses)
+    }
+  }, [reviewerPool, isUnderReview, reviewerIndex])
+  //
 
   const [imageLongDescs, setImageLongDescs] = useState([])
 
@@ -1328,15 +1343,6 @@ const Question = props => {
           </StyledButton>
         </>
       )}
-      {canPublish && isInProduction && !isPublished && (
-        <StyledButton
-          data-testid="publish-question-btn"
-          onClick={handlePublish}
-          type="primary"
-        >
-          Publish
-        </StyledButton>
-      )}
       {isSubmitted &&
         !isAccepted &&
         !isUnderReview &&
@@ -1390,6 +1396,24 @@ const Question = props => {
           onUnassign={onUnassignHandlingEditor}
           searchLoading={searchHELoading}
         />
+      )}
+      {isInProduction && (
+        <StyledButton
+          data-testid="publish-question-btn"
+          onClick={toggleReviewForm}
+          type="primary"
+        >
+          {showReviewForm ? 'Hide' : 'Show'} reviews
+        </StyledButton>
+      )}
+      {canPublish && isInProduction && !isPublished && (
+        <StyledButton
+          data-testid="publish-question-btn"
+          onClick={handlePublish}
+          type="primary"
+        >
+          Publish
+        </StyledButton>
       )}
       {isPublished && canUnpublish && (
         <StyledButton onClick={showUnpublishModal} type="primary">
@@ -1509,6 +1533,15 @@ const Question = props => {
             onUnassign={onUnassignHandlingEditor}
             searchLoading={searchHELoading}
           />
+        )}
+        {isInProduction && (
+          <StyledButton
+            data-testid="publish-question-btn"
+            onClick={toggleReviewForm}
+            type="primary"
+          >
+            {showReviewForm ? 'Hide' : 'Show'} reviews
+          </StyledButton>
         )}
         {canPublish && isInProduction && !isPublished && (
           <StyledButton
@@ -1924,10 +1957,16 @@ const Question = props => {
             }
             reviewerForm={
               <ReviewerForm
+                numberOfResponses={
+                  isUnderReview
+                    ? 1
+                    : reviewerPool.filter(r => !!r.submitted).length
+                }
                 questionType={selectedQuestionType}
-                responses={reviewResponses}
-                reviewSubmitted={reviewSubmitted}
+                responses={currentReviewResponses}
+                reviewSubmitted={isUnderReview ? reviewSubmitted : true}
                 saveReview={saveReview}
+                setReviewerIndex={setReviewerIndex}
                 showDialog={showDialog}
                 submitReview={onSubmitReview}
               />
@@ -2190,11 +2229,13 @@ Question.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       displayName: PropTypes.string.isRequired,
+      email: PropTypes.string,
       invited: PropTypes.bool,
       acceptedInvitation: PropTypes.bool,
       rejectedInvitation: PropTypes.bool,
       invitationRevoked: PropTypes.bool,
       reviewSubmitted: PropTypes.bool,
+      submitted: PropTypes.string,
     }),
   ),
   showAssignHEButton: PropTypes.bool,

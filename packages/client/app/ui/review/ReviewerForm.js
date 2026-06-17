@@ -96,6 +96,8 @@ const ReviewerForm = props => {
     responses,
     showDialog,
     reviewSubmitted,
+    numberOfResponses,
+    setReviewerIndex,
   } = props
 
   const [current, setCurrent] = useState(inferStep(responses, questionType))
@@ -122,7 +124,14 @@ const ReviewerForm = props => {
 
   const renderFormStep = () => {
     if (reviewSubmitted) {
-      return <ReviewerStep5 responses={responses} reviewSubmitted />
+      return (
+        <ReviewerStep5
+          numberOfResponses={numberOfResponses}
+          responses={responses}
+          reviewSubmitted
+          setReviewerIndex={setReviewerIndex}
+        />
+      )
     }
 
     switch (current) {
@@ -233,18 +242,22 @@ ReviewerForm.propTypes = {
   saveReview: PropTypes.func,
   submitReview: PropTypes.func,
   showDialog: PropTypes.func,
+  setReviewerIndex: PropTypes.func,
   responses: PropTypes.shape(),
   reviewSubmitted: PropTypes.bool,
   questionType: PropTypes.shape(),
+  numberOfResponses: PropTypes.number,
 }
 
 ReviewerForm.defaultProps = {
   saveReview: () => {},
   submitReview: () => {},
   showDialog: () => {},
+  setReviewerIndex: () => {},
   responses: null,
   reviewSubmitted: false,
   questionType: {},
+  numberOfResponses: 1,
 }
 
 export default ReviewerForm
