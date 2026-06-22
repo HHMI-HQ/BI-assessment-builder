@@ -593,7 +593,7 @@ const Question = props => {
     } else if (isUnderReview) {
       setCurrentReviewResponses(reviewResponses)
     }
-  }, [reviewerPool, isUnderReview, reviewerIndex])
+  }, [reviewerPool, isUnderReview, reviewerIndex, reviewResponses])
   //
 
   const [imageLongDescs, setImageLongDescs] = useState([])

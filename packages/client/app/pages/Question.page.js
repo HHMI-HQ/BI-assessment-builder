@@ -868,6 +868,15 @@ const QuestionPage = props => {
 
   const [saveReview] = useMutation(SAVE_REVIEW, {
     skip: !getReview,
+    refetchQueries: [
+      {
+        query: GET_REVIEW,
+        variables: {
+          questionVersionId: version?.id,
+          reviewerId: currentUser?.id,
+        },
+      },
+    ],
   })
   // #endregion hooks
 
