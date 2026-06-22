@@ -112,8 +112,8 @@ const ReviewerForm = props => {
   const nextStep = () => {
     form
       .validateFields()
-      .then(() => {
-        if (current === 1 && responses.hasIssues) {
+      .then(data => {
+        if (current === 1 && data.hasIssues) {
           setCurrent(MAX_STEP_INDEX)
         } else if (current < MAX_STEP_INDEX) setCurrent(c => c + 1)
       })
