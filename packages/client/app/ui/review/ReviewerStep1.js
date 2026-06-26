@@ -27,7 +27,7 @@ const Step1 = props => {
           rules={[
             {
               required: true,
-              message: 'Please select yes or no.',
+              message: 'Please select one of the options above.',
             },
           ]}
         >
