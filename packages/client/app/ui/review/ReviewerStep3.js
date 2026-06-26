@@ -40,6 +40,7 @@ const Step3 = props => {
             rules={[
               {
                 required: true,
+                message: 'Please select one of the options above.',
               },
             ]}
           >
@@ -56,6 +57,7 @@ const Step3 = props => {
           rules={[
             {
               required: true,
+              message: 'Please select one of the options above',
             },
           ]}
         >
@@ -73,6 +75,7 @@ const Step3 = props => {
             rules={[
               {
                 required: true,
+                message: 'This field is required.',
               },
             ]}
           >

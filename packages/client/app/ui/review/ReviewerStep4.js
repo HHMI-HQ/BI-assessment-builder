@@ -25,7 +25,7 @@ const Step3 = props => {
   return (
     <>
       <FormHeading>
-        Evaluate the Formatin & Writing Style in Educator Mode
+        Evaluate the Formating & Writing Style in Educator Mode
       </FormHeading>
       <Divider />
       <InputWraper>
@@ -35,6 +35,7 @@ const Step3 = props => {
           rules={[
             {
               required: true,
+              message: 'Please select one of the options above.',
             },
           ]}
         >
@@ -52,6 +53,7 @@ const Step3 = props => {
             rules={[
               {
                 required: true,
+                message: 'This field is required.',
               },
             ]}
           >
@@ -65,6 +67,7 @@ const Step3 = props => {
             rules={[
               {
                 required: true,
+                message: 'This field is required.',
               },
             ]}
           >
@@ -78,6 +81,7 @@ const Step3 = props => {
             rules={[
               {
                 required: true,
+                message: 'This field is required.',
               },
             ]}
           >
