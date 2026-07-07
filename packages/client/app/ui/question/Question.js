@@ -36,6 +36,7 @@ import {
 } from '../common'
 import { REVIEWER_STATUSES, extractDocumentText } from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
+import FeedbackModal from './FeedbackModal'
 import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
@@ -582,6 +583,8 @@ const Question = props => {
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [currentReviewResponses, setCurrentReviewResponses] = useState({})
   const [reviewerIndex, setReviewerIndex] = useState(0)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  const [nodeContent, setNodeContent] = useState({})
 
   useEffect(() => {
     if (isInProduction && reviewerPool.length) {
@@ -1820,6 +1823,44 @@ const Question = props => {
     }
   }
 
+  const insertUpdatedFeedback = (nodeId, newFeedback) => {
+    const newContent = waxRef.current.getContent()
+    newContent.content[0].content.find(
+      n => n.attrs.id === nodeId,
+    ).attrs.feedback = newFeedback
+
+    setAutoSaving(true)
+    onEditorContentAutoSave(newContent).then(() => {
+      setRefreshEditorContent(true)
+      setAutoSaving(false)
+    })
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      document.querySelectorAll('[id^=edit-feedback]').forEach(b => {
+        if (b.hasAttribute('hidden')) {
+          b.removeAttribute('hidden')
+          b.addEventListener('click', e => {
+            const nodeId =
+              e.target.tagName === 'BUTTON'
+                ? e.target.id.substring(14, e.target.id.length)
+                : e.target
+                    .closest('button')
+                    .id.substring(14, e.target.closest('button').id.length)
+
+            const node = waxRef.current
+              .getContent()
+              .content[0].content?.find(n => n.attrs.id === nodeId)
+
+            setNodeContent(node)
+            setShowFeedbackModal(true)
+          })
+        }
+      })
+    }, 500)
+  }, [editorContent])
+
   // #region test submission controls
   const withFeedback =
     !(preview || reviewerView) || (showMetadata && facultyView)
@@ -1897,6 +1938,13 @@ const Question = props => {
           {isArchived && (
             <Ribbon status="error">This item has been archived.</Ribbon>
           )}
+          <FeedbackModal
+            content={nodeContent}
+            onApplyFeedback={insertUpdatedFeedback}
+            onImageUpload={onImageUpload}
+            setShowModal={setShowFeedbackModal}
+            showModal={showFeedbackModal}
+          />
           <PanelWrapper
             condition={false}
             editor={
