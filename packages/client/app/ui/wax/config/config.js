@@ -11,10 +11,10 @@ import {
   BottomInfoService,
 } from 'wax-prosemirror-services'
 
-import { QuestionsService } from 'wax-questions-service'
 import { TablesService, tableEditing } from 'wax-table-service'
 
 import { DefaultSchema } from 'wax-prosemirror-core'
+import { QuestionsService } from '../services/wax-question-services'
 
 import charactersList from './charactersList'
 
