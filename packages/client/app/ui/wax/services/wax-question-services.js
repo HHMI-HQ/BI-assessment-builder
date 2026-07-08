@@ -19,8 +19,8 @@ import React, {
   useMemo,
   useRef,
   useEffect,
-  useState,
   useCallback,
+  useState,
   createRef,
   useLayoutEffect,
 } from 'react'
@@ -2223,9 +2223,275 @@ function _objectSpread2(target) {
   return target
 }
 
+var FeedbackEditorComponent = function FeedbackEditorComponent(_ref) {
+  var _node$attrs
+
+  var node = _ref.node,
+    getPos = _ref.getPos,
+    readOnly = _ref.readOnly,
+    handleInteraction = _ref.handleInteraction
+  var editorRef = useRef(null)
+  var questionViewRef = useRef(null)
+
+  var _useContext = useContext(ApplicationContext),
+    app = _useContext.app
+
+  var context = useContext(WaxContext)
+  var main = context.pmViews.main
+  var feedbackId = 'feedback-'.concat(
+    node === null || node === void 0
+      ? void 0
+      : (_node$attrs = node.attrs) === null || _node$attrs === void 0
+      ? void 0
+      : _node$attrs.id,
+  )
+  var mainDispatchFn = main.dispatch.bind(main)
+
+  var getInitialDoc = function getInitialDoc(schema) {
+    var _node$attrs2
+
+    var feedbackHtml =
+      node === null || node === void 0
+        ? void 0
+        : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
+        ? void 0
+        : _node$attrs2.feedback
+
+    if (!feedbackHtml || !feedbackHtml.trim()) {
+      return schema.topNodeType.create(null, [schema.nodes.paragraph.create()])
+    }
+
+    try {
+      var div = document.createElement('div')
+      div.innerHTML = feedbackHtml
+      var parsed = DOMParser.fromSchema(schema).parse(div)
+
+      if (parsed.content.childCount > 0) {
+        return parsed
+      }
+    } catch (e) {
+      // Parsing failed, fall through to default
+    }
+
+    return schema.topNodeType.create(null, [schema.nodes.paragraph.create()])
+  }
+
+  var createKeyBindings = function createKeyBindings() {
+    var keys = getKeys()
+    Object.keys(baseKeymap).forEach(function (key) {
+      if (keys[key]) {
+        keys[key] = chainCommands(keys[key], baseKeymap[key])
+      } else {
+        keys[key] = baseKeymap[key]
+      }
+    })
+    return keys
+  }
+
+  var getKeys = function getKeys() {
+    return {
+      'Mod-z': function ModZ() {
+        return undo(main.state, main.dispatch)
+      },
+      'Mod-y': function ModY() {
+        return redo(main.state, main.dispatch)
+      },
+    }
+  }
+
+  var serializeToHtml = function serializeToHtml(state) {
+    var fragment = DOMSerializer.fromSchema(state.schema).serializeFragment(
+      state.doc.content,
+    )
+    var div = document.createElement('div')
+    div.appendChild(fragment)
+    return div.innerHTML
+  }
+
+  var storeFeedback = function storeFeedback(state) {
+    var html = serializeToHtml(state)
+    var currentPos = getPos()
+    if (currentPos == null) return
+    var currentNode = main.state.doc.nodeAt(currentPos)
+    if (!currentNode) return
+    mainDispatchFn(
+      main.state.tr.setNodeMarkup(
+        currentPos,
+        undefined,
+        _objectSpread2(
+          _objectSpread2({}, currentNode.attrs),
+          {},
+          {
+            feedback: html,
+          },
+        ),
+      ),
+    )
+  }
+
+  useEffect(function () {
+    var schema = main.state.schema // Override main.dispatch so that toolbar commands are applied to the
+    // feedback editor when it has focus.  We extract addMark / removeMark
+    // steps from the transaction and replay them against the feedback
+    // editor's current selection.
+
+    var activateRedirect = function activateRedirect() {
+      main.dispatch = function (tr) {
+        var editorDom = editorRef.current
+        var isFeedbackFocused =
+          editorDom &&
+          (editorDom.contains(document.activeElement) ||
+            editorDom === document.activeElement)
+
+        if (!isFeedbackFocused) {
+          mainDispatchFn(tr)
+          return
+        } // Feedback editor is focused — redirect mark commands to it
+
+        var feedbackState = editorView.state
+        var _feedbackState$select = feedbackState.selection,
+          from = _feedbackState$select.from,
+          to = _feedbackState$select.to
+        var feedbackTr = feedbackState.tr
+        var hasSteps = false
+        tr.steps.forEach(function (step) {
+          if (step.jsonID === 'addMark') {
+            feedbackTr.addMark(from, to, step.mark)
+            hasSteps = true
+          } else if (step.jsonID === 'removeMark') {
+            feedbackTr.removeMark(from, to, step.mark)
+            hasSteps = true
+          }
+        })
+
+        if (hasSteps) {
+          editorView.dispatch(feedbackTr)
+        }
+      }
+    }
+
+    var deactivateRedirect = function deactivateRedirect() {
+      main.dispatch = mainDispatchFn
+    }
+
+    var filteredPlugins = app.PmPlugins.getAll().filter(function (plugin) {
+      return (
+        !plugin.key.includes('y-sync') &&
+        !plugin.key.includes('y-undo') &&
+        !plugin.key.includes('yjs') &&
+        !plugin.key.includes('comment')
+      )
+    })
+    var placeholderPlugin = Placeholder({
+      content: 'Insert feedback',
+    })
+    var finalPlugins = [
+      FakeCursorPlugin(),
+      gapCursor(),
+      dropCursor(),
+      placeholderPlugin,
+      keymap(createKeyBindings()),
+    ].concat(_toConsumableArray(filteredPlugins))
+
+    var dispatchTransaction = function dispatchTransaction(tr) {
+      var _editorView$state$app = editorView.state.applyTransaction(tr),
+        state = _editorView$state$app.state
+
+      editorView.updateState(state)
+
+      if (!tr.getMeta('fromOutside')) {
+        storeFeedback(state)
+      }
+    }
+
+    var editorView = new EditorView(
+      {
+        mount: editorRef.current,
+      },
+      {
+        editable: function editable() {
+          return !readOnly
+        },
+        state: EditorState.create({
+          doc: getInitialDoc(schema),
+          plugins: finalPlugins,
+        }),
+        disallowedTools: [],
+        dispatchTransaction: dispatchTransaction,
+        handleDOMEvents: {
+          mousedown: function mousedown() {
+            handleInteraction()
+            var currentPos = getPos() // Only set the main selection when the editor is not already
+            // focused.  When it IS focused the redirect is active and
+            // main.dispatch is overridden; main.state is untouched so
+            // reading it here is safe in either case.
+
+            if (currentPos != null && !editorView.hasFocus()) {
+              main.dispatch(
+                main.state.tr.setSelection(
+                  NodeSelection.create(main.state.doc, currentPos),
+                ),
+              )
+            }
+
+            if (editorView.hasFocus()) editorView.focus()
+          },
+          blur: function blur(editorViewInstance, event) {
+            deactivateRedirect()
+
+            if (editorViewInstance && event.relatedTarget === null) {
+              editorViewInstance.focus()
+            }
+          },
+          focus: function focus() {
+            activateRedirect()
+            handleInteraction()
+          },
+        },
+        attributes: {
+          spellcheck: 'false',
+        },
+      },
+    )
+    questionViewRef.current = editorView // Register the feedback inner editor in pmViews
+
+    context.updateView(_defineProperty({}, feedbackId, editorView), feedbackId)
+    return function () {
+      deactivateRedirect()
+      editorView.destroy()
+      context.removeView(feedbackId)
+    }
+  }, [])
+  return /*#__PURE__*/ React.createElement('div', {
+    ref: editorRef,
+  })
+}
+
+function _templateObject5() {
+  var data = _taggedTemplateLiteral([
+    '\n  .ProseMirror {\n    border: none;\n    line-height: 31px;\n    padding: 8px 10px;\n    min-height: 31px;\n\n    /* font-family: Fira Sans Condensed;\n    background-attachment: local;\n    background-image: linear-gradient(to right, white 10px, transparent 10px),\n      linear-gradient(to left, white 10px, transparent 10px),\n      repeating-linear-gradient(\n        white,\n        white 30px,\n        #ccc 30px,\n        #ccc 31px,\n        white 31px\n      );\n    line-height: 31px; */\n\n    &:focus {\n      outline: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n',
+  ])
+
+  _templateObject5 = function _templateObject5() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject4$1() {
+  var data = _taggedTemplateLiteral(['\n  font-weight: 700;\n'])
+
+  _templateObject4$1 = function _templateObject4() {
+    return data
+  }
+
+  return data
+}
+
 function _templateObject3$1() {
   var data = _taggedTemplateLiteral([
-    '\n  border: none;\n  display: flex;\n  font-family: Fira Sans Condensed;\n  width: 100%;\n  resize: vertical;\n  white-space: pre-wrap;\n  overflow-wrap: break-word;\n\n  background-attachment: local;\n  background-image: linear-gradient(to right, white 10px, transparent 10px),\n    linear-gradient(to left, white 10px, transparent 10px),\n    repeating-linear-gradient(\n      white,\n      white 30px,\n      #ccc 30px,\n      #ccc 31px,\n      white 31px\n    );\n  line-height: 31px;\n  padding: 8px 10px;\n\n  &:focus {\n    outline: none;\n  }\n\n  ::placeholder {\n    color: rgb(170, 170, 170);\n    font-style: italic;\n  }\n',
+    '\n  background: none;\n  border: none;\n  box-shadow: none;\n  cursor: pointer;\n',
   ])
 
   _templateObject3$1 = function _templateObject3() {
@@ -2236,7 +2502,9 @@ function _templateObject3$1() {
 }
 
 function _templateObject2$2() {
-  var data = _taggedTemplateLiteral(['\n  font-weight: 700;\n'])
+  var data = _taggedTemplateLiteral([
+    '\n  display: flex;\n  justify-content: space-between;\n',
+  ])
 
   _templateObject2$2 = function _templateObject2() {
     return data
@@ -2257,103 +2525,36 @@ function _templateObject$5() {
   return data
 }
 var FeedBack = styled.div(_templateObject$5())
-var FeedBackLabel = styled.span(_templateObject2$2())
-var FeedBackInput = styled.textarea(_templateObject3$1())
+var FeedbackHeader = styled.div(_templateObject2$2())
+var EditButton = styled.button(_templateObject3$1())
+var FeedBackLabel = styled.span(_templateObject4$1())
+var FeedbackEditorWrapper = styled.div(_templateObject5())
 var FeedbackComponent = function (_ref) {
-  var _node$attrs, _node$attrs2, _node$attrs5
+  var _node$attrs, _node$attrs2
 
   var node = _ref.node,
     getPos = _ref.getPos,
-    readOnly = _ref.readOnly
+    readOnly = _ref.readOnly,
+    view = _ref.view,
+    className = _ref.className
   var context = useContext(WaxContext)
-  var main = context.pmViews.main,
-    setOption = context.setOption
-
-  var _useState = useState(true),
-    _useState2 = _slicedToArray(_useState, 2),
-    isFirstRun = _useState2[0],
-    setFirstRun = _useState2[1]
-
-  var _useState3 = useState(
-      (node === null || node === void 0
-        ? void 0
-        : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-        ? void 0
-        : _node$attrs.feedback) || '',
-    ),
-    _useState4 = _slicedToArray(_useState3, 2),
-    feedBack = _useState4[0],
-    setFeedBack = _useState4[1]
-
-  var feedBackRef = useRef(null)
+  var setOption = context.setOption
   var textareaId = 'feedback-'.concat(
+    node === null || node === void 0
+      ? void 0
+      : (_node$attrs = node.attrs) === null || _node$attrs === void 0
+      ? void 0
+      : _node$attrs.id,
+  )
+  var editTextareaId = 'edit-feedback-'.concat(
     node === null || node === void 0
       ? void 0
       : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
       ? void 0
       : _node$attrs2.id,
   )
-
-  var feedBackInput = function feedBackInput() {
-    setFeedBack(feedBackRef.current.value)
-    var allNodes = getNodes$1(main)
-    allNodes.forEach(function (singleNode) {
-      var _node$attrs3
-
-      if (
-        singleNode.node.attrs.id ===
-        (node === null || node === void 0
-          ? void 0
-          : (_node$attrs3 = node.attrs) === null || _node$attrs3 === void 0
-          ? void 0
-          : _node$attrs3.id)
-      ) {
-        main.dispatch(
-          main.state.tr.setNodeMarkup(
-            getPos(),
-            undefined,
-            _objectSpread2(
-              _objectSpread2({}, singleNode.node.attrs),
-              {},
-              {
-                feedback: feedBackRef.current.value,
-              },
-            ),
-          ),
-        )
-      }
-    })
-    setNullSelection()
-    setHeight()
-    return false
-  }
-
-  var setHeight = function setHeight() {
-    var textarea = feedBackRef.current
-    if (!textarea) return
-    var heightLimit = 200
-    textarea.style.height = ''
-    textarea.style.height = ''.concat(
-      Math.min(textarea.scrollHeight, heightLimit),
-      'px',
-    )
-  }
-
-  var setNullSelection = function setNullSelection() {
-    main.dispatch(
-      main.state.tr.setSelection(TextSelection.create(main.state.tr.doc, null)),
-    )
-  }
-
-  var _onFocus = function onFocus() {
-    setTimeout(function () {
-      setNullSelection()
-    }, 50)
-  }
-
   var handleInteraction = useCallback(
     function () {
-      // Save the textarea ID to context when clicked or focused
       if (setOption && textareaId) {
         setOption({
           activeTextareaId: textareaId,
@@ -2362,77 +2563,62 @@ var FeedbackComponent = function (_ref) {
     },
     [setOption, textareaId],
   )
-  useEffect(function () {
-    setTimeout(function () {
-      setFirstRun(false)
-    })
-  }, [])
-  return useMemo(
-    function () {
-      var _node$attrs4
-
-      return /*#__PURE__*/ React.createElement(
-        FeedBack,
-        null,
-        /*#__PURE__*/ React.createElement(FeedBackLabel, null, 'Feedback'),
-        /*#__PURE__*/ React.createElement(FeedBackInput, {
-          'data-textarea-id': textareaId,
-          onChange: feedBackInput,
-          onClick: handleInteraction,
-          onFocus: function onFocus(e) {
-            handleInteraction()
-
-            _onFocus()
-          },
-          placeholder: 'Insert feedback',
-          readOnly: readOnly,
-          ref: feedBackRef,
-          rows: '1',
-          style: {
-            height: setHeight(),
-          },
-          type: 'text',
-          value:
-            (node === null || node === void 0
-              ? void 0
-              : (_node$attrs4 = node.attrs) === null || _node$attrs4 === void 0
-              ? void 0
-              : _node$attrs4.feedback) || feedBack,
-        }),
-      )
+  return /*#__PURE__*/ React.createElement(
+    FeedBack,
+    {
+      className: className,
     },
-    [
-      feedBack,
-      isFirstRun,
-      node === null || node === void 0
-        ? void 0
-        : (_node$attrs5 = node.attrs) === null || _node$attrs5 === void 0
-        ? void 0
-        : _node$attrs5.feedback,
-      textareaId,
-      handleInteraction,
-    ],
+    /*#__PURE__*/ React.createElement(
+      FeedbackHeader,
+      null,
+      /*#__PURE__*/ React.createElement(FeedBackLabel, null, 'Feedback'),
+      /*#__PURE__*/ React.createElement(
+        EditButton,
+        {
+          hidden: true,
+          id: editTextareaId,
+        },
+        /*#__PURE__*/ React.createElement(
+          'svg',
+          {
+            'aria-hidden': 'true',
+            'data-icon': 'edit',
+            fill: 'currentColor',
+            focusable: 'false',
+            height: '1em',
+            viewBox: '64 64 896 896',
+            width: '1em',
+          },
+          /*#__PURE__*/ React.createElement('path', {
+            d: 'M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z',
+          }),
+        ),
+      ),
+    ),
+    /*#__PURE__*/ React.createElement(
+      FeedbackEditorWrapper,
+      null,
+      /*#__PURE__*/ React.createElement(FeedbackEditorComponent, {
+        getPos: getPos,
+        handleInteraction: handleInteraction,
+        node: node,
+        readOnly: readOnly,
+        view: view,
+      }),
+    ),
   )
 }
 
-var getNodes$1 = function getNodes(view) {
-  var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
-  var multipleChoiceNodes = []
-  allNodes.forEach(function (node) {
-    if (
-      node.node.type.name === 'multiple_choice' ||
-      node.node.type.name === 'multiple_choice_single_correct' ||
-      node.node.type.name === 'true_false' ||
-      node.node.type.name === 'true_false_single_correct' ||
-      node.node.type.name === 'matching_container' ||
-      node.node.type.name === 'fill_the_gap_container' ||
-      node.node.type.name === 'multiple_drop_down_container' ||
-      node.node.type.name === 'numerical_answer_container'
-    ) {
-      multipleChoiceNodes.push(node)
-    }
-  })
-  return multipleChoiceNodes
+function _templateObject9() {
+  var data = _taggedTemplateLiteral([
+    '\n  padding-inline: 4px;\n\n  .ProseMirror {\n    padding: 8px 16px;\n  }\n',
+  ])
+
+  _templateObject9 = function _templateObject9() {
+    return data
+  }
+
+  return data
 }
 
 function _templateObject8() {
@@ -2470,22 +2656,22 @@ function _templateObject6() {
   return data
 }
 
-function _templateObject5() {
+function _templateObject5$1() {
   var data = _taggedTemplateLiteral([
     '\n  position: relative;\n  right: 4px;\n  cursor: pointer;\n  height: 24px;\n  width: 24px;\n',
   ])
 
-  _templateObject5 = function _templateObject5() {
+  _templateObject5$1 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$1() {
+function _templateObject4$2() {
   var data = _taggedTemplateLiteral(['\n  float: right;\n'])
 
-  _templateObject4$1 = function _templateObject4() {
+  _templateObject4$2 = function _templateObject4() {
     return data
   }
 
@@ -2530,11 +2716,12 @@ function _templateObject$6() {
 var FillTheGapContainer = styled.div(_templateObject$6())
 var FillTheGapContainerTool = styled.div(_templateObject2$3())
 var FillTheGapWrapper = styled.div(_templateObject3$2())
-var StyledIconContainer = styled.span(_templateObject4$1())
-var StyledIconAction = styled(Icon)(_templateObject5())
+var StyledIconContainer = styled.span(_templateObject4$2())
+var StyledIconAction = styled(Icon)(_templateObject5$1())
 var InfoMsg = styled.div(_templateObject6(), th('colorPrimary'))
 var ActionButton$1 = styled.button(_templateObject7())
 var StyledIconActionRemove$1 = styled(Icon)(_templateObject8())
+var StyledFeedback = styled(FeedbackComponent)(_templateObject9())
 var FillTheGapContainerComponent = function (_ref) {
   var _getUpdatedNode
 
@@ -2568,7 +2755,7 @@ var FillTheGapContainerComponent = function (_ref) {
   }
 
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$2(context.pmViews.main)
+    var allNodes = getNodes$1(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -2583,7 +2770,7 @@ var FillTheGapContainerComponent = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$2(context.pmViews.main)
+    var allNodes = getNodes$1(context.pmViews.main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -2656,7 +2843,7 @@ var FillTheGapContainerComponent = function (_ref) {
       }),
       !testMode &&
         !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(FeedbackComponent, {
+        /*#__PURE__*/ React.createElement(StyledFeedback, {
           getPos: getPos,
           node:
             (_getUpdatedNode = getUpdatedNode()) === null ||
@@ -2670,7 +2857,7 @@ var FillTheGapContainerComponent = function (_ref) {
   )
 }
 
-var getNodes$2 = function getNodes(view) {
+var getNodes$1 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var fillTheGapContainerNodes = []
   allNodes.forEach(function (node) {
@@ -2718,7 +2905,7 @@ var InputComponent = function (_ref) {
 
   var setAnswerInput = function setAnswerInput() {
     setAnswer(answerRef.current.value)
-    var allNodes = getNodes$3(main)
+    var allNodes = getNodes$2(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -2755,7 +2942,7 @@ var InputComponent = function (_ref) {
   })
 }
 
-var getNodes$3 = function getNodes(main) {
+var getNodes$2 = function getNodes(main) {
   var allNodes = DocumentHelpers.findInlineNodes(main.state.doc)
   var fillTheGapNodes = []
   allNodes.forEach(function (node) {
@@ -3563,6 +3750,18 @@ var ContainerEditor$1 = function ContainerEditor(_ref) {
   )
 }
 
+function _templateObject12() {
+  var data = _taggedTemplateLiteral([
+    '\n  .ProseMirror {\n    padding: 8px 16px;\n  }\n',
+  ])
+
+  _templateObject12 = function _templateObject12() {
+    return data
+  }
+
+  return data
+}
+
 function _templateObject11() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
@@ -3585,12 +3784,12 @@ function _templateObject10() {
   return data
 }
 
-function _templateObject9() {
+function _templateObject9$1() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n\n  input {\n    border: none;\n    border-bottom: 1px solid black;\n\n    &:focus {\n      outline: none;\n    }\n\n    ::placeholder {\n      color: rgb(170, 170, 170);\n      font-style: italic;\n    }\n  }\n\n  button {\n    background: #fff;\n    border: 1px solid #535e76;\n    color: #535e76;\n    cursor: pointer;\n    margin-left: 20px;\n    padding: 4px 8px 4px 8px;\n\n    &:hover {\n      background: #535e76;\n      border: 1px solid #535e76;\n      color: #fff;\n      cursor: pointer;\n      margin-right: 20px;\n      padding: 4px 8px 4px 8px;\n    }\n  }\n',
   ])
 
-  _templateObject9 = function _templateObject9() {
+  _templateObject9$1 = function _templateObject9() {
     return data
   }
 
@@ -3631,24 +3830,24 @@ function _templateObject6$1() {
   return data
 }
 
-function _templateObject5$1() {
+function _templateObject5$2() {
   var data = _taggedTemplateLiteral([
     '\n  background: transparent;\n  border: none;\n  cursor: pointer;\n  height: 24px;\n  padding-left: 0;\n',
   ])
 
-  _templateObject5$1 = function _templateObject5() {
+  _templateObject5$2 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$2() {
+function _templateObject4$3() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
   ])
 
-  _templateObject4$2 = function _templateObject4() {
+  _templateObject4$3 = function _templateObject4() {
     return data
   }
 
@@ -3693,14 +3892,15 @@ function _templateObject$a() {
 var MatchingWrapper = styled.div(_templateObject$a())
 var MatchingContainerTool = styled.div(_templateObject2$5())
 var MatchingContainer = styled.div(_templateObject3$4())
-var QuestionWrapper = styled.div(_templateObject4$2())
-var ActionButton$2 = styled.button(_templateObject5$1())
+var QuestionWrapper = styled.div(_templateObject4$3())
+var ActionButton$2 = styled.button(_templateObject5$2())
 var StyledIconAction$1 = styled(Icon)(_templateObject6$1())
 var CreateOptions = styled.div(_templateObject7$1())
 var OptionArea = styled.div(_templateObject8$1())
-var AddOption = styled.div(_templateObject9())
+var AddOption = styled.div(_templateObject9$1())
 var RemoveQuestionButton = styled.button(_templateObject10())
 var StyledIconActionRemove$2 = styled(Icon)(_templateObject11())
+var StyledFeedback$1 = styled(FeedbackComponent)(_templateObject12())
 var MatchingContainerComponent = function (_ref) {
   var _getUpdatedNode
 
@@ -3755,7 +3955,7 @@ var MatchingContainerComponent = function (_ref) {
   }, [])
   useEffect(
     function () {
-      var allNodes = getNodes$4(main)
+      var allNodes = getNodes$3(main)
       /* TEMP TO SAVE NODE OPTIONS TODO: SAVE IN CONTEXT OPTIONS */
 
       saveInChildOptions(allNodes)
@@ -3818,7 +4018,7 @@ var MatchingContainerComponent = function (_ref) {
     setTimeout(function () {
       setAddingOption(false)
     })
-    var allNodes = getNodes$4(context.pmViews.main) // const allNodesOptions = getOptionsNodes(context.pmViews.main);
+    var allNodes = getNodes$3(context.pmViews.main) // const allNodesOptions = getOptionsNodes(context.pmViews.main);
 
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
@@ -3844,6 +4044,7 @@ var MatchingContainerComponent = function (_ref) {
               })
 
               if (optionNode.attrs.correct === value) {
+                // eslint-disable-next-line no-param-reassign
                 optionNode.attrs.correct = null
               }
             }
@@ -3900,7 +4101,7 @@ var MatchingContainerComponent = function (_ref) {
   var feedback = node.attrs.feedback
 
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$4(context.pmViews.main)
+    var allNodes = getNodes$3(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -3915,7 +4116,7 @@ var MatchingContainerComponent = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$4(context.pmViews.main)
+    var allNodes = getNodes$3(context.pmViews.main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -4032,7 +4233,7 @@ var MatchingContainerComponent = function (_ref) {
         ),
       !testMode &&
         !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(FeedbackComponent, {
+        /*#__PURE__*/ React.createElement(StyledFeedback$1, {
           getPos: getPos,
           node:
             (_getUpdatedNode = getUpdatedNode()) === null ||
@@ -4046,7 +4247,7 @@ var MatchingContainerComponent = function (_ref) {
   )
 }
 
-var getNodes$4 = function getNodes(view) {
+var getNodes$3 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var matchingContainerNodes = []
   allNodes.forEach(function (node) {
@@ -4055,7 +4256,16 @@ var getNodes$4 = function getNodes(view) {
     }
   })
   return matchingContainerNodes
-}
+} // const getOptionsNodes = view => {
+//   const allNodes = DocumentHelpers.findInlineNodes(view.state.doc);
+//   const matchingOptionNodes = [];
+//   allNodes.forEach(node => {
+//     if (node.node.type.name === 'matching_option') {
+//       matchingOptionNodes.push(node);
+//     }
+//   });
+//   return matchingOptionNodes;
+// };
 
 function _templateObject$b() {
   var data = _taggedTemplateLiteral([
@@ -4218,12 +4428,12 @@ var EditorComponent$1 = function EditorComponent(_ref) {
   )
 }
 
-function _templateObject4$3() {
+function _templateObject4$4() {
   var data = _taggedTemplateLiteral([
     '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
   ])
 
-  _templateObject4$3 = function _templateObject4() {
+  _templateObject4$4 = function _templateObject4() {
     return data
   }
 
@@ -4279,7 +4489,7 @@ var DropDownButton = styled.button(
 var DropDownMenu = styled.div(_templateObject3$5(), function (props) {
   return props.$isOpen ? 'visible' : 'hidden'
 })
-var StyledIcon = styled(Icon)(_templateObject4$3())
+var StyledIcon = styled(Icon)(_templateObject4$4())
 
 var DropComponent = function DropComponent(_ref) {
   var _getMatchingNode, _getMatchingNode$attr
@@ -4317,7 +4527,7 @@ var DropComponent = function DropComponent(_ref) {
   if (allOptions && allOptions.length === 0) isDisabled = true
 
   var onChange = function onChange(option) {
-    var allNodes = getNodes$5(main)
+    var allNodes = getNodes$4(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -4511,7 +4721,7 @@ var DropComponent = function DropComponent(_ref) {
   return MultipleDropDown
 }
 
-var getNodes$5 = function getNodes(view) {
+var getNodes$4 = function getNodes(view) {
   var allNodes = DocumentHelpers.findInlineNodes(view.state.doc)
   var matchingOptionNodes = []
   allNodes.forEach(function (node) {
@@ -4536,12 +4746,12 @@ var getMatchingNode = function getMatchingNode(view, node) {
   return matchingNode
 }
 
-function _templateObject4$4() {
+function _templateObject4$5() {
   var data = _taggedTemplateLiteral([
     '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
   ])
 
-  _templateObject4$4 = function _templateObject4() {
+  _templateObject4$5 = function _templateObject4() {
     return data
   }
 
@@ -4597,7 +4807,7 @@ var DropDownButton$1 = styled.button(
 var DropDownMenu$1 = styled.div(_templateObject3$6(), function (props) {
   return props.$isOpen ? 'visible' : 'hidden'
 })
-var StyledIcon$1 = styled(Icon)(_templateObject4$4())
+var StyledIcon$1 = styled(Icon)(_templateObject4$5())
 
 var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
   var getPos = _ref.getPos,
@@ -4625,7 +4835,7 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
 
   var onChange = function onChange(option) {
     setSelectedOption(option)
-    var allNodes = getNodes$6(main)
+    var allNodes = getNodes$5(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -4791,7 +5001,7 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
   return ReadOnlyMultipleDropDown
 }
 
-var getNodes$6 = function getNodes(view) {
+var getNodes$5 = function getNodes(view) {
   return DocumentHelpers.findInlineNodes(view.state.doc)
 }
 
@@ -4827,22 +5037,22 @@ function _templateObject6$2() {
   return data
 }
 
-function _templateObject5$2() {
+function _templateObject5$3() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
-  _templateObject5$2 = function _templateObject5() {
+  _templateObject5$3 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$5() {
+function _templateObject4$6() {
   var data = _taggedTemplateLiteral([
     '\n  background: transparent;\n  border: none;\n  cursor: pointer;\n  height: 24px;\n  padding-left: 0;\n',
   ])
 
-  _templateObject4$5 = function _templateObject4() {
+  _templateObject4$6 = function _templateObject4() {
     return data
   }
 
@@ -4887,8 +5097,8 @@ function _templateObject$e() {
 var Option = styled.div(_templateObject$e())
 var ButtonsContainer = styled.div(_templateObject2$8())
 var DropDownContainer = styled.div(_templateObject3$7())
-var ActionButton$3 = styled.button(_templateObject4$5())
-var StyledIconAction$2 = styled(Icon)(_templateObject5$2())
+var ActionButton$3 = styled.button(_templateObject4$6())
+var StyledIconAction$2 = styled(Icon)(_templateObject5$3())
 var AnswerContainer = styled.div(_templateObject6$2())
 var CorrectAnswer = styled.span(_templateObject7$2())
 var Answer = styled.span(_templateObject8$2(), function (props) {
@@ -5498,12 +5708,12 @@ var MultipleDropDownNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
   return MultipleDropDownNodeView
 })(QuestionsNodeView)
 
-function _templateObject4$6() {
+function _templateObject4$7() {
   var data = _taggedTemplateLiteral([
     '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
   ])
 
-  _templateObject4$6 = function _templateObject4() {
+  _templateObject4$7 = function _templateObject4() {
     return data
   }
 
@@ -5559,7 +5769,7 @@ var DropDownButton$2 = styled.button(
 var DropDownMenu$2 = styled.div(_templateObject3$8(), function (props) {
   return props.$isOpen ? 'visible' : 'hidden'
 })
-var StyledIcon$2 = styled(Icon)(_templateObject4$6())
+var StyledIcon$2 = styled(Icon)(_templateObject4$7())
 
 var DropComponent$1 = function DropComponent(_ref) {
   var node = _ref.node,
@@ -5592,7 +5802,7 @@ var DropComponent$1 = function DropComponent(_ref) {
   }, [])
 
   var onChange = function onChange(option) {
-    var allNodes = getNodes$7(main)
+    var allNodes = getNodes$6(main)
     var tr = main.state.tr
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
@@ -5738,7 +5948,7 @@ var DropComponent$1 = function DropComponent(_ref) {
   return MultipleDropDown
 }
 
-var getNodes$7 = function getNodes(view) {
+var getNodes$6 = function getNodes(view) {
   return DocumentHelpers.findInlineNodes(view.state.doc)
 }
 
@@ -5762,24 +5972,24 @@ function _templateObject6$3() {
   return data
 }
 
-function _templateObject5$3() {
+function _templateObject5$4() {
   var data = _taggedTemplateLiteral([
     '\n  display: inline-block;\n  border-bottom: ',
     ';\n  border-top: ',
     ';\n  border-radius: 192px;\n  padding: 2px 4px 2px 4px;\n',
   ])
 
-  _templateObject5$3 = function _templateObject5() {
+  _templateObject5$4 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$7() {
+function _templateObject4$8() {
   var data = _taggedTemplateLiteral(['\n  ', '\n'])
 
-  _templateObject4$7 = function _templateObject4() {
+  _templateObject4$8 = function _templateObject4() {
     return data
   }
 
@@ -5828,11 +6038,11 @@ var StyledIconActionContainer = styled.span(
     return props.$isActive && activeStylesContainer
   },
 )
-var StyledIconAction$3 = styled(Icon)(_templateObject4$7(), function (props) {
+var StyledIconAction$3 = styled(Icon)(_templateObject4$8(), function (props) {
   return props.$isActive && activeStylesSvg
 })
 var AnswerContainer$1 = styled.div(
-  _templateObject5$3(),
+  _templateObject5$4(),
   function (props) {
     return props.$isCorrect ? '1px solid #008000;' : '1px solid #FF3030'
   },
@@ -6001,24 +6211,24 @@ function _templateObject6$4() {
   return data
 }
 
-function _templateObject5$4() {
+function _templateObject5$5() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  margin-top: auto;\n  input {\n    border: none;\n    border-bottom: 1px solid black;\n    width: 160px;\n    &:focus {\n      outline: none;\n    }\n\n    ::placeholder {\n      color: rgb(170, 170, 170);\n      font-style: italic;\n      font-size: 10px;\n    }\n  }\n  button {\n    border: 1px solid #535e76;\n    cursor: pointer;\n    color: #535e76;\n    margin-left: 20px;\n    background: #fff;\n    padding: 4px 8px 4px 8px;\n    &:hover {\n      border: 1px solid #535e76;\n      cursor: pointer;\n      color: #535e76;\n      margin-right: 10px;\n      background: #fff;\n      background: #535e76;\n      color: #fff;\n      padding: 4px 8px 4px 8px;\n    }\n  }\n',
   ])
 
-  _templateObject5$4 = function _templateObject5() {
+  _templateObject5$5 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$8() {
+function _templateObject4$9() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 96%;\n',
   ])
 
-  _templateObject4$8 = function _templateObject4() {
+  _templateObject4$9 = function _templateObject4() {
     return data
   }
 
@@ -6063,8 +6273,8 @@ function _templateObject$i() {
 var TriangleTop = styled.div(_templateObject$i())
 var DropDownComponent = styled.div(_templateObject2$c())
 var Options = styled.div(_templateObject3$a())
-var Option$1 = styled.div(_templateObject4$8())
-var AddOption$1 = styled.div(_templateObject5$4())
+var Option$1 = styled.div(_templateObject4$9())
+var AddOption$1 = styled.div(_templateObject5$5())
 var IconRemove = styled(Icon)(_templateObject6$4())
 var previousNode = ''
 var DropDownComponent$1 = function (_ref) {
@@ -6556,22 +6766,32 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
   )
 }
 
-function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
+function _templateObject6$5() {
+  var data = _taggedTemplateLiteral(['\n  padding-inline: 4px;\n'])
 
-  _templateObject5$5 = function _templateObject5() {
+  _templateObject6$5 = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$9() {
+function _templateObject5$6() {
+  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
+
+  _templateObject5$6 = function _templateObject5() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject4$a() {
   var data = _taggedTemplateLiteral([
     '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: -11px;\n  float: right;\n',
   ])
 
-  _templateObject4$9 = function _templateObject4() {
+  _templateObject4$a = function _templateObject4() {
     return data
   }
 
@@ -6616,8 +6836,9 @@ function _templateObject$k() {
 var MultipleDropDownpWrapper = styled.div(_templateObject$k())
 var MultipleDropDownContainerTool = styled.div(_templateObject2$d())
 var MultipleDropDownpContainer = styled.div(_templateObject3$b())
-var ActionButton$4 = styled.button(_templateObject4$9())
-var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$5())
+var ActionButton$4 = styled.button(_templateObject4$a())
+var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$6())
+var StyledFeedback$2 = styled(FeedbackComponent)(_templateObject6$5())
 var MultipleDropDownContainerComponent = function (_ref) {
   var _getUpdatedNode
 
@@ -6636,7 +6857,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
   var feedback = node.attrs.feedback
 
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$8(context.pmViews.main)
+    var allNodes = getNodes$7(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -6651,7 +6872,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$8(context.pmViews.main)
+    var allNodes = getNodes$7(context.pmViews.main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -6697,7 +6918,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
       }),
       !testMode &&
         !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(FeedbackComponent, {
+        /*#__PURE__*/ React.createElement(StyledFeedback$2, {
           getPos: getPos,
           node:
             (_getUpdatedNode = getUpdatedNode()) === null ||
@@ -6711,7 +6932,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
   )
 }
 
-var getNodes$8 = function getNodes(view) {
+var getNodes$7 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleDropContainerNodes = []
   allNodes.forEach(function (node) {
@@ -6996,12 +7217,12 @@ var NumericalAnswerContainerNodeView = /*#__PURE__*/ (function (
   return NumericalAnswerContainerNodeView
 })(QuestionsNodeView)
 
-function _templateObject4$a() {
+function _templateObject4$b() {
   var data = _taggedTemplateLiteral([
     '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n  position: relative;\n  top: 1px;\n',
   ])
 
-  _templateObject4$a = function _templateObject4() {
+  _templateObject4$b = function _templateObject4() {
     return data
   }
 
@@ -7052,7 +7273,7 @@ var DropDownButton$3 = styled.button(_templateObject2$e(), function (props) {
 var DropDownMenu$3 = styled.div(_templateObject3$c(), function (props) {
   return props.$isOpen ? 'visible' : 'hidden'
 })
-var StyledIcon$3 = styled(Icon)(_templateObject4$a())
+var StyledIcon$3 = styled(Icon)(_templateObject4$b())
 
 var NumericalAnswerDropDownCompontent =
   function NumericalAnswerDropDownCompontent(_ref) {
@@ -7162,7 +7383,7 @@ var NumericalAnswerDropDownCompontent =
     }
 
     var SaveTypeToNode = function SaveTypeToNode(option) {
-      var allNodes = getNodes$9(context.pmViews.main)
+      var allNodes = getNodes$8(context.pmViews.main)
       allNodes.forEach(function (singleNode) {
         if (singleNode.node.attrs.id === node.attrs.id) {
           context.pmViews.main.dispatch(
@@ -7269,7 +7490,7 @@ var NumericalAnswerDropDownCompontent =
     return NumericalAnswerDropDown
   }
 
-var getNodes$9 = function getNodes(view) {
+var getNodes$8 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -7292,34 +7513,34 @@ function _templateObject7$4() {
   return data
 }
 
-function _templateObject6$5() {
+function _templateObject6$6() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$5 = function _templateObject6() {
+  _templateObject6$6 = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$6() {
+function _templateObject5$7() {
   var data = _taggedTemplateLiteral(['\n  color: ', ';\n  font-weight: 999;\n'])
 
-  _templateObject5$6 = function _templateObject5() {
+  _templateObject5$7 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$b() {
+function _templateObject4$c() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n',
   ])
 
-  _templateObject4$b = function _templateObject4() {
+  _templateObject4$c = function _templateObject4() {
     return data
   }
 
@@ -7364,11 +7585,11 @@ function _templateObject$m() {
 var AnswerContainer$2 = styled.div(_templateObject$m())
 var ValueContainer = styled.div(_templateObject2$f())
 var ValueInnerContainer = styled.div(_templateObject3$d())
-var ResultContainer = styled.div(_templateObject4$b())
-var FinalResult = styled.span(_templateObject5$6(), function (props) {
+var ResultContainer = styled.div(_templateObject4$c())
+var FinalResult = styled.span(_templateObject5$7(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect = styled(Icon)(_templateObject6$5())
+var StyledIconCorrect = styled(Icon)(_templateObject6$6())
 var StyledIconWrong = styled(Icon)(_templateObject7$4())
 
 var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
@@ -7440,7 +7661,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
   }
 
   var SaveValuesToNode = function SaveValuesToNode() {
-    var allNodes = getNodes$a(context.pmViews.main)
+    var allNodes = getNodes$9(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         var obj = {
@@ -7476,7 +7697,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
 
   var onChangeExactStudent = function onChangeExactStudent() {
     setExactStudent(onlyNumbers(exactStudentRef.current.value))
-    var allNodes = getNodes$a(context.pmViews.main)
+    var allNodes = getNodes$9(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -7644,7 +7865,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
   )
 }
 
-var getNodes$a = function getNodes(view) {
+var getNodes$9 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -7667,34 +7888,34 @@ function _templateObject7$5() {
   return data
 }
 
-function _templateObject6$6() {
+function _templateObject6$7() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$6 = function _templateObject6() {
+  _templateObject6$7 = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$7() {
+function _templateObject5$8() {
   var data = _taggedTemplateLiteral(['\n  color: ', ';\n  font-weight: 999;\n'])
 
-  _templateObject5$7 = function _templateObject5() {
+  _templateObject5$8 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$c() {
+function _templateObject4$d() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n',
   ])
 
-  _templateObject4$c = function _templateObject4() {
+  _templateObject4$d = function _templateObject4() {
     return data
   }
 
@@ -7739,11 +7960,11 @@ function _templateObject$n() {
 var AnswerContainer$3 = styled.div(_templateObject$n())
 var ValueContainer$1 = styled.div(_templateObject2$g())
 var ValueInnerContainer$1 = styled.div(_templateObject3$e())
-var ResultContainer$1 = styled.div(_templateObject4$c())
-var FinalResult$1 = styled.span(_templateObject5$7(), function (props) {
+var ResultContainer$1 = styled.div(_templateObject4$d())
+var FinalResult$1 = styled.span(_templateObject5$8(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$1 = styled(Icon)(_templateObject6$6())
+var StyledIconCorrect$1 = styled(Icon)(_templateObject6$7())
 var StyledIconWrong$1 = styled(Icon)(_templateObject7$5())
 
 var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
@@ -7795,7 +8016,7 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
   }
 
   var SaveValuesToNode = function SaveValuesToNode() {
-    var allNodes = getNodes$b(context.pmViews.main)
+    var allNodes = getNodes$a(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         var obj = {
@@ -7825,7 +8046,7 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
 
   var onChangePreciseStudent = function onChangePreciseStudent() {
     setPreciseStudent(onlyNumbers(preciseStudentRef.current.value))
-    var allNodes = getNodes$b(context.pmViews.main)
+    var allNodes = getNodes$a(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -7944,7 +8165,7 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
   )
 }
 
-var getNodes$b = function getNodes(view) {
+var getNodes$a = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -7967,34 +8188,34 @@ function _templateObject7$6() {
   return data
 }
 
-function _templateObject6$7() {
+function _templateObject6$8() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$7 = function _templateObject6() {
+  _templateObject6$8 = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$8() {
+function _templateObject5$9() {
   var data = _taggedTemplateLiteral(['\n  color: ', ';\n  font-weight: 999;\n'])
 
-  _templateObject5$8 = function _templateObject5() {
+  _templateObject5$9 = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$d() {
+function _templateObject4$e() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n',
   ])
 
-  _templateObject4$d = function _templateObject4() {
+  _templateObject4$e = function _templateObject4() {
     return data
   }
 
@@ -8039,11 +8260,11 @@ function _templateObject$o() {
 var AnswerContainer$4 = styled.div(_templateObject$o())
 var ValueContainer$2 = styled.div(_templateObject2$h())
 var ValueInnerContainer$2 = styled.div(_templateObject3$f())
-var ResultContainer$2 = styled.div(_templateObject4$d())
-var FinalResult$2 = styled.span(_templateObject5$8(), function (props) {
+var ResultContainer$2 = styled.div(_templateObject4$e())
+var FinalResult$2 = styled.span(_templateObject5$9(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$2 = styled(Icon)(_templateObject6$7())
+var StyledIconCorrect$2 = styled(Icon)(_templateObject6$8())
 var StyledIconWrong$2 = styled(Icon)(_templateObject7$6())
 
 var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
@@ -8115,7 +8336,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
   }
 
   var SaveValuesToNode = function SaveValuesToNode() {
-    var allNodes = getNodes$c(context.pmViews.main)
+    var allNodes = getNodes$b(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         var obj = {
@@ -8151,7 +8372,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
 
   var onChangeRangeStudent = function onChangeRangeStudent() {
     setRangeStudentValue(onlyNumbers(rangeStudentRef.current.value))
-    var allNodes = getNodes$c(context.pmViews.main)
+    var allNodes = getNodes$b(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -8312,7 +8533,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
   )
 }
 
-var getNodes$c = function getNodes(view) {
+var getNodes$b = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -8323,10 +8544,22 @@ var getNodes$c = function getNodes(view) {
   return numericalAnswerpContainerNodes
 }
 
-function _templateObject9$1() {
+function _templateObject10$1() {
+  var data = _taggedTemplateLiteral([
+    '\n  padding-inline: 4px;\n\n  .ProseMirror {\n    padding: 8px 16px;\n  }\n',
+  ])
+
+  _templateObject10$1 = function _templateObject10() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject9$2() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
-  _templateObject9$1 = function _templateObject9() {
+  _templateObject9$2 = function _templateObject9() {
     return data
   }
 
@@ -8335,7 +8568,7 @@ function _templateObject9$1() {
 
 function _templateObject8$3() {
   var data = _taggedTemplateLiteral([
-    '\n  color: #fff;\n  display: none;\n  user-select: none;\n  position: absolute;\n  width: 100%;\n  span {\n    background: ',
+    '\n  color: #fff;\n  display: none;\n  user-select: none;\n  position: absolute;\n  width: 100%;\n\n  span {\n    background: ',
     ';\n    bottom: 35px;\n    border-radius: 4px;\n    float: right;\n    right: 162px;\n    padding: 4px;\n    position: relative;\n  }\n',
   ])
 
@@ -8358,34 +8591,34 @@ function _templateObject7$7() {
   return data
 }
 
-function _templateObject6$8() {
+function _templateObject6$9() {
   var data = _taggedTemplateLiteral([
     '\n  float: right;\n  position: relative;\n  top: 3px;\n',
   ])
 
-  _templateObject6$8 = function _templateObject6() {
+  _templateObject6$9 = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$9() {
+function _templateObject5$a() {
   var data = _taggedTemplateLiteral([
     '\n  background: transparent;\n  cursor: pointer;\n  border: none;\n  margin-left: auto;\n  z-index: 999;\n',
   ])
 
-  _templateObject5$9 = function _templateObject5() {
+  _templateObject5$a = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$e() {
+function _templateObject4$f() {
   var data = _taggedTemplateLiteral(['\n  padding: 8px;\n'])
 
-  _templateObject4$e = function _templateObject4() {
+  _templateObject4$f = function _templateObject4() {
     return data
   }
 
@@ -8430,12 +8663,13 @@ function _templateObject$p() {
 var NumericalAnswerWrapper = styled.div(_templateObject$p())
 var NumericalAnswerContainer = styled.div(_templateObject2$i())
 var NumericalAnswerContainerTool = styled.div(_templateObject3$g())
-var NumericalAnswerOption = styled.div(_templateObject4$e())
-var ActionButton$5 = styled.button(_templateObject5$9())
-var StyledIconContainer$1 = styled.span(_templateObject6$8())
+var NumericalAnswerOption = styled.div(_templateObject4$f())
+var ActionButton$5 = styled.button(_templateObject5$a())
+var StyledIconContainer$1 = styled.span(_templateObject6$9())
 var StyledIconAction$4 = styled(Icon)(_templateObject7$7())
 var InfoMsg$1 = styled.div(_templateObject8$3(), th('colorPrimary'))
-var StyledIconActionRemove$4 = styled(Icon)(_templateObject9$1())
+var StyledIconActionRemove$4 = styled(Icon)(_templateObject9$2())
+var StyledFeedback$3 = styled(FeedbackComponent)(_templateObject10$1())
 var NumericalAnswerContainerComponent = function (_ref) {
   var _getUpdatedNode,
     _getUpdatedNode$node,
@@ -8462,8 +8696,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
     view = _ref.view,
     getPos = _ref.getPos
   var context = useContext(WaxContext)
-  var main = context.pmViews.main,
-    setOption = context.setOption
+  var main = context.pmViews.main
   var customProps = main.props.customValues
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
@@ -8481,7 +8714,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
   var feedback = node.attrs.feedback
 
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$d(context.pmViews.main)
+    var allNodes = getNodes$c(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -8510,7 +8743,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$d(context.pmViews.main)
+    var allNodes = getNodes$c(context.pmViews.main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -8675,7 +8908,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
       ),
       !testMode &&
         !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(FeedbackComponent, {
+        /*#__PURE__*/ React.createElement(StyledFeedback$3, {
           getPos: getPos,
           node:
             (_getUpdatedNode10 = getUpdatedNode()) === null ||
@@ -8689,7 +8922,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
   )
 }
 
-var getNodes$d = function getNodes(view) {
+var getNodes$c = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -8735,12 +8968,12 @@ var NumericalAnswerService = /*#__PURE__*/ (function (_Service) {
   return NumericalAnswerService
 })(Service)
 
-function _templateObject4$f() {
+function _templateObject4$g() {
   var data = _taggedTemplateLiteral([
     '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n  position: relative;\n  top: 10px;\n',
   ])
 
-  _templateObject4$f = function _templateObject4() {
+  _templateObject4$g = function _templateObject4() {
     return data
   }
 
@@ -8791,7 +9024,7 @@ var DropDownButton$4 = styled.button(_templateObject2$j(), function (props) {
 var DropDownMenu$4 = styled.div(_templateObject3$h(), function (props) {
   return props.$isOpen ? 'visible' : 'hidden'
 })
-var StyledIcon$4 = styled(Icon)(_templateObject4$f())
+var StyledIcon$4 = styled(Icon)(_templateObject4$g())
 
 var DropDownComponent$2 = function DropDownComponent(_ref) {
   var view = _ref.view,
@@ -9423,10 +9656,10 @@ function _objectWithoutProperties(source, excluded) {
   return target
 }
 
-function _templateObject4$g() {
+function _templateObject4$h() {
   var data = _taggedTemplateLiteral(['\n      margin-left: ', ';\n    '])
 
-  _templateObject4$g = function _templateObject4() {
+  _templateObject4$h = function _templateObject4() {
     return data
   }
 
@@ -9476,7 +9709,7 @@ var Label = styled.label(
   },
   function (props) {
     return (
-      props.$labelPosition === 'right' && css(_templateObject4$g(), grid(2))
+      props.$labelPosition === 'right' && css(_templateObject4$h(), grid(2))
     )
   },
 )
@@ -9542,37 +9775,37 @@ var SwitchComponent = function SwitchComponent(props) {
   )
 }
 
-function _templateObject6$9() {
+function _templateObject6$a() {
   var data = _taggedTemplateLiteral([
     '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$9 = function _templateObject6() {
+  _templateObject6$a = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$a() {
+function _templateObject5$b() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject5$a = function _templateObject5() {
+  _templateObject5$b = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$h() {
+function _templateObject4$i() {
   var data = _taggedTemplateLiteral([
     '\n  margin-right: 10px;\n\n  span {\n    color: ',
     ';\n  }\n',
   ])
 
-  _templateObject4$h = function _templateObject4() {
+  _templateObject4$i = function _templateObject4() {
     return data
   }
 
@@ -9615,11 +9848,11 @@ function _templateObject$t() {
 var StyledSwitch = styled(SwitchComponent)(_templateObject$t())
 var AnswerContainer$5 = styled.span(_templateObject2$m())
 var Correct = styled.span(_templateObject3$j())
-var Answer$2 = styled.span(_templateObject4$h(), function (props) {
+var Answer$2 = styled.span(_templateObject4$i(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$3 = styled(Icon)(_templateObject5$a())
-var StyledIconWrong$3 = styled(Icon)(_templateObject6$9())
+var StyledIconCorrect$3 = styled(Icon)(_templateObject5$b())
+var StyledIconWrong$3 = styled(Icon)(_templateObject6$a())
 
 var YesNoSwitch = function YesNoSwitch(_ref) {
   var customProps = _ref.customProps,
@@ -9698,7 +9931,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
   })
   useEffect(
     function () {
-      var allNodes = getNodes$e(main)
+      var allNodes = getNodes$d(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -9706,7 +9939,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$e(main)],
+    [getNodes$d(main)],
   )
 
   var handleChange = function handleChange() {
@@ -9714,7 +9947,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
     setCheckedAnswerMode(!checkedAnswerMode)
     var key = isEditable ? 'correct' : 'answer'
     var value = isEditable ? !checked : !checkedAnswerMode
-    var allNodes = getNodes$e(main)
+    var allNodes = getNodes$d(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -9734,7 +9967,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$e(main)
+    var allNodes = getNodes$d(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -9753,7 +9986,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
   })
 }
 
-var getNodes$e = function getNodes(view) {
+var getNodes$d = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -9764,394 +9997,10 @@ var getNodes$e = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-var FeedbackEditorComponent = function FeedbackEditorComponent(_ref) {
-  var _node$attrs
-
-  var node = _ref.node,
-    view = _ref.view,
-    getPos = _ref.getPos,
-    readOnly = _ref.readOnly,
-    handleInteraction = _ref.handleInteraction
-  var editorRef = useRef(null)
-  var questionViewRef = useRef(null)
-
-  var _useContext = useContext(ApplicationContext),
-    app = _useContext.app
-
-  var context = useContext(WaxContext)
-  var main = context.pmViews.main
-  var feedbackId = 'feedback-'.concat(
-    node === null || node === void 0
-      ? void 0
-      : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-      ? void 0
-      : _node$attrs.id,
-  )
-  var mainDispatchFn = main.dispatch.bind(main)
-
-  var getInitialDoc = function getInitialDoc(schema) {
-    var _node$attrs2
-
-    var feedbackHtml =
-      node === null || node === void 0
-        ? void 0
-        : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
-        ? void 0
-        : _node$attrs2.feedback
-
-    if (!feedbackHtml || !feedbackHtml.trim()) {
-      return schema.topNodeType.create(null, [schema.nodes.paragraph.create()])
-    }
-
-    try {
-      var div = document.createElement('div')
-      div.innerHTML = feedbackHtml
-      var parsed = DOMParser.fromSchema(schema).parse(div)
-
-      if (parsed.content.childCount > 0) {
-        return parsed
-      }
-    } catch (e) {
-      // Parsing failed, fall through to default
-    }
-
-    return schema.topNodeType.create(null, [schema.nodes.paragraph.create()])
-  }
-
-  var createKeyBindings = function createKeyBindings() {
-    var keys = getKeys()
-    Object.keys(baseKeymap).forEach(function (key) {
-      if (keys[key]) {
-        keys[key] = chainCommands(keys[key], baseKeymap[key])
-      } else {
-        keys[key] = baseKeymap[key]
-      }
-    })
-    return keys
-  }
-
-  var getKeys = function getKeys() {
-    return {
-      'Mod-z': function ModZ() {
-        return undo(main.state, main.dispatch)
-      },
-      'Mod-y': function ModY() {
-        return redo(main.state, main.dispatch)
-      },
-    }
-  }
-
-  var serializeToHtml = function serializeToHtml(state) {
-    var fragment = DOMSerializer.fromSchema(state.schema).serializeFragment(
-      state.doc.content,
-    )
-    var div = document.createElement('div')
-    div.appendChild(fragment)
-    return div.innerHTML
-  }
-
-  var storeFeedback = function storeFeedback(state) {
-    var html = serializeToHtml(state)
-    var currentPos = getPos()
-    if (currentPos == null) return
-    var currentNode = main.state.doc.nodeAt(currentPos)
-    if (!currentNode) return
-    mainDispatchFn(
-      main.state.tr.setNodeMarkup(
-        currentPos,
-        undefined,
-        _objectSpread2(
-          _objectSpread2({}, currentNode.attrs),
-          {},
-          {
-            feedback: html,
-          },
-        ),
-      ),
-    )
-  }
-
-  useEffect(function () {
-    var schema = main.state.schema // Override main.dispatch so that toolbar commands are applied to the
-    // feedback editor when it has focus.  We extract addMark / removeMark
-    // steps from the transaction and replay them against the feedback
-    // editor's current selection.
-
-    var activateRedirect = function activateRedirect() {
-      main.dispatch = function (tr) {
-        var editorDom = editorRef.current
-        var isFeedbackFocused =
-          editorDom &&
-          (editorDom.contains(document.activeElement) ||
-            editorDom === document.activeElement)
-
-        if (!isFeedbackFocused) {
-          mainDispatchFn(tr)
-          return
-        } // Feedback editor is focused — redirect mark commands to it
-
-        var feedbackState = editorView.state
-        var _feedbackState$select = feedbackState.selection,
-          from = _feedbackState$select.from,
-          to = _feedbackState$select.to
-        var feedbackTr = feedbackState.tr
-        var hasSteps = false
-        tr.steps.forEach(function (step) {
-          if (step.jsonID === 'addMark') {
-            feedbackTr.addMark(from, to, step.mark)
-            hasSteps = true
-          } else if (step.jsonID === 'removeMark') {
-            feedbackTr.removeMark(from, to, step.mark)
-            hasSteps = true
-          }
-        })
-
-        if (hasSteps) {
-          editorView.dispatch(feedbackTr)
-        }
-      }
-    }
-
-    var deactivateRedirect = function deactivateRedirect() {
-      main.dispatch = mainDispatchFn
-    }
-
-    var filteredPlugins = app.PmPlugins.getAll().filter(function (plugin) {
-      return (
-        !plugin.key.includes('y-sync') &&
-        !plugin.key.includes('y-undo') &&
-        !plugin.key.includes('yjs') &&
-        !plugin.key.includes('comment')
-      )
-    })
-    var placeholderPlugin = Placeholder({
-      content: 'Insert feedback',
-    })
-    var finalPlugins = [
-      FakeCursorPlugin(),
-      gapCursor(),
-      dropCursor(),
-      placeholderPlugin,
-      keymap(createKeyBindings()),
-    ].concat(_toConsumableArray(filteredPlugins))
-
-    var dispatchTransaction = function dispatchTransaction(tr) {
-      var _editorView$state$app = editorView.state.applyTransaction(tr),
-        state = _editorView$state$app.state
-
-      editorView.updateState(state)
-
-      if (!tr.getMeta('fromOutside')) {
-        storeFeedback(state)
-      }
-    }
-
-    var editorView = new EditorView(
-      {
-        mount: editorRef.current,
-      },
-      {
-        editable: function editable() {
-          return !readOnly
-        },
-        state: EditorState.create({
-          doc: getInitialDoc(schema),
-          plugins: finalPlugins,
-        }),
-        disallowedTools: [],
-        dispatchTransaction: dispatchTransaction,
-        handleDOMEvents: {
-          mousedown: function mousedown() {
-            handleInteraction()
-            var currentPos = getPos() // Only set the main selection when the editor is not already
-            // focused.  When it IS focused the redirect is active and
-            // main.dispatch is overridden; main.state is untouched so
-            // reading it here is safe in either case.
-
-            if (currentPos != null && !editorView.hasFocus()) {
-              main.dispatch(
-                main.state.tr.setSelection(
-                  NodeSelection.create(main.state.doc, currentPos),
-                ),
-              )
-            }
-
-            if (editorView.hasFocus()) editorView.focus()
-          },
-          blur: function blur(editorViewInstance, event) {
-            deactivateRedirect()
-
-            if (editorViewInstance && event.relatedTarget === null) {
-              editorViewInstance.focus()
-            }
-          },
-          focus: function focus() {
-            activateRedirect()
-            handleInteraction()
-          },
-        },
-        attributes: {
-          spellcheck: 'false',
-        },
-      },
-    )
-    questionViewRef.current = editorView // Register the feedback inner editor in pmViews
-
-    context.updateView(_defineProperty({}, feedbackId, editorView), feedbackId)
-    return function () {
-      deactivateRedirect()
-      editorView.destroy()
-      context.removeView(feedbackId)
-    }
-  }, [])
-  return /*#__PURE__*/ React.createElement('div', {
-    ref: editorRef,
-  })
-}
-
-function _templateObject5$b() {
-  var data = _taggedTemplateLiteral([
-    '\n  .ProseMirror {\n    border: none;\n    /* display: flex; */\n    /* font-family: Fira Sans Condensed; */\n    /* width: 100%; */\n    /* white-space: pre-wrap;\n    overflow-wrap: break-word; */\n    line-height: 31px;\n    padding: 8px 10px;\n    min-height: 31px;\n\n    &:focus {\n      outline: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n',
-  ])
-
-  _templateObject5$b = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$i() {
-  var data = _taggedTemplateLiteral(['\n  font-weight: 700;\n'])
-
-  _templateObject4$i = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$k() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: none;\n  border: none;\n  box-shadow: none;\n  cursor: pointer;\n',
-  ])
-
-  _templateObject3$k = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$n() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  justify-content: space-between;\n',
-  ])
-
-  _templateObject2$n = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$u() {
-  var data = _taggedTemplateLiteral([
-    '\n  color: black;\n  margin-top: 10px;\n',
-  ])
-
-  _templateObject$u = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var FeedBack$1 = styled.div(_templateObject$u())
-var FeedbackHeader = styled.div(_templateObject2$n())
-var EditButton = styled.button(_templateObject3$k())
-var FeedBackLabel$1 = styled.span(_templateObject4$i())
-var FeedbackEditorWrapper = styled.div(_templateObject5$b())
-var FeedbackComponent$1 = function (_ref) {
-  var _node$attrs, _node$attrs2
-
-  var node = _ref.node,
-    getPos = _ref.getPos,
-    readOnly = _ref.readOnly,
-    view = _ref.view
-  var context = useContext(WaxContext)
-  var setOption = context.setOption
-  var textareaId = 'feedback-'.concat(
-    node === null || node === void 0
-      ? void 0
-      : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-      ? void 0
-      : _node$attrs.id,
-  )
-  var editTextareaId = 'edit-feedback-'.concat(
-    node === null || node === void 0
-      ? void 0
-      : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
-      ? void 0
-      : _node$attrs2.id,
-  )
-  var handleInteraction = useCallback(
-    function () {
-      if (setOption && textareaId) {
-        setOption({
-          activeTextareaId: textareaId,
-        })
-      }
-    },
-    [setOption, textareaId],
-  )
-  return /*#__PURE__*/ React.createElement(
-    FeedBack$1,
-    null,
-    /*#__PURE__*/ React.createElement(
-      FeedbackHeader,
-      null,
-      /*#__PURE__*/ React.createElement(FeedBackLabel$1, null, 'Feedback'),
-      /*#__PURE__*/ React.createElement(
-        EditButton,
-        {
-          hidden: true,
-          id: editTextareaId,
-        },
-        /*#__PURE__*/ React.createElement(
-          'svg',
-          {
-            'aria-hidden': 'true',
-            'data-icon': 'edit',
-            fill: 'currentColor',
-            focusable: 'false',
-            height: '1em',
-            viewBox: '64 64 896 896',
-            width: '1em',
-          },
-          /*#__PURE__*/ React.createElement('path', {
-            d: 'M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z',
-          }),
-        ),
-      ),
-    ),
-    /*#__PURE__*/ React.createElement(
-      FeedbackEditorWrapper,
-      null,
-      /*#__PURE__*/ React.createElement(FeedbackEditorComponent, {
-        getPos: getPos,
-        handleInteraction: handleInteraction,
-        node: node,
-        readOnly: readOnly,
-        view: view,
-      }),
-    ),
-  )
-}
-
-function _templateObject9$2() {
+function _templateObject9$3() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
-  _templateObject9$2 = function _templateObject9() {
+  _templateObject9$3 = function _templateObject9() {
     return data
   }
 
@@ -10172,7 +10021,7 @@ function _templateObject8$4() {
 
 function _templateObject7$8() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject7$8 = function _templateObject7() {
@@ -10182,12 +10031,12 @@ function _templateObject7$8() {
   return data
 }
 
-function _templateObject6$a() {
+function _templateObject6$b() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
-  _templateObject6$a = function _templateObject6() {
+  _templateObject6$b = function _templateObject6() {
     return data
   }
 
@@ -10218,50 +10067,50 @@ function _templateObject4$j() {
   return data
 }
 
-function _templateObject3$l() {
+function _templateObject3$k() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$l = function _templateObject3() {
+  _templateObject3$k = function _templateObject3() {
     return data
   }
 
   return data
 }
 
-function _templateObject2$o() {
+function _templateObject2$n() {
   var data = _taggedTemplateLiteral([
     '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
   ])
 
-  _templateObject2$o = function _templateObject2() {
+  _templateObject2$n = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$v() {
+function _templateObject$u() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
   ])
 
-  _templateObject$v = function _templateObject() {
+  _templateObject$u = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$6 = styled.div(_templateObject$v())
-var InfoRow = styled.div(_templateObject2$o())
-var QuestionNunber = styled.span(_templateObject3$l())
+var Wrapper$6 = styled.div(_templateObject$u())
+var InfoRow = styled.div(_templateObject2$n())
+var QuestionNunber = styled.span(_templateObject3$k())
 var QuestionControlsWrapper = styled.div(_templateObject4$j())
 var QuestionWrapper$1 = styled.div(_templateObject5$c())
-var IconsWrapper = styled.div(_templateObject6$a())
+var IconsWrapper = styled.div(_templateObject6$b())
 var QuestionData = styled.div(_templateObject7$8())
 var ActionButton$6 = styled.button(_templateObject8$4())
-var StyledIconAction$5 = styled(Icon)(_templateObject9$2())
+var StyledIconAction$5 = styled(Icon)(_templateObject9$3())
 var AnswerComponent = function (_ref) {
   var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
 
@@ -10420,7 +10269,7 @@ var AnswerComponent = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$f(main)
+    var allNodes = getNodes$e(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -10460,7 +10309,7 @@ var AnswerComponent = function (_ref) {
         /*#__PURE__*/ React.createElement('hr', null),
         !testMode &&
           !(readOnly && feedback === '') &&
-          /*#__PURE__*/ React.createElement(FeedbackComponent$1, {
+          /*#__PURE__*/ React.createElement(FeedbackComponent, {
             getPos: getPos,
             node:
               (_getUpdatedNode = getUpdatedNode()) === null ||
@@ -10522,7 +10371,7 @@ var AnswerComponent = function (_ref) {
   )
 }
 
-var getNodes$f = function getNodes(view) {
+var getNodes$e = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -10574,44 +10423,44 @@ function _templateObject4$k() {
   return data
 }
 
-function _templateObject3$m() {
+function _templateObject3$l() {
   var data = _taggedTemplateLiteral([
     '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: 6px;\n  float: right;\n',
   ])
 
-  _templateObject3$m = function _templateObject3() {
+  _templateObject3$l = function _templateObject3() {
     return data
   }
 
   return data
 }
 
-function _templateObject2$p() {
+function _templateObject2$o() {
   var data = _taggedTemplateLiteral([
     '\n  border-bottom: 3px solid #f5f5f7;\n  height: 32px;\n',
   ])
 
-  _templateObject2$p = function _templateObject2() {
+  _templateObject2$o = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$w() {
+function _templateObject$v() {
   var data = _taggedTemplateLiteral([
     '\n  border: 3px solid #f5f5f7;\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n',
   ])
 
-  _templateObject$w = function _templateObject() {
+  _templateObject$v = function _templateObject() {
     return data
   }
 
   return data
 }
-var MultipleChoiceQuestionWrapper = styled.div(_templateObject$w())
-var MultipleChoiceContainerTool = styled.div(_templateObject2$p())
-var ActionButton$7 = styled.button(_templateObject3$m())
+var MultipleChoiceQuestionWrapper = styled.div(_templateObject$v())
+var MultipleChoiceContainerTool = styled.div(_templateObject2$o())
+var ActionButton$7 = styled.button(_templateObject3$l())
 var StyledIconActionRemove$5 = styled(Icon)(_templateObject4$k())
 var MultipleChoiceQuestionContainer = styled.div(_templateObject5$d())
 
@@ -10991,7 +10840,7 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
   var customProps = main.props.customValues
   useEffect(
     function () {
-      var allNodes = getNodes$g(main)
+      var allNodes = getNodes$f(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -10999,7 +10848,7 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$g(main)],
+    [getNodes$f(main)],
   )
 
   var handleChange = function handleChange() {
@@ -11060,7 +10909,7 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$g(main)
+    var allNodes = getNodes$f(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -11079,7 +10928,7 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
   })
 }
 
-var getNodes$g = function getNodes(view) {
+var getNodes$f = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -11090,10 +10939,10 @@ var getNodes$g = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$3() {
+function _templateObject9$4() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
-  _templateObject9$3 = function _templateObject9() {
+  _templateObject9$4 = function _templateObject9() {
     return data
   }
 
@@ -11114,7 +10963,7 @@ function _templateObject8$5() {
 
 function _templateObject7$9() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject7$9 = function _templateObject7() {
@@ -11124,12 +10973,12 @@ function _templateObject7$9() {
   return data
 }
 
-function _templateObject6$b() {
+function _templateObject6$c() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
-  _templateObject6$b = function _templateObject6() {
+  _templateObject6$c = function _templateObject6() {
     return data
   }
 
@@ -11160,50 +11009,50 @@ function _templateObject4$l() {
   return data
 }
 
-function _templateObject3$n() {
+function _templateObject3$m() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$n = function _templateObject3() {
+  _templateObject3$m = function _templateObject3() {
     return data
   }
 
   return data
 }
 
-function _templateObject2$q() {
+function _templateObject2$p() {
   var data = _taggedTemplateLiteral([
     '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
   ])
 
-  _templateObject2$q = function _templateObject2() {
+  _templateObject2$p = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$x() {
+function _templateObject$w() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
   ])
 
-  _templateObject$x = function _templateObject() {
+  _templateObject$w = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$7 = styled.div(_templateObject$x())
-var InfoRow$1 = styled.div(_templateObject2$q())
-var QuestionNunber$1 = styled.span(_templateObject3$n())
+var Wrapper$7 = styled.div(_templateObject$w())
+var InfoRow$1 = styled.div(_templateObject2$p())
+var QuestionNunber$1 = styled.span(_templateObject3$m())
 var QuestionControlsWrapper$1 = styled.div(_templateObject4$l())
 var QuestionWrapper$2 = styled.div(_templateObject5$e())
-var IconsWrapper$1 = styled.div(_templateObject6$b())
+var IconsWrapper$1 = styled.div(_templateObject6$c())
 var QuestionData$1 = styled.div(_templateObject7$9())
 var ActionButton$8 = styled.button(_templateObject8$5())
-var StyledIconAction$6 = styled(Icon)(_templateObject9$3())
+var StyledIconAction$6 = styled(Icon)(_templateObject9$4())
 var AnswerComponent$1 = function (_ref) {
   var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
 
@@ -11256,7 +11105,7 @@ var AnswerComponent$1 = function (_ref) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
-        function (sinlgeNode, pos) {
+        function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
             main.dispatch(
               main.state.tr.deleteRange(
@@ -11340,7 +11189,7 @@ var AnswerComponent$1 = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$h(main)
+    var allNodes = getNodes$g(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -11439,7 +11288,7 @@ var AnswerComponent$1 = function (_ref) {
   )
 }
 
-var getNodes$h = function getNodes(view) {
+var getNodes$g = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -11854,12 +11703,12 @@ var trueFalseContainerNode = {
   },
 }
 
-function _templateObject6$c() {
+function _templateObject6$d() {
   var data = _taggedTemplateLiteral([
     '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$c = function _templateObject6() {
+  _templateObject6$d = function _templateObject6() {
     return data
   }
 
@@ -11891,47 +11740,47 @@ function _templateObject4$m() {
   return data
 }
 
-function _templateObject3$o() {
+function _templateObject3$n() {
   var data = _taggedTemplateLiteral([
     '\n  margin-right: 10px;\n\n  span {\n    color: #008000;\n  }\n',
   ])
 
-  _templateObject3$o = function _templateObject3() {
+  _templateObject3$n = function _templateObject3() {
     return data
   }
 
   return data
 }
 
-function _templateObject2$r() {
+function _templateObject2$q() {
   var data = _taggedTemplateLiteral(['\n  margin-left: auto;\n'])
 
-  _templateObject2$r = function _templateObject2() {
+  _templateObject2$q = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$y() {
+function _templateObject$x() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  margin-left: auto;\n\n  button {\n    width: 65px;\n  }\n\n  .rc-switch-inner {\n    font-size: 14px;\n    left: 25px;\n  }\n\n  .rc-switch-checked {\n    background-color: #008000;\n    border: 1px solid #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &::after {\n      left: 42px;\n    }\n  }\n',
   ])
 
-  _templateObject$y = function _templateObject() {
+  _templateObject$x = function _templateObject() {
     return data
   }
 
   return data
 }
-var StyledSwitch$1 = styled(SwitchComponent)(_templateObject$y())
-var AnswerContainer$6 = styled.span(_templateObject2$r())
-var Correct$1 = styled.span(_templateObject3$o())
+var StyledSwitch$1 = styled(SwitchComponent)(_templateObject$x())
+var AnswerContainer$6 = styled.span(_templateObject2$q())
+var Correct$1 = styled.span(_templateObject3$n())
 var Answer$3 = styled.span(_templateObject4$m(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
 var StyledIconCorrect$4 = styled(Icon)(_templateObject5$f())
-var StyledIconWrong$4 = styled(Icon)(_templateObject6$c())
+var StyledIconWrong$4 = styled(Icon)(_templateObject6$d())
 
 var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
   var customProps = _ref.customProps,
@@ -12009,7 +11858,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
   })
   useEffect(
     function () {
-      var allNodes = getNodes$i(main)
+      var allNodes = getNodes$h(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -12017,7 +11866,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$i(main)],
+    [getNodes$h(main)],
   )
 
   var handleChange = function handleChange() {
@@ -12025,7 +11874,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
     setCheckedAnswerMode(!checkedAnswerMode)
     var key = isEditable ? 'correct' : 'answer'
     var value = isEditable ? !checked : !checkedAnswerMode
-    var allNodes = getNodes$i(main)
+    var allNodes = getNodes$h(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -12045,7 +11894,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$i(main)
+    var allNodes = getNodes$h(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -12064,7 +11913,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
   })
 }
 
-var getNodes$i = function getNodes(view) {
+var getNodes$h = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -12075,10 +11924,10 @@ var getNodes$i = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$4() {
+function _templateObject9$5() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
-  _templateObject9$4 = function _templateObject9() {
+  _templateObject9$5 = function _templateObject9() {
     return data
   }
 
@@ -12099,7 +11948,7 @@ function _templateObject8$6() {
 
 function _templateObject7$a() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject7$a = function _templateObject7() {
@@ -12109,12 +11958,12 @@ function _templateObject7$a() {
   return data
 }
 
-function _templateObject6$d() {
+function _templateObject6$e() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
-  _templateObject6$d = function _templateObject6() {
+  _templateObject6$e = function _templateObject6() {
     return data
   }
 
@@ -12145,50 +11994,50 @@ function _templateObject4$n() {
   return data
 }
 
-function _templateObject3$p() {
+function _templateObject3$o() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$p = function _templateObject3() {
+  _templateObject3$o = function _templateObject3() {
     return data
   }
 
   return data
 }
 
-function _templateObject2$s() {
+function _templateObject2$r() {
   var data = _taggedTemplateLiteral([
     '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
   ])
 
-  _templateObject2$s = function _templateObject2() {
+  _templateObject2$r = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$z() {
+function _templateObject$y() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
   ])
 
-  _templateObject$z = function _templateObject() {
+  _templateObject$y = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$8 = styled.div(_templateObject$z())
-var InfoRow$2 = styled.div(_templateObject2$s())
-var QuestionNunber$2 = styled.span(_templateObject3$p())
+var Wrapper$8 = styled.div(_templateObject$y())
+var InfoRow$2 = styled.div(_templateObject2$r())
+var QuestionNunber$2 = styled.span(_templateObject3$o())
 var QuestionControlsWrapper$2 = styled.div(_templateObject4$n())
 var QuestionWrapper$3 = styled.div(_templateObject5$g())
-var IconsWrapper$2 = styled.div(_templateObject6$d())
+var IconsWrapper$2 = styled.div(_templateObject6$e())
 var QuestionData$2 = styled.div(_templateObject7$a())
 var ActionButton$9 = styled.button(_templateObject8$6())
-var StyledIconAction$7 = styled(Icon)(_templateObject9$4())
+var StyledIconAction$7 = styled(Icon)(_templateObject9$5())
 var AnswerComponent$2 = function (_ref) {
   var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
 
@@ -12241,7 +12090,7 @@ var AnswerComponent$2 = function (_ref) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
-        function (sinlgeNode, pos) {
+        function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
             main.dispatch(
               main.state.tr.deleteRange(
@@ -12324,7 +12173,7 @@ var AnswerComponent$2 = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$j(main)
+    var allNodes = getNodes$i(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -12423,7 +12272,7 @@ var AnswerComponent$2 = function (_ref) {
   )
 }
 
-var getNodes$j = function getNodes(view) {
+var getNodes$i = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -12852,7 +12701,7 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
   })
   useEffect(
     function () {
-      var allNodes = getNodes$k(main)
+      var allNodes = getNodes$j(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -12860,7 +12709,7 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$k(main)],
+    [getNodes$j(main)],
   )
 
   var handleChange = function handleChange() {
@@ -12921,7 +12770,7 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$k(main)
+    var allNodes = getNodes$j(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -12940,7 +12789,7 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
   })
 }
 
-var getNodes$k = function getNodes(view) {
+var getNodes$j = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -12951,10 +12800,10 @@ var getNodes$k = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$5() {
+function _templateObject9$6() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
-  _templateObject9$5 = function _templateObject9() {
+  _templateObject9$6 = function _templateObject9() {
     return data
   }
 
@@ -12975,7 +12824,7 @@ function _templateObject8$7() {
 
 function _templateObject7$b() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject7$b = function _templateObject7() {
@@ -12985,12 +12834,12 @@ function _templateObject7$b() {
   return data
 }
 
-function _templateObject6$e() {
+function _templateObject6$f() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
-  _templateObject6$e = function _templateObject6() {
+  _templateObject6$f = function _templateObject6() {
     return data
   }
 
@@ -13021,50 +12870,50 @@ function _templateObject4$o() {
   return data
 }
 
-function _templateObject3$q() {
+function _templateObject3$p() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$q = function _templateObject3() {
+  _templateObject3$p = function _templateObject3() {
     return data
   }
 
   return data
 }
 
-function _templateObject2$t() {
+function _templateObject2$s() {
   var data = _taggedTemplateLiteral([
     '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
   ])
 
-  _templateObject2$t = function _templateObject2() {
+  _templateObject2$s = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$A() {
+function _templateObject$z() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
   ])
 
-  _templateObject$A = function _templateObject() {
+  _templateObject$z = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$9 = styled.div(_templateObject$A())
-var InfoRow$3 = styled.div(_templateObject2$t())
-var QuestionNunber$3 = styled.span(_templateObject3$q())
+var Wrapper$9 = styled.div(_templateObject$z())
+var InfoRow$3 = styled.div(_templateObject2$s())
+var QuestionNunber$3 = styled.span(_templateObject3$p())
 var QuestionControlsWrapper$3 = styled.div(_templateObject4$o())
 var QuestionWrapper$4 = styled.div(_templateObject5$h())
-var IconsWrapper$3 = styled.div(_templateObject6$e())
+var IconsWrapper$3 = styled.div(_templateObject6$f())
 var QuestionData$3 = styled.div(_templateObject7$b())
 var ActionButton$a = styled.button(_templateObject8$7())
-var StyledIconAction$8 = styled(Icon)(_templateObject9$5())
+var StyledIconAction$8 = styled(Icon)(_templateObject9$6())
 var AnswerComponent$3 = function (_ref) {
   var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
 
@@ -13117,7 +12966,7 @@ var AnswerComponent$3 = function (_ref) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
-        function (sinlgeNode, pos) {
+        function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
             main.dispatch(
               main.state.tr.deleteRange(
@@ -13201,7 +13050,7 @@ var AnswerComponent$3 = function (_ref) {
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$l(main)
+    var allNodes = getNodes$k(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -13300,7 +13149,7 @@ var AnswerComponent$3 = function (_ref) {
   )
 }
 
-var getNodes$l = function getNodes(view) {
+var getNodes$k = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {

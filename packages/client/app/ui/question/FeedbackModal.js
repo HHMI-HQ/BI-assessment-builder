@@ -39,6 +39,7 @@ const FeedbackModal = props => {
   return (
     <ModalContext.Provider value={null}>
       <Modal
+        destroyOnClose
         footer={
           <ModalFooter>
             <Button onClick={() => setShowModal(false)} type="primary">
