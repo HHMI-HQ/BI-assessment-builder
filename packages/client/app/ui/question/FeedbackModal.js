@@ -6,7 +6,7 @@ import { Divider } from '@coko/client/dist/ui/common'
 import { Button, Modal } from '../common'
 
 import Wax from '../wax/Wax'
-import { simpleConfig } from '../wax/config'
+import { config, simpleConfig } from '../wax/config'
 import { DashLayout, HhmiLayout } from '../wax/layout'
 
 const ReadOnlyLayout = styled(DashLayout)`
@@ -57,7 +57,7 @@ const FeedbackModal = props => {
       >
         <p>Edit feedback for this answer:</p>
         <Wax
-          config={simpleConfig}
+          config={config}
           content={{ type: 'doc', content: content.content }}
           layout={ReadOnlyLayout}
           readOnly

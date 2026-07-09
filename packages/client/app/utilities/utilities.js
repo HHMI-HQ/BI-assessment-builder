@@ -993,12 +993,6 @@ const questionTypes = [
       type: 'doc',
       content: [
         {
-          type: 'paragraph',
-          attrs: {
-            class: 'paragraph',
-          },
-        },
-        {
           type: 'multiple_choice_single_correct_container',
           attrs: {
             id: '44256b39-ee94-4e5d-a57a-7c7c8b090f78',
@@ -1398,6 +1392,66 @@ const questionTypes = [
   },
 ]
 
+const extractNode = (fullContent, questionType, nodeId) => {
+  const nodeType = questionTypes.find(
+    v => v.metadataValue === questionType,
+  )?.waxValue
+
+  switch (nodeType) {
+    case 'multiple_choice_container':
+    case 'multiple_choice_single_correct_container':
+    case 'true_false_container':
+    case 'true_false_single_correct_container':
+      return fullContent.content
+        .find(n => n.type === nodeType)
+        .content?.find(n => n.attrs.id === nodeId)
+
+    case 'matching_container':
+    case 'multiple_drop_down_container':
+    case 'fill_the_gap_container':
+    case 'numerical_answer_container':
+      return fullContent.content.find(
+        n => n.type === nodeType && n.attrs.id === nodeId,
+      )
+
+    default:
+      return null
+  }
+}
+
+const applyNodeFeedback = (fullContent, questionType, nodeId, feedback) => {
+  const newContent = structuredClone(fullContent)
+
+  const nodeType = questionTypes.find(
+    v => v.metadataValue === questionType,
+  )?.waxValue
+
+  switch (nodeType) {
+    case 'multiple_choice_container':
+    case 'multiple_choice_single_correct_container':
+    case 'true_false_container':
+    case 'true_false_single_correct_container':
+      newContent.content
+        .find(n => n.type === nodeType)
+        .content.find(n => n.attrs.id === nodeId).attrs.feedback = feedback
+
+      return newContent
+
+    case 'matching_container':
+    case 'multiple_drop_down_container':
+    case 'fill_the_gap_container':
+    case 'numerical_answer_container':
+      newContent.content.find(
+        n => n.type === nodeType && n.attrs.id === nodeId,
+      ).attrs.feedback = feedback
+
+      return newContent
+
+    default:
+      return null
+  }
+}
+
 const REVIEWER_STATUSES = {
   accepted: 'acceptedInvitation',
   added: 'notInvited',
@@ -1779,4 +1833,6 @@ export {
   mapMetadataToSelectOptions,
   notificationsMapper,
   waitForTextareaAndSetValue,
+  extractNode,
+  applyNodeFeedback,
 }

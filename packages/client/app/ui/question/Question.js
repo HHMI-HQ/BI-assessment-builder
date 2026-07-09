@@ -34,7 +34,12 @@ import {
   VisuallyHiddenElement,
   AddToListPopup,
 } from '../common'
-import { REVIEWER_STATUSES, extractDocumentText } from '../../utilities'
+import {
+  REVIEWER_STATUSES,
+  extractDocumentText,
+  extractNode,
+  applyNodeFeedback,
+} from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
 import FeedbackModal from './FeedbackModal'
 import {
@@ -635,8 +640,8 @@ const Question = props => {
   const handleQuestionContentChange = content => {
     if (onEditorContentAutoSave) {
       setAutoSaving(true)
-      onEditorContentAutoSave(content).then(({ update }) => {
-        setRefreshEditorContent(update)
+      onEditorContentAutoSave(content).then(() => {
+        setRefreshEditorContent(true)
         setAutoSaving(false)
       })
     }
@@ -1274,8 +1279,6 @@ const Question = props => {
 
         <Button
           aria-label="Submit"
-          // onClick={handleSubmitButtonClick}
-
           onClick={handleSubmit}
           title="Submit"
           type="primary"
@@ -1824,16 +1827,18 @@ const Question = props => {
   }
 
   const insertUpdatedFeedback = (nodeId, newFeedback) => {
-    const newContent = waxRef.current.getContent()
-    newContent.content[0].content.find(
-      n => n.attrs.id === nodeId,
-    ).attrs.feedback = newFeedback
+    const fullContent = waxRef.current.getContent()
 
-    setAutoSaving(true)
-    onEditorContentAutoSave(newContent).then(() => {
-      setRefreshEditorContent(true)
-      setAutoSaving(false)
-    })
+    const newContent = applyNodeFeedback(
+      fullContent,
+      initialMetadataValues.questionType,
+      nodeId,
+      newFeedback,
+    )
+
+    if (newContent) {
+      handleQuestionContentChange(newContent)
+    }
   }
 
   useEffect(() => {
@@ -1849,9 +1854,11 @@ const Question = props => {
                     .closest('button')
                     .id.substring(14, e.target.closest('button').id.length)
 
-            const node = waxRef.current
-              .getContent()
-              .content[0].content?.find(n => n.attrs.id === nodeId)
+            const node = extractNode(
+              waxRef.current.getContent(),
+              initialMetadataValues.questionType,
+              nodeId,
+            )
 
             setNodeContent(node)
             setShowFeedbackModal(true)
@@ -2489,6 +2496,7 @@ Question.propTypes = {
   reviewSubmitted: PropTypes.bool,
   reviewerView: PropTypes.bool,
   initialMetadataValues: PropTypes.shape({
+    questionType: PropTypes.string,
     topics: PropTypes.arrayOf(
       PropTypes.shape({
         topic: PropTypes.string,
