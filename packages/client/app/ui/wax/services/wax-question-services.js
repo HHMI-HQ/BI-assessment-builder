@@ -2530,7 +2530,7 @@ var EditButton = styled.button(_templateObject3$1())
 var FeedBackLabel = styled.span(_templateObject4$1())
 var FeedbackEditorWrapper = styled.div(_templateObject5())
 var FeedbackComponent = function (_ref) {
-  var _node$attrs, _node$attrs2
+  var _node$attrs
 
   var node = _ref.node,
     getPos = _ref.getPos,
@@ -2539,20 +2539,13 @@ var FeedbackComponent = function (_ref) {
     className = _ref.className
   var context = useContext(WaxContext)
   var setOption = context.setOption
-  var textareaId = 'feedback-'.concat(
+  var nodeId =
     node === null || node === void 0
       ? void 0
       : (_node$attrs = node.attrs) === null || _node$attrs === void 0
       ? void 0
-      : _node$attrs.id,
-  )
-  var editTextareaId = 'edit-feedback-'.concat(
-    node === null || node === void 0
-      ? void 0
-      : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
-      ? void 0
-      : _node$attrs2.id,
-  )
+      : _node$attrs.id
+  var textareaId = 'feedback-'.concat(nodeId)
   var handleInteraction = useCallback(
     function () {
       if (setOption && textareaId) {
@@ -2575,8 +2568,9 @@ var FeedbackComponent = function (_ref) {
       /*#__PURE__*/ React.createElement(
         EditButton,
         {
+          className: 'edit-feedback',
+          'data-nodeid': nodeId,
           hidden: true,
-          id: editTextareaId,
         },
         /*#__PURE__*/ React.createElement(
           'svg',

@@ -1843,16 +1843,14 @@ const Question = props => {
 
   useEffect(() => {
     setTimeout(() => {
-      document.querySelectorAll('[id^=edit-feedback]').forEach(b => {
-        if (b.hasAttribute('hidden')) {
+      document.querySelectorAll('.edit-feedback[data-nodeid]').forEach(b => {
+        if (b.hasAttribute('hidden') && !readOnly) {
           b.removeAttribute('hidden')
           b.addEventListener('click', e => {
             const nodeId =
               e.target.tagName === 'BUTTON'
-                ? e.target.id.substring(14, e.target.id.length)
-                : e.target
-                    .closest('button')
-                    .id.substring(14, e.target.closest('button').id.length)
+                ? e.target.dataset.nodeid
+                : e.target.closest('button').dataset.nodeid
 
             const node = extractNode(
               waxRef.current.getContent(),
