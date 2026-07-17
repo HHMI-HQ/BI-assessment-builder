@@ -103,18 +103,22 @@ const QuestionEditor = props => {
     <EditorWrapper aria-label="Question editor">
       <EditorScrollContainer>
         <ComplexItemSetContext.Provider value={contextValue}>
-          <Wax
-            config={waxConfig}
-            // content={preserveLocalState ? editorContent : content}
-            content={content && Object.keys(content).length ? content : null}
-            customValues={customValues}
-            innerRef={innerRef}
-            key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
-            layout={layout}
-            onContentChange={!testMode ? onContentChange : () => {}}
-            onImageUpload={onImageUpload}
-            readOnly={readOnly}
-          />
+          {enhancedEditor !== null ? (
+            <Wax
+              config={waxConfig}
+              // content={preserveLocalState ? editorContent : content}
+              content={content && Object.keys(content).length ? content : null}
+              customValues={customValues}
+              innerRef={innerRef}
+              key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
+              layout={layout}
+              onContentChange={!testMode ? onContentChange : () => {}}
+              onImageUpload={onImageUpload}
+              readOnly={readOnly}
+            />
+          ) : (
+            <span>LOADING...............</span>
+          )}
         </ComplexItemSetContext.Provider>
       </EditorScrollContainer>
 
@@ -167,7 +171,7 @@ QuestionEditor.defaultProps = {
   refreshEditorContent: false,
   showFeedBack: false,
   testMode: false,
-  enhancedEditor: true,
+  enhancedEditor: null,
 }
 
 export default QuestionEditor

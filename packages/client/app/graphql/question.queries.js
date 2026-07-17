@@ -508,6 +508,7 @@ export const QUESTION = gql`
             }
           }
         }
+        enhancedEditor
       }
 
       authors {

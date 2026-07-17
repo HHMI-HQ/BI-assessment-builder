@@ -68,6 +68,7 @@ import {
   hasRole,
   hasGlobalRole,
   questionTypes,
+  newQuestionTypes,
   REVIEWER_STATUSES,
   flattenReviewerPool,
   flattenReviewerSearchResults,
@@ -200,7 +201,7 @@ const messagesApiToUi = (messages, currentUser = null) => {
 }
 // #endregion transformations
 
-const scanContentForQuestionType = content => {
+const scanContentForQuestionType = (content, newConfig) => {
   return content
     ? questionTypes.find(type => content.indexOf(type.waxValue) > -1)
     : null
@@ -1016,9 +1017,9 @@ const QuestionPage = props => {
       ) {
         // warn that current content will be deleted
         // apply new question type starting data
-        const selectedType = questionTypes.find(
-          t => t.metadataValue === values.questionType,
-        )
+        const selectedType = version?.enhancedEditor
+          ? newQuestionTypes.find(t => t.metadataValue === values.questionType)
+          : questionTypes.find(t => t.metadataValue === values.questionType)
 
         handleEditorContentAutoSave(selectedType.startingData, false)
       }
@@ -1795,6 +1796,7 @@ const QuestionPage = props => {
             !isAuthor) ||
           isAdmin
         }
+        enhancedEditor={version?.enhancedEditor}
         existingLists={existingLists}
         facultyView={facultyView}
         handlingEditors={handlingEditors?.result || []}

@@ -570,6 +570,7 @@ const Question = props => {
     setPreview,
     reviewResponses,
     saveReview,
+    enhancedEditor,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1957,6 +1958,7 @@ const Question = props => {
                 complexItemSetId={complexItemSetId}
                 complexSetEditLink={complexSetEditLink}
                 content={withFeedback ? editorContent : testContent}
+                enhancedEditor={enhancedEditor}
                 innerRef={waxRef}
                 layout={preview || reviewerView ? TestModeLayout : HhmiLayout}
                 leadingContent={leadingContent}
@@ -2614,6 +2616,7 @@ Question.propTypes = {
   setPreview: PropTypes.func,
   reviewResponses: PropTypes.shape(),
   saveReview: PropTypes.func,
+  enhancedEditor: PropTypes.bool,
 }
 
 Question.defaultProps = {
@@ -2734,6 +2737,7 @@ Question.defaultProps = {
   setPreview: null,
   reviewResponses: {},
   saveReview: null,
+  enhancedEditor: null,
 }
 
 export default Question

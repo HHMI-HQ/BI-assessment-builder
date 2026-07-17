@@ -1392,6 +1392,594 @@ const questionTypes = [
   },
 ]
 
+const newQuestionTypes = [
+  {
+    waxValue: 'multiple_choice_container',
+    metadataValue: 'multipleChoice',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'multiple_choice_container',
+          attrs: {
+            id: '6cc4ae72-7782-4a24-804c-a368773d0e5f',
+            class: 'multiple-choice',
+          },
+          content: [
+            {
+              type: 'question_node_multiple',
+              attrs: {
+                class: 'multiple-choice-question',
+                id: 'd09c128d-394c-45d8-8efc-bc2b434c90d2',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'multiple_choice',
+              attrs: {
+                class: 'multiple-choice-option',
+                id: '21162f4d-5439-41e4-8003-90def1cfa096',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'multiple_choice',
+              attrs: {
+                class: 'multiple-choice-option',
+                id: 'e88f1932-ea96-470c-aae2-f02c3eecbc2d',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: 'cfc47fd7-3c55-430f-8d76-c6558dbab2a1',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'multiple_choice_single_correct_container',
+    metadataValue: 'multipleChoiceSingleCorrect',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'multiple_choice_single_correct_container',
+          attrs: {
+            id: '44256b39-ee94-4e5d-a57a-7c7c8b090f78',
+            class: 'multiple-choice-single-correct',
+            correctId: '',
+          },
+          content: [
+            {
+              type: 'question_node_multiple_single',
+              attrs: {
+                id: 'f23c31fe-c75e-4aa0-b7ad-6cc8f604a5fe',
+                class: 'multiple-choice-question-single',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'multiple_choice_single_correct',
+              attrs: {
+                class: 'multiple-choice-option-single-correct',
+                id: 'f6010347-9d69-43fc-a3f2-bf6567970950',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'multiple_choice_single_correct',
+              attrs: {
+                class: 'multiple-choice-option-single-correct',
+                id: 'eac86aee-1dd4-480c-9d89-9c7cba050052',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: 'cfc47fd7-3c55-430f-8d76-c6558dbab2a1',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'true_false_container',
+    metadataValue: 'trueFalse',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'true_false_container',
+          attrs: {
+            id: '8387f76a-6bc6-49a3-acd3-2aa2968548bd',
+            class: 'true-false',
+          },
+          content: [
+            {
+              type: 'question_node_true_false',
+              attrs: {
+                id: '23f9edd8-1f27-47ad-be41-03b45ac73f0c',
+                class: 'true-false-question',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'true_false',
+              attrs: {
+                class: 'true-false-option',
+                id: 'dd6f91f8-d905-447b-8897-864a6dbd5f74',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'true_false',
+              attrs: {
+                class: 'true-false-option',
+                id: '16eecfc1-f4c3-43df-be33-e63cf67344d4',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: 'cfc47fd7-3c55-430f-8d76-c6558dbab2a1',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'true_false_single_correct_container',
+    metadataValue: 'trueFalseSingleCorrect',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'true_false_single_correct_container',
+          attrs: {
+            id: 'c6441c72-8d0b-4502-9058-c3e096666ef2',
+            class: 'true-false-single-correct',
+          },
+          content: [
+            {
+              type: 'question_node_true_false_single',
+              attrs: {
+                id: '2e6a4672-bfa0-4124-842a-8d64e3b17ca1',
+                class: 'true-false-question-single',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'true_false_single_correct',
+              attrs: {
+                id: '12d92d29-980a-4f32-9416-7cc64765ec41',
+                class: 'true-false-single-correct-option',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'true_false_single_correct',
+              attrs: {
+                id: '5a63c5fe-0b88-4f77-ad82-4b958bb9f418',
+                class: 'true-false-single-correct-option',
+                correct: false,
+                answer: false,
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: 'cfc47fd7-3c55-430f-8d76-c6558dbab2a1',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'matching_container',
+    metadataValue: 'matching',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'matching_container',
+          attrs: {
+            id: 'a3b95066-6651-4c28-b8a7-1391b3ac233b',
+            class: 'matching-container',
+            options: [],
+            feedback: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'matching_option',
+                  attrs: {
+                    class: 'matching-option',
+                    id: 'faa9a035-7b55-4478-83e0-fffaeb0af9fd',
+                    isfirst: true,
+                    answer: '',
+                    correct: '',
+                    options: [],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'essay_container',
+    metadataValue: 'essay',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'essay_container',
+          attrs: {
+            id: '0fc63261-eeb8-4030-9d7d-ed1bb61f28e8',
+            class: 'essay',
+          },
+          content: [
+            {
+              type: 'essay_question',
+              attrs: {
+                class: 'essay-question',
+                id: '59732f1b-4d09-4669-b643-2df78b0c8cb4',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'essay_prompt',
+              attrs: {
+                class: 'essay-prompt',
+                id: '11dd61ff-1c01-4b2d-bb54-6e6521905bde',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'essay_answer',
+              attrs: {
+                class: 'essay-answer',
+                id: '54b0d8f2-986b-401b-a9d4-a6cfa8e2b3d3',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'multiple_drop_down_container',
+    metadataValue: 'multipleDropdowns',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'multiple_drop_down_container',
+          attrs: {
+            id: 'b42e5e37-2c59-4502-b5af-dee7e0bf19c3',
+            class: 'multiple-drop-down-container',
+            feedback: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'text',
+                  text: ' ',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'fill_the_gap_container',
+    metadataValue: 'fillInTheBlank',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'fill_the_gap_container',
+          attrs: {
+            id: '3e4771d8-e784-4e9e-8319-e3ee77bd297a',
+            class: 'fill-the-gap',
+            feedback: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+              content: [
+                {
+                  type: 'text',
+                  text: ' ',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    waxValue: 'numerical_answer_container',
+    metadataValue: 'numerical',
+    startingData: {
+      type: 'doc',
+      content: [
+        {
+          type: 'numerical_answer_container',
+          attrs: {
+            id: 'f9c33d03-68ee-4c27-8a03-5072447fac1a',
+            class: 'numerical-answer',
+            feedback: '',
+            answerType: '',
+            answersExact: [],
+            answerExact: '',
+            answersRange: [],
+            answerRange: '',
+            answersPrecise: [],
+            answerPrecise: '',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                class: 'paragraph',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  },
+]
+
 const extractNode = (fullContent, questionType, nodeId) => {
   const nodeType = questionTypes.find(
     v => v.metadataValue === questionType,
@@ -1817,6 +2405,7 @@ export {
   questionDataMapper,
   questionDataTransformer,
   questionTypes,
+  newQuestionTypes,
   dashboardDataMapper,
   setSafeHTML,
   isFunction,
