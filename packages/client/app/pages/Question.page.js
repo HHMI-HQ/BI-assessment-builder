@@ -62,6 +62,7 @@ import {
   GET_LISTS,
   GET_LISTS_OPTIONS,
   GET_COMPLEX_ITEM_SET,
+  UPGRADE_EDITOR,
 } from '../graphql'
 import {
   useMetadata,
@@ -879,6 +880,17 @@ const QuestionPage = props => {
       },
     ],
   })
+
+  const [upgradeEditorMutation] = useMutation(UPGRADE_EDITOR, {
+    refetchQueries: [
+      {
+        query: QUESTION,
+        variables: {
+          id,
+        },
+      },
+    ],
+  })
   // #endregion hooks
 
   // #region user roles
@@ -1341,6 +1353,17 @@ const QuestionPage = props => {
     }
 
     filterGlobalTeamMembers({ variables })
+  }
+
+  const handleUpgradeEditor = () => {
+    // eslint-disable-next-line no-console
+    console.log('UPGRADE EDITOR')
+
+    const variables = {
+      questionVersionId: version?.id,
+    }
+
+    upgradeEditorMutation({ variables })
   }
 
   const persistQuestionTab = activeTab => {
@@ -1923,6 +1946,7 @@ const QuestionPage = props => {
         showReviewerChatTab={showReviewerChatTab}
         unreadMentions={unread}
         updated={version?.lastEdit}
+        upgradeEditor={handleUpgradeEditor}
         wordFileLoading={generateWordFileLoading}
       />
     </>

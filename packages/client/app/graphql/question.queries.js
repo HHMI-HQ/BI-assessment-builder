@@ -886,3 +886,12 @@ export const EDIT_QUESTION = gql`
     }
   }
 `
+
+export const UPGRADE_EDITOR = gql`
+  mutation UpgradeEditor($questionVersionId: ID!) {
+    upgradeEditor(questionVersionId: $questionVersionId) {
+      id
+      enhancedEditor
+    }
+  }
+`

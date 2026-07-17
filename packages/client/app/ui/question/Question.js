@@ -571,6 +571,7 @@ const Question = props => {
     reviewResponses,
     saveReview,
     enhancedEditor,
+    upgradeEditor,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -1667,6 +1668,9 @@ const Question = props => {
           {!preview ? 'Preview' : 'Continue editing'}
         </StyledButton>
       )}
+      {!readOnly && !enhancedEditor && (
+        <StyledButton onClick={upgradeEditor}>New editor</StyledButton>
+      )}
       {!isRejected &&
         !reviewerView &&
         (editorView && isSubmitted ? RightAreaEditor : RightAreaAuthor)}
@@ -2617,6 +2621,7 @@ Question.propTypes = {
   reviewResponses: PropTypes.shape(),
   saveReview: PropTypes.func,
   enhancedEditor: PropTypes.bool,
+  upgradeEditor: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -2738,6 +2743,7 @@ Question.defaultProps = {
   reviewResponses: {},
   saveReview: null,
   enhancedEditor: null,
+  upgradeEditor: null,
 }
 
 export default Question
