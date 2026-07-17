@@ -14,8 +14,7 @@ import {
 import { TablesService, tableEditing } from 'wax-table-service'
 
 import { DefaultSchema } from 'wax-prosemirror-core'
-// import { QuestionsService } from '../services/wax-question-services'
-import { QuestionsService } from 'wax-questions-service'
+import { QuestionsService } from '../services/wax-question-services'
 
 import charactersList from './charactersList'
 

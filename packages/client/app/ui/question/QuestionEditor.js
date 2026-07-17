@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
 import Wax from '../wax/Wax'
-import { config } from '../wax/config'
+import { config, hhmiConfig } from '../wax/config'
 
 // # region styled
 const EditorWrapper = styled.section`
@@ -57,10 +57,19 @@ const QuestionEditor = props => {
     refreshEditorContent,
     showFeedBack,
     testMode,
+    enhancedEditor,
   } = props
 
   const updateKey = useRef(0)
   const [customValues, setCustomValues] = useState({ showFeedBack, testMode })
+
+  const [waxConfig, setWaxConfig] = useState(
+    enhancedEditor ? hhmiConfig : config,
+  )
+
+  useEffect(() => {
+    enhancedEditor ? setWaxConfig(hhmiConfig) : setWaxConfig(config)
+  }, [enhancedEditor])
 
   useEffect(() => {
     if (refreshEditorContent) {
@@ -95,7 +104,7 @@ const QuestionEditor = props => {
       <EditorScrollContainer>
         <ComplexItemSetContext.Provider value={contextValue}>
           <Wax
-            config={config}
+            config={waxConfig}
             // content={preserveLocalState ? editorContent : content}
             content={content && Object.keys(content).length ? content : null}
             customValues={customValues}
@@ -142,6 +151,7 @@ QuestionEditor.propTypes = {
   refreshEditorContent: PropTypes.bool,
   showFeedBack: PropTypes.bool,
   testMode: PropTypes.bool,
+  enhancedEditor: PropTypes.bool,
 }
 
 QuestionEditor.defaultProps = {
@@ -157,6 +167,7 @@ QuestionEditor.defaultProps = {
   refreshEditorContent: false,
   showFeedBack: false,
   testMode: false,
+  enhancedEditor: true,
 }
 
 export default QuestionEditor

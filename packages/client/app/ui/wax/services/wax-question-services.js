@@ -213,7 +213,7 @@ var checkifEmpty = function checkifEmpty(view) {
   var _state$selection = state.selection,
     from = _state$selection.from,
     to = _state$selection.to
-  state.doc.nodesBetween(from, to, function (node, pos) {
+  state.doc.nodesBetween(from, to, function (node) {
     if (node.textContent !== ' ') Commands.simulateKey(view, 13, 'Enter')
   })
 
@@ -231,61 +231,65 @@ var createOptions = function createOptions(
   parentType,
   questionType,
   answerType,
+  feedbackType,
 ) {
   checkifEmpty(main)
   var state = main.state,
     dispatch = main.dispatch
-  /* Create Wrapping */
-
   var _state$selection2 = state.selection,
-    $from = _state$selection2.$from,
-    $to = _state$selection2.$to
-  var range = $from.blockRange($to)
-  var tr = main.state.tr
-  var wrapping =
-    range &&
-    findWrapping(range, parentType, {
-      id: v4(),
-    })
-  if (!wrapping) return false
-  tr.wrap(range, wrapping)
-  var map = tr.mapping.maps[0]
-  var newPos = 0
-  map.forEach(function (_from, _to, _newFrom, newTo) {
-    newPos = newTo
-  })
-  tr.setSelection(TextSelection.create(tr.doc, range.$to.pos))
+    from = _state$selection2.from,
+    to = _state$selection2.to
   var question = questionType.create(
     {
       id: v4(),
     },
     Fragment.empty,
   )
-  /* create First Option */
-
   var firstOption = answerType.create(
     {
       id: v4(),
     },
     Fragment.empty,
   )
-  /* create Second Option */
-
+  var firstFeedback = feedbackType.create(
+    {
+      id: v4(),
+    },
+    Fragment.empty,
+  )
   var secondOption = answerType.create(
     {
       id: v4(),
     },
     Fragment.empty,
   )
-  tr.replaceSelectionWith(question)
-  tr.replaceSelectionWith(firstOption)
-  tr.setSelection(TextSelection.create(tr.doc, newPos + 1))
-  tr.replaceSelectionWith(secondOption)
+  var secondFeedback = feedbackType.create(
+    {
+      id: v4(),
+    },
+    Fragment.empty,
+  )
+  var container = parentType.create(
+    {
+      id: v4(),
+    },
+    Fragment.from([
+      question,
+      firstOption,
+      firstFeedback,
+      secondOption,
+      secondFeedback,
+    ]),
+  )
+  var tr = state.tr
+  tr.replaceWith(from, to, container)
   dispatch(tr)
   setTimeout(function () {
     context.pmViews[question.attrs.id].focus()
     createEmptyParagraph(context, firstOption.attrs.id)
+    createEmptyParagraph(context, firstFeedback.attrs.id)
     createEmptyParagraph(context, secondOption.attrs.id)
+    createEmptyParagraph(context, secondFeedback.attrs.id)
     createEmptyParagraph(context, question.attrs.id)
   }, 50)
   return true
@@ -1545,26 +1549,54 @@ var FillTheGapQuestion =
             key: 'run',
             get: function get() {
               return function (main) {
-                var dispatch = main.dispatch
-                var state = main.state
-                helpers.checkifEmpty(main)
-                var _main$state$selection = main.state.selection,
-                  $from = _main$state$selection.$from,
-                  $to = _main$state$selection.$to
-                var range = $from.blockRange($to)
-                var tr = main.state.tr
-                var wrapping =
-                  range &&
-                  findWrapping(
-                    range,
-                    state.config.schema.nodes.fill_the_gap_container,
+                // const { dispatch } = main;
+                // const { state } = main;
+                helpers.checkifEmpty(main) // const { $from, $to } = main.state.selection;
+                // const range = $from.blockRange($to);
+                // const { tr } = main.state;
+                // const wrapping =
+                //   range &&
+                //   findWrapping(range, state.config.schema.nodes.fill_the_gap_container, {
+                //     id: uuidv4(),
+                //   });
+                // if (!wrapping) return false;
+                // tr.wrap(range, wrapping);
+
+                var state = main.state,
+                  dispatch = main.dispatch
+                var _state$selection2 = state.selection,
+                  from = _state$selection2.from,
+                  to = _state$selection2.to
+                var container =
+                  state.config.schema.nodes.fill_the_gap_container.create(
                     {
                       id: v4(),
                     },
+                    Fragment.empty,
                   )
-                if (!wrapping) return false
-                tr.wrap(range, wrapping)
-                dispatch(tr)
+                var feedback = state.config.schema.nodes.feedback_prompt.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.empty,
+                )
+                var wrapper =
+                  state.config.schema.nodes.fill_the_gap_wrapper.create(
+                    {
+                      id: v4(),
+                    },
+                    Fragment.from([container, feedback]),
+                  )
+                var tr = state.tr
+                tr.replaceWith(from, to, wrapper)
+                dispatch(tr) // const map = tr.mapping.maps[0];
+                // let newPos = 0;
+                // map.forEach((_from, _to, _newFrom, newTo) => {
+                //   newPos = newTo;
+                // });
+                // tr.setSelection(TextSelection.create(tr.doc, newPos));
+                // tr.replaceSelectionWith(feedback);
+                // dispatch(tr);
               }
             },
           },
@@ -1655,6 +1687,34 @@ var fillTheGapNode = {
   ],
   toDOM: function toDOM(node) {
     return ['span', node.attrs, 0]
+  },
+}
+
+var fillTheGapWrapperNode = {
+  attrs: {
+    id: {
+      default: '',
+    },
+    class: {
+      default: 'fill-the-gap-wrapper',
+    },
+  },
+  group: 'block questions',
+  atom: true,
+  content: 'block+',
+  parseDOM: [
+    {
+      tag: 'div.fill-the-gap-wrapper',
+      getAttrs: function getAttrs(dom) {
+        return {
+          id: dom.getAttribute('id'),
+          class: dom.getAttribute('class'),
+        }
+      },
+    },
+  ],
+  toDOM: function toDOM(node) {
+    return ['div', node.attrs, 0]
   },
 }
 
@@ -2698,7 +2758,7 @@ function _templateObject2$3() {
 
 function _templateObject$6() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
+    '\n  border: 3px solid #f5f5f7;\n  /* margin-bottom: 30px; */\n',
   ])
 
   _templateObject$6 = function _templateObject() {
@@ -3190,6 +3250,201 @@ var GapComponent = function (_ref) {
   })
 }
 
+var feedbackNode = {
+  attrs: {
+    class: {
+      default: 'feedback-prompt',
+    },
+    id: {
+      default: v4(),
+    },
+  },
+  group: 'block questions',
+  content: 'block*',
+  defining: true,
+  parseDOM: [
+    {
+      tag: 'div.feedback-prompt',
+      getAttrs: function getAttrs(dom) {
+        return {
+          id: dom.getAttribute('id'),
+          class: dom.getAttribute('class'),
+        }
+      },
+    },
+  ],
+  toDOM: function toDOM(node) {
+    return ['div', node.attrs, 0]
+  },
+}
+
+var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
+  _inherits(FeedbackNodeView, _QuestionsNodeView)
+
+  var _super = _createSuper(FeedbackNodeView)
+
+  function FeedbackNodeView(
+    node,
+    view,
+    getPos,
+    decorations,
+    createPortal,
+    Component,
+    context,
+  ) {
+    var _this
+
+    _classCallCheck(this, FeedbackNodeView)
+
+    _this = _super.call(
+      this,
+      node,
+      view,
+      getPos,
+      decorations,
+      createPortal,
+      Component,
+      context,
+    )
+    _this.node = node
+    _this.outerView = view
+    _this.getPos = getPos
+    _this.context = context
+    return _this
+  }
+
+  _createClass(
+    FeedbackNodeView,
+    [
+      {
+        key: 'stopEvent',
+        value: function stopEvent(event) {
+          if (
+            !event.target.type ||
+            event.target.type === 'button' ||
+            event.target.type === 'text' ||
+            event.target.type === 'textarea'
+          ) {
+            return true
+          }
+
+          var innerView = this.context.pmViews[this.node.attrs.id]
+          return innerView && innerView.dom.contains(event.target)
+        },
+      },
+    ],
+    [
+      {
+        key: 'name',
+        value: function name() {
+          return 'feedback_prompt'
+        },
+      },
+    ],
+  )
+
+  return FeedbackNodeView
+})(QuestionsNodeView)
+
+function _templateObject$9() {
+  var data = _taggedTemplateLiteral([
+    '\n  --space: 2.5rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n\n  > * {\n    /* \u2193 Any extant vertical margins are removed */\n    margin-bottom: 0;\n    margin-top: 0;\n  }\n\n  > * + * {\n    /* \u2193 Top margin is only applied to successive elements */\n    margin-top: var(--space, 2.5rem);\n  }\n',
+  ])
+
+  _templateObject$9 = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+styled.div(_templateObject$9())
+
+function _templateObject$a() {
+  var data = _taggedTemplateLiteral([
+    '\n  --s1: 1rem;\n  padding: var(--s1);\n',
+  ])
+
+  _templateObject$a = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+var Box = styled.div(_templateObject$a())
+
+function _templateObject$b() {
+  var data = _taggedTemplateLiteral([
+    '\n  --max-width: 70ch;\n  --min-width: 0;\n  --s1: 1em;\n  /* \u2193 Remove padding from the width calculation */\n  box-sizing: content-box;\n  /* \u2193 Only affect horizontal margins */\n  margin-inline: auto;\n  /* \u2193 The maximum width is the maximum measure */\n  max-width: var(--max-width, 70ch);\n  min-width: var(--min-width, 0);\n  /* \u2193 Apply the minimum horizontal space */\n  padding-inline: var(--s1);\n',
+  ])
+
+  _templateObject$b = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+styled.div(_templateObject$b())
+
+function _templateObject2$5() {
+  var data = _taggedTemplateLiteral([
+    '\n  font-weight: bold;\n  padding-inline: 15px;\n',
+  ])
+
+  _templateObject2$5 = function _templateObject2() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject$c() {
+  var data = _taggedTemplateLiteral([
+    '\n  border-radius: 0 0 4px 4px;\n  border: 1px solid #a5a1a2;\n  border-top: none;\n  display: ',
+    ';\n  margin: 0 32px 20px 20px;\n  margin-right: ',
+    ';\n  padding: 0;\n\n  > div {\n    padding: 0 10px 10px;\n  }\n',
+  ])
+
+  _templateObject$c = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+var Wrapper = styled(Box)(
+  _templateObject$c(),
+  function (p) {
+    return p.$testMode ? 'none' : 'block'
+  },
+  function (p) {
+    return p.$showFeedback || p.$testMode ? '20px' : '32px'
+  },
+)
+var FeedbackLabel = styled.span(_templateObject2$5())
+var FeedbackComponentNew = function (_ref) {
+  var node = _ref.node,
+    view = _ref.view,
+    getPos = _ref.getPos
+  var context = useContext(WaxContext)
+  var main = context.pmViews.main
+  var customProps = main.props.customValues
+  var testMode = customProps.testMode,
+    showFeedBack = customProps.showFeedBack
+  return /*#__PURE__*/ React.createElement(
+    Wrapper,
+    {
+      $showFeedback: showFeedBack,
+      $testMode: testMode,
+    },
+    /*#__PURE__*/ React.createElement(FeedbackLabel, null, 'Feedback'),
+    /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
+      getPos: getPos,
+      node: node,
+      placeholderText: 'Insert feedback', // QuestionType="EssayQuestion"
+      view: view,
+    }),
+  )
+}
+
 var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
   _inherits(FillTheGapQuestionService$1, _Service)
 
@@ -3225,6 +3480,17 @@ var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
         })
         createNode({
           fill_the_gap: fillTheGapNode,
+        })
+        createNode({
+          fill_the_gap_wrapper: fillTheGapWrapperNode,
+        })
+        createNode({
+          feedback_prompt: feedbackNode,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
+          context: this.app,
         })
         addPortal({
           nodeView: FillTheGapContainerNodeView,
@@ -3281,7 +3547,7 @@ var MatchingQuestion =
               to = _state$selection.to
             if (from === null || disallowedTools.includes('Matching'))
               return false
-            state.doc.nodesBetween(from, to, function (node, pos) {
+            state.doc.nodesBetween(from, to, function (node) {
               if (node.type.groups.includes('questions')) {
                 status = false
               }
@@ -3296,17 +3562,17 @@ var MatchingQuestion =
           {
             key: 'run',
             get: function get() {
-              return function (main) {
-                var dispatch = main.dispatch
-                var state = main.state
+              return function (main, context) {
                 helpers.checkifEmpty(main)
+                var state = main.state,
+                  dispatch = main.dispatch
                 /* Create Wrapping */
 
                 var _main$state$selection = main.state.selection,
                   $from = _main$state$selection.$from,
                   $to = _main$state$selection.$to
                 var range = $from.blockRange($to)
-                var tr = main.state.tr
+                var tr = state.tr
                 var wrapping =
                   range &&
                   findWrapping(
@@ -3331,8 +3597,19 @@ var MatchingQuestion =
                   },
                   Fragment.empty,
                 )
+                var feedback = state.config.schema.nodes.feedback_prompt.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.empty,
+                )
                 tr.replaceSelectionWith(option)
+                tr.replaceSelectionWith(feedback)
                 dispatch(tr)
+                setTimeout(function () {
+                  helpers.createEmptyParagraph(context, feedback.attrs.id)
+                  context.pmViews[option.attrs.id].focus()
+                }, 150)
                 return true
               }
             },
@@ -3375,14 +3652,11 @@ var matchingContainerNode = {
     },
     options: {
       default: [],
-    },
-    feedback: {
-      default: '',
-    },
+    }, // feedback: { default: '' },
   },
   group: 'block questions',
   isolating: true,
-  content: 'block*',
+  content: 'block+',
   parseDOM: [
     {
       tag: 'div.matching-container',
@@ -3639,18 +3913,18 @@ var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
   return MatchingOptionNodeView
 })(QuestionsNodeView)
 
-function _templateObject$9() {
+function _templateObject$d() {
   var data = _taggedTemplateLiteral([
-    '\n  width: 100% !important;\n  display: flex;\n  flex-direction: row;\n  > .ProseMirror {\n    padding: 0px !important;\n    box-shadow: none !important;\n    width: 100% !important;\n    &:focus {\n      outline: none;\n    }\n    p {\n      margin: 0;\n\n      br {\n        display: none;\n      }\n    }\n  }\n',
+    '\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n\n  > .ProseMirror {\n    padding: 0px;\n    box-shadow: none;\n    width: 100%;\n\n    &:focus {\n      outline: none;\n    }\n\n    p {\n      margin: 0;\n\n      br {\n        display: none;\n      }\n    }\n  }\n',
   ])
 
-  _templateObject$9 = function _templateObject() {
+  _templateObject$d = function _templateObject() {
     return data
   }
 
   return data
 }
-var EditorWrapper$5 = styled.div(_templateObject$9())
+var EditorWrapper$5 = styled.div(_templateObject$d())
 
 var ContainerEditor$1 = function ContainerEditor(_ref) {
   var _node$attrs
@@ -3742,18 +4016,6 @@ var ContainerEditor$1 = function ContainerEditor(_ref) {
       ref: editorRef,
     }),
   )
-}
-
-function _templateObject12() {
-  var data = _taggedTemplateLiteral([
-    '\n  .ProseMirror {\n    padding: 8px 16px;\n  }\n',
-  ])
-
-  _templateObject12 = function _templateObject12() {
-    return data
-  }
-
-  return data
 }
 
 function _templateObject11() {
@@ -3860,31 +4122,31 @@ function _templateObject3$4() {
   return data
 }
 
-function _templateObject2$5() {
+function _templateObject2$6() {
   var data = _taggedTemplateLiteral([
     '\n  border: 3px solid #f5f5f7;\n  border-bottom: none;\n',
   ])
 
-  _templateObject2$5 = function _templateObject2() {
+  _templateObject2$6 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$a() {
+function _templateObject$e() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n\n  .ProseMirror-selectednode {\n    outline: none;\n  }\n',
   ])
 
-  _templateObject$a = function _templateObject() {
+  _templateObject$e = function _templateObject() {
     return data
   }
 
   return data
 }
-var MatchingWrapper = styled.div(_templateObject$a())
-var MatchingContainerTool = styled.div(_templateObject2$5())
+var MatchingWrapper = styled.div(_templateObject$e())
+var MatchingContainerTool = styled.div(_templateObject2$6())
 var MatchingContainer = styled.div(_templateObject3$4())
 var QuestionWrapper = styled.div(_templateObject4$3())
 var ActionButton$2 = styled.button(_templateObject5$2())
@@ -3894,10 +4156,7 @@ var OptionArea = styled.div(_templateObject8$1())
 var AddOption = styled.div(_templateObject9$1())
 var RemoveQuestionButton = styled.button(_templateObject10())
 var StyledIconActionRemove$2 = styled(Icon)(_templateObject11())
-var StyledFeedback$1 = styled(FeedbackComponent)(_templateObject12())
 var MatchingContainerComponent = function (_ref) {
-  var _getUpdatedNode
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -4092,7 +4351,6 @@ var MatchingContainerComponent = function (_ref) {
     [options],
   )
   var testMode = customProps.testMode
-  var feedback = node.attrs.feedback
 
   var removeQuestion = function removeQuestion() {
     var allNodes = getNodes$3(context.pmViews.main)
@@ -4106,17 +4364,6 @@ var MatchingContainerComponent = function (_ref) {
         )
       }
     })
-  }
-
-  var getUpdatedNode = function getUpdatedNode() {
-    var nodeFound = node
-    var allNodes = getNodes$3(context.pmViews.main)
-    allNodes.forEach(function (singNode) {
-      if (singNode.node.attrs.id === node.attrs.id) {
-        nodeFound = singNode
-      }
-    })
-    return nodeFound
   }
 
   return /*#__PURE__*/ React.createElement(
@@ -4225,18 +4472,6 @@ var MatchingContainerComponent = function (_ref) {
               ),
             ),
         ),
-      !testMode &&
-        !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(StyledFeedback$1, {
-          getPos: getPos,
-          node:
-            (_getUpdatedNode = getUpdatedNode()) === null ||
-            _getUpdatedNode === void 0
-              ? void 0
-              : _getUpdatedNode.node,
-          readOnly: readOnly,
-          view: view,
-        }),
     ),
   )
 }
@@ -4261,18 +4496,18 @@ var getNodes$3 = function getNodes(view) {
 //   return matchingOptionNodes;
 // };
 
-function _templateObject$b() {
+function _templateObject$f() {
   var data = _taggedTemplateLiteral([
     "\n  border: none;\n  display: flex;\n  width: 68%;\n\n  > .ProseMirror {\n    white-space: break-spaces;\n    width: 100% !important;\n    min-height: 25px !important;\n    word-wrap: break-word;\n    padding: 4px !important;\n    border: 12px solid #f4f4f7;\n    border-radius: 12px;\n    box-shadow: none !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    :empty::before {\n      content: 'Type your text';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
-  _templateObject$b = function _templateObject() {
+  _templateObject$f = function _templateObject() {
     return data
   }
 
   return data
 }
-var EditorWrapper$6 = styled.div(_templateObject$b())
+var EditorWrapper$6 = styled.div(_templateObject$f())
 
 var EditorComponent$1 = function EditorComponent(_ref) {
   var node = _ref.node,
@@ -4447,32 +4682,32 @@ function _templateObject3$5() {
   return data
 }
 
-function _templateObject2$6() {
+function _templateObject2$7() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
     ';\n  opacity: ',
     ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
   ])
 
-  _templateObject2$6 = function _templateObject2() {
+  _templateObject2$7 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$c() {
+function _templateObject$g() {
   var data = _taggedTemplateLiteral([''])
 
-  _templateObject$c = function _templateObject() {
+  _templateObject$g = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper = styled.div(_templateObject$c())
+var Wrapper$1 = styled.div(_templateObject$g())
 var DropDownButton = styled.button(
-  _templateObject2$6(),
+  _templateObject2$7(),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -4638,7 +4873,7 @@ var DropComponent = function DropComponent(_ref) {
       }
 
       return /*#__PURE__*/ React.createElement(
-        Wrapper,
+        Wrapper$1,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
@@ -4765,32 +5000,32 @@ function _templateObject3$6() {
   return data
 }
 
-function _templateObject2$7() {
+function _templateObject2$8() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
     ';\n  opacity: ',
     ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
   ])
 
-  _templateObject2$7 = function _templateObject2() {
+  _templateObject2$8 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$d() {
+function _templateObject$h() {
   var data = _taggedTemplateLiteral([''])
 
-  _templateObject$d = function _templateObject() {
+  _templateObject$h = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$1 = styled.div(_templateObject$d())
+var Wrapper$2 = styled.div(_templateObject$h())
 var DropDownButton$1 = styled.button(
-  _templateObject2$7(),
+  _templateObject2$8(),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -4922,7 +5157,7 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
       }
 
       return /*#__PURE__*/ React.createElement(
-        Wrapper$1,
+        Wrapper$2,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
@@ -5065,31 +5300,31 @@ function _templateObject3$7() {
   return data
 }
 
-function _templateObject2$8() {
+function _templateObject2$9() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  width: 7%;\n',
   ])
 
-  _templateObject2$8 = function _templateObject2() {
+  _templateObject2$9 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$e() {
+function _templateObject$i() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 10px;\n  width: 100%;\n',
   ])
 
-  _templateObject$e = function _templateObject() {
+  _templateObject$i = function _templateObject() {
     return data
   }
 
   return data
 }
-var Option = styled.div(_templateObject$e())
-var ButtonsContainer = styled.div(_templateObject2$8())
+var Option = styled.div(_templateObject$i())
+var ButtonsContainer = styled.div(_templateObject2$9())
 var DropDownContainer = styled.div(_templateObject3$7())
 var ActionButton$3 = styled.button(_templateObject4$6())
 var StyledIconAction$2 = styled(Icon)(_templateObject5$3())
@@ -5279,6 +5514,9 @@ var MatchingService = /*#__PURE__*/ (function (_Service) {
         createNode({
           matching_option: matchingOptionNode,
         })
+        createNode({
+          feedback_prompt: feedbackNode,
+        })
         addPortal({
           nodeView: MatchingContainerNodeView,
           component: MatchingContainerComponent,
@@ -5287,6 +5525,11 @@ var MatchingService = /*#__PURE__*/ (function (_Service) {
         addPortal({
           nodeView: MatchingOptionNodeView,
           component: MatchingOptionComponent,
+          context: this.app,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
           context: this.app,
         })
       },
@@ -5334,7 +5577,7 @@ var MultipleDropDownQuestion =
               to = _state$selection.to
             if (from === null || disallowedTools.includes('MultipleDropDown'))
               return false
-            state.doc.nodesBetween(from, to, function (node, pos) {
+            state.doc.nodesBetween(from, to, function (node) {
               if (node.type.groups.includes('questions')) {
                 status = false
               }
@@ -5350,8 +5593,8 @@ var MultipleDropDownQuestion =
             key: 'run',
             get: function get() {
               return function (main) {
-                var dispatch = main.dispatch
-                var state = main.state
+                var dispatch = main.dispatch,
+                  state = main.state
                 helpers.checkifEmpty(main)
                 var _main$state$selection = main.state.selection,
                   $from = _main$state$selection.$from,
@@ -5369,7 +5612,21 @@ var MultipleDropDownQuestion =
                   )
                 if (!wrapping) return false
                 tr.wrap(range, wrapping)
+                var feedback = state.config.schema.nodes.feedback_prompt.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.empty,
+                )
+                var map = tr.mapping.maps[0]
+                var newPos = 0
+                map.forEach(function (_from, _to, _newFrom, newTo) {
+                  newPos = newTo
+                })
+                tr.setSelection(TextSelection.create(tr.doc, newPos))
+                tr.replaceSelectionWith(feedback)
                 dispatch(tr)
+                return true
               }
             },
           },
@@ -5393,7 +5650,7 @@ var MultipleDropDownQuestion =
           {
             key: 'enable',
             get: function get() {
-              return function (state) {}
+              return function () {}
             },
           },
         ])
@@ -5487,7 +5744,7 @@ var multipleDropDownContainerNode = {
   group: 'block questions',
   isolating: true,
   // content: 'paragraph* bulletlist* orderedlist*',
-  content: 'block*',
+  content: 'block+',
   parseDOM: [
     {
       tag: 'div.multiple-drop-down-container',
@@ -5727,32 +5984,32 @@ function _templateObject3$8() {
   return data
 }
 
-function _templateObject2$9() {
+function _templateObject2$a() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: 1px solid rgb(204, 204, 204);\n  color: #000;\n  cursor: ',
     ';\n  display: inline-flex;\n  opacity: ',
     ';\n  padding: 8px 4px 4px 4px;\n  position: relative;\n  width: 165px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n  &focus {\n    outline: 0;\n  }\n',
   ])
 
-  _templateObject2$9 = function _templateObject2() {
+  _templateObject2$a = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$f() {
+function _templateObject$j() {
   var data = _taggedTemplateLiteral(['\n  display: inline-flex;\n'])
 
-  _templateObject$f = function _templateObject() {
+  _templateObject$j = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$2 = styled.div(_templateObject$f())
+var Wrapper$3 = styled.div(_templateObject$j())
 var DropDownButton$2 = styled.button(
-  _templateObject2$9(),
+  _templateObject2$a(),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -5869,7 +6126,7 @@ var DropComponent$1 = function DropComponent(_ref) {
       }
 
       return /*#__PURE__*/ React.createElement(
-        Wrapper$2,
+        Wrapper$3,
         {
           disabled: isDisabled,
           ref: wrapperRef,
@@ -6003,29 +6260,29 @@ function _templateObject3$9() {
   return data
 }
 
-function _templateObject2$a() {
+function _templateObject2$b() {
   var data = _taggedTemplateLiteral(['\n  fill: white !important;\n'])
 
-  _templateObject2$a = function _templateObject2() {
+  _templateObject2$b = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$g() {
+function _templateObject$k() {
   var data = _taggedTemplateLiteral([
     '\n  background: #535e76;\n  border-radius: 2px;\n',
   ])
 
-  _templateObject$g = function _templateObject() {
+  _templateObject$k = function _templateObject() {
     return data
   }
 
   return data
 }
-var activeStylesContainer = css(_templateObject$g())
-var activeStylesSvg = css(_templateObject2$a())
+var activeStylesContainer = css(_templateObject$k())
+var activeStylesSvg = css(_templateObject2$b())
 var StyledIconActionContainer = styled.span(
   _templateObject3$9(),
   function (props) {
@@ -6124,31 +6381,31 @@ var MultipleDropDownComponent = function (_ref) {
   })
 }
 
-function _templateObject2$b() {
+function _templateObject2$c() {
   var data = _taggedTemplateLiteral([
     "\n  position: absolute;\n  top: 0;\n  left: 0;\n  height: 15px;\n  width: 15px;\n  background-color: #eee;\n  border-radius: 50%;\n\n  &:after {\n    content: '';\n    position: absolute;\n    display: none;\n  }\n",
   ])
 
-  _templateObject2$b = function _templateObject2() {
+  _templateObject2$c = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$h() {
+function _templateObject$l() {
   var data = _taggedTemplateLiteral([
     '\n  display: block;\n  position: relative;\n  padding-left: 20px;\n  margin-bottom: 5px;\n  cursor: pointer;\n  user-select: none;\n\n  input {\n    position: absolute;\n    opacity: 0;\n    cursor: pointer;\n    height: 0;\n    width: 0;\n  }\n\n  &:hover input ~ span {\n    background-color: #ccc;\n  }\n\n  input:checked ~ span {\n    background-color: #535e76;\n  }\n\n  input:checked ~ .span:after {\n    display: block;\n  }\n\n  span:after {\n    top: 9px;\n    left: 9px;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: white;\n  }\n',
   ])
 
-  _templateObject$h = function _templateObject() {
+  _templateObject$l = function _templateObject() {
     return data
   }
 
   return data
 }
-var CheckContainer = styled.label(_templateObject$h())
-var RadioBtn = styled.span(_templateObject2$b())
+var CheckContainer = styled.label(_templateObject$l())
+var RadioBtn = styled.span(_templateObject2$c())
 var RadioButton = function (_ref) {
   var item = _ref.item,
     node = _ref.node
@@ -6241,31 +6498,31 @@ function _templateObject3$a() {
   return data
 }
 
-function _templateObject2$c() {
+function _templateObject2$d() {
   var data = _taggedTemplateLiteral([
     '\n  width: 174px;\n  height: 150px;\n  background: white;\n  border: 1px solid #535e76;\n  display: flex;\n  flex-direction: column;\n  padding: 5px;\n',
   ])
 
-  _templateObject2$c = function _templateObject2() {
+  _templateObject2$d = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$i() {
+function _templateObject$m() {
   var data = _taggedTemplateLiteral([
     '\n  width: 0;\n  height: 0;\n  margin: 0px auto;\n  border-left: 6px solid transparent;\n  border-right: 6px solid transparent;\n  border-bottom: 10px solid #535e76;\n',
   ])
 
-  _templateObject$i = function _templateObject() {
+  _templateObject$m = function _templateObject() {
     return data
   }
 
   return data
 }
-var TriangleTop = styled.div(_templateObject$i())
-var DropDownComponent = styled.div(_templateObject2$c())
+var TriangleTop = styled.div(_templateObject$m())
+var DropDownComponent = styled.div(_templateObject2$d())
 var Options = styled.div(_templateObject3$a())
 var Option$1 = styled.div(_templateObject4$9())
 var AddOption$1 = styled.div(_templateObject5$5())
@@ -6562,18 +6819,18 @@ var CreateDropDownService = /*#__PURE__*/ (function (_Service) {
   return CreateDropDownService
 })(Service)
 
-function _templateObject$j() {
+function _templateObject$n() {
   var data = _taggedTemplateLiteral([
-    "\n  position: relative;\n  height: 100%;\n\n  > .ProseMirror {\n    padding: 5px !important;\n    &:focus {\n      outline: none;\n    }\n\n    img[class='ProseMirror-separator'] {\n      display: inline !important;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
+    "\n  position: relative;\n  height: 100%;\n\n  > .ProseMirror {\n    padding: 5px !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    img[class='ProseMirror-separator'] {\n      display: inline !important;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
-  _templateObject$j = function _templateObject() {
+  _templateObject$n = function _templateObject() {
     return data
   }
 
   return data
 }
-var EditorWrapper$7 = styled.div(_templateObject$j())
+var EditorWrapper$7 = styled.div(_templateObject$n())
 
 var WaxOverlays$1 = function WaxOverlays() {
   return true
@@ -6760,16 +7017,6 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
   )
 }
 
-function _templateObject6$5() {
-  var data = _taggedTemplateLiteral(['\n  padding-inline: 4px;\n'])
-
-  _templateObject6$5 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
 function _templateObject5$6() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
@@ -6804,38 +7051,38 @@ function _templateObject3$b() {
   return data
 }
 
-function _templateObject2$d() {
+function _templateObject2$e() {
   var data = _taggedTemplateLiteral([
     '\n  border: 3px solid #f5f5f7;\n  border-bottom: none;\n\n  span {\n    position: relative;\n    top: 3px;\n  }\n',
   ])
 
-  _templateObject2$d = function _templateObject2() {
+  _templateObject2$e = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$k() {
+function _templateObject$o() {
   var data = _taggedTemplateLiteral([
     '\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n',
   ])
 
-  _templateObject$k = function _templateObject() {
+  _templateObject$o = function _templateObject() {
     return data
   }
 
   return data
 }
-var MultipleDropDownpWrapper = styled.div(_templateObject$k())
-var MultipleDropDownContainerTool = styled.div(_templateObject2$d())
+var MultipleDropDownpWrapper = styled.div(_templateObject$o())
+var MultipleDropDownContainerTool = styled.div(_templateObject2$e())
 var MultipleDropDownpContainer = styled.div(_templateObject3$b())
 var ActionButton$4 = styled.button(_templateObject4$a())
-var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$6())
-var StyledFeedback$2 = styled(FeedbackComponent)(_templateObject6$5())
-var MultipleDropDownContainerComponent = function (_ref) {
-  var _getUpdatedNode
+var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$6()) // const StyledFeedback = styled(FeedbackComponent)`
+//   padding-inline: 4px;
+// `;
 
+var MultipleDropDownContainerComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -6847,8 +7094,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
     return editable
   })
   var readOnly = !isEditable
-  var testMode = customProps.testMode
-  var feedback = node.attrs.feedback
+  var testMode = customProps.testMode // const { feedback } = node.attrs;
 
   var removeQuestion = function removeQuestion() {
     var allNodes = getNodes$7(context.pmViews.main)
@@ -6862,18 +7108,16 @@ var MultipleDropDownContainerComponent = function (_ref) {
         )
       }
     })
-  }
-
-  var getUpdatedNode = function getUpdatedNode() {
-    var nodeFound = node
-    var allNodes = getNodes$7(context.pmViews.main)
-    allNodes.forEach(function (singNode) {
-      if (singNode.node.attrs.id === node.attrs.id) {
-        nodeFound = singNode
-      }
-    })
-    return nodeFound
-  }
+  } // const getUpdatedNode = () => {
+  //   let nodeFound = node;
+  //   const allNodes = getNodes(context.pmViews.main);
+  //   allNodes.forEach(singNode => {
+  //     if (singNode.node.attrs.id === node.attrs.id) {
+  //       nodeFound = singNode;
+  //     }
+  //   });
+  //   return nodeFound;
+  // };
 
   return /*#__PURE__*/ React.createElement(
     MultipleDropDownpWrapper,
@@ -6910,18 +7154,6 @@ var MultipleDropDownContainerComponent = function (_ref) {
         node: node,
         view: view,
       }),
-      !testMode &&
-        !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(StyledFeedback$2, {
-          getPos: getPos,
-          node:
-            (_getUpdatedNode = getUpdatedNode()) === null ||
-            _getUpdatedNode === void 0
-              ? void 0
-              : _getUpdatedNode.node,
-          readOnly: readOnly,
-          view: view,
-        }),
     ),
   )
 }
@@ -6973,9 +7205,17 @@ var MultipleDropDownService = /*#__PURE__*/ (function (_Service) {
         createNode({
           multiple_drop_down_container: multipleDropDownContainerNode,
         })
+        createNode({
+          feedback_prompt: feedbackNode,
+        })
         addPortal({
           nodeView: MultipleDropDownContainerNodeView,
           component: MultipleDropDownContainerComponent,
+          context: this.app,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
           context: this.app,
         })
       },
@@ -7236,32 +7476,32 @@ function _templateObject3$c() {
   return data
 }
 
-function _templateObject2$e() {
+function _templateObject2$f() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: 1px solid #f4f4f4;\n  color: #000;\n  cursor: ',
     ';\n  display: flex;\n  position: relative;\n  top: 2px;\n  left: 3px;\n  width: 235px;\n  height: 26px;\n\n  span {\n    position: relative;\n    top: 4px;\n  }\n',
   ])
 
-  _templateObject2$e = function _templateObject2() {
+  _templateObject2$f = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$l() {
+function _templateObject$p() {
   var data = _taggedTemplateLiteral(['\n  opacity: ', ';\n  z-index: 999;\n'])
 
-  _templateObject$l = function _templateObject() {
+  _templateObject$p = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$3 = styled.div(_templateObject$l(), function (props) {
+var Wrapper$4 = styled.div(_templateObject$p(), function (props) {
   return props.$disabled ? '0.4' : '1'
 })
-var DropDownButton$3 = styled.button(_templateObject2$e(), function (props) {
+var DropDownButton$3 = styled.button(_templateObject2$f(), function (props) {
   return props.$disabled ? 'not-allowed' : 'pointer'
 })
 var DropDownMenu$3 = styled.div(_templateObject3$c(), function (props) {
@@ -7415,7 +7655,7 @@ var NumericalAnswerDropDownCompontent =
     var NumericalAnswerDropDown = useMemo(
       function () {
         return /*#__PURE__*/ React.createElement(
-          Wrapper$3,
+          Wrapper$4,
           {
             $disabled: isDisabled,
             ref: wrapperRef,
@@ -7507,12 +7747,12 @@ function _templateObject7$4() {
   return data
 }
 
-function _templateObject6$6() {
+function _templateObject6$5() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$6 = function _templateObject6() {
+  _templateObject6$5 = function _templateObject6() {
     return data
   }
 
@@ -7553,37 +7793,37 @@ function _templateObject3$d() {
   return data
 }
 
-function _templateObject2$f() {
+function _templateObject2$g() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
   ])
 
-  _templateObject2$f = function _templateObject2() {
+  _templateObject2$g = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$m() {
+function _templateObject$q() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
   ])
 
-  _templateObject$m = function _templateObject() {
+  _templateObject$q = function _templateObject() {
     return data
   }
 
   return data
 }
-var AnswerContainer$2 = styled.div(_templateObject$m())
-var ValueContainer = styled.div(_templateObject2$f())
+var AnswerContainer$2 = styled.div(_templateObject$q())
+var ValueContainer = styled.div(_templateObject2$g())
 var ValueInnerContainer = styled.div(_templateObject3$d())
 var ResultContainer = styled.div(_templateObject4$c())
 var FinalResult = styled.span(_templateObject5$7(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect = styled(Icon)(_templateObject6$6())
+var StyledIconCorrect = styled(Icon)(_templateObject6$5())
 var StyledIconWrong = styled(Icon)(_templateObject7$4())
 
 var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
@@ -7882,12 +8122,12 @@ function _templateObject7$5() {
   return data
 }
 
-function _templateObject6$7() {
+function _templateObject6$6() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$7 = function _templateObject6() {
+  _templateObject6$6 = function _templateObject6() {
     return data
   }
 
@@ -7928,37 +8168,37 @@ function _templateObject3$e() {
   return data
 }
 
-function _templateObject2$g() {
+function _templateObject2$h() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
   ])
 
-  _templateObject2$g = function _templateObject2() {
+  _templateObject2$h = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$n() {
+function _templateObject$r() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
   ])
 
-  _templateObject$n = function _templateObject() {
+  _templateObject$r = function _templateObject() {
     return data
   }
 
   return data
 }
-var AnswerContainer$3 = styled.div(_templateObject$n())
-var ValueContainer$1 = styled.div(_templateObject2$g())
+var AnswerContainer$3 = styled.div(_templateObject$r())
+var ValueContainer$1 = styled.div(_templateObject2$h())
 var ValueInnerContainer$1 = styled.div(_templateObject3$e())
 var ResultContainer$1 = styled.div(_templateObject4$d())
 var FinalResult$1 = styled.span(_templateObject5$8(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$1 = styled(Icon)(_templateObject6$7())
+var StyledIconCorrect$1 = styled(Icon)(_templateObject6$6())
 var StyledIconWrong$1 = styled(Icon)(_templateObject7$5())
 
 var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
@@ -8182,12 +8422,12 @@ function _templateObject7$6() {
   return data
 }
 
-function _templateObject6$8() {
+function _templateObject6$7() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$8 = function _templateObject6() {
+  _templateObject6$7 = function _templateObject6() {
     return data
   }
 
@@ -8228,37 +8468,37 @@ function _templateObject3$f() {
   return data
 }
 
-function _templateObject2$h() {
+function _templateObject2$i() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
   ])
 
-  _templateObject2$h = function _templateObject2() {
+  _templateObject2$i = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$o() {
+function _templateObject$s() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
   ])
 
-  _templateObject$o = function _templateObject() {
+  _templateObject$s = function _templateObject() {
     return data
   }
 
   return data
 }
-var AnswerContainer$4 = styled.div(_templateObject$o())
-var ValueContainer$2 = styled.div(_templateObject2$h())
+var AnswerContainer$4 = styled.div(_templateObject$s())
+var ValueContainer$2 = styled.div(_templateObject2$i())
 var ValueInnerContainer$2 = styled.div(_templateObject3$f())
 var ResultContainer$2 = styled.div(_templateObject4$e())
 var FinalResult$2 = styled.span(_templateObject5$9(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$2 = styled(Icon)(_templateObject6$8())
+var StyledIconCorrect$2 = styled(Icon)(_templateObject6$7())
 var StyledIconWrong$2 = styled(Icon)(_templateObject7$6())
 
 var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
@@ -8585,12 +8825,12 @@ function _templateObject7$7() {
   return data
 }
 
-function _templateObject6$9() {
+function _templateObject6$8() {
   var data = _taggedTemplateLiteral([
     '\n  float: right;\n  position: relative;\n  top: 3px;\n',
   ])
 
-  _templateObject6$9 = function _templateObject6() {
+  _templateObject6$8 = function _templateObject6() {
     return data
   }
 
@@ -8631,39 +8871,39 @@ function _templateObject3$g() {
   return data
 }
 
-function _templateObject2$i() {
+function _templateObject2$j() {
   var data = _taggedTemplateLiteral([
     '\n  border: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
   ])
 
-  _templateObject2$i = function _templateObject2() {
+  _templateObject2$j = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$p() {
+function _templateObject$t() {
   var data = _taggedTemplateLiteral([
     '\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n',
   ])
 
-  _templateObject$p = function _templateObject() {
+  _templateObject$t = function _templateObject() {
     return data
   }
 
   return data
 }
-var NumericalAnswerWrapper = styled.div(_templateObject$p())
-var NumericalAnswerContainer = styled.div(_templateObject2$i())
+var NumericalAnswerWrapper = styled.div(_templateObject$t())
+var NumericalAnswerContainer = styled.div(_templateObject2$j())
 var NumericalAnswerContainerTool = styled.div(_templateObject3$g())
 var NumericalAnswerOption = styled.div(_templateObject4$f())
 var ActionButton$5 = styled.button(_templateObject5$a())
-var StyledIconContainer$1 = styled.span(_templateObject6$9())
+var StyledIconContainer$1 = styled.span(_templateObject6$8())
 var StyledIconAction$4 = styled(Icon)(_templateObject7$7())
 var InfoMsg$1 = styled.div(_templateObject8$3(), th('colorPrimary'))
 var StyledIconActionRemove$4 = styled(Icon)(_templateObject9$2())
-var StyledFeedback$3 = styled(FeedbackComponent)(_templateObject10$1())
+var StyledFeedback$1 = styled(FeedbackComponent)(_templateObject10$1())
 var NumericalAnswerContainerComponent = function (_ref) {
   var _getUpdatedNode,
     _getUpdatedNode$node,
@@ -8902,7 +9142,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
       ),
       !testMode &&
         !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(StyledFeedback$3, {
+        /*#__PURE__*/ React.createElement(StyledFeedback$1, {
           getPos: getPos,
           node:
             (_getUpdatedNode10 = getUpdatedNode()) === null ||
@@ -8987,32 +9227,32 @@ function _templateObject3$h() {
   return data
 }
 
-function _templateObject2$j() {
+function _templateObject2$k() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
     ';\n  display: flex;\n  position: relative;\n  width: 215px;\n  height: 100%;\n\n  span {\n    position: relative;\n    top: 12px;\n  }\n',
   ])
 
-  _templateObject2$j = function _templateObject2() {
+  _templateObject2$k = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$q() {
+function _templateObject$u() {
   var data = _taggedTemplateLiteral(['\n  opacity: ', ';\n'])
 
-  _templateObject$q = function _templateObject() {
+  _templateObject$u = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$4 = styled.div(_templateObject$q(), function (props) {
+var Wrapper$5 = styled.div(_templateObject$u(), function (props) {
   return props.$disabled ? '0.4' : '1'
 })
-var DropDownButton$4 = styled.button(_templateObject2$j(), function (props) {
+var DropDownButton$4 = styled.button(_templateObject2$k(), function (props) {
   return props.$disabled ? 'not-allowed' : 'pointer'
 })
 var DropDownMenu$4 = styled.div(_templateObject3$h(), function (props) {
@@ -9160,7 +9400,7 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
   var MultipleDropDown = useMemo(
     function () {
       return /*#__PURE__*/ React.createElement(
-        Wrapper$4,
+        Wrapper$5,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
@@ -9351,27 +9591,27 @@ var QuestionsDropDownToolGroupService = /*#__PURE__*/ (function (_Service) {
   return QuestionsDropDownToolGroupService
 })(Service)
 
-function _templateObject2$k() {
+function _templateObject2$l() {
   var data = _taggedTemplateLiteral(['\n  ', '\n'])
 
-  _templateObject2$k = function _templateObject2() {
+  _templateObject2$l = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$r() {
+function _templateObject$v() {
   var data = _taggedTemplateLiteral(['\n  pointer-events: none;\n'])
 
-  _templateObject$r = function _templateObject() {
+  _templateObject$v = function _templateObject() {
     return data
   }
 
   return data
 }
-var activeStyles$1 = css(_templateObject$r())
-var StyledButton$1 = styled(MenuButton)(_templateObject2$k(), function (props) {
+var activeStyles$1 = css(_templateObject$v())
+var StyledButton$1 = styled(MenuButton)(_templateObject2$l(), function (props) {
   return props.active && activeStyles$1
 })
 
@@ -9488,6 +9728,7 @@ var MultipleChoiceQuestion =
                   view.state.config.schema.nodes.multiple_choice_container,
                   view.state.config.schema.nodes.question_node_multiple,
                   view.state.config.schema.nodes.multiple_choice,
+                  view.state.config.schema.nodes.feedback_prompt,
                 )
               }
             },
@@ -9526,17 +9767,14 @@ var multipleChoiceNode = {
       default: 'multiple-choice-option',
     },
     id: {
-      default: '',
+      default: v4(),
     },
     correct: {
       default: false,
     },
     answer: {
       default: false,
-    },
-    feedback: {
-      default: '',
-    },
+    }, // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
@@ -9549,8 +9787,7 @@ var multipleChoiceNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
-          feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -9594,7 +9831,7 @@ var questionNode = {
       default: 'multiple-choice-question',
     },
     id: {
-      default: '',
+      default: v4(),
     },
   },
   group: 'block questions',
@@ -9670,34 +9907,34 @@ function _templateObject3$i() {
   return data
 }
 
-function _templateObject2$l() {
+function _templateObject2$m() {
   var data = _taggedTemplateLiteral([
     '\n  ',
     '\n\n  ',
     '\n    cursor: pointer;\n',
   ])
 
-  _templateObject2$l = function _templateObject2() {
+  _templateObject2$m = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$s() {
+function _templateObject$w() {
   var data = _taggedTemplateLiteral([
     '\n  button {\n    width: 55px;\n  }\n\n  .rc-switch-inner {\n    left: 31px;\n  }\n\n  .rc-switch-checked {\n    border: 1px solid #008000;\n    background-color: #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &:after {\n      left: 33px;\n    }\n  }\n',
   ])
 
-  _templateObject$s = function _templateObject() {
+  _templateObject$w = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$5 = styled.span(_templateObject$s())
+var Wrapper$6 = styled.span(_templateObject$w())
 var Label = styled.label(
-  _templateObject2$l(),
+  _templateObject2$m(),
   function (props) {
     return props.$labelPosition === 'left' && css(_templateObject3$i(), grid(2))
   },
@@ -9732,7 +9969,7 @@ var SwitchComponent = function SwitchComponent(props) {
     ])
 
   return /*#__PURE__*/ React.createElement(
-    Wrapper$5,
+    Wrapper$6,
     {
       className: className,
     },
@@ -9769,12 +10006,12 @@ var SwitchComponent = function SwitchComponent(props) {
   )
 }
 
-function _templateObject6$a() {
+function _templateObject6$9() {
   var data = _taggedTemplateLiteral([
     '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$a = function _templateObject6() {
+  _templateObject6$9 = function _templateObject6() {
     return data
   }
 
@@ -9818,35 +10055,35 @@ function _templateObject3$j() {
   return data
 }
 
-function _templateObject2$m() {
+function _templateObject2$n() {
   var data = _taggedTemplateLiteral(['\n  margin-left: auto;\n'])
 
-  _templateObject2$m = function _templateObject2() {
+  _templateObject2$n = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$t() {
+function _templateObject$x() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  margin-left: auto;\n',
   ])
 
-  _templateObject$t = function _templateObject() {
+  _templateObject$x = function _templateObject() {
     return data
   }
 
   return data
 }
-var StyledSwitch = styled(SwitchComponent)(_templateObject$t())
-var AnswerContainer$5 = styled.span(_templateObject2$m())
+var StyledSwitch = styled(SwitchComponent)(_templateObject$x())
+var AnswerContainer$5 = styled.span(_templateObject2$n())
 var Correct = styled.span(_templateObject3$j())
 var Answer$2 = styled.span(_templateObject4$i(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
 var StyledIconCorrect$3 = styled(Icon)(_templateObject5$b())
-var StyledIconWrong$3 = styled(Icon)(_templateObject6$a())
+var StyledIconWrong$3 = styled(Icon)(_templateObject6$9())
 
 var YesNoSwitch = function YesNoSwitch(_ref) {
   var customProps = _ref.customProps,
@@ -9991,8 +10228,20 @@ var getNodes$d = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$3() {
+function _templateObject10$2() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
+
+  _templateObject10$2 = function _templateObject10() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject9$3() {
+  var data = _taggedTemplateLiteral([
+    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+  ])
 
   _templateObject9$3 = function _templateObject9() {
     return data
@@ -10003,7 +10252,7 @@ function _templateObject9$3() {
 
 function _templateObject8$4() {
   var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject8$4 = function _templateObject8() {
@@ -10015,7 +10264,7 @@ function _templateObject8$4() {
 
 function _templateObject7$8() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
   _templateObject7$8 = function _templateObject7() {
@@ -10025,12 +10274,12 @@ function _templateObject7$8() {
   return data
 }
 
-function _templateObject6$b() {
+function _templateObject6$a() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$b = function _templateObject6() {
+  _templateObject6$a = function _templateObject6() {
     return data
   }
 
@@ -10039,7 +10288,8 @@ function _templateObject6$b() {
 
 function _templateObject5$c() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-radius: 4px;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n',
+    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+    '\n',
   ])
 
   _templateObject5$c = function _templateObject5() {
@@ -10073,40 +10323,42 @@ function _templateObject3$k() {
   return data
 }
 
-function _templateObject2$n() {
+function _templateObject2$o() {
   var data = _taggedTemplateLiteral([
     '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
   ])
 
-  _templateObject2$n = function _templateObject2() {
+  _templateObject2$o = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$u() {
+function _templateObject$y() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
+    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
   ])
 
-  _templateObject$u = function _templateObject() {
+  _templateObject$y = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$6 = styled.div(_templateObject$u())
-var InfoRow = styled.div(_templateObject2$n())
+var Wrapper$7 = styled(Box)(_templateObject$y())
+var InfoRow = styled.div(_templateObject2$o())
 var QuestionNunber = styled.span(_templateObject3$k())
 var QuestionControlsWrapper = styled.div(_templateObject4$j())
-var QuestionWrapper$1 = styled.div(_templateObject5$c())
-var IconsWrapper = styled.div(_templateObject6$b())
-var QuestionData = styled.div(_templateObject7$8())
-var ActionButton$6 = styled.button(_templateObject8$4())
-var StyledIconAction$5 = styled(Icon)(_templateObject9$3())
+var QuestionWrapper$1 = styled.div(_templateObject5$c(), function (props) {
+  return props.$testMode && css(_templateObject6$a())
+})
+var IconsWrapper = styled.div(_templateObject7$8())
+var QuestionData = styled.div(_templateObject8$4())
+var ActionButton$6 = styled.button(_templateObject9$3())
+var StyledIconAction$5 = styled(Icon)(_templateObject10$2())
 var AnswerComponent = function (_ref) {
-  var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
+  var _getUpdatedNode$node, _getUpdatedNode$node2
 
   var node = _ref.node,
     view = _ref.view,
@@ -10114,6 +10366,7 @@ var AnswerComponent = function (_ref) {
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var customProps = main.props.customValues
+  var testMode = customProps.testMode
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -10159,10 +10412,18 @@ var AnswerComponent = function (_ref) {
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
+            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
+
+            var nextPos = getPos() + optionSize
+            var nextNode = main.state.doc.nodeAt(nextPos)
+            var feedbackSize =
+              nextNode && nextNode.type.name === 'feedback_prompt'
+                ? nextNode.nodeSize
+                : 0
             main.dispatch(
               main.state.tr.deleteRange(
                 getPos(),
-                getPos() + sinlgeNode.nodeSize,
+                getPos() + optionSize + feedbackSize,
               ),
             )
           }
@@ -10198,14 +10459,20 @@ var AnswerComponent = function (_ref) {
 
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
+    var newFeedbackId = v4()
     main.state.doc.descendants(function (editorNode, index) {
       if (editorNode.type.name === 'multiple_choice') {
         if (editorNode.attrs.id === nodeId) {
+          // Insert after the feedback_prompt sibling that follows this option
+          var feedbackPos = editorNode.nodeSize + index
+          var feedbackNode = main.state.doc.nodeAt(feedbackPos)
+          var insertPos =
+            feedbackNode && feedbackNode.type.name === 'feedback_prompt'
+              ? feedbackPos + feedbackNode.nodeSize
+              : feedbackPos
           main.dispatch(
             main.state.tr.setSelection(
-              new TextSelection(
-                main.state.tr.doc.resolve(editorNode.nodeSize + index),
-              ),
+              new TextSelection(main.state.tr.doc.resolve(insertPos)),
             ),
           )
           var answerOption =
@@ -10215,11 +10482,27 @@ var AnswerComponent = function (_ref) {
               },
               Fragment.empty,
             )
-          main.dispatch(main.state.tr.replaceSelectionWith(answerOption)) // create Empty Paragraph
-
+          var feedbackOption =
+            main.state.config.schema.nodes.feedback_prompt.create(
+              {
+                id: newFeedbackId,
+              },
+              Fragment.empty,
+            )
+          main.dispatch(main.state.tr.replaceSelectionWith(answerOption))
+          main.dispatch(
+            main.state.tr.setSelection(
+              TextSelection.create(
+                main.state.tr.doc,
+                insertPos + answerOption.nodeSize,
+              ),
+            ),
+          )
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption))
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
-          }, 120)
+            helpers.createEmptyParagraph(context, newFeedbackId)
+          }, 200)
         }
       }
     })
@@ -10258,8 +10541,6 @@ var AnswerComponent = function (_ref) {
   }
 
   var readOnly = !isEditable
-  var testMode = customProps.testMode
-  var feedback = node.attrs.feedback
 
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
@@ -10273,7 +10554,7 @@ var AnswerComponent = function (_ref) {
   }
 
   return /*#__PURE__*/ React.createElement(
-    Wrapper$6,
+    Wrapper$7,
     null,
     /*#__PURE__*/ React.createElement(
       QuestionControlsWrapper,
@@ -10289,7 +10570,9 @@ var AnswerComponent = function (_ref) {
       ),
       /*#__PURE__*/ React.createElement(
         QuestionWrapper$1,
-        null,
+        {
+          $testMode: testMode,
+        },
         /*#__PURE__*/ React.createElement(
           QuestionData,
           null,
@@ -10300,24 +10583,6 @@ var AnswerComponent = function (_ref) {
             view: view,
           }),
         ),
-        /*#__PURE__*/ React.createElement('hr', null),
-        !testMode &&
-          !(readOnly && feedback === '') &&
-          /*#__PURE__*/ React.createElement(FeedbackComponent, {
-            getPos: getPos,
-            node:
-              (_getUpdatedNode = getUpdatedNode()) === null ||
-              _getUpdatedNode === void 0
-                ? void 0
-                : _getUpdatedNode.node,
-            readOnly: readOnly,
-            view: view,
-          }), // <FeedbackComponent
-        // getPos={getPos}
-        // node={getUpdatedNode()?.node}
-        // readOnly={readOnly}
-        // // view={view}
-        // />
       ),
     ),
     /*#__PURE__*/ React.createElement(
@@ -10376,6 +10641,18 @@ var getNodes$e = function getNodes(view) {
   return multipleChoiceNodes
 }
 
+function _templateObject$z() {
+  var data = _taggedTemplateLiteral([
+    '\n  > div:has(> .ProseMirror) {\n    padding: 10px;\n  }\n',
+  ])
+
+  _templateObject$z = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+var Wrapper$8 = styled.div(_templateObject$z())
 var QuestionComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -10387,76 +10664,17 @@ var QuestionComponent = function (_ref) {
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
-  return /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
-    getPos: getPos,
-    node: node,
-    showDelete: !testMode && isEditable,
-    view: view,
-  })
+  return /*#__PURE__*/ React.createElement(
+    Wrapper$8,
+    null,
+    /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
+      getPos: getPos,
+      node: node,
+      showDelete: !testMode && isEditable,
+      view: view,
+    }),
+  )
 }
-
-function _templateObject5$d() {
-  var data = _taggedTemplateLiteral([
-    '\n  // border: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
-  ])
-
-  _templateObject5$d = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$k() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject4$k = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$l() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: 6px;\n  float: right;\n',
-  ])
-
-  _templateObject3$l = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$o() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-bottom: 3px solid #f5f5f7;\n  height: 32px;\n',
-  ])
-
-  _templateObject2$o = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$v() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: 3px solid #f5f5f7;\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n',
-  ])
-
-  _templateObject$v = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var MultipleChoiceQuestionWrapper = styled.div(_templateObject$v())
-var MultipleChoiceContainerTool = styled.div(_templateObject2$o())
-var ActionButton$7 = styled.button(_templateObject3$l())
-var StyledIconActionRemove$5 = styled(Icon)(_templateObject4$k())
-var MultipleChoiceQuestionContainer = styled.div(_templateObject5$d())
 
 var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
   _inherits(MultipleChoiceNodeView, _QuestionsNodeView)
@@ -10508,12 +10726,12 @@ var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
             return true
           }
 
-          var innerView = this.context.pmViews[this.node.attrs.id]
-          var feedbackView =
-            this.context.pmViews['feedback-'.concat(this.node.attrs.id)]
+          var innerView = this.context.pmViews[this.node.attrs.id] // const feedbackView =
+          //   this.context.pmViews[`feedback-${this.node.attrs.id}`];
+
           return (
-            (innerView && innerView.dom.contains(event.target)) ||
-            (feedbackView && feedbackView.dom.contains(event.target))
+            innerView && innerView.dom.contains(event.target) // ||
+            // (feedbackView && feedbackView.dom.contains(event.target))
           )
         },
       },
@@ -10672,6 +10890,7 @@ var MultipleChoiceSingleCorrectQuestion =
                     .multiple_choice_single_correct_container,
                   view.state.config.schema.nodes.question_node_multiple_single,
                   view.state.config.schema.nodes.multiple_choice_single_correct,
+                  view.state.config.schema.nodes.feedback_prompt,
                 )
               }
             },
@@ -10722,10 +10941,7 @@ var multipleChoiceSingleCorrectNode = {
     },
     answer: {
       default: false,
-    },
-    feedback: {
-      default: '',
-    },
+    }, // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
@@ -10738,8 +10954,7 @@ var multipleChoiceSingleCorrectNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
-          feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -10933,8 +11148,20 @@ var getNodes$f = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$4() {
+function _templateObject10$3() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
+
+  _templateObject10$3 = function _templateObject10() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject9$4() {
+  var data = _taggedTemplateLiteral([
+    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+  ])
 
   _templateObject9$4 = function _templateObject9() {
     return data
@@ -10945,7 +11172,7 @@ function _templateObject9$4() {
 
 function _templateObject8$5() {
   var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject8$5 = function _templateObject8() {
@@ -10957,7 +11184,7 @@ function _templateObject8$5() {
 
 function _templateObject7$9() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
   _templateObject7$9 = function _templateObject7() {
@@ -10967,48 +11194,49 @@ function _templateObject7$9() {
   return data
 }
 
-function _templateObject6$c() {
+function _templateObject6$b() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$c = function _templateObject6() {
+  _templateObject6$b = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$e() {
+function _templateObject5$d() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-radius: 4px;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n',
+    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+    '\n',
   ])
 
-  _templateObject5$e = function _templateObject5() {
+  _templateObject5$d = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$l() {
+function _templateObject4$k() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
   ])
 
-  _templateObject4$l = function _templateObject4() {
+  _templateObject4$k = function _templateObject4() {
     return data
   }
 
   return data
 }
 
-function _templateObject3$m() {
+function _templateObject3$l() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$m = function _templateObject3() {
+  _templateObject3$l = function _templateObject3() {
     return data
   }
 
@@ -11027,26 +11255,28 @@ function _templateObject2$p() {
   return data
 }
 
-function _templateObject$w() {
+function _templateObject$A() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
+    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
   ])
 
-  _templateObject$w = function _templateObject() {
+  _templateObject$A = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$7 = styled.div(_templateObject$w())
+var Wrapper$9 = styled(Box)(_templateObject$A())
 var InfoRow$1 = styled.div(_templateObject2$p())
-var QuestionNunber$1 = styled.span(_templateObject3$m())
-var QuestionControlsWrapper$1 = styled.div(_templateObject4$l())
-var QuestionWrapper$2 = styled.div(_templateObject5$e())
-var IconsWrapper$1 = styled.div(_templateObject6$c())
-var QuestionData$1 = styled.div(_templateObject7$9())
-var ActionButton$8 = styled.button(_templateObject8$5())
-var StyledIconAction$6 = styled(Icon)(_templateObject9$4())
+var QuestionNunber$1 = styled.span(_templateObject3$l())
+var QuestionControlsWrapper$1 = styled.div(_templateObject4$k())
+var QuestionWrapper$2 = styled.div(_templateObject5$d(), function (props) {
+  return props.$testMode && css(_templateObject6$b())
+})
+var IconsWrapper$1 = styled.div(_templateObject7$9())
+var QuestionData$1 = styled.div(_templateObject8$5())
+var ActionButton$7 = styled.button(_templateObject9$4())
+var StyledIconAction$6 = styled(Icon)(_templateObject10$3())
 var AnswerComponent$1 = function (_ref) {
   var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
 
@@ -11056,6 +11286,7 @@ var AnswerComponent$1 = function (_ref) {
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var customProps = main.props.customValues
+  var testMode = customProps.testMode
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -11101,10 +11332,19 @@ var AnswerComponent$1 = function (_ref) {
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
+            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
+
+            var nextPos = getPos() + optionSize
+            var nextNode = main.state.doc.nodeAt(nextPos)
+            var feedbackSize =
+              nextNode && nextNode.type.name === 'feedback_prompt'
+                ? nextNode.nodeSize
+                : 0
             main.dispatch(
+              // main.state.tr.deleteRange(getPos(), getPos() + sinlgeNode.nodeSize),
               main.state.tr.deleteRange(
                 getPos(),
-                getPos() + sinlgeNode.nodeSize,
+                getPos() + optionSize + feedbackSize,
               ),
             )
           }
@@ -11122,14 +11362,23 @@ var AnswerComponent$1 = function (_ref) {
 
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
+    var newFeedbackId = v4()
     main.state.doc.descendants(function (editorNode, index) {
       if (editorNode.type.name === 'multiple_choice_single_correct') {
         if (editorNode.attrs.id === nodeId) {
+          // Insert after the feedback_prompt sibling that follows this option
+          var feedbackPos = editorNode.nodeSize + index
+          var feedbackNode = main.state.doc.nodeAt(feedbackPos)
+          var insertPos =
+            feedbackNode && feedbackNode.type.name === 'feedback_prompt'
+              ? feedbackPos + feedbackNode.nodeSize
+              : feedbackPos
           main.dispatch(
             main.state.tr.setSelection(
-              new TextSelection(
-                main.state.tr.doc.resolve(editorNode.nodeSize + index),
-              ),
+              // new TextSelection(
+              //   main.state.tr.doc.resolve(editorNode.nodeSize + index),
+              // ),
+              new TextSelection(main.state.tr.doc.resolve(insertPos)),
             ),
           )
           var answerOption =
@@ -11139,10 +11388,27 @@ var AnswerComponent$1 = function (_ref) {
               },
               Fragment.empty,
             )
-          main.dispatch(main.state.tr.replaceSelectionWith(answerOption)) // create Empty Paragraph
+          var feedbackOption =
+            main.state.config.schema.nodes.feedback_prompt.create(
+              {
+                id: newFeedbackId,
+              },
+              Fragment.empty,
+            )
+          main.dispatch(main.state.tr.replaceSelectionWith(answerOption))
+          main.dispatch(
+            main.state.tr.setSelection(
+              TextSelection.create(
+                main.state.tr.doc,
+                insertPos + answerOption.nodeSize,
+              ),
+            ),
+          )
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption)) // create Empty Paragraph
 
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
+            helpers.createEmptyParagraph(context, newFeedbackId)
           }, 120)
         }
       }
@@ -11192,11 +11458,11 @@ var AnswerComponent$1 = function (_ref) {
     return nodeFound
   }
 
-  var readOnly = !isEditable
-  var testMode = customProps.testMode
-  var feedback = node.attrs.feedback
+  var readOnly = !isEditable // const { testMode } = customProps;
+  // const { feedback } = node.attrs;
+
   return /*#__PURE__*/ React.createElement(
-    Wrapper$7,
+    Wrapper$9,
     null,
     /*#__PURE__*/ React.createElement(
       QuestionControlsWrapper$1,
@@ -11212,7 +11478,9 @@ var AnswerComponent$1 = function (_ref) {
       ),
       /*#__PURE__*/ React.createElement(
         QuestionWrapper$2,
-        null,
+        {
+          $testMode: testMode,
+        },
         /*#__PURE__*/ React.createElement(
           QuestionData$1,
           null,
@@ -11227,14 +11495,6 @@ var AnswerComponent$1 = function (_ref) {
             view: view,
           }),
         ),
-        !testMode &&
-          !(readOnly && feedback === '') &&
-          /*#__PURE__*/ React.createElement(FeedbackComponent, {
-            getPos: getPos,
-            node: node,
-            readOnly: readOnly,
-            view: view,
-          }),
       ),
     ),
     /*#__PURE__*/ React.createElement(
@@ -11242,7 +11502,7 @@ var AnswerComponent$1 = function (_ref) {
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$8,
+          ActionButton$7,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -11262,7 +11522,7 @@ var AnswerComponent$1 = function (_ref) {
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$8,
+          ActionButton$7,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -11460,6 +11720,9 @@ var MultipleChoiceSingleCorrectQuestionService = /*#__PURE__*/ (function (
             multipleChoiceSingleCorrectContainerNode,
         })
         createNode({
+          feedback_prompt: feedbackNode,
+        })
+        createNode({
           multiple_choice_single_correct: multipleChoiceSingleCorrectNode,
         })
         createNode({
@@ -11478,6 +11741,11 @@ var MultipleChoiceSingleCorrectQuestionService = /*#__PURE__*/ (function (
         addPortal({
           nodeView: MultipleChoiceSingleCorrectNodeView,
           component: AnswerComponent$1,
+          context: this.app,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
           context: this.app,
         })
       },
@@ -11561,6 +11829,7 @@ var TrueFalseQuestion =
                   view.state.config.schema.nodes.true_false_container,
                   view.state.config.schema.nodes.question_node_true_false,
                   view.state.config.schema.nodes.true_false,
+                  view.state.config.schema.nodes.feedback_prompt,
                 )
               }
             },
@@ -11610,10 +11879,7 @@ var trueFalseNode = {
     },
     answer: {
       default: false,
-    },
-    feedback: {
-      default: '',
-    },
+    }, // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
@@ -11626,8 +11892,7 @@ var trueFalseNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
-          feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -11697,49 +11962,49 @@ var trueFalseContainerNode = {
   },
 }
 
-function _templateObject6$d() {
+function _templateObject6$c() {
   var data = _taggedTemplateLiteral([
     '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$d = function _templateObject6() {
+  _templateObject6$c = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$f() {
+function _templateObject5$e() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject5$f = function _templateObject5() {
+  _templateObject5$e = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$m() {
+function _templateObject4$l() {
   var data = _taggedTemplateLiteral([
     '\n  margin-right: 10px;\n\n  span {\n    color: ',
     ';\n  }\n',
   ])
 
-  _templateObject4$m = function _templateObject4() {
+  _templateObject4$l = function _templateObject4() {
     return data
   }
 
   return data
 }
 
-function _templateObject3$n() {
+function _templateObject3$m() {
   var data = _taggedTemplateLiteral([
     '\n  margin-right: 10px;\n\n  span {\n    color: #008000;\n  }\n',
   ])
 
-  _templateObject3$n = function _templateObject3() {
+  _templateObject3$m = function _templateObject3() {
     return data
   }
 
@@ -11756,25 +12021,25 @@ function _templateObject2$q() {
   return data
 }
 
-function _templateObject$x() {
+function _templateObject$B() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  margin-left: auto;\n\n  button {\n    width: 65px;\n  }\n\n  .rc-switch-inner {\n    font-size: 14px;\n    left: 25px;\n  }\n\n  .rc-switch-checked {\n    background-color: #008000;\n    border: 1px solid #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &::after {\n      left: 42px;\n    }\n  }\n',
   ])
 
-  _templateObject$x = function _templateObject() {
+  _templateObject$B = function _templateObject() {
     return data
   }
 
   return data
 }
-var StyledSwitch$1 = styled(SwitchComponent)(_templateObject$x())
+var StyledSwitch$1 = styled(SwitchComponent)(_templateObject$B())
 var AnswerContainer$6 = styled.span(_templateObject2$q())
-var Correct$1 = styled.span(_templateObject3$n())
-var Answer$3 = styled.span(_templateObject4$m(), function (props) {
+var Correct$1 = styled.span(_templateObject3$m())
+var Answer$3 = styled.span(_templateObject4$l(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$4 = styled(Icon)(_templateObject5$f())
-var StyledIconWrong$4 = styled(Icon)(_templateObject6$d())
+var StyledIconCorrect$4 = styled(Icon)(_templateObject5$e())
+var StyledIconWrong$4 = styled(Icon)(_templateObject6$c())
 
 var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
   var customProps = _ref.customProps,
@@ -11786,7 +12051,7 @@ var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
 
-  if (showFeedBack) {
+  if (showFeedBack && node) {
     var correct = node.attrs.correct ? 'TRUE' : 'FALSE'
     var answer = node.attrs.answer ? 'TRUE' : 'FALSE'
     var isCorrect = node.attrs.correct === node.attrs.answer
@@ -11918,8 +12183,20 @@ var getNodes$h = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$5() {
+function _templateObject10$4() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
+
+  _templateObject10$4 = function _templateObject10() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject9$5() {
+  var data = _taggedTemplateLiteral([
+    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+  ])
 
   _templateObject9$5 = function _templateObject9() {
     return data
@@ -11930,7 +12207,7 @@ function _templateObject9$5() {
 
 function _templateObject8$6() {
   var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject8$6 = function _templateObject8() {
@@ -11942,7 +12219,7 @@ function _templateObject8$6() {
 
 function _templateObject7$a() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
   _templateObject7$a = function _templateObject7() {
@@ -11952,48 +12229,49 @@ function _templateObject7$a() {
   return data
 }
 
-function _templateObject6$e() {
+function _templateObject6$d() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$e = function _templateObject6() {
+  _templateObject6$d = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$g() {
+function _templateObject5$f() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-radius: 4px;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n',
+    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+    '\n',
   ])
 
-  _templateObject5$g = function _templateObject5() {
+  _templateObject5$f = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$n() {
+function _templateObject4$m() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
   ])
 
-  _templateObject4$n = function _templateObject4() {
+  _templateObject4$m = function _templateObject4() {
     return data
   }
 
   return data
 }
 
-function _templateObject3$o() {
+function _templateObject3$n() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$o = function _templateObject3() {
+  _templateObject3$n = function _templateObject3() {
     return data
   }
 
@@ -12012,28 +12290,30 @@ function _templateObject2$r() {
   return data
 }
 
-function _templateObject$y() {
+function _templateObject$C() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
+    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
   ])
 
-  _templateObject$y = function _templateObject() {
+  _templateObject$C = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$8 = styled.div(_templateObject$y())
+var Wrapper$a = styled(Box)(_templateObject$C())
 var InfoRow$2 = styled.div(_templateObject2$r())
-var QuestionNunber$2 = styled.span(_templateObject3$o())
-var QuestionControlsWrapper$2 = styled.div(_templateObject4$n())
-var QuestionWrapper$3 = styled.div(_templateObject5$g())
-var IconsWrapper$2 = styled.div(_templateObject6$e())
-var QuestionData$2 = styled.div(_templateObject7$a())
-var ActionButton$9 = styled.button(_templateObject8$6())
-var StyledIconAction$7 = styled(Icon)(_templateObject9$5())
+var QuestionNunber$2 = styled.span(_templateObject3$n())
+var QuestionControlsWrapper$2 = styled.div(_templateObject4$m())
+var QuestionWrapper$3 = styled.div(_templateObject5$f(), function (props) {
+  return props.$testMode && css(_templateObject6$d())
+})
+var IconsWrapper$2 = styled.div(_templateObject7$a())
+var QuestionData$2 = styled.div(_templateObject8$6())
+var ActionButton$8 = styled.button(_templateObject9$5())
+var StyledIconAction$7 = styled(Icon)(_templateObject10$4())
 var AnswerComponent$2 = function (_ref) {
-  var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
+  var _getUpdatedNode$node, _getUpdatedNode$node2
 
   var node = _ref.node,
     view = _ref.view,
@@ -12041,6 +12321,7 @@ var AnswerComponent$2 = function (_ref) {
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var customProps = main.props.customValues
+  var testMode = customProps.testMode
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -12086,10 +12367,19 @@ var AnswerComponent$2 = function (_ref) {
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
+            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
+
+            var nextPos = getPos() + optionSize
+            var nextNode = main.state.doc.nodeAt(nextPos)
+            var feedbackSize =
+              nextNode && nextNode.type.name === 'feedback_prompt'
+                ? nextNode.nodeSize
+                : 0
             main.dispatch(
+              // main.state.tr.deleteRange(getPos(), getPos() + sinlgeNode.nodeSize),
               main.state.tr.deleteRange(
                 getPos(),
-                getPos() + sinlgeNode.nodeSize,
+                getPos() + optionSize + feedbackSize,
               ),
             )
           }
@@ -12107,14 +12397,23 @@ var AnswerComponent$2 = function (_ref) {
 
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
+    var newFeedbackId = v4()
     main.state.doc.descendants(function (editorNode, index) {
       if (editorNode.type.name === 'true_false') {
         if (editorNode.attrs.id === nodeId) {
+          // Insert after the feedback_prompt sibling that follows this option
+          var feedbackPos = editorNode.nodeSize + index
+          var feedbackNode = main.state.doc.nodeAt(feedbackPos)
+          var insertPos =
+            feedbackNode && feedbackNode.type.name === 'feedback_prompt'
+              ? feedbackPos + feedbackNode.nodeSize
+              : feedbackPos
           main.dispatch(
             main.state.tr.setSelection(
-              new TextSelection(
-                main.state.tr.doc.resolve(editorNode.nodeSize + index),
-              ),
+              // new TextSelection(
+              //   main.state.tr.doc.resolve(editorNode.nodeSize + index),
+              // ),
+              new TextSelection(main.state.tr.doc.resolve(insertPos)),
             ),
           )
           var answerOption = main.state.config.schema.nodes.true_false.create(
@@ -12123,10 +12422,27 @@ var AnswerComponent$2 = function (_ref) {
             },
             Fragment.empty,
           )
-          main.dispatch(main.state.tr.replaceSelectionWith(answerOption)) // create Empty Paragraph
+          var feedbackOption =
+            main.state.config.schema.nodes.feedback_prompt.create(
+              {
+                id: newFeedbackId,
+              },
+              Fragment.empty,
+            )
+          main.dispatch(main.state.tr.replaceSelectionWith(answerOption))
+          main.dispatch(
+            main.state.tr.setSelection(
+              TextSelection.create(
+                main.state.tr.doc,
+                insertPos + answerOption.nodeSize,
+              ),
+            ),
+          )
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption)) // create Empty Paragraph
 
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
+            helpers.createEmptyParagraph(context, newFeedbackId)
           }, 120)
         }
       }
@@ -12176,11 +12492,11 @@ var AnswerComponent$2 = function (_ref) {
     return nodeFound
   }
 
-  var readOnly = !isEditable
-  var testMode = customProps.testMode
-  var feedback = node.attrs.feedback
+  var readOnly = !isEditable // const { testMode } = customProps;
+  // const { feedback } = node.attrs;
+
   return /*#__PURE__*/ React.createElement(
-    Wrapper$8,
+    Wrapper$a,
     null,
     /*#__PURE__*/ React.createElement(
       QuestionControlsWrapper$2,
@@ -12196,7 +12512,9 @@ var AnswerComponent$2 = function (_ref) {
       ),
       /*#__PURE__*/ React.createElement(
         QuestionWrapper$3,
-        null,
+        {
+          $testMode: testMode,
+        },
         /*#__PURE__*/ React.createElement(
           QuestionData$2,
           null,
@@ -12207,18 +12525,6 @@ var AnswerComponent$2 = function (_ref) {
             view: view,
           }),
         ),
-        !testMode &&
-          !(readOnly && feedback === '') &&
-          /*#__PURE__*/ React.createElement(FeedbackComponent, {
-            getPos: getPos,
-            node:
-              (_getUpdatedNode = getUpdatedNode()) === null ||
-              _getUpdatedNode === void 0
-                ? void 0
-                : _getUpdatedNode.node,
-            readOnly: readOnly,
-            view: view,
-          }),
       ),
     ),
     /*#__PURE__*/ React.createElement(
@@ -12226,7 +12532,7 @@ var AnswerComponent$2 = function (_ref) {
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$9,
+          ActionButton$8,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -12246,7 +12552,7 @@ var AnswerComponent$2 = function (_ref) {
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$9,
+          ActionButton$8,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -12435,6 +12741,9 @@ var TrueFalseQuestionService = /*#__PURE__*/ (function (_Service) {
           true_false_container: trueFalseContainerNode,
         })
         createNode({
+          feedback_prompt: feedbackNode,
+        })
+        createNode({
           true_false: trueFalseNode,
         })
         createNode({
@@ -12453,6 +12762,11 @@ var TrueFalseQuestionService = /*#__PURE__*/ (function (_Service) {
         addPortal({
           nodeView: TrueFalseNodeView,
           component: AnswerComponent$2,
+          context: this.app,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
           context: this.app,
         })
       },
@@ -12538,6 +12852,7 @@ var TrueFalseSingleCorrectQuestion =
                   view.state.config.schema.nodes
                     .question_node_true_false_single,
                   view.state.config.schema.nodes.true_false_single_correct,
+                  view.state.config.schema.nodes.feedback_prompt,
                 )
               }
             },
@@ -12588,10 +12903,7 @@ var trueFalseSingleCorrectNode = {
     },
     answer: {
       default: false,
-    },
-    feedback: {
-      default: '',
-    },
+    }, // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
@@ -12604,8 +12916,7 @@ var trueFalseSingleCorrectNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
-          feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -12794,8 +13105,20 @@ var getNodes$j = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject9$6() {
+function _templateObject10$5() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
+
+  _templateObject10$5 = function _templateObject10() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject9$6() {
+  var data = _taggedTemplateLiteral([
+    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+  ])
 
   _templateObject9$6 = function _templateObject9() {
     return data
@@ -12806,7 +13129,7 @@ function _templateObject9$6() {
 
 function _templateObject8$7() {
   var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject8$7 = function _templateObject8() {
@@ -12818,7 +13141,7 @@ function _templateObject8$7() {
 
 function _templateObject7$b() {
   var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
   ])
 
   _templateObject7$b = function _templateObject7() {
@@ -12828,48 +13151,49 @@ function _templateObject7$b() {
   return data
 }
 
-function _templateObject6$f() {
+function _templateObject6$e() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$f = function _templateObject6() {
+  _templateObject6$e = function _templateObject6() {
     return data
   }
 
   return data
 }
 
-function _templateObject5$h() {
+function _templateObject5$g() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-radius: 4px;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n',
+    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+    '\n',
   ])
 
-  _templateObject5$h = function _templateObject5() {
+  _templateObject5$g = function _templateObject5() {
     return data
   }
 
   return data
 }
 
-function _templateObject4$o() {
+function _templateObject4$n() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
   ])
 
-  _templateObject4$o = function _templateObject4() {
+  _templateObject4$n = function _templateObject4() {
     return data
   }
 
   return data
 }
 
-function _templateObject3$p() {
+function _templateObject3$o() {
   var data = _taggedTemplateLiteral([
     "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
   ])
 
-  _templateObject3$p = function _templateObject3() {
+  _templateObject3$o = function _templateObject3() {
     return data
   }
 
@@ -12888,28 +13212,30 @@ function _templateObject2$s() {
   return data
 }
 
-function _templateObject$z() {
+function _templateObject$D() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n  padding: 0px 0px 20px 20px;\n',
+    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
   ])
 
-  _templateObject$z = function _templateObject() {
+  _templateObject$D = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$9 = styled.div(_templateObject$z())
+var Wrapper$b = styled(Box)(_templateObject$D())
 var InfoRow$3 = styled.div(_templateObject2$s())
-var QuestionNunber$3 = styled.span(_templateObject3$p())
-var QuestionControlsWrapper$3 = styled.div(_templateObject4$o())
-var QuestionWrapper$4 = styled.div(_templateObject5$h())
-var IconsWrapper$3 = styled.div(_templateObject6$f())
-var QuestionData$3 = styled.div(_templateObject7$b())
-var ActionButton$a = styled.button(_templateObject8$7())
-var StyledIconAction$8 = styled(Icon)(_templateObject9$6())
+var QuestionNunber$3 = styled.span(_templateObject3$o())
+var QuestionControlsWrapper$3 = styled.div(_templateObject4$n())
+var QuestionWrapper$4 = styled.div(_templateObject5$g(), function (props) {
+  return props.$testMode && css(_templateObject6$e())
+})
+var IconsWrapper$3 = styled.div(_templateObject7$b())
+var QuestionData$3 = styled.div(_templateObject8$7())
+var ActionButton$9 = styled.button(_templateObject9$6())
+var StyledIconAction$8 = styled(Icon)(_templateObject10$5())
 var AnswerComponent$3 = function (_ref) {
-  var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
+  var _getUpdatedNode$node, _getUpdatedNode$node2
 
   var node = _ref.node,
     view = _ref.view,
@@ -12917,6 +13243,7 @@ var AnswerComponent$3 = function (_ref) {
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var customProps = main.props.customValues
+  var testMode = customProps.testMode
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -12962,10 +13289,19 @@ var AnswerComponent$3 = function (_ref) {
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
+            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
+
+            var nextPos = getPos() + optionSize
+            var nextNode = main.state.doc.nodeAt(nextPos)
+            var feedbackSize =
+              nextNode && nextNode.type.name === 'feedback_prompt'
+                ? nextNode.nodeSize
+                : 0
             main.dispatch(
+              // main.state.tr.deleteRange(getPos(), getPos() + sinlgeNode.nodeSize),
               main.state.tr.deleteRange(
                 getPos(),
-                getPos() + sinlgeNode.nodeSize,
+                getPos() + optionSize + feedbackSize,
               ),
             )
           }
@@ -12983,14 +13319,23 @@ var AnswerComponent$3 = function (_ref) {
 
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
+    var newFeedbackId = v4()
     main.state.doc.descendants(function (editorNode, index) {
       if (editorNode.type.name === 'true_false_single_correct') {
         if (editorNode.attrs.id === nodeId) {
+          // Insert after the feedback_prompt sibling that follows this option
+          var feedbackPos = editorNode.nodeSize + index
+          var feedbackNode = main.state.doc.nodeAt(feedbackPos)
+          var insertPos =
+            feedbackNode && feedbackNode.type.name === 'feedback_prompt'
+              ? feedbackPos + feedbackNode.nodeSize
+              : feedbackPos
           main.dispatch(
             main.state.tr.setSelection(
-              new TextSelection(
-                main.state.tr.doc.resolve(editorNode.nodeSize + index),
-              ),
+              // new TextSelection(
+              //   main.state.tr.doc.resolve(editorNode.nodeSize + index),
+              // ),
+              new TextSelection(main.state.tr.doc.resolve(insertPos)),
             ),
           )
           var answerOption =
@@ -13000,7 +13345,23 @@ var AnswerComponent$3 = function (_ref) {
               },
               Fragment.empty,
             )
-          main.dispatch(main.state.tr.replaceSelectionWith(answerOption)) // create Empty Paragraph
+          var feedbackOption =
+            main.state.config.schema.nodes.feedback_prompt.create(
+              {
+                id: newFeedbackId,
+              },
+              Fragment.empty,
+            )
+          main.dispatch(main.state.tr.replaceSelectionWith(answerOption))
+          main.dispatch(
+            main.state.tr.setSelection(
+              TextSelection.create(
+                main.state.tr.doc,
+                insertPos + answerOption.nodeSize,
+              ),
+            ),
+          )
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption)) // create Empty Paragraph
 
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
@@ -13054,10 +13415,8 @@ var AnswerComponent$3 = function (_ref) {
   }
 
   var readOnly = !isEditable
-  var testMode = customProps.testMode
-  var feedback = node.attrs.feedback
   return /*#__PURE__*/ React.createElement(
-    Wrapper$9,
+    Wrapper$b,
     null,
     /*#__PURE__*/ React.createElement(
       QuestionControlsWrapper$3,
@@ -13073,7 +13432,9 @@ var AnswerComponent$3 = function (_ref) {
       ),
       /*#__PURE__*/ React.createElement(
         QuestionWrapper$4,
-        null,
+        {
+          $testMode: testMode,
+        },
         /*#__PURE__*/ React.createElement(
           QuestionData$3,
           null,
@@ -13084,18 +13445,6 @@ var AnswerComponent$3 = function (_ref) {
             view: view,
           }),
         ),
-        !testMode &&
-          !(readOnly && feedback === '') &&
-          /*#__PURE__*/ React.createElement(FeedbackComponent, {
-            getPos: getPos,
-            node:
-              (_getUpdatedNode = getUpdatedNode()) === null ||
-              _getUpdatedNode === void 0
-                ? void 0
-                : _getUpdatedNode.node,
-            readOnly: readOnly,
-            view: view,
-          }),
       ),
     ),
     /*#__PURE__*/ React.createElement(
@@ -13103,7 +13452,7 @@ var AnswerComponent$3 = function (_ref) {
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$a,
+          ActionButton$9,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -13123,7 +13472,7 @@ var AnswerComponent$3 = function (_ref) {
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$a,
+          ActionButton$9,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -13319,6 +13668,9 @@ var TrueFalseSingleCorrectQuestionService = /*#__PURE__*/ (function (_Service) {
             trueFalseSingleCorrectContainerNode,
         })
         createNode({
+          feedback_prompt: feedbackNode,
+        })
+        createNode({
           question_node_true_false_single: questionTrueFalseNode$1,
         })
         createNode({
@@ -13337,6 +13689,11 @@ var TrueFalseSingleCorrectQuestionService = /*#__PURE__*/ (function (_Service) {
         addPortal({
           nodeView: TrueFalseSingleCorrectNodeView,
           component: AnswerComponent$3,
+          context: this.app,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
           context: this.app,
         })
       },
@@ -13384,10 +13741,13 @@ var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
           multiple_choice_container: multipleChoiceContainerNode,
         })
         createNode({
+          question_node_multiple: questionNode,
+        })
+        createNode({
           multiple_choice: multipleChoiceNode,
         })
         createNode({
-          question_node_multiple: questionNode,
+          feedback_prompt: feedbackNode,
         }) // addPortal({
         //   nodeView: MultipleChoiceContainerNodeView,
         //   component: MultipleChoiceContainerComponent,
@@ -13402,6 +13762,11 @@ var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
         addPortal({
           nodeView: MultipleChoiceNodeView,
           component: AnswerComponent,
+          context: this.app,
+        })
+        addPortal({
+          nodeView: FeedbackNodeView,
+          component: FeedbackComponentNew,
           context: this.app,
         })
       },
