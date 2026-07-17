@@ -137,6 +137,7 @@ class Question extends BaseModel {
         literatureAttribution,
         questionType,
         contentText,
+        enhancedEditor,
       } = previousVersions.result[0]
 
       return QuestionVersion.insert(
@@ -159,6 +160,7 @@ class Question extends BaseModel {
           inProduction: true,
           accepted: true,
           unpublished: false,
+          enhancedEditor,
         },
         { trx: options.trx },
       )

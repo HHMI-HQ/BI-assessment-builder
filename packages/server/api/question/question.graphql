@@ -355,6 +355,7 @@ extend type Mutation {
   ): Int!
 
   editQuestion(questionId: ID!, questionVersionId: ID!): QuestionVersion!
+  upgradeEditor(questionVersionId: ID!): QuestionVersion!
 }
 
 extend type Subscription {

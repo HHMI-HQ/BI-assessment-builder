@@ -1439,6 +1439,28 @@ const editQuestion = async (questionVersionId, options = {}) => {
   }
 }
 
+const upgradeEditor = async (questionVersionId, options) => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} upgradeEditor:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} moving question version with id ${questionVersionId} to editing mode`,
+  )
+
+  try {
+    const questionVersion = await modifyQuestionVersion(
+      questionVersionId,
+      { enhancedEditor: true },
+      { trx: options.trx },
+    )
+
+    // NEXT: Update content depending on question type
+
+    return questionVersion
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   getQuestion,
   getQuestionVersions,
@@ -1494,4 +1516,5 @@ module.exports = {
   changeArchiveStatusForItems,
   isItemArchivedForUser,
   editQuestion,
+  upgradeEditor,
 }
