@@ -57,6 +57,7 @@ type QuestionVersion {
   reviewerPool: [TeamMember!]!
   reviews(currentUserOnly: Boolean): [Review!]!
   reviewerStatus: String
+  enhancedEditor: Boolean
 }
 
 type Topic {

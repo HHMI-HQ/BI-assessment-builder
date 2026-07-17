@@ -51,7 +51,11 @@ class Question extends BaseModel {
   static async insert(data, versionData, options = {}) {
     const question = await super.insert(data, options)
     await this.createNewVersion(
-      { questionId: question.id, ...versionData },
+      {
+        questionId: question.id,
+        ...versionData,
+        enhancedEditor: versionData?.enhanceEditor !== false,
+      },
       { trx: options.trx },
     )
     return question

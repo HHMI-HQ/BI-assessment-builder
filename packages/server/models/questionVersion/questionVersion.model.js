@@ -216,6 +216,7 @@ class QuestionVersion extends BaseModel {
         amountOfReviewers: integerPositive,
         isReviewerAutomationOn: boolean,
         reviewerPool: arrayOfIds,
+        enhancedEditor: boolean,
       },
     }
   }
