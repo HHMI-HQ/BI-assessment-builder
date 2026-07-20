@@ -37,11 +37,11 @@ import {
 import {
   REVIEWER_STATUSES,
   extractDocumentText,
-  extractNode,
-  applyNodeFeedback,
+  // extractNode,
+  // applyNodeFeedback,
 } from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
-import FeedbackModal from './FeedbackModal'
+// import FeedbackModal from './FeedbackModal'
 import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
@@ -590,8 +590,8 @@ const Question = props => {
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [currentReviewResponses, setCurrentReviewResponses] = useState({})
   const [reviewerIndex, setReviewerIndex] = useState(0)
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
-  const [nodeContent, setNodeContent] = useState({})
+  // const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  // const [nodeContent, setNodeContent] = useState({})
 
   useEffect(() => {
     if (isInProduction && reviewerPool.length) {
@@ -642,8 +642,8 @@ const Question = props => {
   const handleQuestionContentChange = content => {
     if (onEditorContentAutoSave) {
       setAutoSaving(true)
-      onEditorContentAutoSave(content).then(() => {
-        setRefreshEditorContent(true)
+      onEditorContentAutoSave(content).then(({ update }) => {
+        setRefreshEditorContent(update)
         setAutoSaving(false)
       })
     }
@@ -1669,7 +1669,16 @@ const Question = props => {
         </StyledButton>
       )}
       {!readOnly && !enhancedEditor && (
-        <StyledButton onClick={upgradeEditor}>New editor</StyledButton>
+        <StyledButton
+          onClick={() => {
+            setRefreshEditorContent(false)
+            upgradeEditor().then(() => {
+              setRefreshEditorContent(true)
+            })
+          }}
+        >
+          New editor
+        </StyledButton>
       )}
       {!isRejected &&
         !reviewerView &&
@@ -1831,45 +1840,45 @@ const Question = props => {
     }
   }
 
-  const insertUpdatedFeedback = (nodeId, newFeedback) => {
-    const fullContent = waxRef.current.getContent()
+  // const insertUpdatedFeedback = (nodeId, newFeedback) => {
+  //   const fullContent = waxRef.current.getContent()
 
-    const newContent = applyNodeFeedback(
-      fullContent,
-      initialMetadataValues.questionType,
-      nodeId,
-      newFeedback,
-    )
+  //   const newContent = applyNodeFeedback(
+  //     fullContent,
+  //     initialMetadataValues.questionType,
+  //     nodeId,
+  //     newFeedback,
+  //   )
 
-    if (newContent) {
-      handleQuestionContentChange(newContent)
-    }
-  }
+  //   if (newContent) {
+  //     handleQuestionContentChange(newContent)
+  //   }
+  // }
 
-  useEffect(() => {
-    setTimeout(() => {
-      document.querySelectorAll('.edit-feedback[data-nodeid]').forEach(b => {
-        if (b.hasAttribute('hidden') && !readOnly) {
-          b.removeAttribute('hidden')
-          b.addEventListener('click', e => {
-            const nodeId =
-              e.target.tagName === 'BUTTON'
-                ? e.target.dataset.nodeid
-                : e.target.closest('button').dataset.nodeid
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     document.querySelectorAll('.edit-feedback[data-nodeid]').forEach(b => {
+  //       if (b.hasAttribute('hidden') && !readOnly) {
+  //         b.removeAttribute('hidden')
+  //         b.addEventListener('click', e => {
+  //           const nodeId =
+  //             e.target.tagName === 'BUTTON'
+  //               ? e.target.dataset.nodeid
+  //               : e.target.closest('button').dataset.nodeid
 
-            const node = extractNode(
-              waxRef.current.getContent(),
-              initialMetadataValues.questionType,
-              nodeId,
-            )
+  //           const node = extractNode(
+  //             waxRef.current.getContent(),
+  //             initialMetadataValues.questionType,
+  //             nodeId,
+  //           )
 
-            setNodeContent(node)
-            setShowFeedbackModal(true)
-          })
-        }
-      })
-    }, 500)
-  }, [editorContent])
+  //           setNodeContent(node)
+  //           setShowFeedbackModal(true)
+  //         })
+  //       }
+  //     })
+  //   }, 500)
+  // }, [editorContent])
 
   // #region test submission controls
   const withFeedback =
@@ -1948,13 +1957,13 @@ const Question = props => {
           {isArchived && (
             <Ribbon status="error">This item has been archived.</Ribbon>
           )}
-          <FeedbackModal
+          {/* <FeedbackModal
             content={nodeContent}
             onApplyFeedback={insertUpdatedFeedback}
             onImageUpload={onImageUpload}
             setShowModal={setShowFeedbackModal}
             showModal={showFeedbackModal}
-          />
+          /> */}
           <PanelWrapper
             condition={false}
             editor={

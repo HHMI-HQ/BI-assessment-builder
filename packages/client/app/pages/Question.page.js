@@ -202,7 +202,7 @@ const messagesApiToUi = (messages, currentUser = null) => {
 }
 // #endregion transformations
 
-const scanContentForQuestionType = (content, newConfig) => {
+const scanContentForQuestionType = content => {
   return content
     ? questionTypes.find(type => content.indexOf(type.waxValue) > -1)
     : null
@@ -1355,7 +1355,7 @@ const QuestionPage = props => {
     filterGlobalTeamMembers({ variables })
   }
 
-  const handleUpgradeEditor = () => {
+  const handleUpgradeEditor = async () => {
     // eslint-disable-next-line no-console
     console.log('UPGRADE EDITOR')
 
@@ -1363,7 +1363,10 @@ const QuestionPage = props => {
       questionVersionId: version?.id,
     }
 
-    upgradeEditorMutation({ variables })
+    const result = await upgradeEditorMutation({ variables })
+    const newContent = result.data.upgradeEditor.content
+
+    return handleEditorContentAutoSave(JSON.parse(newContent), true)
   }
 
   const persistQuestionTab = activeTab => {

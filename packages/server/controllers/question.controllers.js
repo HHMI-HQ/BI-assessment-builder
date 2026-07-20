@@ -1558,12 +1558,11 @@ const upgradeEditor = async questionVersionId => {
         questionVersionId,
         {
           enhancedEditor: true,
-          content: itemContent,
         },
         { trx },
       )
 
-      return questionVersion
+      return { ...questionVersion, content: itemContent }
     })
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
