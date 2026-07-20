@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const path = require('path')
 const config = require('config')
 
@@ -6,6 +7,7 @@ const {
   logger,
   useTransaction,
   subscriptionManager,
+  uuid,
 } = require('@coko/server')
 
 const {
@@ -1439,22 +1441,130 @@ const editQuestion = async (questionVersionId, options = {}) => {
   }
 }
 
-const upgradeEditor = async (questionVersionId, options) => {
+const createFeedback = text => ({
+  type: 'feedback_prompt',
+  attrs: {
+    class: 'feedback-prompt',
+    id: uuid(),
+  },
+  content: [
+    {
+      type: 'paragraph',
+      attrs: {
+        class: 'paragraph',
+      },
+      content: [
+        {
+          type: 'text',
+          text,
+        },
+      ],
+    },
+  ],
+})
+
+const upgradeEditor = async questionVersionId => {
   const CONTROLLER_MESSAGE = `${BASE_MESSAGE} upgradeEditor:`
   logger.info(
-    `${CONTROLLER_MESSAGE} moving question version with id ${questionVersionId} to editing mode`,
+    `${CONTROLLER_MESSAGE} upgrading editor for question version with id ${questionVersionId}`,
   )
 
   try {
-    const questionVersion = await modifyQuestionVersion(
-      questionVersionId,
-      { enhancedEditor: true },
-      { trx: options.trx },
-    )
+    return useTransaction(async trx => {
+      // NEXT: Update content depending on question type
+      const qv = await QuestionVersion.findById(questionVersionId)
+      const itemContent = structuredClone(qv.content)
+      // TODO: Find a more robust way to detect type
+      const itemType = itemContent.content[0].type
+      let elementsWithFeedback
 
-    // NEXT: Update content depending on question type
+      switch (itemType) {
+        case 'multiple_choice_container':
+          elementsWithFeedback = itemContent.content[0].content.filter(
+            c => c.type === 'multiple_choice',
+          )
 
-    return questionVersion
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[0].content.findIndex(
+              o => o.attrs.id === opt.attrs.id,
+            )
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'multiple_choice_single_correct_container':
+          elementsWithFeedback = itemContent.content[0].content.filter(
+            c => c.type === 'multiple_choice_single_correct',
+          )
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[0].content.findIndex(
+              o => o.attrs.id === opt.attrs.id,
+            )
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'true_false_container':
+          elementsWithFeedback = itemContent.content[0].content.filter(
+            c => c.type === 'true_false',
+          )
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[0].content.findIndex(
+              o => o.attrs.id === opt.attrs.id,
+            )
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'true_false_single_correct_container':
+          elementsWithFeedback = itemContent.content[0].content.filter(
+            c => c.type === 'true_false_single_correct',
+          )
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[0].content.findIndex(
+              o => o.attrs.id === opt.attrs.id,
+            )
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+        default:
+          break
+      }
+
+      const questionVersion = await modifyQuestionVersion(
+        questionVersionId,
+        {
+          enhancedEditor: true,
+          content: itemContent,
+        },
+        { trx },
+      )
+
+      return questionVersion
+    })
   } catch (e) {
     logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
     throw new Error(e)
