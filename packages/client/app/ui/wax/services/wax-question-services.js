@@ -1549,54 +1549,26 @@ var FillTheGapQuestion =
             key: 'run',
             get: function get() {
               return function (main) {
-                // const { dispatch } = main;
-                // const { state } = main;
-                helpers.checkifEmpty(main) // const { $from, $to } = main.state.selection;
-                // const range = $from.blockRange($to);
-                // const { tr } = main.state;
-                // const wrapping =
-                //   range &&
-                //   findWrapping(range, state.config.schema.nodes.fill_the_gap_container, {
-                //     id: uuidv4(),
-                //   });
-                // if (!wrapping) return false;
-                // tr.wrap(range, wrapping);
-
-                var state = main.state,
-                  dispatch = main.dispatch
-                var _state$selection2 = state.selection,
-                  from = _state$selection2.from,
-                  to = _state$selection2.to
-                var container =
-                  state.config.schema.nodes.fill_the_gap_container.create(
+                var dispatch = main.dispatch
+                var state = main.state
+                helpers.checkifEmpty(main)
+                var _main$state$selection = main.state.selection,
+                  $from = _main$state$selection.$from,
+                  $to = _main$state$selection.$to
+                var range = $from.blockRange($to)
+                var tr = main.state.tr
+                var wrapping =
+                  range &&
+                  findWrapping(
+                    range,
+                    state.config.schema.nodes.fill_the_gap_container,
                     {
                       id: v4(),
                     },
-                    Fragment.empty,
                   )
-                var feedback = state.config.schema.nodes.feedback_prompt.create(
-                  {
-                    id: v4(),
-                  },
-                  Fragment.empty,
-                )
-                var wrapper =
-                  state.config.schema.nodes.fill_the_gap_wrapper.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.from([container, feedback]),
-                  )
-                var tr = state.tr
-                tr.replaceWith(from, to, wrapper)
-                dispatch(tr) // const map = tr.mapping.maps[0];
-                // let newPos = 0;
-                // map.forEach((_from, _to, _newFrom, newTo) => {
-                //   newPos = newTo;
-                // });
-                // tr.setSelection(TextSelection.create(tr.doc, newPos));
-                // tr.replaceSelectionWith(feedback);
-                // dispatch(tr);
+                if (!wrapping) return false
+                tr.wrap(range, wrapping)
+                dispatch(tr)
               }
             },
           },
@@ -1687,34 +1659,6 @@ var fillTheGapNode = {
   ],
   toDOM: function toDOM(node) {
     return ['span', node.attrs, 0]
-  },
-}
-
-var fillTheGapWrapperNode = {
-  attrs: {
-    id: {
-      default: '',
-    },
-    class: {
-      default: 'fill-the-gap-wrapper',
-    },
-  },
-  group: 'block questions',
-  atom: true,
-  content: 'block+',
-  parseDOM: [
-    {
-      tag: 'div.fill-the-gap-wrapper',
-      getAttrs: function getAttrs(dom) {
-        return {
-          id: dom.getAttribute('id'),
-          class: dom.getAttribute('class'),
-        }
-      },
-    },
-  ],
-  toDOM: function toDOM(node) {
-    return ['div', node.attrs, 0]
   },
 }
 
@@ -2758,7 +2702,7 @@ function _templateObject2$3() {
 
 function _templateObject$6() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 3px solid #f5f5f7;\n  /* margin-bottom: 30px; */\n',
+    '\n  border: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
   ])
 
   _templateObject$6 = function _templateObject() {
@@ -3250,201 +3194,6 @@ var GapComponent = function (_ref) {
   })
 }
 
-var feedbackNode = {
-  attrs: {
-    class: {
-      default: 'feedback-prompt',
-    },
-    id: {
-      default: v4(),
-    },
-  },
-  group: 'block questions',
-  content: 'block*',
-  defining: true,
-  parseDOM: [
-    {
-      tag: 'div.feedback-prompt',
-      getAttrs: function getAttrs(dom) {
-        return {
-          id: dom.getAttribute('id'),
-          class: dom.getAttribute('class'),
-        }
-      },
-    },
-  ],
-  toDOM: function toDOM(node) {
-    return ['div', node.attrs, 0]
-  },
-}
-
-var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(FeedbackNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(FeedbackNodeView)
-
-  function FeedbackNodeView(
-    node,
-    view,
-    getPos,
-    decorations,
-    createPortal,
-    Component,
-    context,
-  ) {
-    var _this
-
-    _classCallCheck(this, FeedbackNodeView)
-
-    _this = _super.call(
-      this,
-      node,
-      view,
-      getPos,
-      decorations,
-      createPortal,
-      Component,
-      context,
-    )
-    _this.node = node
-    _this.outerView = view
-    _this.getPos = getPos
-    _this.context = context
-    return _this
-  }
-
-  _createClass(
-    FeedbackNodeView,
-    [
-      {
-        key: 'stopEvent',
-        value: function stopEvent(event) {
-          if (
-            !event.target.type ||
-            event.target.type === 'button' ||
-            event.target.type === 'text' ||
-            event.target.type === 'textarea'
-          ) {
-            return true
-          }
-
-          var innerView = this.context.pmViews[this.node.attrs.id]
-          return innerView && innerView.dom.contains(event.target)
-        },
-      },
-    ],
-    [
-      {
-        key: 'name',
-        value: function name() {
-          return 'feedback_prompt'
-        },
-      },
-    ],
-  )
-
-  return FeedbackNodeView
-})(QuestionsNodeView)
-
-function _templateObject$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  --space: 2.5rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n\n  > * {\n    /* \u2193 Any extant vertical margins are removed */\n    margin-bottom: 0;\n    margin-top: 0;\n  }\n\n  > * + * {\n    /* \u2193 Top margin is only applied to successive elements */\n    margin-top: var(--space, 2.5rem);\n  }\n',
-  ])
-
-  _templateObject$9 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-styled.div(_templateObject$9())
-
-function _templateObject$a() {
-  var data = _taggedTemplateLiteral([
-    '\n  --s1: 1rem;\n  padding: var(--s1);\n',
-  ])
-
-  _templateObject$a = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Box = styled.div(_templateObject$a())
-
-function _templateObject$b() {
-  var data = _taggedTemplateLiteral([
-    '\n  --max-width: 70ch;\n  --min-width: 0;\n  --s1: 1em;\n  /* \u2193 Remove padding from the width calculation */\n  box-sizing: content-box;\n  /* \u2193 Only affect horizontal margins */\n  margin-inline: auto;\n  /* \u2193 The maximum width is the maximum measure */\n  max-width: var(--max-width, 70ch);\n  min-width: var(--min-width, 0);\n  /* \u2193 Apply the minimum horizontal space */\n  padding-inline: var(--s1);\n',
-  ])
-
-  _templateObject$b = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-styled.div(_templateObject$b())
-
-function _templateObject2$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  font-weight: bold;\n  padding-inline: 15px;\n',
-  ])
-
-  _templateObject2$5 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-radius: 0 0 4px 4px;\n  border: 1px solid #a5a1a2;\n  border-top: none;\n  display: ',
-    ';\n  margin: 0 32px 20px 20px;\n  margin-right: ',
-    ';\n  padding: 0;\n\n  > div {\n    padding: 0 10px 10px;\n  }\n',
-  ])
-
-  _templateObject$c = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper = styled(Box)(
-  _templateObject$c(),
-  function (p) {
-    return p.$testMode ? 'none' : 'block'
-  },
-  function (p) {
-    return p.$showFeedback || p.$testMode ? '20px' : '32px'
-  },
-)
-var FeedbackLabel = styled.span(_templateObject2$5())
-var FeedbackComponentNew = function (_ref) {
-  var node = _ref.node,
-    view = _ref.view,
-    getPos = _ref.getPos
-  var context = useContext(WaxContext)
-  var main = context.pmViews.main
-  var customProps = main.props.customValues
-  var testMode = customProps.testMode,
-    showFeedBack = customProps.showFeedBack
-  return /*#__PURE__*/ React.createElement(
-    Wrapper,
-    {
-      $showFeedback: showFeedBack,
-      $testMode: testMode,
-    },
-    /*#__PURE__*/ React.createElement(FeedbackLabel, null, 'Feedback'),
-    /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
-      getPos: getPos,
-      node: node,
-      placeholderText: 'Insert feedback', // QuestionType="EssayQuestion"
-      view: view,
-    }),
-  )
-}
-
 var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
   _inherits(FillTheGapQuestionService$1, _Service)
 
@@ -3480,17 +3229,6 @@ var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
         })
         createNode({
           fill_the_gap: fillTheGapNode,
-        })
-        createNode({
-          fill_the_gap_wrapper: fillTheGapWrapperNode,
-        })
-        createNode({
-          feedback_prompt: feedbackNode,
-        })
-        addPortal({
-          nodeView: FeedbackNodeView,
-          component: FeedbackComponentNew,
-          context: this.app,
         })
         addPortal({
           nodeView: FillTheGapContainerNodeView,
@@ -3913,18 +3651,18 @@ var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
   return MatchingOptionNodeView
 })(QuestionsNodeView)
 
-function _templateObject$d() {
+function _templateObject$9() {
   var data = _taggedTemplateLiteral([
-    '\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n\n  > .ProseMirror {\n    padding: 0px;\n    box-shadow: none;\n    width: 100%;\n\n    &:focus {\n      outline: none;\n    }\n\n    p {\n      margin: 0;\n\n      br {\n        display: none;\n      }\n    }\n  }\n',
+    '\n  width: 100% !important;\n  display: flex;\n  flex-direction: row;\n  > .ProseMirror {\n    padding: 0px !important;\n    box-shadow: none !important;\n    width: 100% !important;\n    &:focus {\n      outline: none;\n    }\n    p {\n      margin: 0;\n\n      br {\n        display: none;\n      }\n    }\n  }\n',
   ])
 
-  _templateObject$d = function _templateObject() {
+  _templateObject$9 = function _templateObject() {
     return data
   }
 
   return data
 }
-var EditorWrapper$5 = styled.div(_templateObject$d())
+var EditorWrapper$5 = styled.div(_templateObject$9())
 
 var ContainerEditor$1 = function ContainerEditor(_ref) {
   var _node$attrs
@@ -4100,7 +3838,7 @@ function _templateObject5$2() {
 
 function _templateObject4$3() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
+    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n\n  .feedback-prompt {\n    border: 0;\n    margin: 0;\n  }\n',
   ])
 
   _templateObject4$3 = function _templateObject4() {
@@ -4122,31 +3860,31 @@ function _templateObject3$4() {
   return data
 }
 
-function _templateObject2$6() {
+function _templateObject2$5() {
   var data = _taggedTemplateLiteral([
     '\n  border: 3px solid #f5f5f7;\n  border-bottom: none;\n',
   ])
 
-  _templateObject2$6 = function _templateObject2() {
+  _templateObject2$5 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$e() {
+function _templateObject$a() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n\n  .ProseMirror-selectednode {\n    outline: none;\n  }\n',
   ])
 
-  _templateObject$e = function _templateObject() {
+  _templateObject$a = function _templateObject() {
     return data
   }
 
   return data
 }
-var MatchingWrapper = styled.div(_templateObject$e())
-var MatchingContainerTool = styled.div(_templateObject2$6())
+var MatchingWrapper = styled.div(_templateObject$a())
+var MatchingContainerTool = styled.div(_templateObject2$5())
 var MatchingContainer = styled.div(_templateObject3$4())
 var QuestionWrapper = styled.div(_templateObject4$3())
 var ActionButton$2 = styled.button(_templateObject5$2())
@@ -4391,15 +4129,6 @@ var MatchingContainerComponent = function (_ref) {
       {
         className: 'matching',
       },
-      /*#__PURE__*/ React.createElement(
-        QuestionWrapper,
-        null,
-        /*#__PURE__*/ React.createElement(ContainerEditor$1, {
-          getPos: getPos,
-          node: node,
-          view: view,
-        }),
-      ),
       (!readOnly ||
         (readOnly && !customProps.testMode && !customProps.showFeedBack)) &&
         /*#__PURE__*/ React.createElement(
@@ -4472,6 +4201,15 @@ var MatchingContainerComponent = function (_ref) {
               ),
             ),
         ),
+      /*#__PURE__*/ React.createElement(
+        QuestionWrapper,
+        null,
+        /*#__PURE__*/ React.createElement(ContainerEditor$1, {
+          getPos: getPos,
+          node: node,
+          view: view,
+        }),
+      ),
     ),
   )
 }
@@ -4496,18 +4234,18 @@ var getNodes$3 = function getNodes(view) {
 //   return matchingOptionNodes;
 // };
 
-function _templateObject$f() {
+function _templateObject$b() {
   var data = _taggedTemplateLiteral([
     "\n  border: none;\n  display: flex;\n  width: 68%;\n\n  > .ProseMirror {\n    white-space: break-spaces;\n    width: 100% !important;\n    min-height: 25px !important;\n    word-wrap: break-word;\n    padding: 4px !important;\n    border: 12px solid #f4f4f7;\n    border-radius: 12px;\n    box-shadow: none !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    :empty::before {\n      content: 'Type your text';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
-  _templateObject$f = function _templateObject() {
+  _templateObject$b = function _templateObject() {
     return data
   }
 
   return data
 }
-var EditorWrapper$6 = styled.div(_templateObject$f())
+var EditorWrapper$6 = styled.div(_templateObject$b())
 
 var EditorComponent$1 = function EditorComponent(_ref) {
   var node = _ref.node,
@@ -4682,32 +4420,32 @@ function _templateObject3$5() {
   return data
 }
 
-function _templateObject2$7() {
+function _templateObject2$6() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
     ';\n  opacity: ',
     ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
   ])
 
-  _templateObject2$7 = function _templateObject2() {
+  _templateObject2$6 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$g() {
+function _templateObject$c() {
   var data = _taggedTemplateLiteral([''])
 
-  _templateObject$g = function _templateObject() {
+  _templateObject$c = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$1 = styled.div(_templateObject$g())
+var Wrapper = styled.div(_templateObject$c())
 var DropDownButton = styled.button(
-  _templateObject2$7(),
+  _templateObject2$6(),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -4873,7 +4611,7 @@ var DropComponent = function DropComponent(_ref) {
       }
 
       return /*#__PURE__*/ React.createElement(
-        Wrapper$1,
+        Wrapper,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
@@ -5000,32 +4738,32 @@ function _templateObject3$6() {
   return data
 }
 
-function _templateObject2$8() {
+function _templateObject2$7() {
   var data = _taggedTemplateLiteral([
     '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
     ';\n  opacity: ',
     ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
   ])
 
-  _templateObject2$8 = function _templateObject2() {
+  _templateObject2$7 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$h() {
+function _templateObject$d() {
   var data = _taggedTemplateLiteral([''])
 
-  _templateObject$h = function _templateObject() {
+  _templateObject$d = function _templateObject() {
     return data
   }
 
   return data
 }
-var Wrapper$2 = styled.div(_templateObject$h())
+var Wrapper$1 = styled.div(_templateObject$d())
 var DropDownButton$1 = styled.button(
-  _templateObject2$8(),
+  _templateObject2$7(),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -5157,7 +4895,7 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
       }
 
       return /*#__PURE__*/ React.createElement(
-        Wrapper$2,
+        Wrapper$1,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
@@ -5300,31 +5038,31 @@ function _templateObject3$7() {
   return data
 }
 
-function _templateObject2$9() {
+function _templateObject2$8() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  width: 7%;\n',
   ])
 
-  _templateObject2$9 = function _templateObject2() {
+  _templateObject2$8 = function _templateObject2() {
     return data
   }
 
   return data
 }
 
-function _templateObject$i() {
+function _templateObject$e() {
   var data = _taggedTemplateLiteral([
     '\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 10px;\n  width: 100%;\n',
   ])
 
-  _templateObject$i = function _templateObject() {
+  _templateObject$e = function _templateObject() {
     return data
   }
 
   return data
 }
-var Option = styled.div(_templateObject$i())
-var ButtonsContainer = styled.div(_templateObject2$9())
+var Option = styled.div(_templateObject$e())
+var ButtonsContainer = styled.div(_templateObject2$8())
 var DropDownContainer = styled.div(_templateObject3$7())
 var ActionButton$3 = styled.button(_templateObject4$6())
 var StyledIconAction$2 = styled(Icon)(_templateObject5$3())
@@ -5478,6 +5216,205 @@ var MatchingOptionComponent = function (_ref) {
   )
 }
 
+var feedbackNode = {
+  attrs: {
+    class: {
+      default: 'feedback-prompt',
+    },
+    id: {
+      default: v4(),
+    },
+  },
+  group: 'block questions',
+  content: 'block*',
+  defining: true,
+  parseDOM: [
+    {
+      tag: 'div.feedback-prompt',
+      getAttrs: function getAttrs(dom) {
+        return {
+          id: dom.getAttribute('id'),
+          class: dom.getAttribute('class'),
+        }
+      },
+    },
+  ],
+  toDOM: function toDOM(node) {
+    return ['div', node.attrs, 0]
+  },
+}
+
+var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
+  _inherits(FeedbackNodeView, _QuestionsNodeView)
+
+  var _super = _createSuper(FeedbackNodeView)
+
+  function FeedbackNodeView(
+    node,
+    view,
+    getPos,
+    decorations,
+    createPortal,
+    Component,
+    context,
+  ) {
+    var _this
+
+    _classCallCheck(this, FeedbackNodeView)
+
+    _this = _super.call(
+      this,
+      node,
+      view,
+      getPos,
+      decorations,
+      createPortal,
+      Component,
+      context,
+    )
+    _this.node = node
+    _this.outerView = view
+    _this.getPos = getPos
+    _this.context = context
+    return _this
+  }
+
+  _createClass(
+    FeedbackNodeView,
+    [
+      {
+        key: 'stopEvent',
+        value: function stopEvent(event) {
+          if (
+            !event.target.type ||
+            event.target.type === 'button' ||
+            event.target.type === 'text' ||
+            event.target.type === 'textarea'
+          ) {
+            return true
+          }
+
+          var innerView = this.context.pmViews[this.node.attrs.id]
+          return innerView && innerView.dom.contains(event.target)
+        },
+      },
+    ],
+    [
+      {
+        key: 'name',
+        value: function name() {
+          return 'feedback_prompt'
+        },
+      },
+    ],
+  )
+
+  return FeedbackNodeView
+})(QuestionsNodeView)
+
+function _templateObject$f() {
+  var data = _taggedTemplateLiteral([
+    '\n  --space: 2.5rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n\n  > * {\n    /* \u2193 Any extant vertical margins are removed */\n    margin-bottom: 0;\n    margin-top: 0;\n  }\n\n  > * + * {\n    /* \u2193 Top margin is only applied to successive elements */\n    margin-top: var(--space, 2.5rem);\n  }\n',
+  ])
+
+  _templateObject$f = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+styled.div(_templateObject$f())
+
+function _templateObject$g() {
+  var data = _taggedTemplateLiteral([
+    '\n  --s1: 1rem;\n  padding: var(--s1);\n',
+  ])
+
+  _templateObject$g = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+var Box = styled.div(_templateObject$g())
+
+function _templateObject$h() {
+  var data = _taggedTemplateLiteral([
+    '\n  --max-width: 70ch;\n  --min-width: 0;\n  --s1: 1em;\n  /* \u2193 Remove padding from the width calculation */\n  box-sizing: content-box;\n  /* \u2193 Only affect horizontal margins */\n  margin-inline: auto;\n  /* \u2193 The maximum width is the maximum measure */\n  max-width: var(--max-width, 70ch);\n  min-width: var(--min-width, 0);\n  /* \u2193 Apply the minimum horizontal space */\n  padding-inline: var(--s1);\n',
+  ])
+
+  _templateObject$h = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+styled.div(_templateObject$h())
+
+function _templateObject2$9() {
+  var data = _taggedTemplateLiteral([
+    '\n  font-weight: bold;\n  padding-inline: 15px;\n',
+  ])
+
+  _templateObject2$9 = function _templateObject2() {
+    return data
+  }
+
+  return data
+}
+
+function _templateObject$i() {
+  var data = _taggedTemplateLiteral([
+    '\n  border-radius: 0 0 4px 4px;\n  border: 1px solid #a5a1a2;\n  border-top: none;\n  display: ',
+    ';\n  margin: 0 32px 20px 20px;\n  margin-right: ',
+    ';\n  padding: 0;\n\n  > div {\n    padding: 0 10px 10px;\n  }\n',
+  ])
+
+  _templateObject$i = function _templateObject() {
+    return data
+  }
+
+  return data
+}
+var Wrapper$2 = styled(Box)(
+  _templateObject$i(),
+  function (p) {
+    return p.$testMode ? 'none' : 'block'
+  },
+  function (p) {
+    return p.$fullWidth ? '20px' : '32px'
+  },
+)
+var FeedbackLabel = styled.span(_templateObject2$9())
+var FeedbackComponentNew = function (_ref) {
+  var node = _ref.node,
+    view = _ref.view,
+    getPos = _ref.getPos
+  var context = useContext(WaxContext)
+  var main = context.pmViews.main
+  var customProps = main.props.customValues
+  var isEditable = main.props.editable(function (editable) {
+    return editable
+  })
+  var testMode = customProps.testMode,
+    showFeedBack = customProps.showFeedBack
+  return /*#__PURE__*/ React.createElement(
+    Wrapper$2,
+    {
+      $fullWidth: showFeedBack || testMode || !isEditable,
+      $testMode: testMode,
+      className: 'feedback-prompt',
+    },
+    /*#__PURE__*/ React.createElement(FeedbackLabel, null, 'Feedback'),
+    /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
+      getPos: getPos,
+      node: node,
+      placeholderText: 'Insert feedback', // QuestionType="EssayQuestion"
+      view: view,
+    }),
+  )
+}
+
 var MatchingService = /*#__PURE__*/ (function (_Service) {
   _inherits(MatchingService, _Service)
 
@@ -5577,7 +5514,7 @@ var MultipleDropDownQuestion =
               to = _state$selection.to
             if (from === null || disallowedTools.includes('MultipleDropDown'))
               return false
-            state.doc.nodesBetween(from, to, function (node) {
+            state.doc.nodesBetween(from, to, function (node, pos) {
               if (node.type.groups.includes('questions')) {
                 status = false
               }
@@ -5593,8 +5530,8 @@ var MultipleDropDownQuestion =
             key: 'run',
             get: function get() {
               return function (main) {
-                var dispatch = main.dispatch,
-                  state = main.state
+                var dispatch = main.dispatch
+                var state = main.state
                 helpers.checkifEmpty(main)
                 var _main$state$selection = main.state.selection,
                   $from = _main$state$selection.$from,
@@ -5612,21 +5549,7 @@ var MultipleDropDownQuestion =
                   )
                 if (!wrapping) return false
                 tr.wrap(range, wrapping)
-                var feedback = state.config.schema.nodes.feedback_prompt.create(
-                  {
-                    id: v4(),
-                  },
-                  Fragment.empty,
-                )
-                var map = tr.mapping.maps[0]
-                var newPos = 0
-                map.forEach(function (_from, _to, _newFrom, newTo) {
-                  newPos = newTo
-                })
-                tr.setSelection(TextSelection.create(tr.doc, newPos))
-                tr.replaceSelectionWith(feedback)
                 dispatch(tr)
-                return true
               }
             },
           },
@@ -5650,7 +5573,7 @@ var MultipleDropDownQuestion =
           {
             key: 'enable',
             get: function get() {
-              return function () {}
+              return function (state) {}
             },
           },
         ])
@@ -5744,7 +5667,7 @@ var multipleDropDownContainerNode = {
   group: 'block questions',
   isolating: true,
   // content: 'paragraph* bulletlist* orderedlist*',
-  content: 'block+',
+  content: 'block*',
   parseDOM: [
     {
       tag: 'div.multiple-drop-down-container',
@@ -6821,7 +6744,7 @@ var CreateDropDownService = /*#__PURE__*/ (function (_Service) {
 
 function _templateObject$n() {
   var data = _taggedTemplateLiteral([
-    "\n  position: relative;\n  height: 100%;\n\n  > .ProseMirror {\n    padding: 5px !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    img[class='ProseMirror-separator'] {\n      display: inline !important;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
+    "\n  position: relative;\n  height: 100%;\n\n  > .ProseMirror {\n    padding: 5px !important;\n    &:focus {\n      outline: none;\n    }\n\n    img[class='ProseMirror-separator'] {\n      display: inline !important;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
   ])
 
   _templateObject$n = function _templateObject() {
@@ -7017,6 +6940,16 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
   )
 }
 
+function _templateObject6$5() {
+  var data = _taggedTemplateLiteral(['\n  padding-inline: 4px;\n'])
+
+  _templateObject6$5 = function _templateObject6() {
+    return data
+  }
+
+  return data
+}
+
 function _templateObject5$6() {
   var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
 
@@ -7078,11 +7011,11 @@ var MultipleDropDownpWrapper = styled.div(_templateObject$o())
 var MultipleDropDownContainerTool = styled.div(_templateObject2$e())
 var MultipleDropDownpContainer = styled.div(_templateObject3$b())
 var ActionButton$4 = styled.button(_templateObject4$a())
-var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$6()) // const StyledFeedback = styled(FeedbackComponent)`
-//   padding-inline: 4px;
-// `;
-
+var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$6())
+var StyledFeedback$1 = styled(FeedbackComponent)(_templateObject6$5())
 var MultipleDropDownContainerComponent = function (_ref) {
+  var _getUpdatedNode
+
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -7094,7 +7027,8 @@ var MultipleDropDownContainerComponent = function (_ref) {
     return editable
   })
   var readOnly = !isEditable
-  var testMode = customProps.testMode // const { feedback } = node.attrs;
+  var testMode = customProps.testMode
+  var feedback = node.attrs.feedback
 
   var removeQuestion = function removeQuestion() {
     var allNodes = getNodes$7(context.pmViews.main)
@@ -7108,16 +7042,18 @@ var MultipleDropDownContainerComponent = function (_ref) {
         )
       }
     })
-  } // const getUpdatedNode = () => {
-  //   let nodeFound = node;
-  //   const allNodes = getNodes(context.pmViews.main);
-  //   allNodes.forEach(singNode => {
-  //     if (singNode.node.attrs.id === node.attrs.id) {
-  //       nodeFound = singNode;
-  //     }
-  //   });
-  //   return nodeFound;
-  // };
+  }
+
+  var getUpdatedNode = function getUpdatedNode() {
+    var nodeFound = node
+    var allNodes = getNodes$7(context.pmViews.main)
+    allNodes.forEach(function (singNode) {
+      if (singNode.node.attrs.id === node.attrs.id) {
+        nodeFound = singNode
+      }
+    })
+    return nodeFound
+  }
 
   return /*#__PURE__*/ React.createElement(
     MultipleDropDownpWrapper,
@@ -7154,6 +7090,18 @@ var MultipleDropDownContainerComponent = function (_ref) {
         node: node,
         view: view,
       }),
+      !testMode &&
+        !(readOnly && feedback === '') &&
+        /*#__PURE__*/ React.createElement(StyledFeedback$1, {
+          getPos: getPos,
+          node:
+            (_getUpdatedNode = getUpdatedNode()) === null ||
+            _getUpdatedNode === void 0
+              ? void 0
+              : _getUpdatedNode.node,
+          readOnly: readOnly,
+          view: view,
+        }),
     ),
   )
 }
@@ -7205,17 +7153,9 @@ var MultipleDropDownService = /*#__PURE__*/ (function (_Service) {
         createNode({
           multiple_drop_down_container: multipleDropDownContainerNode,
         })
-        createNode({
-          feedback_prompt: feedbackNode,
-        })
         addPortal({
           nodeView: MultipleDropDownContainerNodeView,
           component: MultipleDropDownContainerComponent,
-          context: this.app,
-        })
-        addPortal({
-          nodeView: FeedbackNodeView,
-          component: FeedbackComponentNew,
           context: this.app,
         })
       },
@@ -7747,12 +7687,12 @@ function _templateObject7$4() {
   return data
 }
 
-function _templateObject6$5() {
+function _templateObject6$6() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$5 = function _templateObject6() {
+  _templateObject6$6 = function _templateObject6() {
     return data
   }
 
@@ -7823,7 +7763,7 @@ var ResultContainer = styled.div(_templateObject4$c())
 var FinalResult = styled.span(_templateObject5$7(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect = styled(Icon)(_templateObject6$5())
+var StyledIconCorrect = styled(Icon)(_templateObject6$6())
 var StyledIconWrong = styled(Icon)(_templateObject7$4())
 
 var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
@@ -8122,12 +8062,12 @@ function _templateObject7$5() {
   return data
 }
 
-function _templateObject6$6() {
+function _templateObject6$7() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$6 = function _templateObject6() {
+  _templateObject6$7 = function _templateObject6() {
     return data
   }
 
@@ -8198,7 +8138,7 @@ var ResultContainer$1 = styled.div(_templateObject4$d())
 var FinalResult$1 = styled.span(_templateObject5$8(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$1 = styled(Icon)(_templateObject6$6())
+var StyledIconCorrect$1 = styled(Icon)(_templateObject6$7())
 var StyledIconWrong$1 = styled(Icon)(_templateObject7$5())
 
 var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
@@ -8422,12 +8362,12 @@ function _templateObject7$6() {
   return data
 }
 
-function _templateObject6$7() {
+function _templateObject6$8() {
   var data = _taggedTemplateLiteral([
     '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$7 = function _templateObject6() {
+  _templateObject6$8 = function _templateObject6() {
     return data
   }
 
@@ -8498,7 +8438,7 @@ var ResultContainer$2 = styled.div(_templateObject4$e())
 var FinalResult$2 = styled.span(_templateObject5$9(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
-var StyledIconCorrect$2 = styled(Icon)(_templateObject6$7())
+var StyledIconCorrect$2 = styled(Icon)(_templateObject6$8())
 var StyledIconWrong$2 = styled(Icon)(_templateObject7$6())
 
 var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
@@ -8825,12 +8765,12 @@ function _templateObject7$7() {
   return data
 }
 
-function _templateObject6$8() {
+function _templateObject6$9() {
   var data = _taggedTemplateLiteral([
     '\n  float: right;\n  position: relative;\n  top: 3px;\n',
   ])
 
-  _templateObject6$8 = function _templateObject6() {
+  _templateObject6$9 = function _templateObject6() {
     return data
   }
 
@@ -8899,11 +8839,11 @@ var NumericalAnswerContainer = styled.div(_templateObject2$j())
 var NumericalAnswerContainerTool = styled.div(_templateObject3$g())
 var NumericalAnswerOption = styled.div(_templateObject4$f())
 var ActionButton$5 = styled.button(_templateObject5$a())
-var StyledIconContainer$1 = styled.span(_templateObject6$8())
+var StyledIconContainer$1 = styled.span(_templateObject6$9())
 var StyledIconAction$4 = styled(Icon)(_templateObject7$7())
 var InfoMsg$1 = styled.div(_templateObject8$3(), th('colorPrimary'))
 var StyledIconActionRemove$4 = styled(Icon)(_templateObject9$2())
-var StyledFeedback$1 = styled(FeedbackComponent)(_templateObject10$1())
+var StyledFeedback$2 = styled(FeedbackComponent)(_templateObject10$1())
 var NumericalAnswerContainerComponent = function (_ref) {
   var _getUpdatedNode,
     _getUpdatedNode$node,
@@ -9142,7 +9082,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
       ),
       !testMode &&
         !(readOnly && feedback === '') &&
-        /*#__PURE__*/ React.createElement(StyledFeedback$1, {
+        /*#__PURE__*/ React.createElement(StyledFeedback$2, {
           getPos: getPos,
           node:
             (_getUpdatedNode10 = getUpdatedNode()) === null ||
@@ -10006,12 +9946,12 @@ var SwitchComponent = function SwitchComponent(props) {
   )
 }
 
-function _templateObject6$9() {
+function _templateObject6$a() {
   var data = _taggedTemplateLiteral([
     '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$9 = function _templateObject6() {
+  _templateObject6$a = function _templateObject6() {
     return data
   }
 
@@ -10083,7 +10023,7 @@ var Answer$2 = styled.span(_templateObject4$i(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
 var StyledIconCorrect$3 = styled(Icon)(_templateObject5$b())
-var StyledIconWrong$3 = styled(Icon)(_templateObject6$9())
+var StyledIconWrong$3 = styled(Icon)(_templateObject6$a())
 
 var YesNoSwitch = function YesNoSwitch(_ref) {
   var customProps = _ref.customProps,
@@ -10274,12 +10214,12 @@ function _templateObject7$8() {
   return data
 }
 
-function _templateObject6$a() {
+function _templateObject6$b() {
   var data = _taggedTemplateLiteral([
     '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$a = function _templateObject6() {
+  _templateObject6$b = function _templateObject6() {
     return data
   }
 
@@ -10351,7 +10291,7 @@ var InfoRow = styled.div(_templateObject2$o())
 var QuestionNunber = styled.span(_templateObject3$k())
 var QuestionControlsWrapper = styled.div(_templateObject4$j())
 var QuestionWrapper$1 = styled.div(_templateObject5$c(), function (props) {
-  return props.$testMode && css(_templateObject6$a())
+  return props.$testMode && css(_templateObject6$b())
 })
 var IconsWrapper = styled.div(_templateObject7$8())
 var QuestionData = styled.div(_templateObject8$4())
@@ -11194,12 +11134,12 @@ function _templateObject7$9() {
   return data
 }
 
-function _templateObject6$b() {
+function _templateObject6$c() {
   var data = _taggedTemplateLiteral([
     '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$b = function _templateObject6() {
+  _templateObject6$c = function _templateObject6() {
     return data
   }
 
@@ -11271,7 +11211,7 @@ var InfoRow$1 = styled.div(_templateObject2$p())
 var QuestionNunber$1 = styled.span(_templateObject3$l())
 var QuestionControlsWrapper$1 = styled.div(_templateObject4$k())
 var QuestionWrapper$2 = styled.div(_templateObject5$d(), function (props) {
-  return props.$testMode && css(_templateObject6$b())
+  return props.$testMode && css(_templateObject6$c())
 })
 var IconsWrapper$1 = styled.div(_templateObject7$9())
 var QuestionData$1 = styled.div(_templateObject8$5())
@@ -11962,12 +11902,12 @@ var trueFalseContainerNode = {
   },
 }
 
-function _templateObject6$c() {
+function _templateObject6$d() {
   var data = _taggedTemplateLiteral([
     '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
   ])
 
-  _templateObject6$c = function _templateObject6() {
+  _templateObject6$d = function _templateObject6() {
     return data
   }
 
@@ -12039,7 +11979,7 @@ var Answer$3 = styled.span(_templateObject4$l(), function (props) {
   return props.$isCorrect ? ' #008000' : 'red'
 })
 var StyledIconCorrect$4 = styled(Icon)(_templateObject5$e())
-var StyledIconWrong$4 = styled(Icon)(_templateObject6$c())
+var StyledIconWrong$4 = styled(Icon)(_templateObject6$d())
 
 var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
   var customProps = _ref.customProps,
@@ -12229,12 +12169,12 @@ function _templateObject7$a() {
   return data
 }
 
-function _templateObject6$d() {
+function _templateObject6$e() {
   var data = _taggedTemplateLiteral([
     '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$d = function _templateObject6() {
+  _templateObject6$e = function _templateObject6() {
     return data
   }
 
@@ -12306,7 +12246,7 @@ var InfoRow$2 = styled.div(_templateObject2$r())
 var QuestionNunber$2 = styled.span(_templateObject3$n())
 var QuestionControlsWrapper$2 = styled.div(_templateObject4$m())
 var QuestionWrapper$3 = styled.div(_templateObject5$f(), function (props) {
-  return props.$testMode && css(_templateObject6$d())
+  return props.$testMode && css(_templateObject6$e())
 })
 var IconsWrapper$2 = styled.div(_templateObject7$a())
 var QuestionData$2 = styled.div(_templateObject8$6())
@@ -13151,12 +13091,12 @@ function _templateObject7$b() {
   return data
 }
 
-function _templateObject6$e() {
+function _templateObject6$f() {
   var data = _taggedTemplateLiteral([
     '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
   ])
 
-  _templateObject6$e = function _templateObject6() {
+  _templateObject6$f = function _templateObject6() {
     return data
   }
 
@@ -13228,7 +13168,7 @@ var InfoRow$3 = styled.div(_templateObject2$s())
 var QuestionNunber$3 = styled.span(_templateObject3$o())
 var QuestionControlsWrapper$3 = styled.div(_templateObject4$n())
 var QuestionWrapper$4 = styled.div(_templateObject5$g(), function (props) {
-  return props.$testMode && css(_templateObject6$e())
+  return props.$testMode && css(_templateObject6$f())
 })
 var IconsWrapper$3 = styled.div(_templateObject7$b())
 var QuestionData$3 = styled.div(_templateObject8$7())

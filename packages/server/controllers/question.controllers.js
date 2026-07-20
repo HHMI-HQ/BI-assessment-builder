@@ -1550,6 +1550,20 @@ const upgradeEditor = async questionVersionId => {
             )
           })
           break
+
+        case 'matching_container':
+          const { feedback } = itemContent.content[0].attrs
+
+          const index = itemContent.content[0].content.findIndex(opt =>
+            opt.content.find(o => o.type === 'matching_option'),
+          )
+
+          itemContent.content[0].content.splice(
+            index + 1,
+            0,
+            createFeedback(feedback),
+          )
+          break
         default:
           break
       }
