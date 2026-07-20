@@ -1363,10 +1363,7 @@ const QuestionPage = props => {
       questionVersionId: version?.id,
     }
 
-    const result = await upgradeEditorMutation({ variables })
-    const newContent = result.data.upgradeEditor.content
-
-    return handleEditorContentAutoSave(JSON.parse(newContent), true)
+    return upgradeEditorMutation({ variables })
   }
 
   const persistQuestionTab = activeTab => {
