@@ -1564,6 +1564,19 @@ const upgradeEditor = async questionVersionId => {
             createFeedback(feedback),
           )
           break
+
+        case 'fill_the_gap_container':
+          const { feedback: fillTheGapFeedback } = itemContent.content[0].attrs
+          const oldContent = structuredClone(itemContent.content[0])
+          itemContent.content[0] = {
+            type: 'fill_the_gap_wrapper',
+            attrs: {
+              id: uuid(),
+              class: 'fill-the-gap-wrapper',
+            },
+            content: [oldContent, createFeedback(fillTheGapFeedback)],
+          }
+          break
         default:
           break
       }

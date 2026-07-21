@@ -1816,6 +1816,21 @@ const newQuestionTypes = [
                 },
               ],
             },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
           ],
         },
       ],
@@ -1922,22 +1937,46 @@ const newQuestionTypes = [
       type: 'doc',
       content: [
         {
-          type: 'fill_the_gap_container',
+          type: 'fill_the_gap_wrapper',
           attrs: {
-            id: '3e4771d8-e784-4e9e-8319-e3ee77bd297a',
-            class: 'fill-the-gap',
-            feedback: '',
+            id: '64ec9fa2-3d45-49a8-b0eb-e08caa9e6bfc',
+            class: 'fill-the-gap-wrapper',
           },
           content: [
             {
-              type: 'paragraph',
+              type: 'fill_the_gap_container',
               attrs: {
-                class: 'paragraph',
+                id: '3e4771d8-e784-4e9e-8319-e3ee77bd297a',
+                class: 'fill-the-gap',
+                feedback: '',
               },
               content: [
                 {
-                  type: 'text',
-                  text: ' ',
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                  content: [
+                    {
+                      type: 'text',
+                      text: ' ',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
                 },
               ],
             },

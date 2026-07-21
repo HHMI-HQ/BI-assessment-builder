@@ -18,6 +18,7 @@ import 'wax-prosemirror-core/dist/index.css'
 import 'wax-prosemirror-services/dist/index.css'
 import 'wax-questions-service/dist/index.css'
 import 'wax-table-service/dist/index.css'
+import '../services/wax-question-service.css'
 // import EditorElements from './EditorElements'
 
 const fullScreenStyles = css`
