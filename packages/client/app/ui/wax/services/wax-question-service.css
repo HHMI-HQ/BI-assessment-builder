@@ -20,15 +20,15 @@
 
 .fill-the-gap-wrapper {
   border: 3px solid #f5f5f7;
-    margin: 10px 40px;
+  margin: 10px 40px;
 
-    .feedback-prompt {
-      border: none;
-      margin: 0;
-    }
+  .feedback-prompt {
+    border: none;
+    margin: 0;
+  }
 }
-.fill-the-gap {
-}
+/* .fill-the-gap {
+} */
 
 .ProseMirror .fill-the-gap .ProseMirror {
   box-shadow: none;
@@ -42,9 +42,18 @@
   line-height: 1.6;
 }
  
-/* fill The Gap */
+/* Numerical */
 
-.numerical-answer {}
+.numerical-wrapper {
+    border: 3px solid #f5f5f7;
+    margin: 10px 40px;
+
+    .feedback-prompt {
+        border: none;
+        margin: 0;
+    }
+}
+/* .numerical-answer {} */
 
 .ProseMirror .numerical-answer .ProseMirror {
     box-shadow: none;

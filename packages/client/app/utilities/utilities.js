@@ -1992,25 +1992,49 @@ const newQuestionTypes = [
       type: 'doc',
       content: [
         {
-          type: 'numerical_answer_container',
+          type: 'numerical_wrapper',
           attrs: {
-            id: 'f9c33d03-68ee-4c27-8a03-5072447fac1a',
-            class: 'numerical-answer',
-            feedback: '',
-            answerType: '',
-            answersExact: [],
-            answerExact: '',
-            answersRange: [],
-            answerRange: '',
-            answersPrecise: [],
-            answerPrecise: '',
+            id: '388cee79-7a9d-4077-93f6-95e420f11b5a',
+            class: 'numerical-wrapper',
           },
           content: [
             {
-              type: 'paragraph',
+              type: 'numerical_answer_container',
               attrs: {
-                class: 'paragraph',
+                id: 'f9c33d03-68ee-4c27-8a03-5072447fac1a',
+                class: 'numerical-answer',
+                feedback: '',
+                answerType: '',
+                answersExact: [],
+                answerExact: '',
+                answersRange: [],
+                answerRange: '',
+                answersPrecise: [],
+                answerPrecise: '',
               },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+              },
+              content: [
+                {
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
+                },
+              ],
             },
           ],
         },
