@@ -1789,30 +1789,38 @@ const newQuestionTypes = [
       type: 'doc',
       content: [
         {
-          type: 'matching_container',
+          type: 'matching_wrapper',
           attrs: {
-            id: 'a3b95066-6651-4c28-b8a7-1391b3ac233b',
-            class: 'matching-container',
-            options: [],
-            feedback: '',
+            id: '37a89265-da4f-4f25-af87-85db4c51159a',
+            class: 'matching-wrapper',
           },
           content: [
             {
-              type: 'paragraph',
+              type: 'matching_container',
               attrs: {
-                class: 'paragraph',
+                id: '8489be6b-5f54-4bc0-826e-010af781456b',
+                class: 'matching-container',
+                options: [],
               },
               content: [
                 {
-                  type: 'matching_option',
+                  type: 'paragraph',
                   attrs: {
-                    class: 'matching-option',
-                    id: 'faa9a035-7b55-4478-83e0-fffaeb0af9fd',
-                    isfirst: true,
-                    answer: '',
-                    correct: '',
-                    options: [],
+                    class: 'paragraph',
                   },
+                  content: [
+                    {
+                      type: 'matching_option',
+                      attrs: {
+                        class: 'matching-option',
+                        id: '58713322-63ad-4dbc-9466-4a9799356b81',
+                        isfirst: false,
+                        answer: '',
+                        correct: '',
+                        options: [],
+                      },
+                    },
+                  ],
                 },
               ],
             },
@@ -1820,7 +1828,7 @@ const newQuestionTypes = [
               type: 'feedback_prompt',
               attrs: {
                 class: 'feedback-prompt',
-                id: '845440f7-a892-4b5c-8e6a-350c43cb4733',
+                id: 'abc7a514-7fcf-49d3-89f6-c0eb32b424cb',
               },
               content: [
                 {

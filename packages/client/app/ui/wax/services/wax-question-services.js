@@ -3118,51 +3118,47 @@ var MatchingQuestion =
                 helpers.checkifEmpty(main)
                 var state = main.state,
                   dispatch = main.dispatch
-                /* Create Wrapping */
-
-                var _main$state$selection = main.state.selection,
-                  $from = _main$state$selection.$from,
-                  $to = _main$state$selection.$to
-                var range = $from.blockRange($to)
-                var tr = state.tr
-                var wrapping =
-                  range &&
-                  findWrapping(
-                    range,
-                    state.config.schema.nodes.matching_container,
-                    {
-                      id: v4(),
-                    },
-                  )
-                if (!wrapping) return false
-                tr.wrap(range, wrapping) // const map = tr.mapping.maps[0];
-                // let newPos = 0;
-                // map.forEach((_from, _to, _newFrom, newTo) => {
-                //   newPos = newTo;
-                // });
-
-                tr.setSelection(TextSelection.create(tr.doc, range.$to.pos + 1))
+                var _state$selection2 = state.selection,
+                  from = _state$selection2.from,
+                  to = _state$selection2.to
                 var option = state.config.schema.nodes.matching_option.create(
                   {
                     id: v4(),
-                    isfirst: true,
                   },
                   Fragment.empty,
                 )
+                var paragraph = state.config.schema.nodes.paragraph.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.from([option]),
+                )
+                var container =
+                  state.config.schema.nodes.matching_container.create(
+                    {
+                      id: v4(),
+                    },
+                    Fragment.from([paragraph]),
+                  )
                 var feedback = state.config.schema.nodes.feedback_prompt.create(
                   {
                     id: v4(),
                   },
                   Fragment.empty,
                 )
-                tr.replaceSelectionWith(option)
-                tr.replaceSelectionWith(feedback)
+                var wrapper = state.config.schema.nodes.matching_wrapper.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.from([container, feedback]),
+                )
+                var tr = state.tr
+                tr.replaceWith(from, to, wrapper)
                 dispatch(tr)
                 setTimeout(function () {
                   helpers.createEmptyParagraph(context, feedback.attrs.id)
                   context.pmViews[option.attrs.id].focus()
                 }, 150)
-                return true
               }
             },
           },
@@ -3288,6 +3284,34 @@ var matchingOptionNode = {
       },
       0,
     ]
+  },
+}
+
+var mathcingWrapperNode = {
+  attrs: {
+    id: {
+      default: '',
+    },
+    class: {
+      default: 'matching-wrapper',
+    },
+  },
+  group: 'block questions',
+  atom: true,
+  content: 'block+',
+  parseDOM: [
+    {
+      tag: 'div.matching-wrapper',
+      getAttrs: function getAttrs(dom) {
+        return {
+          id: dom.getAttribute('id'),
+          class: dom.getAttribute('class'),
+        }
+      },
+    },
+  ],
+  toDOM: function toDOM(node) {
+    return ['div', node.attrs, 0]
   },
 }
 
@@ -3664,7 +3688,7 @@ function _templateObject4$2() {
 
 function _templateObject3$3() {
   var data = _taggedTemplateLiteral([
-    '\n  border: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n  padding: 10px;\n',
+    '\n  border-block: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n  padding: 10px;\n',
   ])
 
   _templateObject3$3 = function _templateObject3() {
@@ -3675,9 +3699,7 @@ function _templateObject3$3() {
 }
 
 function _templateObject2$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: 3px solid #f5f5f7;\n  border-bottom: none;\n',
-  ])
+  var data = _taggedTemplateLiteral([''])
 
   _templateObject2$5 = function _templateObject2() {
     return data
@@ -3688,7 +3710,7 @@ function _templateObject2$5() {
 
 function _templateObject$d() {
   var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  margin: 0px 38px 15px 38px;\n  margin-top: 10px;\n\n  .ProseMirror-selectednode {\n    outline: none;\n  }\n',
+    '\n  display: flex;\n  flex-direction: column;\n  margin: 0;\n\n  .ProseMirror-selectednode {\n    outline: none;\n  }\n',
   ])
 
   _templateObject$d = function _templateObject() {
@@ -3905,9 +3927,20 @@ var MatchingContainerComponent = function (_ref) {
   var testMode = customProps.testMode
 
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$3(context.pmViews.main)
+    var allNodes = getNodesToDelete(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
-      if (singleNode.node.attrs.id === node.attrs.id) {
+      var _singleNode$node$cont
+
+      var containerId =
+        (_singleNode$node$cont = singleNode.node.content.content.find(function (
+          n,
+        ) {
+          return n.type.name === 'matching_container'
+        })) === null || _singleNode$node$cont === void 0
+          ? void 0
+          : _singleNode$node$cont.attrs.id
+
+      if (containerId === node.attrs.id) {
         context.pmViews.main.dispatch(
           context.pmViews.main.state.tr['delete'](
             singleNode.pos,
@@ -3943,6 +3976,15 @@ var MatchingContainerComponent = function (_ref) {
       {
         className: 'matching',
       },
+      /*#__PURE__*/ React.createElement(
+        QuestionWrapper,
+        null,
+        /*#__PURE__*/ React.createElement(ContainerEditor$1, {
+          getPos: getPos,
+          node: node,
+          view: view,
+        }),
+      ),
       (!readOnly ||
         (readOnly && !customProps.testMode && !customProps.showFeedBack)) &&
         /*#__PURE__*/ React.createElement(
@@ -4015,15 +4057,6 @@ var MatchingContainerComponent = function (_ref) {
               ),
             ),
         ),
-      /*#__PURE__*/ React.createElement(
-        QuestionWrapper,
-        null,
-        /*#__PURE__*/ React.createElement(ContainerEditor$1, {
-          getPos: getPos,
-          node: node,
-          view: view,
-        }),
-      ),
     ),
   )
 }
@@ -4033,6 +4066,17 @@ var getNodes$3 = function getNodes(view) {
   var matchingContainerNodes = []
   allNodes.forEach(function (node) {
     if (node.node.type.name === 'matching_container') {
+      matchingContainerNodes.push(node)
+    }
+  })
+  return matchingContainerNodes
+}
+
+var getNodesToDelete = function getNodesToDelete(view) {
+  var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
+  var matchingContainerNodes = []
+  allNodes.forEach(function (node) {
+    if (node.node.type.name === 'matching_wrapper') {
       matchingContainerNodes.push(node)
     }
   })
@@ -5060,6 +5104,9 @@ var MatchingService = /*#__PURE__*/ (function (_Service) {
         this.container.bind('MatchingQuestion').to(MatchingQuestion)
         var createNode = this.container.get('CreateNode')
         var addPortal = this.container.get('AddPortal')
+        createNode({
+          matching_wrapper: mathcingWrapperNode,
+        })
         createNode({
           matching_container: matchingContainerNode,
         })
@@ -8572,7 +8619,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
   var readOnly = !isEditable
 
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodesToDelete(context.pmViews.main)
+    var allNodes = getNodesToDelete$1(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
 
@@ -8790,7 +8837,7 @@ var getNodes$c = function getNodes(view) {
   return numericalAnswerpContainerNodes
 }
 
-var getNodesToDelete = function getNodesToDelete(view) {
+var getNodesToDelete$1 = function getNodesToDelete(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
