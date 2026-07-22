@@ -160,6 +160,14 @@ const EditorArea = styled.div`
     padding-inline: ${grid(1)};
   }
 
+  .essay .ProseMirror {
+    padding: 20px 16px;
+  }
+
+  .essay > *:not(:last-child) {
+    border-bottom: 1px solid #f5f5f7;
+  }
+
   /* .ProseMirror-gapcursor {
   display: none;
   pointer-events: none;

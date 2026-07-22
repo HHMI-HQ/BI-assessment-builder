@@ -111,6 +111,14 @@ const EditorArea = styled.div`
       }
     }
   }
+
+  .essay .ProseMirror {
+    padding: ${grid(5)} ${grid(4)};
+  }
+
+  .essay > *:not(:last-child) {
+    border-bottom: 1px solid #f5f5f7;
+  }
 `
 
 // eslint-disable-next-line react/prop-types
