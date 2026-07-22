@@ -1918,24 +1918,34 @@ const newQuestionTypes = [
       type: 'doc',
       content: [
         {
-          type: 'multiple_drop_down_container',
+          type: 'multiple_drop_down_wrapper',
           attrs: {
-            id: 'b42e5e37-2c59-4502-b5af-dee7e0bf19c3',
-            class: 'multiple-drop-down-container',
-            feedback: '',
+            id: '84e34c44-39ce-445f-9915-aad79b7f74d5',
+            class: 'multiple-drop-down-wrapper',
           },
           content: [
             {
-              type: 'paragraph',
+              type: 'multiple_drop_down_container',
               attrs: {
-                class: 'paragraph',
+                id: '32af51d9-12c6-45ed-903c-5874ef925235',
+                class: 'multiple-drop-down-container',
+                feedback: '',
               },
               content: [
                 {
-                  type: 'text',
-                  text: ' ',
+                  type: 'paragraph',
+                  attrs: {
+                    class: 'paragraph',
+                  },
                 },
               ],
+            },
+            {
+              type: 'feedback_prompt',
+              attrs: {
+                class: 'feedback-prompt',
+                id: 'f8e4436f-ddda-475a-9547-db048fce491e',
+              },
             },
           ],
         },

@@ -1485,7 +1485,9 @@ const upgradeEditor = async questionVersionId => {
           'matching_container',
           'fill_the_gap_container',
           'numerical_answer_container',
-        ].includes(c.type),
+          'multiple_drop_down_container',
+          'essay_container',
+        ]?.includes(c.type),
       )
 
       const itemType = itemContent.content[questionTypeIndex].type
@@ -1613,6 +1615,24 @@ const upgradeEditor = async questionVersionId => {
               createFeedback(numericalFeedback),
             ],
           }
+          break
+
+        case 'multiple_drop_down_container':
+          const { feedback: mddFeedback } =
+            itemContent.content[questionTypeIndex].attrs
+
+          itemContent.content[questionTypeIndex] = {
+            type: 'multiple_drop_down_wrapper',
+            attrs: {
+              id: uuid(),
+              class: 'multiple-drop-down-wrapper',
+            },
+            content: [
+              itemContent.content[questionTypeIndex],
+              createFeedback(mddFeedback),
+            ],
+          }
+
           break
 
         default:
