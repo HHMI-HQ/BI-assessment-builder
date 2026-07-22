@@ -1789,6 +1789,10 @@ const newQuestionTypes = [
       type: 'doc',
       content: [
         {
+          type: 'paragraph',
+          attrs: { class: 'paragraph' },
+        },
+        {
           type: 'matching_wrapper',
           attrs: {
             id: '37a89265-da4f-4f25-af87-85db4c51159a',

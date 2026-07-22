@@ -97,11 +97,11 @@ const EditorArea = styled.div`
   position: relative;
 
   .ProseMirror {
-    padding: 0 ${grid(5)} ${grid(12)};
+    /* padding: 0 ${grid(5)} ${grid(12)};
 
     @media (min-width: ${th('mediaQueries.small')}) {
       padding: ${grid(5)};
-    }
+    } */
 
     /* position: relative; */
 
@@ -154,6 +154,10 @@ const EditorArea = styled.div`
         font-size: 14px;
       }
     }
+  }
+
+  .feedback-prompt .ProseMirror {
+    padding-inline: ${grid(1)};
   }
 
   /* .ProseMirror-gapcursor {
