@@ -192,8 +192,8 @@ const extractDocumentText = data => {
         }
       }
 
-      // do not render content from essay feedback
-      if (type === 'essay_prompt') {
+      // do not render content from feedback
+      if (type === 'feedback_prompt' || type === 'essay_prompt') {
         return
       }
 
