@@ -473,6 +473,8 @@ const permissions = {
     generateWordFile: isActive,
     generateQtiZip: isActive,
 
+    upgradeEditor: isAdminOrEditor,
+
     // lists
     createList: isActive,
     copyList: isActive,

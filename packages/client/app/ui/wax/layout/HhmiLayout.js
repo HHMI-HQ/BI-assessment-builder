@@ -18,6 +18,7 @@ import 'wax-prosemirror-core/dist/index.css'
 import 'wax-prosemirror-services/dist/index.css'
 import 'wax-questions-service/dist/index.css'
 import 'wax-table-service/dist/index.css'
+import '../services/wax-question-service.css'
 // import EditorElements from './EditorElements'
 
 const fullScreenStyles = css`
@@ -96,11 +97,11 @@ const EditorArea = styled.div`
   position: relative;
 
   .ProseMirror {
-    padding: 0 ${grid(5)} ${grid(12)};
+    /* padding: 0 ${grid(5)} ${grid(12)};
 
     @media (min-width: ${th('mediaQueries.small')}) {
       padding: ${grid(5)};
-    }
+    } */
 
     /* position: relative; */
 
@@ -153,6 +154,18 @@ const EditorArea = styled.div`
         font-size: 14px;
       }
     }
+  }
+
+  .feedback-prompt .ProseMirror {
+    padding-inline: ${grid(1)};
+  }
+
+  .essay .ProseMirror {
+    padding: 20px 16px;
+  }
+
+  .essay > *:not(:last-child) {
+    border-bottom: 1px solid #f5f5f7;
   }
 
   /* .ProseMirror-gapcursor {

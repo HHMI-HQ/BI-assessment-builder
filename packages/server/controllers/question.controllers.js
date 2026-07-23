@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const path = require('path')
 const config = require('config')
 
@@ -6,6 +7,7 @@ const {
   logger,
   useTransaction,
   subscriptionManager,
+  uuid,
 } = require('@coko/server')
 
 const {
@@ -1439,6 +1441,221 @@ const editQuestion = async (questionVersionId, options = {}) => {
   }
 }
 
+const createFeedback = text => ({
+  type: 'feedback_prompt',
+  attrs: {
+    class: 'feedback-prompt',
+    id: uuid(),
+  },
+  content: [
+    {
+      type: 'paragraph',
+      attrs: {
+        class: 'paragraph',
+      },
+      content: [
+        {
+          type: 'text',
+          text,
+        },
+      ],
+    },
+  ],
+})
+
+const upgradeEditor = async questionVersionId => {
+  const CONTROLLER_MESSAGE = `${BASE_MESSAGE} upgradeEditor:`
+  logger.info(
+    `${CONTROLLER_MESSAGE} upgrading editor for question version with id ${questionVersionId}`,
+  )
+
+  try {
+    return useTransaction(async trx => {
+      // NEXT: Update content depending on question type
+      const qv = await QuestionVersion.findById(questionVersionId)
+      const itemContent = structuredClone(qv.content)
+
+      // TODO: Find a more robust way to detect type
+      const questionTypeIndex = itemContent.content.findIndex(c =>
+        [
+          'multiple_choice_container',
+          'multiple_choice_single_correct_container',
+          'true_false_container',
+          'true_false_single_correct_container',
+          'matching_container',
+          'fill_the_gap_container',
+          'numerical_answer_container',
+          'multiple_drop_down_container',
+          'essay_container',
+        ]?.includes(c.type),
+      )
+
+      const itemType = itemContent.content[questionTypeIndex].type
+      let elementsWithFeedback
+
+      switch (itemType) {
+        case 'multiple_choice_container':
+          elementsWithFeedback = itemContent.content[
+            questionTypeIndex
+          ].content.filter(c => c.type === 'multiple_choice')
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[0].content.findIndex(
+              o => o.attrs.id === opt.attrs.id,
+            )
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'multiple_choice_single_correct_container':
+          elementsWithFeedback = itemContent.content[
+            questionTypeIndex
+          ].content.filter(c => c.type === 'multiple_choice_single_correct')
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[
+              questionTypeIndex
+            ].content.findIndex(o => o.attrs.id === opt.attrs.id)
+
+            itemContent.content[questionTypeIndex].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'true_false_container':
+          elementsWithFeedback = itemContent.content[
+            questionTypeIndex
+          ].content.filter(c => c.type === 'true_false')
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[
+              questionTypeIndex
+            ].content.findIndex(o => o.attrs.id === opt.attrs.id)
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'true_false_single_correct_container':
+          elementsWithFeedback = itemContent.content[
+            questionTypeIndex
+          ].content.filter(c => c.type === 'true_false_single_correct')
+
+          elementsWithFeedback.forEach(opt => {
+            const index = itemContent.content[
+              questionTypeIndex
+            ].content.findIndex(o => o.attrs.id === opt.attrs.id)
+
+            itemContent.content[0].content.splice(
+              index + 1,
+              0,
+              createFeedback(opt.attrs.feedback),
+            )
+          })
+          break
+
+        case 'matching_container':
+          const { feedback: matchingFeedback } =
+            itemContent.content[questionTypeIndex].attrs
+
+          itemContent.content[questionTypeIndex] = {
+            type: 'matching_wrapper',
+            attrs: {
+              id: uuid(),
+              class: 'matching-wrapper',
+            },
+            content: [
+              itemContent.content[questionTypeIndex],
+              createFeedback(matchingFeedback),
+            ],
+          }
+          break
+
+        case 'fill_the_gap_container':
+          const { feedback: fillTheGapFeedback } =
+            itemContent.content[questionTypeIndex].attrs
+
+          itemContent.content[questionTypeIndex] = {
+            type: 'fill_the_gap_wrapper',
+            attrs: {
+              id: uuid(),
+              class: 'fill-the-gap-wrapper',
+            },
+            content: [
+              itemContent.content[questionTypeIndex],
+              createFeedback(fillTheGapFeedback),
+            ],
+          }
+          break
+
+        case 'numerical_answer_container':
+          const { feedback: numericalFeedback } =
+            itemContent.content[questionTypeIndex].attrs
+
+          itemContent.content[questionTypeIndex] = {
+            type: 'numerical_wrapper',
+            attrs: {
+              id: uuid(),
+              class: 'numerical-wrapper',
+            },
+            content: [
+              itemContent.content[questionTypeIndex],
+              createFeedback(numericalFeedback),
+            ],
+          }
+          break
+
+        case 'multiple_drop_down_container':
+          const { feedback: mddFeedback } =
+            itemContent.content[questionTypeIndex].attrs
+
+          itemContent.content[questionTypeIndex] = {
+            type: 'multiple_drop_down_wrapper',
+            attrs: {
+              id: uuid(),
+              class: 'multiple-drop-down-wrapper',
+            },
+            content: [
+              itemContent.content[questionTypeIndex],
+              createFeedback(mddFeedback),
+            ],
+          }
+
+          break
+
+        default:
+          break
+      }
+
+      const questionVersion = await modifyQuestionVersion(
+        questionVersionId,
+        {
+          enhancedEditor: true,
+          content: itemContent,
+        },
+        { trx },
+      )
+
+      return questionVersion
+    })
+  } catch (e) {
+    logger.error(`${CONTROLLER_MESSAGE} ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   getQuestion,
   getQuestionVersions,
@@ -1494,4 +1711,5 @@ module.exports = {
   changeArchiveStatusForItems,
   isItemArchivedForUser,
   editQuestion,
+  upgradeEditor,
 }

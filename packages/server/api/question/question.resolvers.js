@@ -50,6 +50,7 @@ const {
   changeArchiveStatusForItems,
   isItemArchivedForUser,
   editQuestion,
+  upgradeEditor,
 } = require('../../controllers/question.controllers')
 
 const questionResolver = async (_, { id, options }) => {
@@ -294,6 +295,10 @@ const editQuestionResolver = async (_, { questionVersionId }) => {
   return editQuestion(questionVersionId)
 }
 
+const upgradeEditorResolver = async (_, { questionVersionId }) => {
+  return upgradeEditor(questionVersionId)
+}
+
 module.exports = {
   Query: {
     question: questionResolver,
@@ -333,6 +338,7 @@ module.exports = {
     changeReviewerAutomationStatus: changeReviewerAutomationStatusResolver,
     changeArchiveStatusForItems: changeArchiveStatusForItemsResolver,
     editQuestion: editQuestionResolver,
+    upgradeEditor: upgradeEditorResolver,
   },
   Subscription: {
     dashboardUpdate: {

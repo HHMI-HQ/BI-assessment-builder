@@ -34,8 +34,14 @@ import {
   VisuallyHiddenElement,
   AddToListPopup,
 } from '../common'
-import { REVIEWER_STATUSES, extractDocumentText } from '../../utilities'
+import {
+  REVIEWER_STATUSES,
+  extractDocumentText,
+  // extractNode,
+  // applyNodeFeedback,
+} from '../../utilities'
 import AssignAuthorButton from './AssignAuthorButton'
+// import FeedbackModal from './FeedbackModal'
 import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
@@ -564,6 +570,8 @@ const Question = props => {
     setPreview,
     reviewResponses,
     saveReview,
+    enhancedEditor,
+    upgradeEditor,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -582,6 +590,8 @@ const Question = props => {
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [currentReviewResponses, setCurrentReviewResponses] = useState({})
   const [reviewerIndex, setReviewerIndex] = useState(0)
+  // const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  // const [nodeContent, setNodeContent] = useState({})
 
   useEffect(() => {
     if (isInProduction && reviewerPool.length) {
@@ -1271,8 +1281,6 @@ const Question = props => {
 
         <Button
           aria-label="Submit"
-          // onClick={handleSubmitButtonClick}
-
           onClick={handleSubmit}
           title="Submit"
           type="primary"
@@ -1660,6 +1668,18 @@ const Question = props => {
           {!preview ? 'Preview' : 'Continue editing'}
         </StyledButton>
       )}
+      {!readOnly && !enhancedEditor && (
+        <StyledButton
+          onClick={() => {
+            setRefreshEditorContent(false)
+            upgradeEditor().then(() => {
+              setRefreshEditorContent(true)
+            })
+          }}
+        >
+          New editor
+        </StyledButton>
+      )}
       {!isRejected &&
         !reviewerView &&
         (editorView && isSubmitted ? RightAreaEditor : RightAreaAuthor)}
@@ -1820,6 +1840,46 @@ const Question = props => {
     }
   }
 
+  // const insertUpdatedFeedback = (nodeId, newFeedback) => {
+  //   const fullContent = waxRef.current.getContent()
+
+  //   const newContent = applyNodeFeedback(
+  //     fullContent,
+  //     initialMetadataValues.questionType,
+  //     nodeId,
+  //     newFeedback,
+  //   )
+
+  //   if (newContent) {
+  //     handleQuestionContentChange(newContent)
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     document.querySelectorAll('.edit-feedback[data-nodeid]').forEach(b => {
+  //       if (b.hasAttribute('hidden') && !readOnly) {
+  //         b.removeAttribute('hidden')
+  //         b.addEventListener('click', e => {
+  //           const nodeId =
+  //             e.target.tagName === 'BUTTON'
+  //               ? e.target.dataset.nodeid
+  //               : e.target.closest('button').dataset.nodeid
+
+  //           const node = extractNode(
+  //             waxRef.current.getContent(),
+  //             initialMetadataValues.questionType,
+  //             nodeId,
+  //           )
+
+  //           setNodeContent(node)
+  //           setShowFeedbackModal(true)
+  //         })
+  //       }
+  //     })
+  //   }, 500)
+  // }, [editorContent])
+
   // #region test submission controls
   const withFeedback =
     !(preview || reviewerView) || (showMetadata && facultyView)
@@ -1897,6 +1957,13 @@ const Question = props => {
           {isArchived && (
             <Ribbon status="error">This item has been archived.</Ribbon>
           )}
+          {/* <FeedbackModal
+            content={nodeContent}
+            onApplyFeedback={insertUpdatedFeedback}
+            onImageUpload={onImageUpload}
+            setShowModal={setShowFeedbackModal}
+            showModal={showFeedbackModal}
+          /> */}
           <PanelWrapper
             condition={false}
             editor={
@@ -1904,6 +1971,7 @@ const Question = props => {
                 complexItemSetId={complexItemSetId}
                 complexSetEditLink={complexSetEditLink}
                 content={withFeedback ? editorContent : testContent}
+                enhancedEditor={enhancedEditor}
                 innerRef={waxRef}
                 layout={preview || reviewerView ? TestModeLayout : HhmiLayout}
                 leadingContent={leadingContent}
@@ -2441,6 +2509,7 @@ Question.propTypes = {
   reviewSubmitted: PropTypes.bool,
   reviewerView: PropTypes.bool,
   initialMetadataValues: PropTypes.shape({
+    questionType: PropTypes.string,
     topics: PropTypes.arrayOf(
       PropTypes.shape({
         topic: PropTypes.string,
@@ -2560,6 +2629,8 @@ Question.propTypes = {
   setPreview: PropTypes.func,
   reviewResponses: PropTypes.shape(),
   saveReview: PropTypes.func,
+  enhancedEditor: PropTypes.bool,
+  upgradeEditor: PropTypes.func,
 }
 
 Question.defaultProps = {
@@ -2680,6 +2751,8 @@ Question.defaultProps = {
   setPreview: null,
   reviewResponses: {},
   saveReview: null,
+  enhancedEditor: null,
+  upgradeEditor: null,
 }
 
 export default Question
