@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
 import Wax from '../wax/Wax'
-import { config } from '../wax/config'
+import { config, hhmiConfig } from '../wax/config'
 
 // # region styled
 const EditorWrapper = styled.section`
@@ -57,10 +57,19 @@ const QuestionEditor = props => {
     refreshEditorContent,
     showFeedBack,
     testMode,
+    enhancedEditor,
   } = props
 
   const updateKey = useRef(0)
   const [customValues, setCustomValues] = useState({ showFeedBack, testMode })
+
+  const [waxConfig, setWaxConfig] = useState(
+    enhancedEditor ? hhmiConfig : config,
+  )
+
+  useEffect(() => {
+    enhancedEditor ? setWaxConfig(hhmiConfig) : setWaxConfig(config)
+  }, [enhancedEditor])
 
   useEffect(() => {
     if (refreshEditorContent) {
@@ -94,18 +103,22 @@ const QuestionEditor = props => {
     <EditorWrapper aria-label="Question editor">
       <EditorScrollContainer>
         <ComplexItemSetContext.Provider value={contextValue}>
-          <Wax
-            config={config}
-            // content={preserveLocalState ? editorContent : content}
-            content={content && Object.keys(content).length ? content : null}
-            customValues={customValues}
-            innerRef={innerRef}
-            key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
-            layout={layout}
-            onContentChange={!testMode ? onContentChange : () => {}}
-            onImageUpload={onImageUpload}
-            readOnly={readOnly}
-          />
+          {enhancedEditor !== null ? (
+            <Wax
+              config={waxConfig}
+              // content={preserveLocalState ? editorContent : content}
+              content={content && Object.keys(content).length ? content : null}
+              customValues={customValues}
+              innerRef={innerRef}
+              key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
+              layout={layout}
+              onContentChange={!testMode ? onContentChange : () => {}}
+              onImageUpload={onImageUpload}
+              readOnly={readOnly}
+            />
+          ) : (
+            <span>LOADING...............</span>
+          )}
         </ComplexItemSetContext.Provider>
       </EditorScrollContainer>
 
@@ -142,6 +155,7 @@ QuestionEditor.propTypes = {
   refreshEditorContent: PropTypes.bool,
   showFeedBack: PropTypes.bool,
   testMode: PropTypes.bool,
+  enhancedEditor: PropTypes.bool,
 }
 
 QuestionEditor.defaultProps = {
@@ -157,6 +171,7 @@ QuestionEditor.defaultProps = {
   refreshEditorContent: false,
   showFeedBack: false,
   testMode: false,
+  enhancedEditor: null,
 }
 
 export default QuestionEditor

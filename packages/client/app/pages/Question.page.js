@@ -62,12 +62,14 @@ import {
   GET_LISTS,
   GET_LISTS_OPTIONS,
   GET_COMPLEX_ITEM_SET,
+  UPGRADE_EDITOR,
 } from '../graphql'
 import {
   useMetadata,
   hasRole,
   hasGlobalRole,
   questionTypes,
+  newQuestionTypes,
   REVIEWER_STATUSES,
   flattenReviewerPool,
   flattenReviewerSearchResults,
@@ -878,6 +880,17 @@ const QuestionPage = props => {
       },
     ],
   })
+
+  const [upgradeEditorMutation] = useMutation(UPGRADE_EDITOR, {
+    refetchQueries: [
+      {
+        query: QUESTION,
+        variables: {
+          id,
+        },
+      },
+    ],
+  })
   // #endregion hooks
 
   // #region user roles
@@ -1016,9 +1029,9 @@ const QuestionPage = props => {
       ) {
         // warn that current content will be deleted
         // apply new question type starting data
-        const selectedType = questionTypes.find(
-          t => t.metadataValue === values.questionType,
-        )
+        const selectedType = version?.enhancedEditor
+          ? newQuestionTypes.find(t => t.metadataValue === values.questionType)
+          : questionTypes.find(t => t.metadataValue === values.questionType)
 
         handleEditorContentAutoSave(selectedType.startingData, false)
       }
@@ -1340,6 +1353,17 @@ const QuestionPage = props => {
     }
 
     filterGlobalTeamMembers({ variables })
+  }
+
+  const handleUpgradeEditor = async () => {
+    // eslint-disable-next-line no-console
+    console.log('UPGRADE EDITOR')
+
+    const variables = {
+      questionVersionId: version?.id,
+    }
+
+    return upgradeEditorMutation({ variables })
   }
 
   const persistQuestionTab = activeTab => {
@@ -1795,6 +1819,7 @@ const QuestionPage = props => {
             !isAuthor) ||
           isAdmin
         }
+        enhancedEditor={version?.enhancedEditor}
         existingLists={existingLists}
         facultyView={facultyView}
         handlingEditors={handlingEditors?.result || []}
@@ -1921,6 +1946,7 @@ const QuestionPage = props => {
         showReviewerChatTab={showReviewerChatTab}
         unreadMentions={unread}
         updated={version?.lastEdit}
+        upgradeEditor={handleUpgradeEditor}
         wordFileLoading={generateWordFileLoading}
       />
     </>

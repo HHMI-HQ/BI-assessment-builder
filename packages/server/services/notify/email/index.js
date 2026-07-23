@@ -211,15 +211,13 @@ const inviteReviewer = async context => {
 
     const content = `
 	<p>
-    You have been invited to review an item in the Assessment Builder. 
-    You must be logged in to the AB tool to see the item.
+    You have been invited to review an item in the Assessment Builder. You must be logged in to the AB tool to review the item.
 	</p>
 	<p>
-    Click on <a href="${link}">this link</a> to view the item and choose to accept or decline this review within the next seven days. 
+    Click on <a href="${link}">this link</a> to view the item and choose to accept or decline this review within the next seven days.
   </p>
   <p>
-    If you are able to review the item, after accepting it, click on <a href="https://biointeractive.jotform.com/242195353808057">this link</a> 
-    to complete your review. For additional information and resources about the review process, click on <a href="https://drive.google.com/drive/u/0/folders/18ARogadE6RwDQiR9CMoaR3DCzwuyUhBK">this link</a>. 
+    For additional information and resources about the review process, click on <a href="https://drive.google.com/drive/u/0/folders/18ARogadE6RwDQiR9CMoaR3DCzwuyUhBK">this link</a>. 
     We ask that reviews be completed within 14 days of acceptance. 
   </p>
   <p>Thank you for sharing your expertise with the community.</p>

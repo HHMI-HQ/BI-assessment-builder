@@ -30,6 +30,7 @@ const WaxWrapper = props => {
     readOnly,
     innerRef,
     customValues,
+    targetFormat,
   } = props
 
   if (!config || !layout) {
@@ -47,7 +48,7 @@ const WaxWrapper = props => {
       onChange={onContentChange}
       readonly={readOnly}
       ref={innerRef}
-      targetFormat="JSON"
+      targetFormat={targetFormat || 'JSON'}
       value={content}
     />
   )
@@ -66,6 +67,7 @@ WaxWrapper.propTypes = {
     PropTypes.shape({ current: PropTypes.shape() }),
   ]),
   customValues: PropTypes.shape(),
+  targetFormat: PropTypes.string,
 }
 
 WaxWrapper.defaultProps = {
@@ -78,6 +80,7 @@ WaxWrapper.defaultProps = {
   readOnly: false,
   innerRef: () => {},
   customValues: {},
+  targetFormat: null,
 }
 
 export default WaxWrapper

@@ -51,7 +51,11 @@ class Question extends BaseModel {
   static async insert(data, versionData, options = {}) {
     const question = await super.insert(data, options)
     await this.createNewVersion(
-      { questionId: question.id, ...versionData },
+      {
+        questionId: question.id,
+        ...versionData,
+        enhancedEditor: versionData?.enhanceEditor !== false,
+      },
       { trx: options.trx },
     )
     return question
@@ -133,6 +137,7 @@ class Question extends BaseModel {
         literatureAttribution,
         questionType,
         contentText,
+        enhancedEditor,
       } = previousVersions.result[0]
 
       return QuestionVersion.insert(
@@ -155,6 +160,7 @@ class Question extends BaseModel {
           inProduction: true,
           accepted: true,
           unpublished: false,
+          enhancedEditor,
         },
         { trx: options.trx },
       )

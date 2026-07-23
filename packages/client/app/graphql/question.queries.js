@@ -508,6 +508,7 @@ export const QUESTION = gql`
             }
           }
         }
+        enhancedEditor
       }
 
       authors {
@@ -882,6 +883,16 @@ export const EDIT_QUESTION = gql`
     ) {
       id
       editing
+    }
+  }
+`
+
+export const UPGRADE_EDITOR = gql`
+  mutation UpgradeEditor($questionVersionId: ID!) {
+    upgradeEditor(questionVersionId: $questionVersionId) {
+      id
+      content
+      enhancedEditor
     }
   }
 `
