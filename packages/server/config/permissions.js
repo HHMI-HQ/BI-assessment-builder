@@ -341,6 +341,28 @@ const isAdminOrEditor = rule()(async (_, __, ctx) => {
   return userIsAdmin || user.hasGlobalRole('editor')
 })
 
+const canUpgradeEditor = rule()(async (_, { questionVersionId }, ctx) => {
+  if (!ctx.userId) return false
+
+  const { User, Team } = require('@coko/server')
+  const { Question } = require('../models')
+  const user = await User.query().findById(ctx.userId)
+  const userIsAdmin = await user.hasGlobalRole('admin')
+
+  const question = await Question.query()
+    .leftJoin(
+      'question_versions',
+      'questions.id',
+      'question_versions.question_id',
+    )
+    .select('questions.id')
+    .findOne({ 'question_versions.id': questionVersionId })
+
+  const isQuestionAuthor = await isObjectAuthor(Team, user.id, question.id)
+
+  return isQuestionAuthor || userIsAdmin || user.hasGlobalRole('editor')
+})
+
 const isAdminOrEditorOrHE = rule()(async (_, __, ctx) => {
   if (!ctx.userId) return false
 
@@ -473,7 +495,7 @@ const permissions = {
     generateWordFile: isActive,
     generateQtiZip: isActive,
 
-    upgradeEditor: isAdminOrEditor,
+    upgradeEditor: canUpgradeEditor,
 
     // lists
     createList: isActive,

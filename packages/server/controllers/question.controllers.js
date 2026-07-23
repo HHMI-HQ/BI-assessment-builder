@@ -1456,7 +1456,7 @@ const createFeedback = text => ({
       content: [
         {
           type: 'text',
-          text,
+          text: text || ' ',
         },
       ],
     },
