@@ -301,13 +301,13 @@ class WaxToQTIConverter {
   }
 
   #multipleChoiceOptionHandler = (content, options) => {
-    const { id, correct, feedback } = content.attrs
+    const { id, correct /*, feedback */ } = content.attrs
     const { multipleChoiceGroupId } = options
 
     this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId].push({
       id,
       correct,
-      feedback,
+      // feedback,
     })
 
     return {
@@ -695,6 +695,24 @@ class WaxToQTIConverter {
   }
   // #endregion numerical
 
+  #feedbackPromptHandler = (content, options) => {
+    const { multipleChoiceGroupId } = options
+
+    if (multipleChoiceGroupId) {
+      const parsedContent = this.#contentParser(content.content)
+
+      const index = this.#correctAnswers.multipleChoiceSolutions[
+        multipleChoiceGroupId
+      ].findIndex((solution, i) => i > 0 && !solution.feedback)
+
+      this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId][
+        index
+      ].feedback = parsedContent
+    }
+
+    return []
+  }
+
   // #endregion question types
 
   #typeToHandlerMap = {
@@ -745,6 +763,8 @@ class WaxToQTIConverter {
     essay_answer: this.#essayAnswerHandler,
 
     numerical_answer_container: this.#numericalAnswerHandler,
+
+    feedback_prompt: this.#feedbackPromptHandler,
   }
 
   #findHandler = type => {
@@ -875,7 +895,8 @@ class WaxToQTIConverter {
 
           if (feedback) {
             modalFeedback.push({
-              p: `Option ${index + 1}: ${feedback}`,
+              // p: `Option ${index + 1}: ${feedback}`,
+              div: [{ p: `Option ${index + 1}:` }, { div: feedback }],
             })
           }
         })
@@ -1534,7 +1555,7 @@ class WaxToQTIConverter {
       // clean up resources folder if there are no assets (images) in it
       await fs.promises.readdir(`${dir}/resources/`).then(files => {
         if (files.length === 0) {
-          fs.rmdirSync(`${dir}/resources/`)
+          fs.rmSync(`${dir}/resources/`)
         }
       })
 
@@ -1606,7 +1627,7 @@ class WaxToQTIConverter {
       archive.directory(dir, false)
       await archive.finalize()
 
-      fs.rmdirSync(dir, { recursive: true, force: true })
+      fs.rmSync(dir, { recursive: true, force: true })
       return `${this.#id}.zip`
     } catch (e) {
       console.error(e)
