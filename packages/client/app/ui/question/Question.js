@@ -1106,13 +1106,14 @@ const Question = props => {
             onClick={() => {
               confirmUnpublish.destroy()
               onUnpublish()
-                .then(() =>
+                .then(() => {
                   showDialog(
                     'success',
                     'Item unpublished successfully',
                     'Item was unpublished and removed from Browse Items page.',
-                  ),
-                )
+                  )
+                  setPreview(false)
+                })
                 .catch(() =>
                   showDialog(
                     'error',
@@ -1405,7 +1406,7 @@ const Question = props => {
           searchLoading={searchHELoading}
         />
       )}
-      {isInProduction && (
+      {isInProduction && showProductionChatTab && (
         <StyledButton
           data-testid="publish-question-btn"
           onClick={toggleReviewForm}
@@ -1542,7 +1543,7 @@ const Question = props => {
             searchLoading={searchHELoading}
           />
         )}
-        {isInProduction && (
+        {isInProduction && showProductionChatTab && (
           <StyledButton
             data-testid="publish-question-btn"
             onClick={toggleReviewForm}
