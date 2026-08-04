@@ -32,8 +32,9 @@ class WaxToQTIConverter {
   #prepareAssessmentItem = null
   #prepareAssessmentTest = null
   #prepareManifest = null
+  #newEditor = false
 
-  constructor(questionVersions, exportId) {
+  constructor(questionVersions, exportId, newEditor) {
     this.#baseMessage = 'WaxToQTIConverter:'
 
     if (questionVersions.length > 0) {
@@ -62,6 +63,7 @@ class WaxToQTIConverter {
     this.#prepareAssessmentItem = prepareAssessmentItem
     this.#prepareAssessmentTest = prepareAssessmentTest
     this.#prepareManifest = prepareManifest
+    this.#newEditor = newEditor
   }
 
   #error = e => {
@@ -301,13 +303,13 @@ class WaxToQTIConverter {
   }
 
   #multipleChoiceOptionHandler = (content, options) => {
-    const { id, correct /*, feedback */ } = content.attrs
+    const { id, correct, feedback } = content.attrs
     const { multipleChoiceGroupId } = options
 
     this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId].push({
       id,
       correct,
-      // feedback,
+      feedback: this.#newEditor ? null : feedback,
     })
 
     return {
@@ -396,7 +398,7 @@ class WaxToQTIConverter {
     this.#correctAnswers.trueFalseSolutions[trueFalseGroupId].push({
       id,
       correct,
-      feedback,
+      feedback: this.#newEditor ? null : feedback,
     })
 
     return {
@@ -419,7 +421,7 @@ class WaxToQTIConverter {
 
     this.#correctAnswers.fillTheGapSolutions[id] = [
       {
-        feedback,
+        feedback: this.#newEditor ? null : feedback,
       },
     ]
 
@@ -696,18 +698,23 @@ class WaxToQTIConverter {
   // #endregion numerical
 
   #feedbackPromptHandler = (content, options) => {
-    const { multipleChoiceGroupId } = options
+    const { multipleChoiceGroupId, trueFalseGroupId, fillTheGapGroupId } =
+      options
+
+    const parsedContent = this.#contentParser(content.content)
 
     if (multipleChoiceGroupId) {
-      const parsedContent = this.#contentParser(content.content)
-
-      const index = this.#correctAnswers.multipleChoiceSolutions[
-        multipleChoiceGroupId
-      ].findIndex((solution, i) => i > 0 && !solution.feedback)
-
-      this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId][
-        index
-      ].feedback = parsedContent
+      this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId].find(
+        (solution, i) => i > 0 && !solution.feedback,
+      ).feedback = parsedContent
+    } else if (trueFalseGroupId) {
+      this.#correctAnswers.trueFalseSolutions[trueFalseGroupId].find(
+        (solution, i) => i > 0 && !solution.feedback,
+      ).feedback = parsedContent
+    } else if (fillTheGapGroupId) {
+      this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId].find(
+        (solution, i) => i > 0 && !solution.feedback,
+      ).feedback = parsedContent
     }
 
     return []
@@ -1555,7 +1562,7 @@ class WaxToQTIConverter {
       // clean up resources folder if there are no assets (images) in it
       await fs.promises.readdir(`${dir}/resources/`).then(files => {
         if (files.length === 0) {
-          fs.rmSync(`${dir}/resources/`)
+          fs.rmSync(`${dir}/resources/`, { recursive: true, force: true })
         }
       })
 
