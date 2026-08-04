@@ -551,19 +551,31 @@ class WaxToQTIConverter {
   // #endregion matching
 
   // #region multiple-dropdowns
-  #multipleDropdownContainerHandler = content => {
-    const responseIdentifier = content.attrs.id
-    const { feedback } = content.attrs
+  #multipleDropdownWrapperHandler = content => {
+    const { id } = content.attrs
 
-    this.#correctAnswers.multipleDropdownSolutions[responseIdentifier] = [
+    return {
+      div: this.#contentParser(content.content, {
+        multipleDropdownGroupId: id,
+      }),
+    }
+  }
+
+  #multipleDropdownContainerHandler = (content, options) => {
+    const { id } = content.attrs
+    const { feedback } = content.attrs
+    const { multipleDropdownGroupId } = options
+    const groupId = this.#newEditor ? multipleDropdownGroupId : id
+
+    this.#correctAnswers.multipleDropdownSolutions[groupId] = [
       {
-        feedback,
+        feedback: this.#newEditor ? null : feedback,
       },
     ]
 
     return {
       div: this.#contentParser(content.content, {
-        multipleDropdownGroupId: responseIdentifier,
+        multipleDropdownGroupId: groupId,
       }),
     }
   }
@@ -648,8 +660,20 @@ class WaxToQTIConverter {
   // #endregion essay
 
   // #region numerical
+  #numericalWrapperHandler = content => {
+    const { id } = content.attrs
+
+    return {
+      div: this.#contentParser(content.content, {
+        numericalGroupId: id,
+      }),
+    }
+  }
+
   #numericalAnswerHandler = (content, options) => {
-    const responseIdentifier = content.attrs.id
+    const { id } = content.attrs
+    const { numericalGroupId } = options
+    const groupdId = this.#newEditor ? numericalGroupId : id
 
     // eslint-disable-next-line no-unused-vars
     const {
@@ -660,7 +684,7 @@ class WaxToQTIConverter {
       answersExact: { exactAnswer, marginError } = {},
     } = content.attrs
 
-    this.#correctAnswers.numericalSolutions[responseIdentifier] = {
+    this.#correctAnswers.numericalSolutions[groupdId] = {
       answerType,
       preciseAnswer,
       maxAnswer,
@@ -668,7 +692,7 @@ class WaxToQTIConverter {
       exactAnswer,
       marginError,
     }
-    this.#correctAnswers.numericalFeedback = feedback
+    this.#correctAnswers.numericalFeedback = this.#newEditor ? null : feedback
 
     return [
       {
@@ -682,7 +706,7 @@ class WaxToQTIConverter {
               },
               {
                 div: this.#contentParser(content.content, {
-                  numericalGroupId: responseIdentifier,
+                  numericalGroupId: groupdId,
                 }),
               },
             ],
@@ -693,7 +717,7 @@ class WaxToQTIConverter {
         response_str: [
           {
             _attr: {
-              ident: responseIdentifier,
+              ident: groupdId,
               rcardinality: 'Single',
             },
           },
@@ -708,7 +732,7 @@ class WaxToQTIConverter {
                 response_label: [
                   {
                     _attr: {
-                      ident: `answer-${responseIdentifier}`,
+                      ident: `answer-${groupdId}`,
                     },
                   },
                 ],
@@ -727,6 +751,8 @@ class WaxToQTIConverter {
       trueFalseGroupId,
       fillTheGapGroupId,
       matchingGroupId,
+      multipleDropdownGroupId,
+      numericalGroupId,
     } = options
 
     const parsedContent = this.#contentParser(content.content)
@@ -747,6 +773,12 @@ class WaxToQTIConverter {
       this.#correctAnswers.matchingSolutions[matchingGroupId].find(
         solution => solution.feedback === null,
       ).feedback = parsedContent
+    } else if (multipleDropdownGroupId) {
+      this.#correctAnswers.multipleDropdownSolutions[
+        multipleDropdownGroupId
+      ].find(solution => solution.feedback === null).feedback = parsedContent
+    } else if (numericalGroupId) {
+      this.#correctAnswers.numericalFeedback = parsedContent
     }
 
     return []
@@ -795,6 +827,7 @@ class WaxToQTIConverter {
     matching_container: this.#matchingContainerHanlder,
     matching_option: this.#matchingOptionHandler,
 
+    multiple_drop_down_wrapper: this.#multipleDropdownWrapperHandler,
     multiple_drop_down_container: this.#multipleDropdownContainerHandler,
     multiple_drop_down_option: this.#multipleDropdownOptionHandler,
 
@@ -803,6 +836,7 @@ class WaxToQTIConverter {
     essay_prompt: this.#essayFeedbackHandler,
     essay_answer: this.#essayAnswerHandler,
 
+    numerical_wrapper: this.#numericalWrapperHandler,
     numerical_answer_container: this.#numericalAnswerHandler,
 
     feedback_prompt: this.#feedbackPromptHandler,
