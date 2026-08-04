@@ -427,10 +427,11 @@ class WaxToQTIConverter {
   }
 
   #fillTheGapContainerHandler = (content, options) => {
-    const { feedback } = content.attrs
+    const { feedback, id } = content.attrs
     const { fillTheGapGroupId } = options
+    const groupdId = this.#newEditor ? fillTheGapGroupId : id
 
-    this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId] = [
+    this.#correctAnswers.fillTheGapSolutions[groupdId] = [
       {
         feedback: this.#newEditor ? null : feedback,
       },
@@ -439,7 +440,7 @@ class WaxToQTIConverter {
     return {
       div: this.#contentParser(content.content, {
         feedback,
-        fillTheGapGroupId,
+        fillTheGapGroupId: groupdId,
       }),
     }
   }
@@ -467,14 +468,26 @@ class WaxToQTIConverter {
   // #endregion fill-the-gap
 
   // #region matching
-  #matchingContainerHanlder = content => {
-    const responseIdentifier = content.attrs.id
+  #matchingWrapperHanlder = content => {
+    const { id } = content.attrs
+
+    return {
+      div: this.#contentParser(content.content, {
+        matchingGroupId: id,
+      }),
+    }
+  }
+
+  #matchingContainerHanlder = (content, options) => {
     const matchingOptions = content.attrs.options
     const { feedback } = content.attrs
+    const { matchingGroupId } = options
+    const { id } = content.attrs
+    const groupdId = this.#newEditor ? matchingGroupId : id
 
-    this.#correctAnswers.matchingSolutions[responseIdentifier] = [
+    this.#correctAnswers.matchingSolutions[groupdId] = [
       {
-        feedback,
+        feedback: this.#newEditor ? null : feedback,
       },
     ]
 
@@ -484,7 +497,7 @@ class WaxToQTIConverter {
           _attr: {
             maxAssociations: content.content.length - 1,
             minAssociations: content.content.length - 1,
-            responseIdentifier,
+            responseIdentifier: groupdId,
             shuffle: 'false',
           },
         },
@@ -492,7 +505,7 @@ class WaxToQTIConverter {
         {
           simpleMatchSet: [
             ...this.#contentParser(content.content[0].content, {
-              matchingGroupId: responseIdentifier,
+              matchingGroupId: groupdId,
             }),
           ],
         },
@@ -709,8 +722,12 @@ class WaxToQTIConverter {
   // #endregion numerical
 
   #feedbackPromptHandler = (content, options) => {
-    const { multipleChoiceGroupId, trueFalseGroupId, fillTheGapGroupId } =
-      options
+    const {
+      multipleChoiceGroupId,
+      trueFalseGroupId,
+      fillTheGapGroupId,
+      matchingGroupId,
+    } = options
 
     const parsedContent = this.#contentParser(content.content)
 
@@ -724,6 +741,10 @@ class WaxToQTIConverter {
       ).feedback = parsedContent
     } else if (fillTheGapGroupId) {
       this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId].find(
+        solution => solution.feedback === null,
+      ).feedback = parsedContent
+    } else if (matchingGroupId) {
+      this.#correctAnswers.matchingSolutions[matchingGroupId].find(
         solution => solution.feedback === null,
       ).feedback = parsedContent
     }
@@ -770,6 +791,7 @@ class WaxToQTIConverter {
     fill_the_gap_container: this.#fillTheGapContainerHandler,
     fill_the_gap: this.#fillTheGapHandler,
 
+    matching_wrapper: this.#matchingWrapperHanlder,
     matching_container: this.#matchingContainerHanlder,
     matching_option: this.#matchingOptionHandler,
 
