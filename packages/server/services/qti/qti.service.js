@@ -416,10 +416,21 @@ class WaxToQTIConverter {
   // #endregion multiple-choice
 
   // #region fill-the-gap
-  #fillTheGapContainerHandler = content => {
-    const { id, feedback } = content.attrs
+  #fillTheGapWrapperHandler = content => {
+    const { id } = content.attrs
 
-    this.#correctAnswers.fillTheGapSolutions[id] = [
+    return {
+      div: this.#contentParser(content.content, {
+        fillTheGapGroupId: id,
+      }),
+    }
+  }
+
+  #fillTheGapContainerHandler = (content, options) => {
+    const { feedback } = content.attrs
+    const { fillTheGapGroupId } = options
+
+    this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId] = [
       {
         feedback: this.#newEditor ? null : feedback,
       },
@@ -427,8 +438,8 @@ class WaxToQTIConverter {
 
     return {
       div: this.#contentParser(content.content, {
-        fillTheGapGroupId: id,
         feedback,
+        fillTheGapGroupId,
       }),
     }
   }
@@ -713,7 +724,7 @@ class WaxToQTIConverter {
       ).feedback = parsedContent
     } else if (fillTheGapGroupId) {
       this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId].find(
-        (solution, i) => i > 0 && !solution.feedback,
+        solution => solution.feedback === null,
       ).feedback = parsedContent
     }
 
@@ -755,6 +766,7 @@ class WaxToQTIConverter {
     question_node_true_false_single: this.#trueFalseQuestionHandler,
     true_false_single_correct: this.#trueFalseOptionHandler,
 
+    fill_the_gap_wrapper: this.#fillTheGapWrapperHandler,
     fill_the_gap_container: this.#fillTheGapContainerHandler,
     fill_the_gap: this.#fillTheGapHandler,
 
