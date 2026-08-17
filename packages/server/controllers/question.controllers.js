@@ -953,6 +953,7 @@ const generateWordFile = async (questionVersionId, options = {}) => {
     const { showFeedback, showMetadata } = options
 
     let version = await QuestionVersion.findById(questionVersionId)
+    const { enhancedEditor } = version
     version = await extractCourseLabels(version)
 
     const tempFolderPath = path.join(__dirname, '..', 'tmp')
@@ -1007,6 +1008,7 @@ const generateWordFile = async (questionVersionId, options = {}) => {
       {
         showFeedback,
         showMetadata,
+        newEditor: enhancedEditor,
       },
     )
 

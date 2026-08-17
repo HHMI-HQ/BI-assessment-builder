@@ -97,6 +97,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       question_node_true_false_single: this.trueFalseQuestionHandler,
       true_false_single_correct: this.trueFalseOptionHandler,
 
+      fill_the_gap_wrapper: this.fillTheGapWrapperHandler,
       fill_the_gap_container: this.fillTheGapContainerHandler,
       fill_the_gap: this.fillTheGapHandler,
 
@@ -446,7 +447,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       trueFalseGroupId
     ].push({
       correct,
-      feedback,
+      feedback: this.newEditor ? null : feedback,
     })
 
     const { content } = cloneDeep(trueFalseOption)
@@ -465,12 +466,26 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   // #endregion true-false
 
   // #region fill-the-gap
-  fillTheGapContainerHandler = container => {
-    const groupId = container.attrs.id
+  fillTheGapWrapperHandler = node => {
+    const { id } = node.attrs
+
+    return [
+      ...this.contentParser(node.content, {
+        fillTheGapGroupId: id,
+      }),
+    ]
+  }
+
+  fillTheGapContainerHandler = (container, options) => {
+    const { id, feedback } = container.attrs
+    const { fillTheGapGroupId } = options
+
+    const groupId = this.newEditor ? fillTheGapGroupId : id
+
     this.questionReference[this.questionCounter].fillTheGapSolutions[groupId] =
       []
     this.questionReference[this.questionCounter].fillTheGapFeedback[groupId] =
-      container.attrs.feedback
+      this.newEditor ? null : feedback
 
     return [
       new Paragraph({ children: [] }),
@@ -730,8 +745,8 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
     const {
       multipleChoiceGroupId,
-      // trueFalseGroupId,
-      // fillTheGapGroupId,
+      trueFalseGroupId,
+      fillTheGapGroupId,
       // matchingGroupId,
       // multipleDropdownGroupId,
       // numericalGroupId,
@@ -741,6 +756,14 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       this.questionReference[this.questionCounter].multipleChoiceSolutions[
         multipleChoiceGroupId
       ].find(solution => !solution.feedback).feedback = parsedContent
+    } else if (trueFalseGroupId) {
+      this.questionReference[this.questionCounter].trueFalseSolutions[
+        trueFalseGroupId
+      ].find(solution => !solution.feedback).feedback = parsedContent
+    } else if (fillTheGapGroupId) {
+      this.questionReference[this.questionCounter].fillTheGapFeedback[
+        fillTheGapGroupId
+      ] = parsedContent
     }
   }
 
@@ -862,14 +885,14 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
             },
           })
 
-          const feedback = new Paragraph({
-            children: [new TextRun({ text: option.feedback })],
-            indent: {
-              left: convertMillimetersToTwip(7),
-            },
-          })
+          // const feedback = new Paragraph({
+          //   children: [new TextRun({ text: option.feedback })],
+          //   indent: {
+          //     left: convertMillimetersToTwip(7),
+          //   },
+          // })
 
-          listContent = listContent.concat([isCorrect, feedback])
+          listContent = listContent.concat([isCorrect, ...option.feedback])
         })
 
         content = content.concat(listContent)
@@ -925,15 +948,15 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        const feedbackParagraph = new Paragraph({
-          children: [
-            new TextRun({
-              text: question.fillTheGapFeedback[groupId],
-            }),
-          ],
-        })
+        // const feedbackParagraph = new Paragraph({
+        //   children: [
+        //     new TextRun({
+        //       text: question.fillTheGapFeedback[groupId],
+        //     }),
+        //   ],
+        // })
 
-        listContent.push(feedbackParagraph)
+        listContent.push(...question.fillTheGapFeedback[groupId])
 
         content = content.concat(listContent)
       })
