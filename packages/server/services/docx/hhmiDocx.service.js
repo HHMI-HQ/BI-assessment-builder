@@ -110,6 +110,8 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       essay_prompt: this.essayFeedbackHandler,
       essay_answer: this.essayAnswerHandler,
 
+      feedback_prompt: this.feedbackHandler,
+
       question_list: this.questionListHandler,
       question: this.questionHandler,
       leading_content: this.leadingContentHandler,
@@ -273,6 +275,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
     this.showFeedback = options.showFeedback || false
     this.showMetadata = options.showMetadata || false
+    this.newEditor = options.newEditor || false
 
     // initialize an empty array if we're dealing with a question list (questionListHandler will add an object of references for each question)
     // otherwise, initialize array with 1 element
@@ -362,7 +365,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       multipleChoiceGroupId
     ].push({
       correct,
-      feedback,
+      feedback: this.newEditor ? null : feedback,
     })
 
     const mcOptions = []
@@ -722,6 +725,25 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   // #endregion numerical
 
   // #region feedback
+  feedbackHandler = (node, options) => {
+    const parsedContent = this.contentParser(node.content)
+
+    const {
+      multipleChoiceGroupId,
+      // trueFalseGroupId,
+      // fillTheGapGroupId,
+      // matchingGroupId,
+      // multipleDropdownGroupId,
+      // numericalGroupId,
+    } = options
+
+    if (multipleChoiceGroupId) {
+      this.questionReference[this.questionCounter].multipleChoiceSolutions[
+        multipleChoiceGroupId
+      ].find(solution => !solution.feedback).feedback = parsedContent
+    }
+  }
+
   feedbackParser = () => {
     let content = [
       new Paragraph({
@@ -788,14 +810,14 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
             },
           })
 
-          const feedback = new Paragraph({
-            children: [new TextRun({ text: option.feedback })],
-            indent: {
-              left: convertMillimetersToTwip(7),
-            },
-          })
+          // const feedback = new Paragraph({
+          //   children: [...option.feedback], // [new TextRun({ text: option.feedback })],
+          //   indent: {
+          //     left: convertMillimetersToTwip(7),
+          //   },
+          // })
 
-          listContent = listContent.concat([isCorrect, feedback])
+          listContent = listContent.concat([isCorrect, ...option.feedback])
         })
 
         content = content.concat(listContent)
