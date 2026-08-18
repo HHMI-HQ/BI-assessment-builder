@@ -1,5 +1,4 @@
 const cloneDeep = require('lodash/cloneDeep')
-const { startCase, capitalize } = require('lodash')
 
 const {
   AlignmentType,
@@ -101,8 +100,10 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       fill_the_gap_container: this.fillTheGapContainerHandler,
       fill_the_gap: this.fillTheGapHandler,
 
+      matching_wrapper: this.matchingWrapperHanlder,
       matching_container: this.matchingContainerHanlder,
 
+      multiple_drop_down_wrapper: this.multipleDropdownWrapperHandler,
       multiple_drop_down_container: this.multipleDropdownContainerHandler,
       multiple_drop_down_option: this.multipleDropdownOptionHandler,
 
@@ -116,6 +117,8 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       question_list: this.questionListHandler,
       question: this.questionHandler,
       leading_content: this.leadingContentHandler,
+
+      numerical_wrapper: this.numericalWrapperHandler,
       numerical_answer_container: this.numericalAnswerContainerHandler,
     }
 
@@ -518,10 +521,23 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   // #endregion fill-the-gap
 
   // #region matching
-  matchingContainerHanlder = node => {
-    const { id, options, feedback } = node.attrs
-    this.questionReference[this.questionCounter].matchingSolutions[id] = []
-    this.questionReference[this.questionCounter].matchingFeedback[id] = feedback
+  matchingWrapperHanlder = content => {
+    const { id } = content.attrs
+
+    return [
+      ...this.contentParser(content.content, {
+        matchingGroupId: id,
+      }),
+    ]
+  }
+
+  matchingContainerHanlder = (node, options) => {
+    const { id, options: answers, feedback } = node.attrs
+    const { matchingGroupId } = options
+    const groupId = this.newEditor ? matchingGroupId : id
+    this.questionReference[this.questionCounter].matchingSolutions[groupId] = []
+    this.questionReference[this.questionCounter].matchingFeedback[groupId] =
+      this.newEditor ? null : feedback
 
     const questionRuns = []
     const optionRuns = []
@@ -537,13 +553,13 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
       // capture solution
       const correctId = questionNode.attrs.correct
-      const optionPosition = options.findIndex(o => o.value === correctId)
+      const optionPosition = answers.findIndex(o => o.value === correctId)
 
       const optionPositionAsLetter = convertListPositionToLetter(optionPosition)
 
-      this.questionReference[this.questionCounter].matchingSolutions[id].push(
-        optionPositionAsLetter,
-      )
+      this.questionReference[this.questionCounter].matchingSolutions[
+        groupId
+      ].push(optionPositionAsLetter)
 
       // create content
       questionRuns.push(
@@ -563,7 +579,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     // then create all possible answers
     this.listInstance += 1
 
-    options.forEach(option => {
+    answers.forEach(option => {
       optionRuns.push(
         this.paragraphHandler(
           {
@@ -588,28 +604,44 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   // #endregion matching
 
   // #region mulitple-dropdown
-  multipleDropdownContainerHandler = node => {
+  multipleDropdownWrapperHandler = node => {
+    const { id } = node.attrs
+
+    return [
+      ...this.contentParser(node.content, {
+        multipleDropdownGroupId: id,
+      }),
+    ]
+  }
+
+  multipleDropdownContainerHandler = (node, options) => {
     const { id, feedback } = node.attrs
-    this.questionReference[this.questionCounter].multipleDropdownCounter[id] =
-      -1
-    this.questionReference[this.questionCounter].multipleDropdownOptions[id] =
-      []
-    this.questionReference[this.questionCounter].multipleDropdownSolutions[id] =
-      []
-    this.questionReference[this.questionCounter].multipleDropdownFeedback[id] =
-      feedback
+    const { multipleDropdownGroupId } = options
+    const groupdId = this.newEditor ? multipleDropdownGroupId : id
+    this.questionReference[this.questionCounter].multipleDropdownCounter[
+      groupdId
+    ] = -1
+    this.questionReference[this.questionCounter].multipleDropdownOptions[
+      groupdId
+    ] = []
+    this.questionReference[this.questionCounter].multipleDropdownSolutions[
+      groupdId
+    ] = []
+    this.questionReference[this.questionCounter].multipleDropdownFeedback[
+      groupdId
+    ] = this.newEditor ? null : feedback
 
     // this line will go through the content and will populate this.questionReference[this.questionCounter].multipleDropdownOptions[id]
-    const mainText = this.contentParser(node.content, { containerId: id })
+    const mainText = this.contentParser(node.content, { containerId: groupdId })
 
     const optionsHeader = new Paragraph({
       children: [new TextRun({ text: 'Options:', bold: true })],
     })
 
     // use now populated this.questionReference[this.questionCounter].multipleDropdownOptions[id]
-    const options = this.questionReference[
+    const answers = this.questionReference[
       this.questionCounter
-    ].multipleDropdownOptions[id].map(nodeOptions => {
+    ].multipleDropdownOptions[groupdId].map(nodeOptions => {
       const value = nodeOptions.map(o => o.label).join(', ')
 
       return this.paragraphHandler(
@@ -629,7 +661,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       )
     })
 
-    return [...mainText, optionsHeader, ...options]
+    return [...mainText, optionsHeader, ...answers]
   }
 
   multipleDropdownOptionHandler = (node, options) => {
@@ -710,7 +742,17 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   // #endregion essay
 
   // #region numerical
-  numericalAnswerContainerHandler = numericalQuestion => {
+  numericalWrapperHandler = node => {
+    const { id } = node.attrs
+
+    return [
+      ...this.contentParser(node.content, {
+        numericalGroupId: id,
+      }),
+    ]
+  }
+
+  numericalAnswerContainerHandler = (numericalQuestion, options) => {
     const {
       id,
       answerType,
@@ -720,20 +762,23 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       feedback,
     } = numericalQuestion.attrs
 
+    const { numericalGroupId } = options
+    const groupId = this.newEditor ? numericalGroupId : id
+
     let answers = []
 
     if (answerType === 'exactAnswer') {
-      answers = answersExact
+      answers = { ...answersExact, answerType }
     } else if (answerType === 'rangeAnswer') {
-      answers = answersRange
+      answers = { ...answersRange, answerType }
     } else if (answerType === 'preciseAnswer') {
-      answers = answersPrecise
+      answers = { ...answersPrecise, answerType }
     }
 
-    this.questionReference[this.questionCounter].numericalSolutions[id] =
+    this.questionReference[this.questionCounter].numericalSolutions[groupId] =
       answers
-    this.questionReference[this.questionCounter].numericalFeedback[id] =
-      feedback
+    this.questionReference[this.questionCounter].numericalFeedback[groupId] =
+      this.newEditor ? null : feedback
 
     return [...this.contentParser(numericalQuestion.content)]
   }
@@ -747,9 +792,9 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       multipleChoiceGroupId,
       trueFalseGroupId,
       fillTheGapGroupId,
-      // matchingGroupId,
-      // multipleDropdownGroupId,
-      // numericalGroupId,
+      matchingGroupId,
+      multipleDropdownGroupId,
+      numericalGroupId,
     } = options
 
     if (multipleChoiceGroupId) {
@@ -763,6 +808,18 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     } else if (fillTheGapGroupId) {
       this.questionReference[this.questionCounter].fillTheGapFeedback[
         fillTheGapGroupId
+      ] = parsedContent
+    } else if (matchingGroupId) {
+      this.questionReference[this.questionCounter].matchingFeedback[
+        matchingGroupId
+      ] = parsedContent
+    } else if (multipleDropdownGroupId) {
+      this.questionReference[this.questionCounter].multipleDropdownFeedback[
+        multipleDropdownGroupId
+      ] = parsedContent
+    } else if (numericalGroupId) {
+      this.questionReference[this.questionCounter].numericalFeedback[
+        numericalGroupId
       ] = parsedContent
     }
   }
@@ -1006,15 +1063,15 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        const feedbackParagraph = new Paragraph({
-          children: [
-            new TextRun({
-              text: question.matchingFeedback[groupId],
-            }),
-          ],
-        })
+        // const feedbackParagraph = new Paragraph({
+        //   children: [
+        //     new TextRun({
+        //       text: question.matchingFeedback[groupId],
+        //     }),
+        //   ],
+        // })
 
-        listContent.push(feedbackParagraph)
+        listContent.push(...question.matchingFeedback[groupId])
 
         content = content.concat(listContent)
       })
@@ -1065,15 +1122,15 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        const feedbackParagraph = new Paragraph({
-          children: [
-            new TextRun({
-              text: question.multipleDropdownFeedback[groupId],
-            }),
-          ],
-        })
+        // const feedbackParagraph = new Paragraph({
+        //   children: [
+        //     new TextRun({
+        //       text: question.multipleDropdownFeedback[groupId],
+        //     }),
+        //   ],
+        // })
 
-        listContent.push(feedbackParagraph)
+        listContent.push(...question.multipleDropdownFeedback[groupId])
 
         content = content.concat(listContent)
       })
@@ -1106,27 +1163,85 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           )
         }
 
-        Object.entries(answers).forEach(([key, value]) => {
-          const solution = new Paragraph({
-            children: [
-              new TextRun({
-                text: `${capitalize(startCase(key))}: ${value}`,
+        let numericalSolutions
+
+        switch (answers.answerType) {
+          case 'exactAnswer':
+            numericalSolutions = [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Exact answer: ${answers.exactAnswer}`,
+                  }),
+                ],
               }),
-            ],
-          })
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Accepted answer range: ${
+                      parseFloat(answers.exactAnswer) -
+                      (parseFloat(answers.exactAnswer) *
+                        parseFloat(answers.marginError)) /
+                        100
+                    } - ${
+                      parseFloat(answers.exactAnswer) +
+                      (parseFloat(answers.exactAnswer) *
+                        parseFloat(answers.marginError)) /
+                        100
+                    }`,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Margin of error: ${answers.marginError}%`,
+                  }),
+                ],
+              }),
+            ]
+            break
 
-          listContent.push(solution)
-        })
+          case 'rangeAnswer':
+            numericalSolutions = [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Accepted answer range: ${answers.minAnswer} - ${answers.maxAnswer}`,
+                  }),
+                ],
+              }),
+            ]
 
-        const feedbacknumerical = new Paragraph({
-          children: [
-            new TextRun({
-              text: question.numericalFeedback[groupId],
-            }),
-          ],
-        })
+            break
 
-        listContent.push(feedbacknumerical)
+          case 'preciseAnswer':
+            numericalSolutions = [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Precise answer: ${answers.preciseAnswer}`,
+                  }),
+                ],
+              }),
+            ]
+
+            break
+
+          default:
+            break
+        }
+
+        listContent.push(...numericalSolutions)
+        // const feedbacknumerical = new Paragraph({
+        //   children: [
+        //     new TextRun({
+        //       text: question.numericalFeedback[groupId],
+        //     }),
+        //   ],
+        // })
+
+        listContent.push(...question.numericalFeedback[groupId])
 
         content = content.concat(listContent)
       })
