@@ -287,7 +287,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         ? []
         : [
             {
-              newEditor: doc.newEditor,
+              newEditor: metadata.newEditor,
 
               multipleChoiceSolutions: {},
               trueFalseSolutions: {},
@@ -1623,7 +1623,9 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         questionsIndex += 1
 
         this.questionReference.push({
-          newEditor: item.newEditor,
+          newEditor: this.metadata.find(
+            m => m.questionId === clonedItem.attrs.questionId,
+          ).newEditor,
 
           multipleChoiceSolutions: {},
           trueFalseSolutions: {},
