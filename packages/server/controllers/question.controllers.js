@@ -980,6 +980,7 @@ const generateWordFile = async (questionVersionId, options = {}) => {
       // prepend content from complex item set (if there is one) to the document
       {
         type: 'doc',
+        newEditor: enhancedEditor,
         content: [
           ...(complexItemSet ? complexItemSet.leadingContent.content : []),
           ...version.content.content,
@@ -1008,7 +1009,6 @@ const generateWordFile = async (questionVersionId, options = {}) => {
       {
         showFeedback,
         showMetadata,
-        newEditor: enhancedEditor,
       },
     )
 

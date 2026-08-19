@@ -279,7 +279,6 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
     this.showFeedback = options.showFeedback || false
     this.showMetadata = options.showMetadata || false
-    this.newEditor = options.newEditor || false
 
     // initialize an empty array if we're dealing with a question list (questionListHandler will add an object of references for each question)
     // otherwise, initialize array with 1 element
@@ -288,6 +287,8 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         ? []
         : [
             {
+              newEditor: doc.newEditor,
+
               multipleChoiceSolutions: {},
               trueFalseSolutions: {},
 
@@ -369,7 +370,9 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       multipleChoiceGroupId
     ].push({
       correct,
-      feedback: this.newEditor ? null : feedback,
+      feedback: this.questionReference[this.questionCounter].newEditor
+        ? null
+        : feedback,
     })
 
     const mcOptions = []
@@ -450,7 +453,9 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
       trueFalseGroupId
     ].push({
       correct,
-      feedback: this.newEditor ? null : feedback,
+      feedback: this.questionReference[this.questionCounter].newEditor
+        ? null
+        : feedback,
     })
 
     const { content } = cloneDeep(trueFalseOption)
@@ -483,12 +488,14 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     const { id, feedback } = container.attrs
     const { fillTheGapGroupId } = options
 
-    const groupId = this.newEditor ? fillTheGapGroupId : id
+    const groupId = this.questionReference[this.questionCounter].newEditor
+      ? fillTheGapGroupId
+      : id
 
     this.questionReference[this.questionCounter].fillTheGapSolutions[groupId] =
       []
     this.questionReference[this.questionCounter].fillTheGapFeedback[groupId] =
-      this.newEditor ? null : feedback
+      this.questionReference[this.questionCounter].newEditor ? null : feedback
 
     return [
       new Paragraph({ children: [] }),
@@ -534,10 +541,14 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   matchingContainerHanlder = (node, options) => {
     const { id, options: answers, feedback } = node.attrs
     const { matchingGroupId } = options
-    const groupId = this.newEditor ? matchingGroupId : id
+
+    const groupId = this.questionReference[this.questionCounter].newEditor
+      ? matchingGroupId
+      : id
+
     this.questionReference[this.questionCounter].matchingSolutions[groupId] = []
     this.questionReference[this.questionCounter].matchingFeedback[groupId] =
-      this.newEditor ? null : feedback
+      this.questionReference[this.questionCounter].newEditor ? null : feedback
 
     const questionRuns = []
     const optionRuns = []
@@ -617,7 +628,11 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
   multipleDropdownContainerHandler = (node, options) => {
     const { id, feedback } = node.attrs
     const { multipleDropdownGroupId } = options
-    const groupdId = this.newEditor ? multipleDropdownGroupId : id
+
+    const groupdId = this.questionReference[this.questionCounter].newEditor
+      ? multipleDropdownGroupId
+      : id
+
     this.questionReference[this.questionCounter].multipleDropdownCounter[
       groupdId
     ] = -1
@@ -629,7 +644,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     ] = []
     this.questionReference[this.questionCounter].multipleDropdownFeedback[
       groupdId
-    ] = this.newEditor ? null : feedback
+    ] = this.questionReference[this.questionCounter].newEditor ? null : feedback
 
     // this line will go through the content and will populate this.questionReference[this.questionCounter].multipleDropdownOptions[id]
     const mainText = this.contentParser(node.content, { containerId: groupdId })
@@ -763,7 +778,10 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     } = numericalQuestion.attrs
 
     const { numericalGroupId } = options
-    const groupId = this.newEditor ? numericalGroupId : id
+
+    const groupId = this.questionReference[this.questionCounter].newEditor
+      ? numericalGroupId
+      : id
 
     let answers = []
 
@@ -778,7 +796,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
     this.questionReference[this.questionCounter].numericalSolutions[groupId] =
       answers
     this.questionReference[this.questionCounter].numericalFeedback[groupId] =
-      this.newEditor ? null : feedback
+      this.questionReference[this.questionCounter].newEditor ? null : feedback
 
     return [...this.contentParser(numericalQuestion.content)]
   }
@@ -890,7 +908,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
             },
           })
 
-          if (this.newEditor) {
+          if (question.newEditor) {
             listContent = listContent.concat([isCorrect, ...option.feedback])
           } else {
             const feedback = new Paragraph({
@@ -946,7 +964,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
             },
           })
 
-          if (this.newEditor) {
+          if (question.newEditor) {
             listContent = listContent.concat([isCorrect, ...option.feedback])
           } else {
             const feedback = new Paragraph({
@@ -1015,7 +1033,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        if (this.newEditor) {
+        if (question.newEditor) {
           listContent.push(...question.fillTheGapFeedback[groupId])
         } else {
           const feedbackParagraph = new Paragraph({
@@ -1077,7 +1095,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        if (this.newEditor) {
+        if (question.newEditor) {
           listContent.push(...question.matchingFeedback[groupId])
         } else {
           const feedbackParagraph = new Paragraph({
@@ -1140,7 +1158,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        if (this.newEditor) {
+        if (question.newEditor) {
           listContent.push(...question.multipleDropdownFeedback[groupId])
         } else {
           const feedbackParagraph = new Paragraph({
@@ -1256,7 +1274,7 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
         listContent.push(...numericalSolutions)
 
-        if (this.newEditor) {
+        if (question.newEditor) {
           listContent.push(...question.numericalFeedback[groupId])
         } else {
           const feedbacknumerical = new Paragraph({
@@ -1605,6 +1623,8 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         questionsIndex += 1
 
         this.questionReference.push({
+          newEditor: item.newEditor,
+
           multipleChoiceSolutions: {},
           trueFalseSolutions: {},
 

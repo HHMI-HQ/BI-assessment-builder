@@ -347,6 +347,7 @@ const exportQuestionsToWordFile = async (
         } else {
           fullContent.content[0].content.push({
             type: 'question',
+            newEditor: version.enhancedEditor,
             content: [...version.content.content],
           })
 
