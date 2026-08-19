@@ -880,7 +880,6 @@ const generateQtiZip = async questionVersionId => {
         },
       ],
       questionVersion.questionId,
-      questionVersion.enhancedEditor,
     )
 
     const exportFilename = await qtiExporter.buildQtiExport()
