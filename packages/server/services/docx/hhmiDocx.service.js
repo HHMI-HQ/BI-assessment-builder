@@ -890,14 +890,18 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
             },
           })
 
-          // const feedback = new Paragraph({
-          //   children: [...option.feedback], // [new TextRun({ text: option.feedback })],
-          //   indent: {
-          //     left: convertMillimetersToTwip(7),
-          //   },
-          // })
+          if (this.newEditor) {
+            listContent = listContent.concat([isCorrect, ...option.feedback])
+          } else {
+            const feedback = new Paragraph({
+              children: [new TextRun({ text: option.feedback })],
+              indent: {
+                left: convertMillimetersToTwip(7),
+              },
+            })
 
-          listContent = listContent.concat([isCorrect, ...option.feedback])
+            listContent = listContent.concat([isCorrect, feedback])
+          }
         })
 
         content = content.concat(listContent)
@@ -942,12 +946,18 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
             },
           })
 
-          // const feedback = new Paragraph({
-          //   children: [new TextRun({ text: option.feedback })],
-          //   indent: {
-          //     left: convertMillimetersToTwip(7),
-          //   },
-          // })
+          if (this.newEditor) {
+            listContent = listContent.concat([isCorrect, ...option.feedback])
+          } else {
+            const feedback = new Paragraph({
+              children: [new TextRun({ text: option.feedback })],
+              indent: {
+                left: convertMillimetersToTwip(7),
+              },
+            })
+
+            listContent = listContent.concat([isCorrect, feedback])
+          }
 
           listContent = listContent.concat([isCorrect, ...option.feedback])
         })
@@ -1005,15 +1015,19 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        // const feedbackParagraph = new Paragraph({
-        //   children: [
-        //     new TextRun({
-        //       text: question.fillTheGapFeedback[groupId],
-        //     }),
-        //   ],
-        // })
+        if (this.newEditor) {
+          listContent.push(...question.fillTheGapFeedback[groupId])
+        } else {
+          const feedbackParagraph = new Paragraph({
+            children: [
+              new TextRun({
+                text: question.fillTheGapFeedback[groupId],
+              }),
+            ],
+          })
 
-        listContent.push(...question.fillTheGapFeedback[groupId])
+          listContent.push(feedbackParagraph)
+        }
 
         content = content.concat(listContent)
       })
@@ -1063,15 +1077,19 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        // const feedbackParagraph = new Paragraph({
-        //   children: [
-        //     new TextRun({
-        //       text: question.matchingFeedback[groupId],
-        //     }),
-        //   ],
-        // })
+        if (this.newEditor) {
+          listContent.push(...question.matchingFeedback[groupId])
+        } else {
+          const feedbackParagraph = new Paragraph({
+            children: [
+              new TextRun({
+                text: question.matchingFeedback[groupId],
+              }),
+            ],
+          })
 
-        listContent.push(...question.matchingFeedback[groupId])
+          listContent.push(feedbackParagraph)
+        }
 
         content = content.concat(listContent)
       })
@@ -1122,15 +1140,19 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           listContent.push(solution)
         })
 
-        // const feedbackParagraph = new Paragraph({
-        //   children: [
-        //     new TextRun({
-        //       text: question.multipleDropdownFeedback[groupId],
-        //     }),
-        //   ],
-        // })
+        if (this.newEditor) {
+          listContent.push(...question.multipleDropdownFeedback[groupId])
+        } else {
+          const feedbackParagraph = new Paragraph({
+            children: [
+              new TextRun({
+                text: question.multipleDropdownFeedback[groupId],
+              }),
+            ],
+          })
 
-        listContent.push(...question.multipleDropdownFeedback[groupId])
+          listContent.push(feedbackParagraph)
+        }
 
         content = content.concat(listContent)
       })
@@ -1233,15 +1255,20 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         }
 
         listContent.push(...numericalSolutions)
-        // const feedbacknumerical = new Paragraph({
-        //   children: [
-        //     new TextRun({
-        //       text: question.numericalFeedback[groupId],
-        //     }),
-        //   ],
-        // })
 
-        listContent.push(...question.numericalFeedback[groupId])
+        if (this.newEditor) {
+          listContent.push(...question.numericalFeedback[groupId])
+        } else {
+          const feedbacknumerical = new Paragraph({
+            children: [
+              new TextRun({
+                text: question.numericalFeedback[groupId],
+              }),
+            ],
+          })
+
+          listContent.push(feedbacknumerical)
+        }
 
         content = content.concat(listContent)
       })
