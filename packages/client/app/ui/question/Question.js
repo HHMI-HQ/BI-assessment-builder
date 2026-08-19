@@ -1406,15 +1406,17 @@ const Question = props => {
           searchLoading={searchHELoading}
         />
       )}
-      {isInProduction && showProductionChatTab && (
-        <StyledButton
-          data-testid="publish-question-btn"
-          onClick={toggleReviewForm}
-          type="primary"
-        >
-          {showReviewForm ? 'Hide' : 'Show'} reviews
-        </StyledButton>
-      )}
+      {isInProduction &&
+        showProductionChatTab &&
+        reviewerPool.filter(r => !!r.submitted).length > 0 && (
+          <StyledButton
+            data-testid="publish-question-btn"
+            onClick={toggleReviewForm}
+            type="primary"
+          >
+            {showReviewForm ? 'Hide' : 'Show'} reviews
+          </StyledButton>
+        )}
       {canPublish && isInProduction && !isPublished && (
         <StyledButton
           data-testid="publish-question-btn"
@@ -1543,15 +1545,17 @@ const Question = props => {
             searchLoading={searchHELoading}
           />
         )}
-        {isInProduction && showProductionChatTab && (
-          <StyledButton
-            data-testid="publish-question-btn"
-            onClick={toggleReviewForm}
-            type="primary"
-          >
-            {showReviewForm ? 'Hide' : 'Show'} reviews
-          </StyledButton>
-        )}
+        {isInProduction &&
+          showProductionChatTab &&
+          reviewerPool.filter(r => !!r.submitted).length > 0 && (
+            <StyledButton
+              data-testid="publish-question-btn"
+              onClick={toggleReviewForm}
+              type="primary"
+            >
+              {showReviewForm ? 'Hide' : 'Show'} reviews
+            </StyledButton>
+          )}
         {canPublish && isInProduction && !isPublished && (
           <StyledButton
             data-testid="publish-question-btn"
