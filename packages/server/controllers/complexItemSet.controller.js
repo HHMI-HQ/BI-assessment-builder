@@ -356,12 +356,16 @@ const exportSetQuestions = async (setIds, questionIds, options) => {
         } else {
           fullContent.content[0].content.push({
             type: 'question',
+            attrs: { questionId: version.questionId },
             content: [...version.content.content],
           })
 
           const versionWithLabels = await extractCourseLabels(version)
 
           metadata.push({
+            newEditor: version.enhancedEditor,
+            questionId: version.questionId,
+
             questionType: versionWithLabels.questionType,
 
             topics: versionWithLabels.topics,
