@@ -34,13 +34,11 @@ class WaxToQTIConverter {
   #prepareManifest = null
   #newEditor = false
 
-  constructor(questionVersions, exportId, newEditor) {
+  constructor(questionVersions, exportId) {
     this.#baseMessage = 'WaxToQTIConverter:'
 
     if (questionVersions.length > 0) {
       this.#id = exportId || questionVersions[0].questionId
-
-      // console.log(questionVersions)
 
       questionVersions.forEach(questionVersion => {
         if (!questionVersion || !questionVersion.content)
@@ -63,7 +61,6 @@ class WaxToQTIConverter {
     this.#prepareAssessmentItem = prepareAssessmentItem
     this.#prepareAssessmentTest = prepareAssessmentTest
     this.#prepareManifest = prepareManifest
-    this.#newEditor = newEditor
   }
 
   #error = e => {
@@ -1045,11 +1042,10 @@ class WaxToQTIConverter {
             })
 
             if (feedback) {
-              const feedbackObject = {
-                p: `Option ${index + 1}: ${feedback}`,
-              }
-
-              modalFeedback.push(feedbackObject)
+              modalFeedback.push({
+                // p: `Option ${index + 1}: ${feedback}`,
+                div: [{ p: `Option ${index + 1}:` }, { div: feedback }],
+              })
             }
           },
         )
@@ -1119,7 +1115,7 @@ class WaxToQTIConverter {
 
       const feedbackObject = [
         {
-          p: this.#correctAnswers.fillTheGapSolutions[
+          div: this.#correctAnswers.fillTheGapSolutions[
             fillTheGapSolutionsKeys
           ][0].feedback,
         },
@@ -1189,7 +1185,7 @@ class WaxToQTIConverter {
 
       const feedbackObject = [
         {
-          p: this.#correctAnswers.matchingSolutions[matchingSolutionsKeys][0]
+          div: this.#correctAnswers.matchingSolutions[matchingSolutionsKeys][0]
             .feedback,
         },
         {
@@ -1262,7 +1258,7 @@ class WaxToQTIConverter {
 
       const feedbackObject = [
         {
-          p: this.#correctAnswers.multipleDropdownSolutions[
+          div: this.#correctAnswers.multipleDropdownSolutions[
             multipleDropdownSolutionsKeys
           ][0].feedback,
         },
@@ -1536,6 +1532,7 @@ class WaxToQTIConverter {
           numericalSolutions: {},
           numericalFeedback: {},
         }
+        this.#newEditor = question.enhancedEditor
 
         await Promise.all(
           question.content.content.map(async node =>
