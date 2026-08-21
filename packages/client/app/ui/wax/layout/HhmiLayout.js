@@ -87,6 +87,7 @@ const EditorWrapper = styled.div`
   display: block;
   flex-grow: 1;
   overflow-y: auto;
+  padding: ${grid(2)};
 `
 
 const EditorArea = styled.div`

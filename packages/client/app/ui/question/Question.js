@@ -232,7 +232,7 @@ const QuestionWrapper = styled.div`
   background-color: ${th('colorBackground')};
   display: grid;
   grid-template-rows: 1fr auto;
-  height: 100%;
+  height: ${({ hasRibbon }) => (hasRibbon ? `calc(100% - 26px)` : `100%`)};
   ${props => {
     const { showMetadata, showReviewForm } = props
 
@@ -371,6 +371,7 @@ const PanelWrapper = ({
   isMobile,
   isPublished,
   reviewerForm,
+  hasRibbon,
 }) => {
   const showSubmitBar = isPublished || (!isPublished && !showMetadata)
   const [activePanel, setActivePanel] = useState('editor')
@@ -387,6 +388,7 @@ const PanelWrapper = ({
   if (!isMobile || (!showMetadata && !showReviewForm)) {
     return (
       <QuestionWrapper
+        hasRibbon={hasRibbon}
         showMetadata={showMetadata}
         showReviewForm={showReviewForm}
       >
@@ -445,6 +447,7 @@ PanelWrapper.propTypes = {
   showReviewForm: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
+  hasRibbon: PropTypes.bool.isRequired,
 }
 // #endregion Question Panel
 
@@ -1993,6 +1996,7 @@ const Question = props => {
                 withFeedback={withFeedback}
               />
             }
+            hasRibbon={isUnpublished || isRejected || isArchived}
             isMobile={isMobile}
             isPublished={isPublished}
             metadata={
