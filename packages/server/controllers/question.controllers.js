@@ -953,6 +953,7 @@ const generateWordFile = async (questionVersionId, options = {}) => {
     const { showFeedback, showMetadata } = options
 
     let version = await QuestionVersion.findById(questionVersionId)
+    const { enhancedEditor } = version
     version = await extractCourseLabels(version)
 
     const tempFolderPath = path.join(__dirname, '..', 'tmp')
@@ -979,6 +980,7 @@ const generateWordFile = async (questionVersionId, options = {}) => {
       // prepend content from complex item set (if there is one) to the document
       {
         type: 'doc',
+
         content: [
           ...(complexItemSet ? complexItemSet.leadingContent.content : []),
           ...version.content.content,
@@ -986,6 +988,8 @@ const generateWordFile = async (questionVersionId, options = {}) => {
       },
       imageData,
       {
+        newEditor: enhancedEditor,
+
         complexItemSet: complexItemSet?.title,
         questionType: version.questionType,
 

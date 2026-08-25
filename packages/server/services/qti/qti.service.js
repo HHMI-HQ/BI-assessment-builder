@@ -32,14 +32,13 @@ class WaxToQTIConverter {
   #prepareAssessmentItem = null
   #prepareAssessmentTest = null
   #prepareManifest = null
+  #newEditor = false
 
   constructor(questionVersions, exportId) {
     this.#baseMessage = 'WaxToQTIConverter:'
 
     if (questionVersions.length > 0) {
       this.#id = exportId || questionVersions[0].questionId
-
-      // console.log(questionVersions)
 
       questionVersions.forEach(questionVersion => {
         if (!questionVersion || !questionVersion.content)
@@ -307,7 +306,7 @@ class WaxToQTIConverter {
     this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId].push({
       id,
       correct,
-      feedback,
+      feedback: this.#newEditor ? null : feedback,
     })
 
     return {
@@ -396,7 +395,7 @@ class WaxToQTIConverter {
     this.#correctAnswers.trueFalseSolutions[trueFalseGroupId].push({
       id,
       correct,
-      feedback,
+      feedback: this.#newEditor ? null : feedback,
     })
 
     return {
@@ -414,19 +413,31 @@ class WaxToQTIConverter {
   // #endregion multiple-choice
 
   // #region fill-the-gap
-  #fillTheGapContainerHandler = content => {
-    const { id, feedback } = content.attrs
+  #fillTheGapWrapperHandler = content => {
+    const { id } = content.attrs
 
-    this.#correctAnswers.fillTheGapSolutions[id] = [
+    return {
+      div: this.#contentParser(content.content, {
+        fillTheGapGroupId: id,
+      }),
+    }
+  }
+
+  #fillTheGapContainerHandler = (content, options) => {
+    const { feedback, id } = content.attrs
+    const { fillTheGapGroupId } = options
+    const groupdId = this.#newEditor ? fillTheGapGroupId : id
+
+    this.#correctAnswers.fillTheGapSolutions[groupdId] = [
       {
-        feedback,
+        feedback: this.#newEditor ? null : feedback,
       },
     ]
 
     return {
       div: this.#contentParser(content.content, {
-        fillTheGapGroupId: id,
         feedback,
+        fillTheGapGroupId: groupdId,
       }),
     }
   }
@@ -454,14 +465,26 @@ class WaxToQTIConverter {
   // #endregion fill-the-gap
 
   // #region matching
-  #matchingContainerHanlder = content => {
-    const responseIdentifier = content.attrs.id
+  #matchingWrapperHanlder = content => {
+    const { id } = content.attrs
+
+    return {
+      div: this.#contentParser(content.content, {
+        matchingGroupId: id,
+      }),
+    }
+  }
+
+  #matchingContainerHanlder = (content, options) => {
     const matchingOptions = content.attrs.options
     const { feedback } = content.attrs
+    const { matchingGroupId } = options
+    const { id } = content.attrs
+    const groupdId = this.#newEditor ? matchingGroupId : id
 
-    this.#correctAnswers.matchingSolutions[responseIdentifier] = [
+    this.#correctAnswers.matchingSolutions[groupdId] = [
       {
-        feedback,
+        feedback: this.#newEditor ? null : feedback,
       },
     ]
 
@@ -471,7 +494,7 @@ class WaxToQTIConverter {
           _attr: {
             maxAssociations: content.content.length - 1,
             minAssociations: content.content.length - 1,
-            responseIdentifier,
+            responseIdentifier: groupdId,
             shuffle: 'false',
           },
         },
@@ -479,7 +502,7 @@ class WaxToQTIConverter {
         {
           simpleMatchSet: [
             ...this.#contentParser(content.content[0].content, {
-              matchingGroupId: responseIdentifier,
+              matchingGroupId: groupdId,
             }),
           ],
         },
@@ -525,19 +548,31 @@ class WaxToQTIConverter {
   // #endregion matching
 
   // #region multiple-dropdowns
-  #multipleDropdownContainerHandler = content => {
-    const responseIdentifier = content.attrs.id
-    const { feedback } = content.attrs
+  #multipleDropdownWrapperHandler = content => {
+    const { id } = content.attrs
 
-    this.#correctAnswers.multipleDropdownSolutions[responseIdentifier] = [
+    return {
+      div: this.#contentParser(content.content, {
+        multipleDropdownGroupId: id,
+      }),
+    }
+  }
+
+  #multipleDropdownContainerHandler = (content, options) => {
+    const { id } = content.attrs
+    const { feedback } = content.attrs
+    const { multipleDropdownGroupId } = options
+    const groupId = this.#newEditor ? multipleDropdownGroupId : id
+
+    this.#correctAnswers.multipleDropdownSolutions[groupId] = [
       {
-        feedback,
+        feedback: this.#newEditor ? null : feedback,
       },
     ]
 
     return {
       div: this.#contentParser(content.content, {
-        multipleDropdownGroupId: responseIdentifier,
+        multipleDropdownGroupId: groupId,
       }),
     }
   }
@@ -622,8 +657,20 @@ class WaxToQTIConverter {
   // #endregion essay
 
   // #region numerical
+  #numericalWrapperHandler = content => {
+    const { id } = content.attrs
+
+    return {
+      div: this.#contentParser(content.content, {
+        numericalGroupId: id,
+      }),
+    }
+  }
+
   #numericalAnswerHandler = (content, options) => {
-    const responseIdentifier = content.attrs.id
+    const { id } = content.attrs
+    const { numericalGroupId } = options
+    const groupdId = this.#newEditor ? numericalGroupId : id
 
     // eslint-disable-next-line no-unused-vars
     const {
@@ -634,7 +681,7 @@ class WaxToQTIConverter {
       answersExact: { exactAnswer, marginError } = {},
     } = content.attrs
 
-    this.#correctAnswers.numericalSolutions[responseIdentifier] = {
+    this.#correctAnswers.numericalSolutions[groupdId] = {
       answerType,
       preciseAnswer,
       maxAnswer,
@@ -642,7 +689,7 @@ class WaxToQTIConverter {
       exactAnswer,
       marginError,
     }
-    this.#correctAnswers.numericalFeedback = feedback
+    this.#correctAnswers.numericalFeedback = this.#newEditor ? null : feedback
 
     return [
       {
@@ -656,7 +703,7 @@ class WaxToQTIConverter {
               },
               {
                 div: this.#contentParser(content.content, {
-                  numericalGroupId: responseIdentifier,
+                  numericalGroupId: groupdId,
                 }),
               },
             ],
@@ -667,7 +714,7 @@ class WaxToQTIConverter {
         response_str: [
           {
             _attr: {
-              ident: responseIdentifier,
+              ident: groupdId,
               rcardinality: 'Single',
             },
           },
@@ -682,7 +729,7 @@ class WaxToQTIConverter {
                 response_label: [
                   {
                     _attr: {
-                      ident: `answer-${responseIdentifier}`,
+                      ident: `answer-${groupdId}`,
                     },
                   },
                 ],
@@ -694,6 +741,45 @@ class WaxToQTIConverter {
     ]
   }
   // #endregion numerical
+
+  #feedbackPromptHandler = (content, options) => {
+    const {
+      multipleChoiceGroupId,
+      trueFalseGroupId,
+      fillTheGapGroupId,
+      matchingGroupId,
+      multipleDropdownGroupId,
+      numericalGroupId,
+    } = options
+
+    const parsedContent = this.#contentParser(content.content)
+
+    if (multipleChoiceGroupId) {
+      this.#correctAnswers.multipleChoiceSolutions[multipleChoiceGroupId].find(
+        (solution, i) => i > 0 && !solution.feedback,
+      ).feedback = parsedContent
+    } else if (trueFalseGroupId) {
+      this.#correctAnswers.trueFalseSolutions[trueFalseGroupId].find(
+        (solution, i) => i > 0 && !solution.feedback,
+      ).feedback = parsedContent
+    } else if (fillTheGapGroupId) {
+      this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId].find(
+        solution => solution.feedback === null,
+      ).feedback = parsedContent
+    } else if (matchingGroupId) {
+      this.#correctAnswers.matchingSolutions[matchingGroupId].find(
+        solution => solution.feedback === null,
+      ).feedback = parsedContent
+    } else if (multipleDropdownGroupId) {
+      this.#correctAnswers.multipleDropdownSolutions[
+        multipleDropdownGroupId
+      ].find(solution => solution.feedback === null).feedback = parsedContent
+    } else if (numericalGroupId) {
+      this.#correctAnswers.numericalFeedback = parsedContent
+    }
+
+    return []
+  }
 
   // #endregion question types
 
@@ -730,12 +816,15 @@ class WaxToQTIConverter {
     question_node_true_false_single: this.#trueFalseQuestionHandler,
     true_false_single_correct: this.#trueFalseOptionHandler,
 
+    fill_the_gap_wrapper: this.#fillTheGapWrapperHandler,
     fill_the_gap_container: this.#fillTheGapContainerHandler,
     fill_the_gap: this.#fillTheGapHandler,
 
+    matching_wrapper: this.#matchingWrapperHanlder,
     matching_container: this.#matchingContainerHanlder,
     matching_option: this.#matchingOptionHandler,
 
+    multiple_drop_down_wrapper: this.#multipleDropdownWrapperHandler,
     multiple_drop_down_container: this.#multipleDropdownContainerHandler,
     multiple_drop_down_option: this.#multipleDropdownOptionHandler,
 
@@ -744,7 +833,10 @@ class WaxToQTIConverter {
     essay_prompt: this.#essayFeedbackHandler,
     essay_answer: this.#essayAnswerHandler,
 
+    numerical_wrapper: this.#numericalWrapperHandler,
     numerical_answer_container: this.#numericalAnswerHandler,
+
+    feedback_prompt: this.#feedbackPromptHandler,
   }
 
   #findHandler = type => {
@@ -875,7 +967,8 @@ class WaxToQTIConverter {
 
           if (feedback) {
             modalFeedback.push({
-              p: `Option ${index + 1}: ${feedback}`,
+              // p: `Option ${index + 1}: ${feedback}`,
+              div: [{ p: `Option ${index + 1}:` }, { div: feedback }],
             })
           }
         })
@@ -949,11 +1042,10 @@ class WaxToQTIConverter {
             })
 
             if (feedback) {
-              const feedbackObject = {
-                p: `Option ${index + 1}: ${feedback}`,
-              }
-
-              modalFeedback.push(feedbackObject)
+              modalFeedback.push({
+                // p: `Option ${index + 1}: ${feedback}`,
+                div: [{ p: `Option ${index + 1}:` }, { div: feedback }],
+              })
             }
           },
         )
@@ -1023,7 +1115,7 @@ class WaxToQTIConverter {
 
       const feedbackObject = [
         {
-          p: this.#correctAnswers.fillTheGapSolutions[
+          div: this.#correctAnswers.fillTheGapSolutions[
             fillTheGapSolutionsKeys
           ][0].feedback,
         },
@@ -1093,7 +1185,7 @@ class WaxToQTIConverter {
 
       const feedbackObject = [
         {
-          p: this.#correctAnswers.matchingSolutions[matchingSolutionsKeys][0]
+          div: this.#correctAnswers.matchingSolutions[matchingSolutionsKeys][0]
             .feedback,
         },
         {
@@ -1166,7 +1258,7 @@ class WaxToQTIConverter {
 
       const feedbackObject = [
         {
-          p: this.#correctAnswers.multipleDropdownSolutions[
+          div: this.#correctAnswers.multipleDropdownSolutions[
             multipleDropdownSolutionsKeys
           ][0].feedback,
         },
@@ -1440,6 +1532,7 @@ class WaxToQTIConverter {
           numericalSolutions: {},
           numericalFeedback: {},
         }
+        this.#newEditor = question.enhancedEditor
 
         await Promise.all(
           question.content.content.map(async node =>
@@ -1534,7 +1627,7 @@ class WaxToQTIConverter {
       // clean up resources folder if there are no assets (images) in it
       await fs.promises.readdir(`${dir}/resources/`).then(files => {
         if (files.length === 0) {
-          fs.rmdirSync(`${dir}/resources/`)
+          fs.rmSync(`${dir}/resources/`, { recursive: true, force: true })
         }
       })
 
@@ -1606,7 +1699,7 @@ class WaxToQTIConverter {
       archive.directory(dir, false)
       await archive.finalize()
 
-      fs.rmdirSync(dir, { recursive: true, force: true })
+      fs.rmSync(dir, { recursive: true, force: true })
       return `${this.#id}.zip`
     } catch (e) {
       console.error(e)

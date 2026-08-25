@@ -347,6 +347,7 @@ const exportQuestionsToWordFile = async (
         } else {
           fullContent.content[0].content.push({
             type: 'question',
+            attrs: { questionId: version.questionId },
             content: [...version.content.content],
           })
 
@@ -361,6 +362,9 @@ const exportQuestionsToWordFile = async (
           const versionWithLabels = await extractCourseLabels(version)
 
           metadata.push({
+            newEditor: version.enhancedEditor,
+            questionId: version.questionId,
+
             complexItemSet: complexItemSet?.title,
             questionType: versionWithLabels.questionType,
 

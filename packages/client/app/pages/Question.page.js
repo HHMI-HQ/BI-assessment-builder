@@ -76,6 +76,7 @@ import {
   useNotifications,
   notificationsMapper,
   waitForTextareaAndSetValue,
+  extractDocumentText,
 } from '../utilities'
 import useBreakpoint from '../ui/_helpers/useBreakpoint'
 
@@ -620,6 +621,8 @@ const QuestionPage = props => {
 
   useEffect(() => {
     if (version && metadata) {
+      const contentText = extractDocumentText(version.content).substring(0, 50)
+
       // udpate title for published questions
       if (testMode) {
         const questionType = metadata?.questionTypes
@@ -627,15 +630,7 @@ const QuestionPage = props => {
           .flat()
           .find(type => type.value === version.questionType)
 
-        const courses = version.courses.map(c => c.course)
-
-        const courseNames = metadata?.frameworks
-          .filter(framework => courses.indexOf(framework.value) !== -1)
-          .map(c => c.label)
-
-        const title = `${questionType?.label} question - ${courseNames.join(
-          ', ',
-        )}`
+        const title = `${questionType?.label} - ${contentText}...`
 
         setPageTitle(title)
         document.title = title
@@ -647,19 +642,19 @@ const QuestionPage = props => {
         let title
 
         if (question.rejected) {
-          title = 'Rejected - Question editor page'
+          title = `Rejected - ${contentText}...`
         } else if (version.published) {
-          title = 'Published - Question editor page'
+          title = `Published - ${contentText}...`
         } else if (version.inProduction) {
-          title = 'In production - Question editor page'
+          title = `In production - ${contentText}...`
         } else if (version.underReview) {
-          title = 'Under review - Question editor page'
+          title = `Under review - ${contentText}...`
         } else if (version.unpublished) {
-          title = 'Unpublished - Question editor page'
+          title = `Unpublished - ${contentText}...`
         } else if (version.submitted) {
-          title = 'Submitted - Question editor page'
+          title = `Submitted - ${contentText}...`
         } else {
-          title = 'Not submitted - Question editor page'
+          title = `Not submitted - ${contentText}...`
         }
 
         setPageTitle(title)
