@@ -976,8 +976,6 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
 
             listContent = listContent.concat([isCorrect, feedback])
           }
-
-          listContent = listContent.concat([isCorrect, ...option.feedback])
         })
 
         content = content.concat(listContent)
