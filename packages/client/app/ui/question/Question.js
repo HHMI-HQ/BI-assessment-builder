@@ -598,16 +598,28 @@ const Question = props => {
 
   useEffect(() => {
     if (isInProduction && reviewerPool.length) {
-      setCurrentReviewResponses({
-        ...JSON.parse(reviewerPool[reviewerIndex].submitted),
+      let currentReview = {
         reviewerName: reviewerPool[reviewerIndex].displayName,
         reviewerEmail: reviewerPool[reviewerIndex].email,
-      })
+      }
+
+      if (reviewerPool[reviewerIndex].attachments) {
+        currentReview = {
+          ...currentReview,
+          attachments: reviewerPool[reviewerIndex].attachments,
+        }
+      } else {
+        currentReview = {
+          ...currentReview,
+          ...JSON.parse(reviewerPool[reviewerIndex].submitted),
+        }
+      }
+
+      setCurrentReviewResponses(currentReview)
     } else if (isUnderReview) {
       setCurrentReviewResponses(reviewResponses)
     }
   }, [reviewerPool, isUnderReview, reviewerIndex, reviewResponses])
-  //
 
   const [imageLongDescs, setImageLongDescs] = useState([])
 
@@ -2313,6 +2325,7 @@ Question.propTypes = {
       invitationRevoked: PropTypes.bool,
       reviewSubmitted: PropTypes.bool,
       submitted: PropTypes.string,
+      attachments: PropTypes.arrayOf(PropTypes.shape()),
     }),
   ),
   showAssignHEButton: PropTypes.bool,
