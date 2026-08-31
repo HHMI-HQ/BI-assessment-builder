@@ -962,6 +962,7 @@ const QuestionPage = props => {
         return {
           ...rev,
           submitted: rev.reviewSubmitted ? submittedReview.responses : null,
+          attachments: submittedReview.attachments,
         }
       }
 
