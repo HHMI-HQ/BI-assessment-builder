@@ -598,20 +598,21 @@ const Question = props => {
 
   useEffect(() => {
     if (isInProduction && reviewerPool.length) {
+      const submittedReviews = reviewerPool.filter(r => r.reviewSubmitted)
       let currentReview = {
-        reviewerName: reviewerPool[reviewerIndex].displayName,
-        reviewerEmail: reviewerPool[reviewerIndex].email,
+        reviewerName: submittedReviews[reviewerIndex].displayName,
+        reviewerEmail: submittedReviews[reviewerIndex].email,
       }
 
-      if (reviewerPool[reviewerIndex].attachments) {
+      if (submittedReviews[reviewerIndex].attachments.length) {
         currentReview = {
           ...currentReview,
-          attachments: reviewerPool[reviewerIndex].attachments,
+          attachments: submittedReviews[reviewerIndex].attachments,
         }
       } else {
         currentReview = {
           ...currentReview,
-          ...JSON.parse(reviewerPool[reviewerIndex].submitted),
+          ...JSON.parse(submittedReviews[reviewerIndex].submitted),
         }
       }
 
@@ -2049,7 +2050,7 @@ const Question = props => {
                 numberOfResponses={
                   isUnderReview
                     ? 1
-                    : reviewerPool.filter(r => !!r.submitted).length
+                    : reviewerPool.filter(r => !!r.reviewSubmitted).length
                 }
                 questionType={selectedQuestionType}
                 responses={currentReviewResponses}
