@@ -760,7 +760,7 @@ class WaxToQTIConverter {
       ).feedback = parsedContent
     } else if (trueFalseGroupId) {
       this.#correctAnswers.trueFalseSolutions[trueFalseGroupId].find(
-        (solution, i) => i > 0 && !solution.feedback,
+        (solution, i) => !solution.feedback,
       ).feedback = parsedContent
     } else if (fillTheGapGroupId) {
       this.#correctAnswers.fillTheGapSolutions[fillTheGapGroupId].find(
