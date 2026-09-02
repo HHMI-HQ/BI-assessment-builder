@@ -1,6 +1,6 @@
 {
   "name": "hhmi",
-  "version": "1.25.3",
+  "version": "1.25.4",
   "private": true,
   "description": "Question database and submission application for HHMI",
   "repository": {
