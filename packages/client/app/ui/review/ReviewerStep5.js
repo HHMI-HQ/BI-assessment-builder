@@ -141,7 +141,7 @@ const Step5 = props => {
             <Divider />
           </InfoWrapper>
         )}
-        {responses.attachment ? (
+        {responses.attachments ? (
           <AttachmentsWrapper>
             <p>Reviewer has uploaded the following documents:</p>
             {responses.attachments.map(att => (
