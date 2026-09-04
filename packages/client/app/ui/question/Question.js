@@ -2153,7 +2153,6 @@ const Question = props => {
           onClickRevokeInvitation={handleRevokeReviewerInvite}
           onSearch={onReviewerSearch}
           onTableChange={onReviewerTableChange}
-          onUploadReview={onSubmitReview}
           reviewerPool={reviewerPool}
           searchPlaceholder="Search by reviewer name or relevant topic"
           showDialog={showDialog}
