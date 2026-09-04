@@ -1722,7 +1722,7 @@ const QuestionPage = props => {
         extra={<Link to="/discover">Visit the Browse Items page</Link>}
         status="404"
         subTitle="Sorry, this item hasn't been published yet."
-        title="Question Not Ready"
+        title="Item Not Ready"
       />
     )
   }
