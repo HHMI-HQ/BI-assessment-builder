@@ -186,9 +186,9 @@ const extractDocumentText = data => {
 
       if (type === 'image') {
         if (attrs?.alt && attrs.alt.trim().length) {
-          allContent += `image with alt text "${attrs.alt}" `
+          allContent += `[image with alt text "${attrs.alt}"] `
         } else {
-          allContent += 'image with no alt text '
+          allContent += '[image with no alt text] '
         }
       }
 
@@ -199,7 +199,7 @@ const extractDocumentText = data => {
 
       // render an empty line for fill_the_gap answers
       if (type === 'fill_the_gap') {
-        allContent += '   '
+        allContent += '____'
         return
       }
 
