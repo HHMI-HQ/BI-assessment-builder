@@ -597,8 +597,9 @@ const Question = props => {
   // const [nodeContent, setNodeContent] = useState({})
 
   useEffect(() => {
-    if (isInProduction && reviewerPool.length) {
-      const submittedReviews = reviewerPool.filter(r => r.reviewSubmitted)
+    const submittedReviews = reviewerPool.filter(r => r.reviewSubmitted)
+
+    if (isInProduction && submittedReviews.length) {
       let currentReview = {
         reviewerName: submittedReviews[reviewerIndex].displayName,
         reviewerEmail: submittedReviews[reviewerIndex].email,
@@ -2153,7 +2154,6 @@ const Question = props => {
           onClickRevokeInvitation={handleRevokeReviewerInvite}
           onSearch={onReviewerSearch}
           onTableChange={onReviewerTableChange}
-          onUploadReview={onSubmitReview}
           reviewerPool={reviewerPool}
           searchPlaceholder="Search by reviewer name or relevant topic"
           showDialog={showDialog}

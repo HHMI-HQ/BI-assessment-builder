@@ -968,7 +968,10 @@ class WaxToQTIConverter {
           if (feedback) {
             modalFeedback.push({
               // p: `Option ${index + 1}: ${feedback}`,
-              div: [{ p: `Option ${index + 1}:` }, { div: feedback }],
+              div: [
+                { p: `Option ${index + 1}:` },
+                { div: [...feedback.split('\n').map(para => ({ p: para }))] },
+              ],
             })
           }
         })
@@ -1044,7 +1047,10 @@ class WaxToQTIConverter {
             if (feedback) {
               modalFeedback.push({
                 // p: `Option ${index + 1}: ${feedback}`,
-                div: [{ p: `Option ${index + 1}:` }, { div: feedback }],
+                div: [
+                  { p: `Option ${index + 1}:` },
+                  { div: [...feedback.split('\n').map(para => ({ p: para }))] },
+                ],
               })
             }
           },
@@ -1113,11 +1119,20 @@ class WaxToQTIConverter {
 
       const modalFeedback = this.#createModaFeedback('general_comments')
 
+      const feedback = this.#newEditor
+        ? this.#correctAnswers.fillTheGapSolutions[fillTheGapSolutionsKeys][0]
+            .feedback
+        : [
+            ...this.#correctAnswers.fillTheGapSolutions[
+              fillTheGapSolutionsKeys
+            ][0].feedback
+              .split('\n')
+              .map(para => ({ p: para })),
+          ]
+
       const feedbackObject = [
         {
-          div: this.#correctAnswers.fillTheGapSolutions[
-            fillTheGapSolutionsKeys
-          ][0].feedback,
+          div: feedback,
         },
         {
           p: '',
@@ -1183,10 +1198,20 @@ class WaxToQTIConverter {
 
       const modalFeedback = this.#createModaFeedback('general_comments')
 
+      const feedback = this.#newEditor
+        ? this.#correctAnswers.matchingSolutions[matchingSolutionsKeys][0]
+            .feedback
+        : [
+            ...this.#correctAnswers.matchingSolutions[
+              matchingSolutionsKeys
+            ][0].feedback
+              .split('\n')
+              .map(para => ({ p: para })),
+          ]
+
       const feedbackObject = [
         {
-          div: this.#correctAnswers.matchingSolutions[matchingSolutionsKeys][0]
-            .feedback,
+          div: feedback,
         },
         {
           p: '',
@@ -1256,11 +1281,21 @@ class WaxToQTIConverter {
 
       const modalFeedback = this.#createModaFeedback('general_comments')
 
+      const feedback = this.#newEditor
+        ? this.#correctAnswers.multipleDropdownSolutions[
+            multipleDropdownSolutionsKeys
+          ][0].feedback
+        : [
+            ...this.#correctAnswers.multipleDropdownSolutions[
+              multipleDropdownSolutionsKeys
+            ][0].feedback
+              .split('\n')
+              .map(para => ({ p: para })),
+          ]
+
       const feedbackObject = [
         {
-          div: this.#correctAnswers.multipleDropdownSolutions[
-            multipleDropdownSolutionsKeys
-          ][0].feedback,
+          div: feedback,
         },
         {
           p: '',
@@ -1471,6 +1506,14 @@ class WaxToQTIConverter {
           break
       }
 
+      const feedback = this.#newEditor
+        ? this.#correctAnswers.numericalFeedback
+        : [
+            ...this.#correctAnswers.numericalFeedback
+              .split('\n')
+              .map(para => ({ p: para })),
+          ]
+
       // push numerical answer feedback
       responses.push({
         flow_mat: [
@@ -1484,7 +1527,7 @@ class WaxToQTIConverter {
                     },
                   },
                   {
-                    div: this.#correctAnswers.numericalFeedback,
+                    div: feedback,
                   },
                 ],
               },

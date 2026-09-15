@@ -5,7 +5,7 @@ import { CloseOutlined } from '@ant-design/icons'
 import UIAssignReviewers from '@coko/client/dist/ui/assignReviewers/AssignReviewers'
 import { grid, th } from '@coko/client'
 import { profileOptions } from '../../utilities'
-import { ReviewerEditorUploadButton, ReviewSummary } from '../review'
+import { ReviewSummary } from '../review'
 import { Modal, Button } from '../common'
 
 const SubmittedReview = styled.section`
@@ -88,10 +88,8 @@ const AssignReviewers = props => {
     onClickRevokeInvitation,
     onSearch,
     onTableChange,
-    onUploadReview,
     reviewerPool,
     searchPlaceholder,
-    showDialog,
   } = props
 
   const [modal, contextHolder] = Modal.useModal()
@@ -150,22 +148,17 @@ const AssignReviewers = props => {
       title: 'Submitted reviews',
       dataIndex: 'submitted',
       render: (val, record) => {
-        return val ? (
-          <Button onClick={() => onShowReview(val, record)}>
-            {showReview && showReview.reviewerEmail === record.email
-              ? 'Close'
-              : 'Show'}{' '}
-            review
-          </Button>
-        ) : (
-          record.acceptedInvitation && (
-            <ReviewerEditorUploadButton
-              onSubmit={onUploadReview}
-              reviewerId={record.id}
-              showDialog={showDialog}
-            />
+        if (val)
+          return (
+            <Button onClick={() => onShowReview(val, record)}>
+              {showReview && showReview.reviewerEmail === record.email
+                ? 'Close'
+                : 'Show'}{' '}
+              review
+            </Button>
           )
-        )
+        if (record.acceptedInvitation) return <span>Not submitted</span>
+        return <span>—</span>
       },
     },
     {
@@ -246,14 +239,10 @@ AssignReviewers.propTypes = {
     }),
   ).isRequired,
   searchPlaceholder: PropTypes.string,
-  onUploadReview: PropTypes.func,
-  showDialog: PropTypes.func,
 }
 
 AssignReviewers.defaultProps = {
   searchPlaceholder: '',
-  onUploadReview: null,
-  showDialog: null,
 }
 
 export default AssignReviewers

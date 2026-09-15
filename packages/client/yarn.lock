@@ -3181,17 +3181,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pubsweet/ui-toolkit@npm:^2.3.1":
-  version: 2.3.17
-  resolution: "@pubsweet/ui-toolkit@npm:2.3.17"
-  dependencies:
-    color: "npm:^3.0.0"
-    lodash: "npm:^4.17.4"
-    styled-components: "npm:^5.2.3"
-  checksum: 10c0/69f7fde2188398a32065f05d83918bdaf0660761f619d8a325e76c8dd782c7ba7ec21b4d9397668bc81252a2c35d5bfd380b3ba33d61a3c459c3cc5eb018710c
-  languageName: node
-  linkType: hard
-
 "@rc-component/color-picker@npm:~1.2.0":
   version: 1.2.0
   resolution: "@rc-component/color-picker@npm:1.2.0"
@@ -7812,10 +7801,10 @@ __metadata:
     react-router-dom: "npm:^5.2.0"
     react-test-renderer: "npm:17.0.2"
     styled-components: "npm:^5.3.0"
-    wax-prosemirror-core: "npm:0.9.146"
-    wax-prosemirror-services: "npm:0.9.146"
-    wax-questions-service: "npm:0.9.146"
-    wax-table-service: "npm:0.9.146"
+    wax-prosemirror-core: "npm:0.10.3"
+    wax-prosemirror-services: "npm:0.10.3"
+    wax-questions-service: "npm:0.10.3"
+    wax-table-service: "npm:0.10.3"
   languageName: unknown
   linkType: soft
 
@@ -7897,7 +7886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-convert@npm:^1.9.0, color-convert@npm:^1.9.3":
+"color-convert@npm:^1.9.0":
   version: 1.9.3
   resolution: "color-convert@npm:1.9.3"
   dependencies:
@@ -7929,7 +7918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-string@npm:^1.6.0, color-string@npm:^1.9.0":
+"color-string@npm:^1.9.0":
   version: 1.9.1
   resolution: "color-string@npm:1.9.1"
   dependencies:
@@ -7945,16 +7934,6 @@ __metadata:
   bin:
     color-support: bin.js
   checksum: 10c0/8ffeaa270a784dc382f62d9be0a98581db43e11eee301af14734a6d089bd456478b1a8b3e7db7ca7dc5b18a75f828f775c44074020b51c05fc00e6d0992b1cc6
-  languageName: node
-  linkType: hard
-
-"color@npm:^3.0.0":
-  version: 3.2.1
-  resolution: "color@npm:3.2.1"
-  dependencies:
-    color-convert: "npm:^1.9.3"
-    color-string: "npm:^1.6.0"
-  checksum: 10c0/39345d55825884c32a88b95127d417a2c24681d8b57069413596d9fcbb721459ef9d9ec24ce3e65527b5373ce171b73e38dbcd9c830a52a6487e7f37bf00e83c
   languageName: node
   linkType: hard
 
@@ -17404,18 +17383,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dropdown@npm:^1.6.2":
-  version: 1.11.0
-  resolution: "react-dropdown@npm:1.11.0"
-  dependencies:
-    classnames: "npm:^2.2.3"
-  peerDependencies:
-    react: ^0.14.7 || ^15.0.0-0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^0.14.7 || ^15.0.0-0 || ^16.0.0 || ^17.0.0|| ^18.0.0
-  checksum: 10c0/3a4e64443ac19aef4fd9500197706143e0b421670d56a874d164edd200446c194787f4f30040c1f4e2df2a540ea08db0eb1dd718b8985bc6da41dc4029c719d0
-  languageName: node
-  linkType: hard
-
 "react-element-to-jsx-string@npm:^14.3.4":
   version: 14.3.4
   resolution: "react-element-to-jsx-string@npm:14.3.4"
@@ -21012,11 +20979,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wax-prosemirror-core@npm:0.9.146":
-  version: 0.9.146
-  resolution: "wax-prosemirror-core@npm:0.9.146"
+"wax-prosemirror-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "wax-prosemirror-core@npm:0.10.3"
   dependencies:
-    "@pubsweet/ui-toolkit": "npm:^2.3.1"
     crypto-js: "npm:^4.2.0"
     deepmerge: "npm:^4.2.2"
     inversify: "npm:^5.0.1"
@@ -21041,18 +21007,17 @@ __metadata:
     uuid: "npm:^7.0.3"
   peerDependencies:
     i18next: ^23.6.0
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    styled-components: ^5.3.1
-  checksum: 10c0/634688799c7b5371ece286ff0a7b500b95bcc5bcdac5c6b21aa4d304628aff32c2c3161d3a1c7934d1aa8dec7fee2569cd185debee7bbb9269cdc3a4177fdd49
+    react: ^19.2.6
+    react-dom: ^19.2.6
+    styled-components: ^6.4.1
+  checksum: 10c0/83c28496cfd9383a1676a7e508cd918cb913219c8d61209dd5cb2aeec69bc1cfbe8bc7c9437f028f14759b3ccbb22d6721d190651ec8bea5befbcb51d8bca4f3
   languageName: node
   linkType: hard
 
-"wax-prosemirror-services@npm:0.9.146":
-  version: 0.9.146
-  resolution: "wax-prosemirror-services@npm:0.9.146"
+"wax-prosemirror-services@npm:0.10.3":
+  version: 0.10.3
+  resolution: "wax-prosemirror-services@npm:0.10.3"
   dependencies:
-    "@pubsweet/ui-toolkit": "npm:^2.3.1"
     highlight.js: "npm:^10.1.1"
     inversify: "npm:^5.0.1"
     inversify-inject-decorators: "npm:^3.1.0"
@@ -21071,11 +21036,10 @@ __metadata:
     prosemirror-view: "npm:1.30.2"
     rc-mentions: "npm:^2.15.0"
     rc-switch: "npm:^3.2.2"
-    react-dropdown: "npm:^1.6.2"
     react-i18next: "npm:^13.3.1"
     use-deep-compare-effect: "npm:^1.3.1"
     uuid: "npm:^7.0.3"
-    wax-prosemirror-core: "npm:^0.9.146"
+    wax-prosemirror-core: "npm:^0.10.3"
     y-prosemirror: "npm:1.2.0"
     y-protocols: "npm:1.0.5"
     y-webrtc: "npm:10.2.0"
@@ -21083,18 +21047,17 @@ __metadata:
     yjs: "npm:13.5.38"
   peerDependencies:
     i18next: ^23.6.0
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    styled-components: ^5.3.1
-  checksum: 10c0/a5563eb1f39fdd89b0826556a4dd4b230a2437832540cc8ba6845622af5c1671d198d2b4ec4a959735cac76f66b09d37ae66ffee25323225e8a591c7aa812794
+    react: ^19.2.6
+    react-dom: ^19.2.6
+    styled-components: ^6.4.1
+  checksum: 10c0/08f7a2e22b0d7732b10dcb12baf2e018ce96787bcab6a3322c88ff1183457a5adcfb98d10784327baf0856c420158ec3626f9cae427d124ea822af481ab6cd69
   languageName: node
   linkType: hard
 
-"wax-questions-service@npm:0.9.146":
-  version: 0.9.146
-  resolution: "wax-questions-service@npm:0.9.146"
+"wax-questions-service@npm:0.10.3":
+  version: 0.10.3
+  resolution: "wax-questions-service@npm:0.10.3"
   dependencies:
-    "@pubsweet/ui-toolkit": "npm:^2.3.1"
     inversify: "npm:^5.0.1"
     lodash: "npm:^4.17.4"
     prop-types: "npm:^15.7.2"
@@ -21112,21 +21075,20 @@ __metadata:
     react-i18next: "npm:^13.3.1"
     use-dynamic-refs: "npm:^1.0.0"
     uuid: "npm:^7.0.3"
-    wax-prosemirror-core: "npm:^0.9.146"
+    wax-prosemirror-core: "npm:^0.10.3"
   peerDependencies:
     i18next: ^23.6.0
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    styled-components: ^5.3.1
-  checksum: 10c0/094d85d83eedd952d6e13e425447c4bb98dd7350b0107616f8fb5cd87f24763289e3bcf5ac9966626a390dc3da2ad20baf378d414329db628c8d30537586ecac
+    react: ^19.2.6
+    react-dom: ^19.2.6
+    styled-components: ^6.4.1
+  checksum: 10c0/8b45fe31a7df3c464ee129ff541d9b1a373e7a86ef1ee4a243ac84364ff5d5d1b8b3908bde09861506fc6f88cb58f3b283d227ae51eefd01594c101f7038653e
   languageName: node
   linkType: hard
 
-"wax-table-service@npm:0.9.146":
-  version: 0.9.146
-  resolution: "wax-table-service@npm:0.9.146"
+"wax-table-service@npm:0.10.3":
+  version: 0.10.3
+  resolution: "wax-table-service@npm:0.10.3"
   dependencies:
-    "@pubsweet/ui-toolkit": "npm:^2.3.1"
     inversify: "npm:^5.0.1"
     lodash: "npm:^4.17.4"
     prosemirror-keymap: "npm:1.2.1"
@@ -21135,13 +21097,13 @@ __metadata:
     prosemirror-view: "npm:1.30.2"
     react-i18next: "npm:^13.3.1"
     uuid: "npm:^7.0.3"
-    wax-prosemirror-core: "npm:^0.9.146"
+    wax-prosemirror-core: "npm:^0.10.3"
   peerDependencies:
     i18next: ^23.6.0
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    styled-components: ^5.3.1
-  checksum: 10c0/7d08ecca0d5b89ac99fcf0d5bce2b9c7a7ceba1acdc12928c1451e18981e4f1c7a92ee3d523b4739f007fd3a8517730022b5048c6db78a9a9b9441ad4eea02a0
+    react: ^19.2.6
+    react-dom: ^19.2.6
+    styled-components: ^6.4.1
+  checksum: 10c0/8dc768a926afdc33ffd0cbd79437c644aa5c4084d2f1d85b49ee6985716c9b45da83ef8c73b64fb516252d0a10839dcf57f61bc755e95deff04dd5fcd390faec
   languageName: node
   linkType: hard
 

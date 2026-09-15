@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-const { db } = require('@coko/server')
+const { db, uuid } = require('@coko/server')
 const { cloneDeep } = require('lodash')
 const TeamMember = require('./teamMember/teamMember.model')
 
@@ -119,8 +119,31 @@ const hasRoleHelper = async (userId, objectId, role, global = false) => {
   return !!member
 }
 
+const createFeedback = text => ({
+  type: 'feedback_prompt',
+  attrs: {
+    class: 'feedback-prompt',
+    id: uuid(),
+  },
+  content: [
+    {
+      type: 'paragraph',
+      attrs: {
+        class: 'paragraph',
+      },
+      content: [
+        {
+          type: 'text',
+          text: text || ' ',
+        },
+      ],
+    },
+  ],
+})
+
 module.exports = {
   applyListQueryOptions,
   extractDocumentText,
   hasRoleHelper,
+  createFeedback,
 }

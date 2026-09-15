@@ -7,6 +7,7 @@ const StyledLink = styled(Link)`
   && {
     color: ${th('colorPrimary')};
     text-decoration: underline;
+    text-underline-offset: 2px;
 
     &:hover {
       color: ${th('colorPrimary')};
