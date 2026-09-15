@@ -911,14 +911,20 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           if (question.newEditor) {
             listContent = listContent.concat([isCorrect, ...option.feedback])
           } else {
-            const feedback = new Paragraph({
-              children: [new TextRun({ text: option.feedback })],
-              indent: {
-                left: convertMillimetersToTwip(7),
-              },
+            const feedbackParagraphs = []
+
+            option.feedback.split('\n').forEach(feedbackParagraph => {
+              const feedback = new Paragraph({
+                children: [new TextRun({ text: feedbackParagraph })],
+                indent: {
+                  left: convertMillimetersToTwip(7),
+                },
+              })
+
+              feedbackParagraphs.push(feedback)
             })
 
-            listContent = listContent.concat([isCorrect, feedback])
+            listContent = listContent.concat([isCorrect, ...feedbackParagraphs])
           }
         })
 
@@ -967,14 +973,20 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
           if (question.newEditor) {
             listContent = listContent.concat([isCorrect, ...option.feedback])
           } else {
-            const feedback = new Paragraph({
-              children: [new TextRun({ text: option.feedback })],
-              indent: {
-                left: convertMillimetersToTwip(7),
-              },
+            const feedbackParagraphs = []
+
+            option.feedback.split('\n').forEach(feedbackParagraph => {
+              const feedback = new Paragraph({
+                children: [new TextRun({ text: feedbackParagraph })],
+                indent: {
+                  left: convertMillimetersToTwip(7),
+                },
+              })
+
+              feedbackParagraphs.push(feedback)
             })
 
-            listContent = listContent.concat([isCorrect, feedback])
+            listContent = listContent.concat([isCorrect, ...feedbackParagraphs])
           }
         })
 
@@ -1034,15 +1046,22 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         if (question.newEditor) {
           listContent.push(...question.fillTheGapFeedback[groupId])
         } else {
-          const feedbackParagraph = new Paragraph({
-            children: [
-              new TextRun({
-                text: question.fillTheGapFeedback[groupId],
-              }),
-            ],
-          })
+          const feedbackParagraphs = []
 
-          listContent.push(feedbackParagraph)
+          question.fillTheGapFeedback[groupId]
+            .split('\n')
+            .forEach(feedbackParagraph => {
+              const feedback = new Paragraph({
+                children: [new TextRun({ text: feedbackParagraph })],
+                indent: {
+                  left: convertMillimetersToTwip(7),
+                },
+              })
+
+              feedbackParagraphs.push(feedback)
+            })
+
+          listContent.push(...feedbackParagraphs)
         }
 
         content = content.concat(listContent)
@@ -1096,15 +1115,22 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         if (question.newEditor) {
           listContent.push(...question.matchingFeedback[groupId])
         } else {
-          const feedbackParagraph = new Paragraph({
-            children: [
-              new TextRun({
-                text: question.matchingFeedback[groupId],
-              }),
-            ],
-          })
+          const feedbackParagraphs = []
 
-          listContent.push(feedbackParagraph)
+          question.matchingFeedback[groupId]
+            .split('\n')
+            .forEach(feedbackParagraph => {
+              const feedback = new Paragraph({
+                children: [new TextRun({ text: feedbackParagraph })],
+                indent: {
+                  left: convertMillimetersToTwip(7),
+                },
+              })
+
+              feedbackParagraphs.push(feedback)
+            })
+
+          listContent.push(...feedbackParagraphs)
         }
 
         content = content.concat(listContent)
@@ -1159,15 +1185,22 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         if (question.newEditor) {
           listContent.push(...question.multipleDropdownFeedback[groupId])
         } else {
-          const feedbackParagraph = new Paragraph({
-            children: [
-              new TextRun({
-                text: question.multipleDropdownFeedback[groupId],
-              }),
-            ],
-          })
+          const feedbackParagraphs = []
 
-          listContent.push(feedbackParagraph)
+          question.multipleDropdownFeedback[groupId]
+            .split('\n')
+            .forEach(feedbackParagraph => {
+              const feedback = new Paragraph({
+                children: [new TextRun({ text: feedbackParagraph })],
+                indent: {
+                  left: convertMillimetersToTwip(7),
+                },
+              })
+
+              feedbackParagraphs.push(feedback)
+            })
+
+          listContent.push(...feedbackParagraphs)
         }
 
         content = content.concat(listContent)
@@ -1275,15 +1308,22 @@ class HHMIWaxToDocxConverter extends WaxToDocxConverter {
         if (question.newEditor) {
           listContent.push(...question.numericalFeedback[groupId])
         } else {
-          const feedbacknumerical = new Paragraph({
-            children: [
-              new TextRun({
-                text: question.numericalFeedback[groupId],
-              }),
-            ],
-          })
+          const feedbackParagraphs = []
 
-          listContent.push(feedbacknumerical)
+          question.numericalFeedback[groupId]
+            .split('\n')
+            .forEach(feedbackParagraph => {
+              const feedback = new Paragraph({
+                children: [new TextRun({ text: feedbackParagraph })],
+                indent: {
+                  left: convertMillimetersToTwip(7),
+                },
+              })
+
+              feedbackParagraphs.push(feedback)
+            })
+
+          listContent.push(...feedbackParagraphs)
         }
 
         content = content.concat(listContent)
