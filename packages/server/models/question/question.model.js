@@ -75,6 +75,8 @@ class Question extends BaseModel {
 
   static async duplicateQuestion(id, options = {}) {
     const question = await this.insert({})
+    const newVersions = await this.getVersions(question.id)
+    const questionVersionId = newVersions.result[0].id
 
     const originalQuestionVersions = await this.getVersions(id, {
       latestOnly: true,
@@ -95,8 +97,11 @@ class Question extends BaseModel {
       questionType,
     } = originalQuestionVersions.result[0]
 
-    await QuestionVersion.query(options.trx)
-      .patch({
+    const questionVersion = await QuestionVersion.query(
+      options.trx,
+    ).patchAndFetchById(
+      questionVersionId,
+      {
         questionId: question.id,
         content,
         submitted: false,
@@ -110,8 +115,11 @@ class Question extends BaseModel {
         readingLevel,
         literatureAttribution,
         questionType,
-      })
-      .where('question_id', question.id)
+      },
+      options,
+    )
+
+    await QuestionVersion.upgradeContent(questionVersion.id, options)
     return question
   }
 

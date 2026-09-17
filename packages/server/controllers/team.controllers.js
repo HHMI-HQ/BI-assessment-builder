@@ -15,6 +15,7 @@ const {
 
 const { REVIEWER_STATUSES } = require('./constants')
 const { inviteMaxReviewers } = require('./review.controller')
+const { getUser } = require('./user.controllers')
 
 const metadataValues = require('./metadataValues')
 const CokoNotifier = require('../services/notify')
@@ -252,6 +253,12 @@ const inviteReviewer = async (questionVersionId, reviewerId) => {
     `${actions.DASHBOARD_UPDATED}.${reviewerId}`,
     'reviewer',
   )
+
+  const updatedUser = await getUser(reviewerId)
+
+  subscriptionManager.publish('USER_UPDATED', {
+    userUpdated: updatedUser,
+  })
 
   const notifier = new CokoNotifier()
   notifier.notify('hhmi.reviewerInvited', {
