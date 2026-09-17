@@ -126,18 +126,33 @@ const createFeedback = text => ({
     id: uuid(),
   },
   content: [
-    {
-      type: 'paragraph',
-      attrs: {
-        class: 'paragraph',
-      },
-      content: [
-        {
-          type: 'text',
-          text: text || ' ',
-        },
-      ],
-    },
+    ...(text
+      ? text.split('\n').map(p => ({
+          type: 'paragraph',
+          attrs: {
+            class: 'paragraph',
+          },
+          content: [
+            {
+              type: 'text',
+              text: p || ' ',
+            },
+          ],
+        }))
+      : [
+          {
+            type: 'paragraph',
+            attrs: {
+              class: 'paragraph',
+            },
+            content: [
+              {
+                type: 'text',
+                text: ' ',
+              },
+            ],
+          },
+        ]),
   ],
 })
 

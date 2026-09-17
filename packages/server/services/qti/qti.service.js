@@ -966,12 +966,13 @@ class WaxToQTIConverter {
           })
 
           if (feedback) {
+            const feedbackContent = this.#newEditor
+              ? feedback
+              : [...feedback.split('\n').map(para => ({ p: para }))]
+
             modalFeedback.push({
               // p: `Option ${index + 1}: ${feedback}`,
-              div: [
-                { p: `Option ${index + 1}:` },
-                { div: [...feedback.split('\n').map(para => ({ p: para }))] },
-              ],
+              div: [{ p: `Option ${index + 1}:` }, { div: feedbackContent }],
             })
           }
         })
@@ -1045,12 +1046,13 @@ class WaxToQTIConverter {
             })
 
             if (feedback) {
+              const feedbackContent = this.#newEditor
+                ? feedback
+                : [...feedback.split('\n').map(para => ({ p: para }))]
+
               modalFeedback.push({
                 // p: `Option ${index + 1}: ${feedback}`,
-                div: [
-                  { p: `Option ${index + 1}:` },
-                  { div: [...feedback.split('\n').map(para => ({ p: para }))] },
-                ],
+                div: [{ p: `Option ${index + 1}:` }, { div: feedbackContent }],
               })
             }
           },
