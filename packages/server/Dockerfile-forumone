@@ -1,4 +1,4 @@
-FROM cokoapps/base:20 as server-build
+FROM cokoapps/base:24 as server-build
 
 RUN apt-get update \
     && apt-get upgrade -y \
