@@ -1,4 +1,4 @@
-FROM cokoapps/base-dev:20
+FROM cokoapps/base-dev:24
 
 WORKDIR /home/node/app
 RUN corepack enable

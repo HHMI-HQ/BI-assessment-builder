@@ -1,6 +1,6 @@
 # IMAGE FOR BUILDING
 # FROM node:18.20.2-bullseye-slim
-FROM cokoapps/base:20
+FROM cokoapps/base:24
 
 WORKDIR /home/node/app
 RUN corepack enable

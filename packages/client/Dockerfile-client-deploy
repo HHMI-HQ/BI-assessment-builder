@@ -1,5 +1,5 @@
 # IMAGE FOR BUILDING
-FROM cokoapps/base:20
+FROM cokoapps/base:24
 
 WORKDIR /home/node/ketida
 RUN corepack enable
