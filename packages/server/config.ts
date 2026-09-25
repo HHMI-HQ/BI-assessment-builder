@@ -1,10 +1,11 @@
-const path = require('path')
-const components = require('./components')
-const permissions = require('./permissions')
-const productionChatActivityNotification = require('../services/chatActivityNotifications')
-const emptyTempFolder = require('../services/emptyTemp')
+import path from 'path'
+import components from './config/components'
 
-module.exports = {
+// import permissions from './permissions'
+import productionChatActivityNotification  from './services/chatActivityNotifications'
+import emptyTempFolder from './services/emptyTemp'
+
+export default {
   passwordReset: {
     path: 'password-reset',
   },
@@ -12,7 +13,7 @@ module.exports = {
     from: 'info@hhmi.com',
     path: path.join(__dirname, 'mailer'),
   },
-  permissions,
+  // permissions,
   components,
   db: {},
   subscriptionsDb: {},

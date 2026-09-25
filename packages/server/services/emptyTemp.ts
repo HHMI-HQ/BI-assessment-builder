@@ -5,4 +5,4 @@ const emptyTempFolder = async () => {
   await emptyTemp()
 }
 
-module.exports = emptyTempFolder
+export default emptyTempFolder

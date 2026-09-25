@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { useApolloClient, useSubscription, useLazyQuery } from '@apollo/client'
-import {
-  Route,
-  Switch,
-  Redirect,
-  useLocation,
-  useHistory,
-} from 'react-router-dom'
+import { useApolloClient, useSubscription } from '@apollo/client/react'
+// import {
+//   Route,
+//   Routes,
+//   Redirect,
+//   useLocation,
+//   useHistory,
+// } from 'react-router-dom'
+
+import { Route, Routes, useLocation, useNavigate, Navigate } from 'react-router'
 import styled from 'styled-components'
 
 import {
-  Authenticate,
   PageLayout as Page,
   RequireAuth,
   useCurrentUser,
@@ -22,7 +23,7 @@ import {
   VisuallyHiddenElement,
   Spin,
   ToastNotification,
-} from 'ui'
+} from './ui'
 
 import GlobalStyles from './globalStyles'
 import {
@@ -158,40 +159,53 @@ const regexPaths = [
 const Wrapper = props => {
   const { children } = props
 
-  const { currentUser, setCurrentUser } = useCurrentUser()
+  const { currentUser } = useCurrentUser()
+  const location = useLocation()
 
-  const history = useHistory()
-
-  const [refetchCurrentUser] = useLazyQuery(CURRENT_USER, {
-    fetchPolicy: 'network-only',
-  })
+  // const [refetchCurrentUser] = useLazyQuery(CURRENT_USER, {
+  //   fetchPolicy: 'network-only',
+  // })
 
   useEffect(() => {
-    const path = history.location.pathname
+    const path = location.pathname
     const title = regexPaths.find(p => p.path.test(path))
 
     if (title) {
       document.title = `${title?.name} - HHMI Assessment Builder`
+      document
+          .getElementById('page-announcement')
+          .replaceChildren(title?.name)
     }
 
-    const unlisten = history.listen(val => {
-      const pathName = val.pathname
-      const pathTitle = regexPaths.find(p => p.path.test(pathName))
+  }, [location])
 
-      if (pathTitle) {
-        document
-          .getElementById('page-announcement')
-          .replaceChildren(pathTitle?.name)
+  // useEffect(() => {
+  //   const path = history.location.pathname
+  //   const title = regexPaths.find(p => p.path.test(path))
 
-        document.title = `${pathTitle?.name} - HHMI Assessment Builder`
-      }
-    })
+  //   if (title) {
+  //     document.title = `${title?.name} - HHMI Assessment Builder`
 
-    return unlisten
-  }, [])
+  //   }
+
+  //   const unlisten = history.listen(val => {
+  //     const pathName = val.pathname
+  //     const pathTitle = regexPaths.find(p => p.path.test(pathName))
+
+  //     if (pathTitle) {
+  //       document
+  //         .getElementById('page-announcement')
+  //         .replaceChildren(pathTitle?.name)
+
+  //       document.title = `${pathTitle?.name} - HHMI Assessment Builder`
+  //     }
+  //   })
+
+  //   return unlisten
+  // }, [])
 
   useEffect(() => {
-    const keyDownListener = e => {
+    const keyDownListener = (e: any) => {
       if (e.key === 'Tab') {
         // select only visible antd modal dialog
         const dialog = document.querySelector(
@@ -216,10 +230,10 @@ const Wrapper = props => {
             ].join(', '),
           )
 
-          const firstFocusableElement = focusableElements[0]
+          const firstFocusableElement = focusableElements[0] as HTMLElement | null
 
           const lastFocusableElement =
-            focusableElements[focusableElements.length - 1]
+            focusableElements[focusableElements.length - 1] as HTMLElement | null
 
           if (e.shiftKey) {
             if (document.activeElement === firstFocusableElement) {
@@ -241,28 +255,33 @@ const Wrapper = props => {
 
   useEffect(() => {
     if (
-      currentUser?.profileSubmitted &&
+      // temporary, create a wrapper hook that extends the User type
+      (currentUser as any)?.profileSubmitted &&
       !localStorage.getItem('profileSubmitted')
     ) {
       localStorage.setItem('profileSubmitted', 'true')
     }
 
-    if (
-      currentUser &&
-      !Object.prototype.hasOwnProperty.call(currentUser, 'profileSubmitted')
-    ) {
-      refetchCurrentUser().then(({ data }) => {
-        setCurrentUser(data.currentUser)
-      })
-    }
+    // if (
+    //   currentUser &&
+    //   !Object.prototype.hasOwnProperty.call(currentUser, 'profileSubmitted')
+    // ) {
+    //   refetchCurrentUser().then(({ data }) => {
+    //     setCurrentUser(data.currentUser)
+    //   })
+    // }
   }, [currentUser])
 
-  useSubscription(DELETED_SUBSCRIPTION, {
+  interface DeletedSubscriptionResult {
+    userDeleted: string;
+  }
+
+  useSubscription<DeletedSubscriptionResult>(DELETED_SUBSCRIPTION, {
     onData: ({
       data: {
         data: { userDeleted },
       },
-    }) => {
+    }) => {      
       if (userDeleted === currentUser.id) window.location.href = '/'
     },
   })
@@ -320,17 +339,22 @@ const SiteHeader = () => {
     login: '/login',
   }
 
-  const { currentUser, setCurrentUser } = useCurrentUser()
+  const { currentUser } = useCurrentUser()
   const { unreadMentionsCount } = useNotifications()
   const client = useApolloClient()
-  const history = useHistory()
-  const [currentPath, setCurrentPath] = useState(history.location.pathname)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [currentPath, setCurrentPath] = useState(location.pathname)
 
   useEffect(() => {
-    const unlisten = history.listen(val => setCurrentPath(val.pathname))
+    setCurrentPath(location.pathname)
+  }, [location]);
 
-    return unlisten
-  }, [])
+  // useEffect(() => {
+  //   const unlisten = history.listen(val => setCurrentPath(val.pathname))
+
+  //   return unlisten
+  // }, [])
 
   // inject GTM script
   useEffect(() => {
@@ -365,14 +389,14 @@ const SiteHeader = () => {
   }, [])
 
   const logout = () => {
-    setCurrentUser(null)
+    // setCurrentUser(null)
     client.cache.reset()
 
     localStorage.removeItem('token')
     localStorage.removeItem('dashboardLastUsedTab')
     localStorage.removeItem('profileSubmitted')
 
-    history.push('/login')
+    navigate('/login')
   }
 
   const isAdmin = hasGlobalRole(currentUser, 'admin')
@@ -409,15 +433,15 @@ const RequireProfile = ({ children }) => {
   if (!currentUser) return null
 
   if (!currentUser.isActive && pathname !== '/deactivated-user') {
-    return <Redirect to="/deactivated-user" />
+    return <Navigate replace to="/deactivated-user" />
   }
 
   if (
     pathname !== '/signup-profile' &&
-    !currentUser.profileSubmitted &&
+    !(currentUser as any).profileSubmitted &&
     !localStorage.getItem('profileSubmitted')
   ) {
-    return <Redirect to="/signup-profile" />
+    return <Navigate replace to="/signup-profile" />
   }
 
   return children
@@ -431,8 +455,8 @@ const Authenticated = ({ children }) => {
   )
 }
 
+{/* <Authenticate currentUserQuery={CURRENT_USER} loadingComponent={Loader}> */}
 const routes = (
-  <Authenticate currentUserQuery={CURRENT_USER} loadingComponent={Loader}>
     <Wrapper>
       <GlobalStyles />
       <NotificationsProvider>
@@ -440,85 +464,77 @@ const routes = (
         <MetadataProvider>
           <FiltersProvider>
             <StyledPage fadeInPages={false} padPages={false}>
-              <StyledMain id="main-content" tabIndex="-1">
-                <Switch>
+              <StyledMain id="main-content" tabIndex={-1}>
+                <Routes>
                   <Route
-                    exact
                     path="/signup-profile"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <UserProfile signup />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/dashboard"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <Dashboard />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/discover"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <Discover />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/lists"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <Lists />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/list/:id"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ListContent />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/question/:id/test"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <Question testMode />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/question/:id"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <Question />
                       </Authenticated>
-                    )}
+                    }
                   />
                   <Route
-                    exact
                     path="/manage-users"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ManageUsers />
                       </Authenticated>
-                    )}
+                    }
                   />
                   {/* <Route
                     exact
@@ -531,146 +547,130 @@ const routes = (
                   /> */}
 
                   <Route
-                    exact
                     path="/manage-teams"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <TeamManager />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/manage-resources"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ManageResources />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/manage-metadata"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ManageMetadata />
                       </Authenticated>
-                    )}
+                    }
                   />
 
                   <Route
-                    exact
                     path="/profile"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <UserProfile />
                       </Authenticated>
-                    )}
+                    }
                   />
                   <Route
-                    exact
                     path="/profile/:id"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <UserProfile />
                       </Authenticated>
-                    )}
+                    }
                   />
 
-                  <Route component={Login} exact path="/login" />
-                  <Route component={Signup} exact path="/signup" />
+                  <Route element={Login}  path="/login" />
+                  <Route element={Signup}  path="/signup" />
                   <Route
-                    component={VerifyEmail}
-                    exact
+                    element={VerifyEmail}
                     path="/email-verification/:token"
                   />
                   <Route
-                    component={RequestPasswordReset}
-                    exact
+                    element={RequestPasswordReset}
                     path="/request-password-reset"
                   />
                   <Route
-                    component={ResetPassword}
-                    exact
+                    element={ResetPassword}
                     path="/password-reset/:token"
                   />
                   <Route
-                    component={VerifyCheck}
-                    exact
+                    element={VerifyCheck}
                     path="/ensure-verified-login"
                   />
                   <Route
-                    component={BioInteractiveOauth}
-                    exact
+                    element={BioInteractiveOauth}
                     path="/biointeractive-oauth"
                   />
                   <Route
-                    exact
                     path="/sets"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ComplexItemSetsList />
                       </Authenticated>
-                    )}
+                    }
                   />
                   <Route
                     path="/notifications/"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <Notifications />
                       </Authenticated>
-                    )}
+                    }
                   />
                   <Route
-                    exact
                     path="/set/new"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ComplexItemSet />
                       </Authenticated>
-                    )}
+                    }
                   />
                   {/* individual sets and their questions can be viewed by all visitors */}
                   <Route
-                    exact
                     path="/set/:id"
-                    render={() => (
+                    element={
                       <Authenticated>
                         <ComplexItemSet />
                       </Authenticated>
-                    )}
+                    }
                   />
-                  <Route component={DeactivatedUser} path="/deactivated-user" />
+                  <Route element={DeactivatedUser} path="/deactivated-user" />
                   {/* Static pages hosted elsewhere */}
                   <Route
-                    component={() => (
+                    element={
                       <External ariaLabel="Home page" src="/drupal/" />
-                    )}
-                    exact
+                    }
                     path="/"
                   />
                   <Route
-                    component={() => (
+                    element={
                       <External ariaLabel="About page" src="/drupal/about" />
-                    )}
-                    exact
+                    }
                     path="/about"
                   />
                   <Route
-                    component={() => (
+                    element={
                       <External
                         ariaLabel="Proffessional learning page"
                         src="/drupal/professional-learning"
                       />
-                    )}
-                    exact
+                    }
                     path="/learning"
                   />
-                  <Route component={PageNotFound} path="/404" />
-                  <Route component={PageNotFound} path="*" />
-                </Switch>
+                  <Route element={PageNotFound} path="/404" />
+                  <Route element={PageNotFound} path="*" />
+                </Routes>
               </StyledMain>
               <ToastNotifications />
             </StyledPage>
@@ -686,7 +686,7 @@ const routes = (
         }}
       />
     </Wrapper>
-  </Authenticate>
 )
+// </Authenticate>
 
 export default routes
