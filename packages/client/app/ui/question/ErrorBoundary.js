@@ -25,9 +25,12 @@ class ErrorBoundaryInner extends React.Component {
 
   reset = () => {
     const { onReset } = this.props
+    const tempState = { ...this.state, resetting: true }
+    this.setState(tempState)
 
-    onReset()
-    this.setState({ hasError: false, error: null })
+    onReset().then(() => {
+      this.setState({ hasError: false, error: null })
+    })
   }
 
   validate() {
@@ -100,11 +103,13 @@ class ErrorBoundaryInner extends React.Component {
   }
 
   render() {
-    const { hasError, error } = this.state
+    const { hasError, error, resetting } = this.state
     const { fallback, children } = this.props
 
     if (hasError) {
-      return fallback ? fallback({ error, onReset: this.reset }) : null
+      return fallback
+        ? fallback({ error, onReset: this.reset, resetting })
+        : null
     }
 
     return children
@@ -118,11 +123,11 @@ ErrorBoundaryInner.propTypes = {
 }
 
 // eslint-disable-next-line node/handle-callback-err
-const Fallback = ({ error, onReset }) => {
+const Fallback = ({ error, onReset, resetting }) => {
   return (
     <Result
       extra={
-        <Button onClick={onReset} type="primary">
+        <Button loading={resetting} onClick={onReset} type="primary">
           Reset editor content
         </Button>
       }
@@ -136,6 +141,7 @@ const Fallback = ({ error, onReset }) => {
 Fallback.propTypes = {
   onReset: PropTypes.func.isRequired,
   error: PropTypes.string.isRequired,
+  resetting: PropTypes.bool.isRequired,
 }
 
 const ErrorBoundary = ({ children, content, onReset }) => (

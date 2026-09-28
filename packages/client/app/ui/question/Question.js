@@ -709,9 +709,16 @@ const Question = props => {
   }
 
   const handleContentReset = () => {
-    handleQuestionContentChange({
-      type: 'doc',
-      content: [{ type: 'paragraph', attrs: { class: 'paragraph' } }],
+    return new Promise(resolve => {
+      setAutoSaving(true)
+      onEditorContentAutoSave({
+        type: 'doc',
+        content: [{ type: 'paragraph', attrs: { class: 'paragraph' } }],
+      }).then(({ update }) => {
+        setRefreshEditorContent(update)
+        setAutoSaving(false)
+        resolve()
+      })
     })
   }
 
