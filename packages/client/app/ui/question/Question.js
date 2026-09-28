@@ -708,6 +708,13 @@ const Question = props => {
     return false
   }
 
+  const handleContentReset = () => {
+    handleQuestionContentChange({
+      type: 'doc',
+      content: [{ type: 'paragraph', attrs: { class: 'paragraph' } }],
+    })
+  }
+
   const TermsAndConditions = (
     <Details>
       <summary>Read terms and conditions</summary>
@@ -1998,6 +2005,7 @@ const Question = props => {
                 layout={preview || reviewerView ? TestModeLayout : HhmiLayout}
                 leadingContent={leadingContent}
                 onContentChange={handleQuestionContentChange}
+                onContentReset={handleContentReset}
                 onImageUpload={onImageUpload}
                 published={isPublished}
                 readOnly={
