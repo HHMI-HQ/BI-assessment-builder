@@ -672,10 +672,6 @@ const QuestionPage = props => {
     if (version?.inProduction && !question?.productionChatThreadId) {
       createChat('productionChat')
     }
-
-    // if (version?.underReview && !question?.reviewerChatThreadId) {
-    //   createChat('reviewerChat')
-    // }
   }, [question, version])
 
   useEffect(() => {
