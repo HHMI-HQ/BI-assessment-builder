@@ -2065,6 +2065,11 @@ const newQuestionTypes = [
   },
 ]
 
+const emptyEditorContent = {
+  type: 'doc',
+  content: [{ type: 'paragraph', attrs: { class: 'paragraph' } }],
+}
+
 const extractNode = (fullContent, questionType, nodeId) => {
   const nodeType = questionTypes.find(
     v => v.metadataValue === questionType,
@@ -2509,4 +2514,5 @@ export {
   waitForTextareaAndSetValue,
   extractNode,
   applyNodeFeedback,
+  emptyEditorContent,
 }

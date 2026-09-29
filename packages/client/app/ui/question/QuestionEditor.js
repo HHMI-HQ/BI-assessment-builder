@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { grid, th } from '@coko/client'
 import Wax from '../wax/Wax'
 import { config, hhmiConfig } from '../wax/config'
+import ErrorBoundary from './ErrorBoundary'
 
 // # region styled
 const EditorWrapper = styled.section`
@@ -58,6 +59,7 @@ const QuestionEditor = props => {
     showFeedBack,
     testMode,
     enhancedEditor,
+    onContentReset,
   } = props
 
   const updateKey = useRef(0)
@@ -104,18 +106,26 @@ const QuestionEditor = props => {
       <EditorScrollContainer>
         <ComplexItemSetContext.Provider value={contextValue}>
           {enhancedEditor !== null ? (
-            <Wax
-              config={waxConfig}
-              // content={preserveLocalState ? editorContent : content}
-              content={content && Object.keys(content).length ? content : null}
-              customValues={customValues}
-              innerRef={innerRef}
-              key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
-              layout={layout}
-              onContentChange={!testMode ? onContentChange : () => {}}
-              onImageUpload={onImageUpload}
-              readOnly={readOnly}
-            />
+            <ErrorBoundary
+              content={content}
+              onError={(error, info) => console.error(error, info)}
+              onReset={onContentReset}
+            >
+              <Wax
+                config={waxConfig}
+                // content={preserveLocalState ? editorContent : content}
+                content={
+                  content && Object.keys(content).length ? content : null
+                }
+                customValues={customValues}
+                innerRef={innerRef}
+                key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
+                layout={layout}
+                onContentChange={!testMode ? onContentChange : () => {}}
+                onImageUpload={onImageUpload}
+                readOnly={readOnly}
+              />
+            </ErrorBoundary>
           ) : (
             <span>LOADING...............</span>
           )}
@@ -156,6 +166,7 @@ QuestionEditor.propTypes = {
   showFeedBack: PropTypes.bool,
   testMode: PropTypes.bool,
   enhancedEditor: PropTypes.bool,
+  onContentReset: PropTypes.func,
 }
 
 QuestionEditor.defaultProps = {
@@ -172,6 +183,7 @@ QuestionEditor.defaultProps = {
   showFeedBack: false,
   testMode: false,
   enhancedEditor: null,
+  onContentReset: () => {},
 }
 
 export default QuestionEditor

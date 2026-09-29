@@ -36,6 +36,7 @@ import {
 } from '../common'
 import {
   REVIEWER_STATUSES,
+  emptyEditorContent,
   extractDocumentText,
   // extractNode,
   // applyNodeFeedback,
@@ -706,6 +707,17 @@ const Question = props => {
     }
 
     return false
+  }
+
+  const handleContentReset = () => {
+    return new Promise(resolve => {
+      setAutoSaving(true)
+      onEditorContentAutoSave(emptyEditorContent).then(({ update }) => {
+        setRefreshEditorContent(update)
+        setAutoSaving(false)
+        resolve()
+      })
+    })
   }
 
   const TermsAndConditions = (
@@ -1998,6 +2010,7 @@ const Question = props => {
                 layout={preview || reviewerView ? TestModeLayout : HhmiLayout}
                 leadingContent={leadingContent}
                 onContentChange={handleQuestionContentChange}
+                onContentReset={handleContentReset}
                 onImageUpload={onImageUpload}
                 published={isPublished}
                 readOnly={

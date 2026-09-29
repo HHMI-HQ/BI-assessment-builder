@@ -50,132 +50,150 @@ import {
 import useDynamicRefs from 'use-dynamic-refs'
 import Switch from 'rc-switch'
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
+function _typeof(o) {
+  '@babel/helpers - typeof'
+
+  return (
+    (_typeof =
+      'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
+        ? function (o) {
+            return typeof o
+          }
+        : function (o) {
+            return o &&
+              'function' == typeof Symbol &&
+              o.constructor === Symbol &&
+              o !== Symbol.prototype
+              ? 'symbol'
+              : typeof o
+          }),
+    _typeof(o)
+  )
+}
+
+function toPrimitive(t, r) {
+  if ('object' != _typeof(t) || !t) return t
+  var e = t[Symbol.toPrimitive]
+  if (void 0 !== e) {
+    var i = e.call(t, r || 'default')
+    if ('object' != _typeof(i)) return i
+    throw new TypeError('@@toPrimitive must return a primitive value.')
+  }
+  return ('string' === r ? String : Number)(t)
+}
+
+function toPropertyKey(t) {
+  var i = toPrimitive(t, 'string')
+  return 'symbol' == _typeof(i) ? i : i + ''
+}
+
+function _defineProperties(e, r) {
+  for (var t = 0; t < r.length; t++) {
+    var o = r[t]
+    ;(o.enumerable = o.enumerable || !1),
+      (o.configurable = !0),
+      'value' in o && (o.writable = !0),
+      Object.defineProperty(e, toPropertyKey(o.key), o)
+  }
+}
+function _createClass(e, r, t) {
+  return (
+    r && _defineProperties(e.prototype, r),
+    t && _defineProperties(e, t),
+    Object.defineProperty(e, 'prototype', {
+      writable: !1,
+    }),
+    e
+  )
+}
+
+function _classCallCheck(a, n) {
+  if (!(a instanceof n))
     throw new TypeError('Cannot call a class as a function')
-  }
 }
 
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf =
-    Object.setPrototypeOf ||
-    function _setPrototypeOf(o, p) {
-      o.__proto__ = p
-      return o
-    }
-
-  return _setPrototypeOf(o, p)
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function')
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true,
-    },
-  })
-  if (superClass) _setPrototypeOf(subClass, superClass)
-}
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf
-    ? Object.getPrototypeOf
-    : function _getPrototypeOf(o) {
-        return o.__proto__ || Object.getPrototypeOf(o)
-      }
-  return _getPrototypeOf(o)
+function _getPrototypeOf(t) {
+  return (
+    (_getPrototypeOf = Object.setPrototypeOf
+      ? Object.getPrototypeOf.bind()
+      : function (t) {
+          return t.__proto__ || Object.getPrototypeOf(t)
+        }),
+    _getPrototypeOf(t)
+  )
 }
 
 function _isNativeReflectConstruct() {
-  if (typeof Reflect === 'undefined' || !Reflect.construct) return false
-  if (Reflect.construct.sham) return false
-  if (typeof Proxy === 'function') return true
-
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}))
-    return true
-  } catch (e) {
-    return false
-  }
+    var t = !Boolean.prototype.valueOf.call(
+      Reflect.construct(Boolean, [], function () {}),
+    )
+  } catch (t) {}
+  return (_isNativeReflectConstruct = function _isNativeReflectConstruct() {
+    return !!t
+  })()
 }
 
-function _typeof(obj) {
-  '@babel/helpers - typeof'
-
-  if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
-    _typeof = function _typeof(obj) {
-      return typeof obj
-    }
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj &&
-        typeof Symbol === 'function' &&
-        obj.constructor === Symbol &&
-        obj !== Symbol.prototype
-        ? 'symbol'
-        : typeof obj
-    }
-  }
-
-  return _typeof(obj)
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
+function _assertThisInitialized(e) {
+  if (void 0 === e)
     throw new ReferenceError(
       "this hasn't been initialised - super() hasn't been called",
     )
-  }
-
-  return self
+  return e
 }
 
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === 'object' || typeof call === 'function')) {
-    return call
-  }
-
-  return _assertThisInitialized(self)
+function _possibleConstructorReturn(t, e) {
+  if (e && ('object' == _typeof(e) || 'function' == typeof e)) return e
+  if (void 0 !== e)
+    throw new TypeError(
+      'Derived constructors may only return object or undefined',
+    )
+  return _assertThisInitialized(t)
 }
 
-function _createSuper(Derived) {
-  return function () {
-    var Super = _getPrototypeOf(Derived),
-      result
-
-    if (_isNativeReflectConstruct()) {
-      var NewTarget = _getPrototypeOf(this).constructor
-      result = Reflect.construct(Super, arguments, NewTarget)
-    } else {
-      result = Super.apply(this, arguments)
-    }
-
-    return _possibleConstructorReturn(this, result)
-  }
+function _callSuper(t, o, e) {
+  return (
+    (o = _getPrototypeOf(o)),
+    _possibleConstructorReturn(
+      t,
+      _isNativeReflectConstruct()
+        ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor)
+        : o.apply(t, e),
+    )
+  )
 }
 
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i]
-    descriptor.enumerable = descriptor.enumerable || false
-    descriptor.configurable = true
-    if ('value' in descriptor) descriptor.writable = true
-    Object.defineProperty(target, descriptor.key, descriptor)
-  }
+function _setPrototypeOf(t, e) {
+  return (
+    (_setPrototypeOf = Object.setPrototypeOf
+      ? Object.setPrototypeOf.bind()
+      : function (t, e) {
+          return (t.__proto__ = e), t
+        }),
+    _setPrototypeOf(t, e)
+  )
 }
 
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps)
-  if (staticProps) _defineProperties(Constructor, staticProps)
-  return Constructor
+function _inherits(t, e) {
+  if ('function' != typeof e && null !== e)
+    throw new TypeError('Super expression must either be null or a function')
+  ;(t.prototype = Object.create(e && e.prototype, {
+    constructor: {
+      value: t,
+      writable: !0,
+      configurable: !0,
+    },
+  })),
+    Object.defineProperty(t, 'prototype', {
+      writable: !1,
+    }),
+    e && _setPrototypeOf(t, e)
 }
 
-var createEmptyParagraph = function createEmptyParagraph(context, newAnswerId) {
+var createEmptyParagraph$1 = function createEmptyParagraph(
+  context,
+  newAnswerId,
+) {
   if (context.pmViews[newAnswerId]) {
     context.pmViews[newAnswerId].dispatch(
       context.pmViews[newAnswerId].state.tr.setSelection(
@@ -185,7 +203,6 @@ var createEmptyParagraph = function createEmptyParagraph(context, newAnswerId) {
         ),
       ),
     )
-
     if (context.pmViews[newAnswerId].dispatch) {
       var type = context.pmViews.main.state.schema.nodes.paragraph
       context.pmViews[newAnswerId].dispatch(
@@ -194,7 +211,6 @@ var createEmptyParagraph = function createEmptyParagraph(context, newAnswerId) {
           .setMeta('exludeToHistoryFromOutside', true),
       )
     }
-
     context.pmViews[newAnswerId].dispatch(
       context.pmViews[newAnswerId].state.tr.setSelection(
         TextSelection.between(
@@ -206,7 +222,6 @@ var createEmptyParagraph = function createEmptyParagraph(context, newAnswerId) {
     context.pmViews[newAnswerId].focus()
   }
 }
-
 var checkifEmpty = function checkifEmpty(view) {
   var state = view.state
   var _state$selection = state.selection,
@@ -215,7 +230,6 @@ var checkifEmpty = function checkifEmpty(view) {
   state.doc.nodesBetween(from, to, function (node) {
     if (node.textContent !== ' ') Commands.simulateKey(view, 13, 'Enter')
   })
-
   if (state.selection instanceof GapCursor) {
     Commands.simulateKey(view, 13, 'Enter')
     setTimeout(function () {
@@ -223,7 +237,6 @@ var checkifEmpty = function checkifEmpty(view) {
     })
   }
 }
-
 var createOptions = function createOptions(
   main,
   context,
@@ -253,6 +266,7 @@ var createOptions = function createOptions(
   var firstFeedback = feedbackType.create(
     {
       id: v4(),
+      optionId: firstOption.attrs.id,
     },
     Fragment.empty,
   )
@@ -265,6 +279,7 @@ var createOptions = function createOptions(
   var secondFeedback = feedbackType.create(
     {
       id: v4(),
+      secondOption: firstOption.attrs.id,
     },
     Fragment.empty,
   )
@@ -285,60 +300,48 @@ var createOptions = function createOptions(
   dispatch(tr)
   setTimeout(function () {
     context.pmViews[question.attrs.id].focus()
-    createEmptyParagraph(context, firstOption.attrs.id)
-    createEmptyParagraph(context, firstFeedback.attrs.id)
-    createEmptyParagraph(context, secondOption.attrs.id)
-    createEmptyParagraph(context, secondFeedback.attrs.id)
-    createEmptyParagraph(context, question.attrs.id)
+    createEmptyParagraph$1(context, firstOption.attrs.id)
+    createEmptyParagraph$1(context, firstFeedback.attrs.id)
+    createEmptyParagraph$1(context, secondOption.attrs.id)
+    createEmptyParagraph$1(context, secondFeedback.attrs.id)
+    createEmptyParagraph$1(context, question.attrs.id)
   }, 50)
   return true
 }
-
 var helpers = {
-  createEmptyParagraph: createEmptyParagraph,
+  createEmptyParagraph: createEmptyParagraph$1,
   checkifEmpty: checkifEmpty,
   createOptions: createOptions,
 }
 
-function _taggedTemplateLiteral(strings, raw) {
-  if (!raw) {
-    raw = strings.slice(0)
-  }
-
-  return Object.freeze(
-    Object.defineProperties(strings, {
-      raw: {
-        value: Object.freeze(raw),
-      },
-    }),
+function _taggedTemplateLiteral(e, t) {
+  return (
+    t || (t = e.slice(0)),
+    Object.freeze(
+      Object.defineProperties(e, {
+        raw: {
+          value: Object.freeze(t),
+        },
+      }),
+    )
   )
 }
 
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(['\n  ', '\n'])
-
-  _templateObject2 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(['\n  pointer-events: none;\n'])
-
-  _templateObject = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var activeStyles = css(_templateObject())
-var StyledButton = styled(MenuButton)(_templateObject2(), function (props) {
-  return props.active && activeStyles
-})
-
-var ToolBarBtn = function ToolBarBtn(_ref) {
+var _templateObject$C, _templateObject2$r
+var activeStyles$1 = css(
+  _templateObject$C ||
+    (_templateObject$C = _taggedTemplateLiteral([
+      '\n  pointer-events: none;\n',
+    ])),
+)
+var StyledButton$1 = styled(MenuButton)(
+  _templateObject2$r ||
+    (_templateObject2$r = _taggedTemplateLiteral(['\n  ', '\n'])),
+  function (props) {
+    return props.active && activeStyles$1
+  },
+)
+var ToolBarBtn$1 = function ToolBarBtn(_ref) {
   var _ref$view = _ref.view,
     view = _ref$view === void 0 ? {} : _ref$view,
     item = _ref.item
@@ -347,11 +350,9 @@ var ToolBarBtn = function ToolBarBtn(_ref) {
     select = item.select,
     title = item.title
   var context = useContext(WaxContext)
-
   var _useContext = useContext(WaxContext),
     main = _useContext.pmViews.main,
     activeView = _useContext.activeView
-
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -360,7 +361,7 @@ var ToolBarBtn = function ToolBarBtn(_ref) {
   if (!isEditable) isDisabled = true
   var ToolBarBtnComponent = useMemo(
     function () {
-      return /*#__PURE__*/ React.createElement(StyledButton, {
+      return /*#__PURE__*/ React.createElement(StyledButton$1, {
         active: false,
         disabled: isDisabled,
         iconName: icon,
@@ -377,14 +378,9 @@ var ToolBarBtn = function ToolBarBtn(_ref) {
   return ToolBarBtnComponent
 }
 
-var _dec, _class, _temp
-
-var createEmptyParagraph$1 = function createEmptyParagraph(
-  context,
-  newAnswerId,
-) {
+var _dec$d, _class$d
+var createEmptyParagraph = function createEmptyParagraph(context, newAnswerId) {
   var pmViews = context.pmViews
-
   if (pmViews[newAnswerId]) {
     pmViews[newAnswerId].dispatch(
       pmViews[newAnswerId].state.tr.setSelection(
@@ -394,7 +390,6 @@ var createEmptyParagraph$1 = function createEmptyParagraph(
         ),
       ),
     )
-
     if (pmViews[newAnswerId].dispatch) {
       var type = pmViews.main.state.schema.nodes.paragraph
       pmViews[newAnswerId].dispatch(
@@ -403,7 +398,6 @@ var createEmptyParagraph$1 = function createEmptyParagraph(
           .setMeta('exludeToHistoryFromOutside', true),
       )
     }
-
     pmViews[newAnswerId].dispatch(
       pmViews[newAnswerId].state.tr.setSelection(
         TextSelection.between(
@@ -415,158 +409,137 @@ var createEmptyParagraph$1 = function createEmptyParagraph(
     pmViews[newAnswerId].focus()
   }
 }
-
 var EssayQuestion =
-  ((_dec = injectable()),
-  _dec(
-    (_class =
-      ((_temp = /*#__PURE__*/ (function (_Tools) {
-        _inherits(EssayQuestion, _Tools)
-
-        var _super = _createSuper(EssayQuestion)
-
-        function EssayQuestion() {
-          var _this
-
-          _classCallCheck(this, EssayQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add Essay Question'
-          _this.icon = 'essay'
-          _this.name = 'Essay'
-          _this.label = ''
-
-          _this.select = function (state, activeView) {
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            if (from === null || disallowedTools.includes('Essay'))
-              status = false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$d = injectable()),
+  _dec$d(
+    (_class$d = /*#__PURE__*/ (function (_Tools) {
+      function EssayQuestion() {
+        var _this
+        _classCallCheck(this, EssayQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(EssayQuestion, [
-          {
-            key: 'renderTool',
-            value: function renderTool(view) {
-              if (isEmpty(view)) return null
-              return this.isDisplayed()
-                ? /*#__PURE__*/ React.createElement(ToolBarBtn, {
-                    item: this.toJSON(),
-                    key: v4(),
-                    view: view,
-                  })
-                : null
-            },
-          },
-          {
-            key: 'run',
-            get: function get() {
-              return function (main, context) {
-                helpers.checkifEmpty(main)
-                var state = main.state,
-                  dispatch = main.dispatch
-                /* Create Wrapping */
-
-                var _state$selection2 = state.selection,
-                  $from = _state$selection2.$from,
-                  $to = _state$selection2.$to
-                var range = $from.blockRange($to)
-                var tr = state.tr
-                var wrapping =
-                  range &&
-                  findWrapping(
-                    range,
-                    state.config.schema.nodes.essay_container,
-                    {
-                      id: v4(),
-                    },
-                  )
-                if (!wrapping) return false
-                tr.wrap(range, wrapping)
-                var map = tr.mapping.maps[0]
-                var newPos = 0
-                map.forEach(function (_from, _to, _newFrom, newTo) {
-                  newPos = newTo
+        _this = _callSuper(this, EssayQuestion, [].concat(args))
+        _this.title = 'Add Essay Question'
+        _this.icon = 'essay'
+        _this.name = 'Essay'
+        _this.label = ''
+        _this.select = function (state, activeView) {
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          if (from === null || disallowedTools.includes('Essay')) status = false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(EssayQuestion, _Tools)
+      return _createClass(EssayQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (main, context) {
+              helpers.checkifEmpty(main)
+              var state = main.state,
+                dispatch = main.dispatch
+              /* Create Wrapping */
+              var _state$selection2 = state.selection,
+                $from = _state$selection2.$from,
+                $to = _state$selection2.$to
+              var range = $from.blockRange($to)
+              var tr = state.tr
+              var wrapping =
+                range &&
+                findWrapping(range, state.config.schema.nodes.essay_container, {
+                  id: v4(),
                 })
-                tr.setSelection(TextSelection.create(tr.doc, range.$to.pos))
-                var essayQuestion =
-                  state.config.schema.nodes.essay_question.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.empty,
-                  )
-                var essayPrompt = state.config.schema.nodes.essay_prompt.create(
+              if (!wrapping) return false
+              tr.wrap(range, wrapping)
+              var map = tr.mapping.maps[0]
+              var newPos = 0
+              map.forEach(function (_from, _to, _newFrom, newTo) {
+                newPos = newTo
+              })
+              tr.setSelection(TextSelection.create(tr.doc, range.$to.pos))
+              var essayQuestion =
+                state.config.schema.nodes.essay_question.create(
                   {
                     id: v4(),
                   },
                   Fragment.empty,
                 )
-                var essayAnswer = state.config.schema.nodes.essay_answer.create(
-                  {
-                    id: v4(),
-                  },
-                  Fragment.empty,
+              var essayPrompt = state.config.schema.nodes.essay_prompt.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              var essayAnswer = state.config.schema.nodes.essay_answer.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              tr.replaceSelectionWith(essayQuestion)
+              tr.setSelection(TextSelection.create(tr.doc, newPos))
+              tr.replaceSelectionWith(essayPrompt)
+              tr.setSelection(TextSelection.create(tr.doc, newPos + 1))
+              tr.replaceSelectionWith(essayAnswer)
+              dispatch(tr)
+              setTimeout(function () {
+                createEmptyParagraph(context, essayAnswer.attrs.id)
+                createEmptyParagraph(context, essayPrompt.attrs.id)
+                createEmptyParagraph(context, essayQuestion.attrs.id)
+              }, 150)
+              return true
+            }
+          },
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.essay_container,
                 )
-                tr.replaceSelectionWith(essayQuestion)
-                tr.setSelection(TextSelection.create(tr.doc, newPos))
-                tr.replaceSelectionWith(essayPrompt)
-                tr.setSelection(TextSelection.create(tr.doc, newPos + 1))
-                tr.replaceSelectionWith(essayAnswer)
-                dispatch(tr)
-                setTimeout(function () {
-                  createEmptyParagraph$1(context, essayAnswer.attrs.id)
-                  createEmptyParagraph$1(context, essayPrompt.attrs.id)
-                  createEmptyParagraph$1(context, essayQuestion.attrs.id)
-                }, 150)
+              ) {
                 return true
               }
-            },
+              return false
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.essay_container,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
-              }
-            },
+        },
+        {
+          key: 'renderTool',
+          value: function renderTool(view) {
+            if (isEmpty(view)) return null
+            return this.isDisplayed()
+              ? /*#__PURE__*/ React.createElement(ToolBarBtn$1, {
+                  item: this.toJSON(),
+                  key: v4(),
+                  view: view,
+                })
+              : null
           },
-        ])
-
-        return EssayQuestion
-      })(Tools)),
-      _temp)),
-  ) || _class)
+        },
+      ])
+    })(Tools)),
+  ) || _class$d)
 
 var essayContainerNode = {
   attrs: {
@@ -636,6 +609,7 @@ var essayQuestionNode = {
   group: 'block questions',
   content: 'block*',
   // defining: true,
+
   parseDOM: [
     {
       tag: 'div.essay-question',
@@ -680,48 +654,52 @@ var essayAnswerNode = {
   },
 }
 
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true,
-    })
-  } else {
-    obj[key] = value
+function _defineProperty(e, r, t) {
+  return (
+    (r = toPropertyKey(r)) in e
+      ? Object.defineProperty(e, r, {
+          value: t,
+          enumerable: !0,
+          configurable: !0,
+          writable: !0,
+        })
+      : (e[r] = t),
+    e
+  )
+}
+
+function _arrayLikeToArray(r, a) {
+  ;(null == a || a > r.length) && (a = r.length)
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]
+  return n
+}
+
+function _arrayWithoutHoles(r) {
+  if (Array.isArray(r)) return _arrayLikeToArray(r)
+}
+
+function _iterableToArray(r) {
+  if (
+    ('undefined' != typeof Symbol && null != r[Symbol.iterator]) ||
+    null != r['@@iterator']
+  )
+    return Array.from(r)
+}
+
+function _unsupportedIterableToArray(r, a) {
+  if (r) {
+    if ('string' == typeof r) return _arrayLikeToArray(r, a)
+    var t = {}.toString.call(r).slice(8, -1)
+    return (
+      'Object' === t && r.constructor && (t = r.constructor.name),
+      'Map' === t || 'Set' === t
+        ? Array.from(r)
+        : 'Arguments' === t ||
+          /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t)
+        ? _arrayLikeToArray(r, a)
+        : void 0
+    )
   }
-
-  return obj
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i]
-  }
-
-  return arr2
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray(arr)
-}
-
-function _iterableToArray(iter) {
-  if (typeof Symbol !== 'undefined' && Symbol.iterator in Object(iter))
-    return Array.from(iter)
-}
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return
-  if (typeof o === 'string') return _arrayLikeToArray(o, minLen)
-  var n = Object.prototype.toString.call(o).slice(8, -1)
-  if (n === 'Object' && o.constructor) n = o.constructor.name
-  if (n === 'Map' || n === 'Set') return Array.from(n)
-  if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray(o, minLen)
 }
 
 function _nonIterableSpread() {
@@ -730,11 +708,11 @@ function _nonIterableSpread() {
   )
 }
 
-function _toConsumableArray(arr) {
+function _toConsumableArray(r) {
   return (
-    _arrayWithoutHoles(arr) ||
-    _iterableToArray(arr) ||
-    _unsupportedIterableToArray(arr) ||
+    _arrayWithoutHoles(r) ||
+    _iterableToArray(r) ||
+    _unsupportedIterableToArray(r) ||
     _nonIterableSpread()
   )
 }
@@ -746,7 +724,6 @@ var Placeholder = function (props) {
     props: {
       decorations: function decorations(state) {
         var decorations = []
-
         var decorate = function decorate(node, pos) {
           if (
             node.type.isBlock &&
@@ -761,7 +738,6 @@ var Placeholder = function (props) {
             )
           }
         }
-
         state.doc.descendants(decorate)
         return DecorationSet.create(state.doc, decorations)
       },
@@ -778,7 +754,6 @@ var FakeCursorPlugin = function (props) {
       init: function init(_, state) {},
       apply: function apply(tr, prev, _, newState) {
         var createDecoration
-
         if (
           newState.selection.from === newState.selection.to &&
           Commands.isInTable(newState)
@@ -791,7 +766,6 @@ var FakeCursorPlugin = function (props) {
             }),
           ])
         }
-
         return {
           createDecoration: createDecoration,
         }
@@ -808,7 +782,6 @@ var FakeCursorPlugin = function (props) {
         focus: function focus(view, event) {
           event.preventDefault()
           var fakeCursor = document.getElementById('fake-cursor')
-
           if (fakeCursor) {
             if (
               navigator.userAgent.includes('Firefox') &&
@@ -822,14 +795,12 @@ var FakeCursorPlugin = function (props) {
         },
         blur: function blur(view, event) {
           event.preventDefault()
-
           if (view && event.relatedTarget === null) {
             setTimeout(function () {
               view.focus()
             })
           } else {
             var fakeCursor = document.getElementById('fake-cursor')
-
             if (fakeCursor) {
               if (
                 navigator.userAgent.includes('Firefox') &&
@@ -847,66 +818,43 @@ var FakeCursorPlugin = function (props) {
   })
 }
 
-function _templateObject4() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject4 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  float: right;\n  margin-top: 16px;\n  position: relative;\n',
-  ])
-
-  _templateObject3 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$1() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: none;\n  display: flex;\n  flex: 2 1 auto;\n  justify-content: left;\n  padding: ',
-    ";\n  width: 100%;\n\n  .ProseMirror {\n    white-space: break-spaces;\n    width: 100%;\n    word-wrap: break-word;\n\n    &:focus {\n      outline: none;\n    }\n\n    :empty::before {\n      color: #aaa;\n      content: 'Type your item';\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject2$1 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$1() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-bottom: 3px solid #f5f5f7;\n  height: 30px;\n',
-  ])
-
-  _templateObject$1 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var DeleteArea = styled.div(_templateObject$1())
-var EditorWrapper = styled.div(_templateObject2$1(), function (props) {
-  return props.$usePadding ? '0px 20px 10px 20px' : '0px'
-})
-var ActionButton = styled.button(_templateObject3())
-var StyledIconActionRemove = styled(Icon)(_templateObject4())
-
-var WaxOverlays = function WaxOverlays() {
+var _templateObject$B,
+  _templateObject2$q,
+  _templateObject3$n,
+  _templateObject4$m
+var DeleteArea = styled.div(
+  _templateObject$B ||
+    (_templateObject$B = _taggedTemplateLiteral([
+      '\n  border-bottom: 3px solid #f5f5f7;\n  height: 30px;\n',
+    ])),
+)
+var EditorWrapper$7 = styled.div(
+  _templateObject2$q ||
+    (_templateObject2$q = _taggedTemplateLiteral([
+      '\n  border: none;\n  display: flex;\n  flex: 2 1 auto;\n  justify-content: left;\n  padding: ',
+      ";\n  width: 100%;\n\n  .ProseMirror {\n    white-space: break-spaces;\n    width: 100%;\n    word-wrap: break-word;\n\n    &:focus {\n      outline: none;\n    }\n\n    :empty::before {\n      color: #aaa;\n      content: 'Type your item';\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+  function (props) {
+    return props.$usePadding ? '0px 20px 10px 20px' : '0px'
+  },
+)
+var ActionButton$9 = styled.button(
+  _templateObject3$n ||
+    (_templateObject3$n = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  float: right;\n  margin-top: 16px;\n  position: relative;\n',
+    ])),
+)
+var StyledIconActionRemove$4 = styled(Icon)(
+  _templateObject4$m ||
+    (_templateObject4$m = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var WaxOverlays$1 = function WaxOverlays() {
   return true
 }
-
 var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
   var _node$attrs
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos,
@@ -921,10 +869,8 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
     _ref$showDelete = _ref.showDelete,
     showDelete = _ref$showDelete === void 0 ? false : _ref$showDelete
   var editorRef = useRef()
-
   var _useContext = useContext(ApplicationContext),
     app = _useContext.app
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var questionView
@@ -939,7 +885,6 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
   })
   if (forceEditable) isEditable = true
   var finalPlugins = [FakeCursorPlugin(), gapCursor(), dropCursor()]
-
   var createKeyBindings = function createKeyBindings() {
     var keys = getKeys()
     Object.keys(baseKeymap).forEach(function (key) {
@@ -951,7 +896,6 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
     })
     return keys
   }
-
   var pressEnter = function pressEnter(state, dispatch) {
     if (state.selection.node && state.selection.node.type.name === 'image') {
       var _state$selection = state.selection,
@@ -961,16 +905,14 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
       var pos = $from.before(same)
       dispatch(state.tr.setSelection(NodeSelection.create(state.doc, pos)))
       return true
-    } // LISTS
-
+    }
+    // LISTS
     if (splitListItem(state.schema.nodes.list_item)(state)) {
       splitListItem(state.schema.nodes.list_item)(state, dispatch)
       return true
     }
-
     return false
   }
-
   var getKeys = function getKeys() {
     return {
       'Mod-z': function ModZ() {
@@ -984,7 +926,6 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
       Enter: pressEnter,
     }
   }
-
   var filteredplugins = app.PmPlugins.getAll().filter(function (plugin) {
     return (
       !plugin.key.includes('y-sync') &&
@@ -996,18 +937,16 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
   var plugins = [keymap(createKeyBindings())].concat(
     _toConsumableArray(filteredplugins),
   )
-
   var createPlaceholder = function createPlaceholder(placeholder) {
     return Placeholder({
       content: placeholder,
     })
   }
-
   finalPlugins = finalPlugins.concat(
     [createPlaceholder(placeholderText)].concat(_toConsumableArray(plugins)),
   )
   useEffect(function () {
-    WaxOverlays = ComponentPlugin('waxOverlays')
+    WaxOverlays$1 = ComponentPlugin('waxOverlays')
     questionView = new EditorView(
       {
         mount: editorRef.current,
@@ -1054,37 +993,30 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
           spellcheck: 'false',
         },
       },
-    ) // Set Each note into Wax's Context
+    )
 
+    // Set Each note into Wax's Context
     context.updateView(
       _defineProperty({}, questionId, questionView),
       questionId,
     )
     if (questionView.hasFocus()) questionView.focus()
   }, [])
-
   var dispatchTransaction = function dispatchTransaction(tr) {
     var addToHistory = !tr.getMeta('exludeToHistoryFromOutside')
-
     var _questionView$state$a = questionView.state.applyTransaction(tr),
       state = _questionView$state$a.state,
       transactions = _questionView$state$a.transactions
-
     questionView.updateState(state)
     context.updateView({}, questionId)
-
     if (!tr.getMeta('fromOutside')) {
       var outerTr = view.state.tr
       var offsetMap = StepMap.offset(getPos() + 1)
-
       for (var i = 0; i < transactions.length; i++) {
         var steps = transactions[i].steps
-
-        for (var j = 0; j < steps.length; j++) {
+        for (var j = 0; j < steps.length; j++)
           outerTr.step(steps[j].map(offsetMap))
-        }
       }
-
       if (outerTr.docChanged)
         view.dispatch(
           outerTr
@@ -1093,9 +1025,8 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
         )
     }
   }
-
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes(context.pmViews.main)
+    var allNodes = getNodes$k(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       context.pmViews.main.dispatch(
         context.pmViews.main.state.tr['delete'](
@@ -1105,7 +1036,6 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
       )
     })
   }
-
   return /*#__PURE__*/ React.createElement(
     React.Fragment,
     null,
@@ -1114,33 +1044,32 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
         DeleteArea,
         null,
         /*#__PURE__*/ React.createElement(
-          ActionButton,
+          ActionButton$9,
           {
             'aria-label': 'delete this question',
             onClick: removeQuestion,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconActionRemove, {
+          /*#__PURE__*/ React.createElement(StyledIconActionRemove$4, {
             name: 'deleteOutlinedQuestion',
           }),
         ),
       ),
     /*#__PURE__*/ React.createElement(
-      EditorWrapper,
+      EditorWrapper$7,
       {
         $usePadding: showDelete && QuestionType !== 'EssayQuestion',
       },
       /*#__PURE__*/ React.createElement('div', {
         ref: editorRef,
       }),
-      /*#__PURE__*/ React.createElement(WaxOverlays, {
+      /*#__PURE__*/ React.createElement(WaxOverlays$1, {
         activeViewId: questionId,
       }),
     ),
   )
 }
-
-var getNodes = function getNodes(view) {
+var getNodes$k = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var fillTheGapContainerNodes = []
   allNodes.forEach(function (node) {
@@ -1178,18 +1107,14 @@ var EssayQuestionComponent = function (_ref) {
   })
 }
 
-function _templateObject$2() {
-  var data = _taggedTemplateLiteral(['\n  display: ', ';\n'])
-
-  _templateObject$2 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$1 = styled.div(_templateObject$2(), function (props) {
-  return props.$testMode ? 'none' : 'block'
-})
+var _templateObject$A
+var EditorWrapper$6 = styled.div(
+  _templateObject$A ||
+    (_templateObject$A = _taggedTemplateLiteral(['\n  display: ', ';\n'])),
+  function (props) {
+    return props.$testMode ? 'none' : 'block'
+  },
+)
 var EssayPromptComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -1199,7 +1124,7 @@ var EssayPromptComponent = function (_ref) {
   var customProps = main.props.customValues
   var testMode = customProps.testMode
   return /*#__PURE__*/ React.createElement(
-    EditorWrapper$1,
+    EditorWrapper$6,
     {
       $testMode: testMode,
     },
@@ -1213,18 +1138,14 @@ var EssayPromptComponent = function (_ref) {
   )
 }
 
-function _templateObject$3() {
-  var data = _taggedTemplateLiteral(['\n  display: ', ';\n'])
-
-  _templateObject$3 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$2 = styled.div(_templateObject$3(), function (props) {
-  return props.$testMode || props.$showFeedBack ? 'block' : 'none'
-})
+var _templateObject$z
+var EditorWrapper$5 = styled.div(
+  _templateObject$z ||
+    (_templateObject$z = _taggedTemplateLiteral(['\n  display: ', ';\n'])),
+  function (props) {
+    return props.$testMode || props.$showFeedBack ? 'block' : 'none'
+  },
+)
 var EssayAnswerComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -1235,7 +1156,7 @@ var EssayAnswerComponent = function (_ref) {
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
   return /*#__PURE__*/ React.createElement(
-    EditorWrapper$2,
+    EditorWrapper$5,
     {
       $showFeedBack: showFeedBack,
       $testMode: testMode,
@@ -1252,10 +1173,6 @@ var EssayAnswerComponent = function (_ref) {
 }
 
 var EssayQuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(EssayQuestionNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(EssayQuestionNodeView)
-
   function EssayQuestionNodeView(
     node,
     view,
@@ -1266,11 +1183,8 @@ var EssayQuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, EssayQuestionNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, EssayQuestionNodeView, [
       node,
       view,
       getPos,
@@ -1278,15 +1192,15 @@ var EssayQuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(EssayQuestionNodeView, _QuestionsNodeView)
+  return _createClass(
     EssayQuestionNodeView,
     [
       {
@@ -1298,7 +1212,6 @@ var EssayQuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -1313,15 +1226,9 @@ var EssayQuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return EssayQuestionNodeView
 })(QuestionsNodeView)
 
 var EssayPromptNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(EssayPromptNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(EssayPromptNodeView)
-
   function EssayPromptNodeView(
     node,
     view,
@@ -1332,11 +1239,8 @@ var EssayPromptNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, EssayPromptNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, EssayPromptNodeView, [
       node,
       view,
       getPos,
@@ -1344,15 +1248,15 @@ var EssayPromptNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(EssayPromptNodeView, _QuestionsNodeView)
+  return _createClass(
     EssayPromptNodeView,
     [
       {
@@ -1364,7 +1268,6 @@ var EssayPromptNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -1379,15 +1282,9 @@ var EssayPromptNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return EssayPromptNodeView
 })(QuestionsNodeView)
 
 var EssayAnswerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(EssayAnswerNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(EssayAnswerNodeView)
-
   function EssayAnswerNodeView(
     node,
     view,
@@ -1398,11 +1295,8 @@ var EssayAnswerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, EssayAnswerNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, EssayAnswerNodeView, [
       node,
       view,
       getPos,
@@ -1410,15 +1304,15 @@ var EssayAnswerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(EssayAnswerNodeView, _QuestionsNodeView)
+  return _createClass(
     EssayAnswerNodeView,
     [
       {
@@ -1438,22 +1332,15 @@ var EssayAnswerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return EssayAnswerNodeView
 })(QuestionsNodeView)
 
 var EssayService = /*#__PURE__*/ (function (_Service) {
-  _inherits(EssayService, _Service)
-
-  var _super = _createSuper(EssayService)
-
   function EssayService() {
     _classCallCheck(this, EssayService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, EssayService, arguments)
   }
-
-  _createClass(EssayService, [
+  _inherits(EssayService, _Service)
+  return _createClass(EssayService, [
     {
       key: 'register',
       value: function register() {
@@ -1490,119 +1377,103 @@ var EssayService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return EssayService
 })(Service)
 
-var _dec$1, _class$1, _temp$1
+var _dec$c, _class$c
 var FillTheGapQuestion =
-  ((_dec$1 = injectable()),
-  _dec$1(
-    (_class$1 =
-      ((_temp$1 = /*#__PURE__*/ (function (_Tools) {
-        _inherits(FillTheGapQuestion, _Tools)
-
-        var _super = _createSuper(FillTheGapQuestion)
-
-        function FillTheGapQuestion() {
-          var _this
-
-          _classCallCheck(this, FillTheGapQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add Fill The Gap Question'
-          _this.icon = 'gapQuestion'
-          _this.name = 'Fill The Gap'
-
-          _this.select = function (state, activeViewId, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null || disallowedTools.includes('FillTheGap'))
-              return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$c = injectable()),
+  _dec$c(
+    (_class$c = /*#__PURE__*/ (function (_Tools) {
+      function FillTheGapQuestion() {
+        var _this
+        _classCallCheck(this, FillTheGapQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(FillTheGapQuestion, [
-          {
-            key: 'run',
-            get: function get() {
-              return function (main) {
-                helpers.checkifEmpty(main)
-                var state = main.state,
-                  dispatch = main.dispatch
-                var _state$selection2 = state.selection,
-                  from = _state$selection2.from,
-                  to = _state$selection2.to
-                var container =
-                  state.config.schema.nodes.fill_the_gap_container.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.empty,
-                  )
-                var feedback = state.config.schema.nodes.feedback_prompt.create(
+        _this = _callSuper(this, FillTheGapQuestion, [].concat(args))
+        _this.title = 'Add Fill The Gap Question'
+        _this.icon = 'gapQuestion'
+        _this.name = 'Fill The Gap'
+        _this.select = function (state, activeViewId, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null || disallowedTools.includes('FillTheGap'))
+            return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(FillTheGapQuestion, _Tools)
+      return _createClass(FillTheGapQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (main) {
+              helpers.checkifEmpty(main)
+              var state = main.state,
+                dispatch = main.dispatch
+              var _state$selection2 = state.selection,
+                from = _state$selection2.from,
+                to = _state$selection2.to
+              var container =
+                state.config.schema.nodes.fill_the_gap_container.create(
                   {
                     id: v4(),
                   },
                   Fragment.empty,
                 )
-                var wrapper =
-                  state.config.schema.nodes.fill_the_gap_wrapper.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.from([container, feedback]),
-                  )
-                var tr = state.tr
-                tr.replaceWith(from, to, wrapper)
-                dispatch(tr)
-              }
-            },
+              var feedback = state.config.schema.nodes.feedback_prompt.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              var wrapper =
+                state.config.schema.nodes.fill_the_gap_wrapper.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.from([container, feedback]),
+                )
+              var tr = state.tr
+              tr.replaceWith(from, to, wrapper)
+              dispatch(tr)
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.fill_the_gap_container,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.fill_the_gap_container,
+                )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-        ])
-
-        return FillTheGapQuestion
-      })(Tools)),
-      _temp$1)),
-  ) || _class$1)
+        },
+      ])
+    })(Tools)),
+  ) || _class$c)
 
 var fillTheGapContainerNode = {
   attrs: {
@@ -1698,125 +1569,95 @@ var fillTheGapWrapperNode = {
   },
 }
 
-var _dec$2, _class$2, _temp$2
+var _dec$b, _class$b
 var CreateGap =
-  ((_dec$2 = injectable()),
-  _dec$2(
-    (_class$2 =
-      ((_temp$2 = /*#__PURE__*/ (function (_Tools) {
-        _inherits(CreateGap, _Tools)
-
-        var _super = _createSuper(CreateGap)
-
-        function CreateGap() {
-          var _this
-
-          _classCallCheck(this, CreateGap)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Create Gap Option'
-          _this.icon = 'insertGap'
-          _this.name = 'Create Gap'
-          _this.label = 'Insert answers'
-
-          _this.select = function (state, activeViewId, activeView) {
-            if (
-              activeView.props.type &&
-              activeView.props.type === 'filltheGapContaier'
-            )
-              return true
-            return false
-          }
-
-          return _this
+  ((_dec$b = injectable()),
+  _dec$b(
+    (_class$b = /*#__PURE__*/ (function (_Tools) {
+      function CreateGap() {
+        var _this
+        _classCallCheck(this, CreateGap)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(CreateGap, [
-          {
-            key: 'run',
-            get: function get() {
-              return function (state, dispatch, activeView, context) {
-                var _state$selection = state.selection,
-                  empty = _state$selection.empty,
-                  $from = _state$selection.$from,
-                  $to = _state$selection.$to
-                var content = Fragment.empty
-                if (
-                  !empty &&
-                  $from.sameParent($to) &&
-                  $from.parent.inlineContent
+        _this = _callSuper(this, CreateGap, [].concat(args))
+        _this.title = 'Create Gap Option'
+        _this.icon = 'insertGap'
+        _this.name = 'Create Gap'
+        _this.label = 'Insert answers'
+        _this.select = function (state, activeViewId, activeView) {
+          if (
+            activeView.props.type &&
+            activeView.props.type === 'filltheGapContaier'
+          )
+            return true
+          return false
+        }
+        return _this
+      }
+      _inherits(CreateGap, _Tools)
+      return _createClass(CreateGap, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (state, dispatch, activeView, context) {
+              var _state$selection = state.selection,
+                empty = _state$selection.empty,
+                $from = _state$selection.$from,
+                $to = _state$selection.$to
+              var content = Fragment.empty
+              if (!empty && $from.sameParent($to) && $from.parent.inlineContent)
+                content = $from.parent.content.cut(
+                  $from.parentOffset,
+                  $to.parentOffset,
                 )
-                  content = $from.parent.content.cut(
-                    $from.parentOffset,
-                    $to.parentOffset,
-                  )
-                var createGap = state.config.schema.nodes.fill_the_gap.create(
-                  {
-                    id: v4(),
-                  },
-                  content,
-                )
-                dispatch(state.tr.replaceSelectionWith(createGap))
-                setTimeout(function () {
-                  context.pmViews[createGap.attrs.id].focus()
-                }, 100)
-              }
-            },
+              var createGap = state.config.schema.nodes.fill_the_gap.create(
+                {
+                  id: v4(),
+                },
+                content,
+              )
+              dispatch(state.tr.replaceSelectionWith(createGap))
+              setTimeout(function () {
+                context.pmViews[createGap.attrs.id].focus()
+              }, 100)
+            }
           },
-        ])
+        },
+      ])
+    })(Tools)),
+  ) || _class$b)
 
-        return CreateGap
-      })(Tools)),
-      _temp$2)),
-  ) || _class$2)
-
-var _dec$3, _class$3, _temp$3
+var _dec$a, _class$a
 var FillTheGap =
-  ((_dec$3 = injectable()),
-  _dec$3(
-    (_class$3 =
-      ((_temp$3 = /*#__PURE__*/ (function (_ToolGroup) {
-        _inherits(FillTheGap, _ToolGroup)
-
-        var _super = _createSuper(FillTheGap)
-
-        function FillTheGap(CreateGap) {
-          var _this
-
-          _classCallCheck(this, FillTheGap)
-
-          _this = _super.call(this)
-          _this.tools = []
-          _this.tools = [CreateGap]
-          return _this
-        }
-
-        FillTheGap = inject('CreateGap')(FillTheGap, undefined, 0) || FillTheGap
-        return FillTheGap
-      })(ToolGroup)),
-      _temp$3)),
-  ) || _class$3)
+  ((_dec$a = injectable()),
+  _dec$a(
+    (_class$a = /*#__PURE__*/ (function (_ToolGroup) {
+      function FillTheGap(CreateGap) {
+        var _this
+        _classCallCheck(this, FillTheGap)
+        _this = _callSuper(this, FillTheGap)
+        _this.tools = []
+        _this.tools = [CreateGap]
+        return _this
+      }
+      FillTheGap = inject('CreateGap')(FillTheGap, undefined, 0) || FillTheGap
+      _inherits(FillTheGap, _ToolGroup)
+      return _createClass(FillTheGap)
+    })(ToolGroup)),
+  ) || _class$a)
 
 var FillTheGapToolGroupService = /*#__PURE__*/ (function (_Service) {
-  _inherits(FillTheGapToolGroupService, _Service)
-
-  var _super = _createSuper(FillTheGapToolGroupService)
-
   function FillTheGapToolGroupService() {
     _classCallCheck(this, FillTheGapToolGroupService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, FillTheGapToolGroupService, arguments)
   }
-
-  _createClass(FillTheGapToolGroupService, [
+  _inherits(FillTheGapToolGroupService, _Service)
+  return _createClass(FillTheGapToolGroupService, [
     {
       key: 'register',
       value: function register() {
@@ -1824,20 +1665,12 @@ var FillTheGapToolGroupService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return FillTheGapToolGroupService
 })(Service)
 
-var FillTheGapQuestionService = /*#__PURE__*/ (function (_Service) {
-  _inherits(FillTheGapQuestionService, _Service)
-
-  var _super = _createSuper(FillTheGapQuestionService)
-
+var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
   function FillTheGapQuestionService() {
     var _this
-
     _classCallCheck(this, FillTheGapQuestionService)
-
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -1845,13 +1678,12 @@ var FillTheGapQuestionService = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
+    _this = _callSuper(this, FillTheGapQuestionService, [].concat(args))
     _this.dependencies = [new FillTheGapToolGroupService()]
     return _this
   }
-
-  _createClass(FillTheGapQuestionService, [
+  _inherits(FillTheGapQuestionService, _Service)
+  return _createClass(FillTheGapQuestionService, [
     {
       key: 'register',
       value: function register() {
@@ -1859,15 +1691,9 @@ var FillTheGapQuestionService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return FillTheGapQuestionService
 })(Service)
 
 var FillTheGapContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(FillTheGapContainerNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(FillTheGapContainerNodeView)
-
   function FillTheGapContainerNodeView(
     node,
     view,
@@ -1878,11 +1704,8 @@ var FillTheGapContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, FillTheGapContainerNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, FillTheGapContainerNodeView, [
       node,
       view,
       getPos,
@@ -1890,15 +1713,15 @@ var FillTheGapContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(FillTheGapContainerNodeView, _QuestionsNodeView)
+  return _createClass(
     FillTheGapContainerNodeView,
     [
       {
@@ -1913,7 +1736,6 @@ var FillTheGapContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           if (event.target.type === 'textarea' || !event.target.type) {
             return true
           }
-
           return (
             this.context.pmViews[this.node.attrs.id] !== undefined &&
             event.target !== undefined &&
@@ -1931,15 +1753,9 @@ var FillTheGapContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return FillTheGapContainerNodeView
 })(QuestionsNodeView)
 
 var FillTheGapNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(FillTheGapNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(FillTheGapNodeView)
-
   function FillTheGapNodeView(
     node,
     view,
@@ -1950,11 +1766,8 @@ var FillTheGapNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, FillTheGapNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, FillTheGapNodeView, [
       node,
       view,
       getPos,
@@ -1962,15 +1775,15 @@ var FillTheGapNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(FillTheGapNodeView, _QuestionsNodeView)
+  return _createClass(
     FillTheGapNodeView,
     [
       {
@@ -1999,43 +1812,47 @@ var FillTheGapNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return FillTheGapNodeView
 })(QuestionsNodeView)
 
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr
+function _arrayWithHoles(r) {
+  if (Array.isArray(r)) return r
 }
 
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === 'undefined' || !(Symbol.iterator in Object(arr))) return
-  var _arr = []
-  var _n = true
-  var _d = false
-  var _e = undefined
-
-  try {
-    for (
-      var _i = arr[Symbol.iterator](), _s;
-      !(_n = (_s = _i.next()).done);
-      _n = true
-    ) {
-      _arr.push(_s.value)
-
-      if (i && _arr.length === i) break
-    }
-  } catch (err) {
-    _d = true
-    _e = err
-  } finally {
+function _iterableToArrayLimit(r, l) {
+  var t =
+    null == r
+      ? null
+      : ('undefined' != typeof Symbol && r[Symbol.iterator]) || r['@@iterator']
+  if (null != t) {
+    var e,
+      n,
+      i,
+      u,
+      a = [],
+      f = !0,
+      o = !1
     try {
-      if (!_n && _i['return'] != null) _i['return']()
+      if (((i = (t = t.call(r)).next), 0 === l)) {
+        if (Object(t) !== t) return
+        f = !1
+      } else
+        for (
+          ;
+          !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l);
+          f = !0
+        );
+    } catch (r) {
+      ;(o = !0), (n = r)
     } finally {
-      if (_d) throw _e
+      try {
+        if (!f && null != t['return'] && ((u = t['return']()), Object(u) !== u))
+          return
+      } finally {
+        if (o) throw n
+      }
     }
+    return a
   }
-
-  return _arr
 }
 
 function _nonIterableRest() {
@@ -2044,11 +1861,11 @@ function _nonIterableRest() {
   )
 }
 
-function _slicedToArray(arr, i) {
+function _slicedToArray(r, e) {
   return (
-    _arrayWithHoles(arr) ||
-    _iterableToArrayLimit(arr, i) ||
-    _unsupportedIterableToArray(arr, i) ||
+    _arrayWithHoles(r) ||
+    _iterableToArrayLimit(r, e) ||
+    _unsupportedIterableToArray(r, e) ||
     _nonIterableRest()
   )
 }
@@ -2058,29 +1875,21 @@ var grid = function grid(value) {
     return 'calc('.concat(props.theme.gridUnit, ' * ').concat(value, ')')
   }
 }
-
 var th = function th(name) {
   return function (props) {
     return get(props.theme, name)
   }
 }
 
-function _templateObject$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  > .ProseMirror {\n    padding: 5px;\n    &:focus {\n      outline: none;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n',
-  ])
-
-  _templateObject$4 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$3 = styled.div(_templateObject$4())
-
-var ContainerEditor = function ContainerEditor(_ref) {
+var _templateObject$y
+var EditorWrapper$4 = styled.div(
+  _templateObject$y ||
+    (_templateObject$y = _taggedTemplateLiteral([
+      '\n  > .ProseMirror {\n    padding: 5px;\n    &:focus {\n      outline: none;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n',
+    ])),
+)
+var ContainerEditor$2 = function ContainerEditor(_ref) {
   var _node$attrs
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos,
@@ -2088,10 +1897,8 @@ var ContainerEditor = function ContainerEditor(_ref) {
     _ref$isNotEditable = _ref.isNotEditable,
     isNotEditable = _ref$isNotEditable === void 0 ? false : _ref$isNotEditable
   var editorRef = useRef()
-
   var _useContext = useContext(ApplicationContext),
     app = _useContext.app
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var gapContainerView
@@ -2106,7 +1913,6 @@ var ContainerEditor = function ContainerEditor(_ref) {
   })
   if (isNotEditable) isEditable = false
   var finalPlugins = []
-
   var createKeyBindings = function createKeyBindings() {
     var keys = getKeys()
     Object.keys(baseKeymap).forEach(function (key) {
@@ -2114,7 +1920,6 @@ var ContainerEditor = function ContainerEditor(_ref) {
     })
     return keys
   }
-
   var getKeys = function getKeys() {
     return {
       'Mod-z': function ModZ() {
@@ -2125,7 +1930,6 @@ var ContainerEditor = function ContainerEditor(_ref) {
       },
     }
   }
-
   var filteredplugins = app.PmPlugins.getAll().filter(function (plugin) {
     return (
       !plugin.key.includes('y-sync') &&
@@ -2177,35 +1981,29 @@ var ContainerEditor = function ContainerEditor(_ref) {
           spellcheck: 'false',
         },
       },
-    ) // Set Each note into Wax's Context
+    )
 
+    // Set Each note into Wax's Context
     context.updateView(
       _defineProperty({}, questionId, gapContainerView),
       questionId,
     )
     gapContainerView.focus()
   }, [])
-
   var dispatchTransaction = function dispatchTransaction(tr) {
     var _gapContainerView$sta = gapContainerView.state.applyTransaction(tr),
       state = _gapContainerView$sta.state,
       transactions = _gapContainerView$sta.transactions
-
     gapContainerView.updateState(state)
     context.updateView({}, questionId)
-
     if (!tr.getMeta('fromOutside')) {
       var outerTr = view.state.tr
       var offsetMap = StepMap.offset(getPos() + 1)
-
       for (var i = 0; i < transactions.length; i++) {
         var steps = transactions[i].steps
-
-        for (var j = 0; j < steps.length; j++) {
+        for (var j = 0; j < steps.length; j++)
           outerTr.step(steps[j].map(offsetMap))
-        }
       }
-
       if (outerTr.docChanged)
         view.dispatch(
           outerTr
@@ -2214,9 +2012,8 @@ var ContainerEditor = function ContainerEditor(_ref) {
         )
     }
   }
-
   return /*#__PURE__*/ React.createElement(
-    EditorWrapper$3,
+    EditorWrapper$4,
     null,
     /*#__PURE__*/ React.createElement('div', {
       ref: editorRef,
@@ -2224,80 +2021,48 @@ var ContainerEditor = function ContainerEditor(_ref) {
   )
 }
 
-function _templateObject6() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject6 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: -11px;\n  float: right;\n',
-  ])
-
-  _templateObject5 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$1() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: ',
-    ';\n  border-radius: 4px;\n  bottom: 32px;\n  color: #fff;\n  display: none;\n  float: right;\n  padding: 4px;\n  position: relative;\n  left: 60px;\n',
-  ])
-
-  _templateObject4$1 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$1() {
-  var data = _taggedTemplateLiteral([
-    '\n  position: relative;\n  right: 4px;\n  cursor: pointer;\n  height: 24px;\n  width: 24px;\n',
-  ])
-
-  _templateObject3$1 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$2() {
-  var data = _taggedTemplateLiteral(['\n  float: right;\n'])
-
-  _templateObject2$2 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-bottom: 3px solid #f5f5f7;\n\n  span:first-of-type {\n    position: relative;\n    top: 3px;\n  }\n',
-  ])
-
-  _templateObject$5 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var FillTheGapContainerTool = styled.div(_templateObject$5())
-var StyledIconContainer = styled.span(_templateObject2$2())
-var StyledIconAction = styled(Icon)(_templateObject3$1())
-var InfoMsg = styled.div(_templateObject4$1(), th('colorPrimary'))
-var ActionButton$1 = styled.button(_templateObject5())
-var StyledIconActionRemove$1 = styled(Icon)(_templateObject6())
+var _templateObject$x,
+  _templateObject2$p,
+  _templateObject3$m,
+  _templateObject4$l,
+  _templateObject5$f,
+  _templateObject6$e
+var FillTheGapContainerTool = styled.div(
+  _templateObject$x ||
+    (_templateObject$x = _taggedTemplateLiteral([
+      '\n  border-bottom: 3px solid #f5f5f7;\n\n  span:first-of-type {\n    position: relative;\n    top: 3px;\n  }\n',
+    ])),
+)
+var StyledIconContainer$1 = styled.span(
+  _templateObject2$p ||
+    (_templateObject2$p = _taggedTemplateLiteral(['\n  float: right;\n'])),
+)
+var StyledIconAction$8 = styled(Icon)(
+  _templateObject3$m ||
+    (_templateObject3$m = _taggedTemplateLiteral([
+      '\n  position: relative;\n  right: 4px;\n  cursor: pointer;\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var InfoMsg$1 = styled.div(
+  _templateObject4$l ||
+    (_templateObject4$l = _taggedTemplateLiteral([
+      '\n  background: ',
+      ';\n  border-radius: 4px;\n  bottom: 32px;\n  color: #fff;\n  display: none;\n  float: right;\n  padding: 4px;\n  position: relative;\n  left: 60px;\n',
+    ])),
+  th('colorPrimary'),
+)
+var ActionButton$8 = styled.button(
+  _templateObject5$f ||
+    (_templateObject5$f = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: -11px;\n  float: right;\n',
+    ])),
+)
+var StyledIconActionRemove$3 = styled(Icon)(
+  _templateObject6$e ||
+    (_templateObject6$e = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
 var FillTheGapContainerComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -2305,12 +2070,10 @@ var FillTheGapContainerComponent = function (_ref) {
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var infoMsgRef = useRef()
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     infoMsgIsOpen = _useState2[0],
     setInfoMsgIsOpen = _useState2[1]
-
   var FillTheGapTool = ComponentPlugin('fillTheGap')
   var customProps = main.props.customValues
   var testMode = customProps.testMode
@@ -2318,7 +2081,6 @@ var FillTheGapContainerComponent = function (_ref) {
     return editable
   })
   var readOnly = !isEditable
-
   var displayInfoMsg = function displayInfoMsg() {
     if (infoMsgRef.current && !infoMsgIsOpen)
       infoMsgRef.current.style.display = 'inline'
@@ -2326,12 +2088,10 @@ var FillTheGapContainerComponent = function (_ref) {
       infoMsgRef.current.style.display = 'none'
     setInfoMsgIsOpen(!infoMsgIsOpen)
   }
-
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$1(context.pmViews.main)
+    var allNodes = getNodes$j(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
-
       var containerId =
         (_singleNode$node$cont = singleNode.node.content.content.find(function (
           n,
@@ -2340,7 +2100,6 @@ var FillTheGapContainerComponent = function (_ref) {
         })) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
-
       if (containerId === node.attrs.id) {
         context.pmViews.main.dispatch(
           context.pmViews.main.state.tr['delete'](
@@ -2351,7 +2110,6 @@ var FillTheGapContainerComponent = function (_ref) {
       }
     })
   }
-
   return /*#__PURE__*/ React.createElement(
     'div',
     {
@@ -2367,30 +2125,30 @@ var FillTheGapContainerComponent = function (_ref) {
           null,
           /*#__PURE__*/ React.createElement(FillTheGapTool, null),
           /*#__PURE__*/ React.createElement(
-            StyledIconContainer,
+            StyledIconContainer$1,
             {
               onClick: displayInfoMsg,
               onKeyPress: function onKeyPress() {},
               role: 'button',
               tabIndex: 0,
             },
-            /*#__PURE__*/ React.createElement(StyledIconAction, {
+            /*#__PURE__*/ React.createElement(StyledIconAction$8, {
               name: 'help',
             }),
           ),
           /*#__PURE__*/ React.createElement(
-            ActionButton$1,
+            ActionButton$8,
             {
               'aria-label': 'delete this question',
               onClick: removeQuestion,
               type: 'button',
             },
-            /*#__PURE__*/ React.createElement(StyledIconActionRemove$1, {
+            /*#__PURE__*/ React.createElement(StyledIconActionRemove$3, {
               name: 'deleteOutlinedQuestion',
             }),
           ),
           /*#__PURE__*/ React.createElement(
-            InfoMsg,
+            InfoMsg$1,
             {
               ref: infoMsgRef,
             },
@@ -2403,7 +2161,7 @@ var FillTheGapContainerComponent = function (_ref) {
       {
         className: 'fill-the-gap',
       },
-      /*#__PURE__*/ React.createElement(ContainerEditor, {
+      /*#__PURE__*/ React.createElement(ContainerEditor$2, {
         disallowedTools: [
           'Images',
           'Lists',
@@ -2419,8 +2177,7 @@ var FillTheGapContainerComponent = function (_ref) {
     ),
   )
 }
-
-var getNodes$1 = function getNodes(view) {
+var getNodes$j = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var fillTheGapContainerNodes = []
   allNodes.forEach(function (node) {
@@ -2431,70 +2188,51 @@ var getNodes$1 = function getNodes(view) {
   return fillTheGapContainerNodes
 }
 
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object)
-
+function ownKeys(e, r) {
+  var t = Object.keys(e)
   if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object)
-    if (enumerableOnly)
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable
-      })
-    keys.push.apply(keys, symbols)
+    var o = Object.getOwnPropertySymbols(e)
+    r &&
+      (o = o.filter(function (r) {
+        return Object.getOwnPropertyDescriptor(e, r).enumerable
+      })),
+      t.push.apply(t, o)
   }
-
-  return keys
+  return t
+}
+function _objectSpread2(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {}
+    r % 2
+      ? ownKeys(Object(t), !0).forEach(function (r) {
+          _defineProperty(e, r, t[r])
+        })
+      : Object.getOwnPropertyDescriptors
+      ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t))
+      : ownKeys(Object(t)).forEach(function (r) {
+          Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r))
+        })
+  }
+  return e
 }
 
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {}
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key])
-      })
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source))
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(
-          target,
-          key,
-          Object.getOwnPropertyDescriptor(source, key),
-        )
-      })
-    }
-  }
-
-  return target
-}
-
-function _templateObject$6() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: none;\n  border-bottom: 1px solid black;\n  color: #535e76;\n  display: inline-flex;\n  width: 120px;\n\n  &:focus {\n    outline: none;\n  }\n',
-  ])
-
-  _templateObject$6 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var AnswerInput = styled.input(_templateObject$6())
+var _templateObject$w
+var AnswerInput = styled.input(
+  _templateObject$w ||
+    (_templateObject$w = _taggedTemplateLiteral([
+      '\n  border: none;\n  border-bottom: 1px solid black;\n  color: #535e76;\n  display: inline-flex;\n  width: 120px;\n\n  &:focus {\n    outline: none;\n  }\n',
+    ])),
+)
 var InputComponent = function (_ref) {
   var node = _ref.node
   var context = useContext(WaxContext)
   var main = context.pmViews.main
-
   var _useState = useState(''),
     _useState2 = _slicedToArray(_useState, 2),
     answer = _useState2[0],
     setAnswer = _useState2[1]
-
   var answerRef = useRef(null)
   useEffect(function () {}, [])
-
   var handleKeyDown = function handleKeyDown(e) {
     if (e.key === 'Backspace') {
       main.dispatch(
@@ -2504,10 +2242,9 @@ var InputComponent = function (_ref) {
       )
     }
   }
-
   var setAnswerInput = function setAnswerInput() {
     setAnswer(answerRef.current.value)
-    var allNodes = getNodes$2(main)
+    var allNodes = getNodes$i(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -2526,13 +2263,11 @@ var InputComponent = function (_ref) {
       }
     })
   }
-
   var onFocus = function onFocus() {
     main.dispatch(
       main.state.tr.setSelection(TextSelection.create(main.state.tr.doc, null)),
     )
   }
-
   return /*#__PURE__*/ React.createElement(AnswerInput, {
     'aria-label': 'answer input',
     onChange: setAnswerInput,
@@ -2543,8 +2278,7 @@ var InputComponent = function (_ref) {
     value: answer,
   })
 }
-
-var getNodes$2 = function getNodes(main) {
+var getNodes$i = function getNodes(main) {
   var allNodes = DocumentHelpers.findInlineNodes(main.state.doc)
   var fillTheGapNodes = []
   allNodes.forEach(function (node) {
@@ -2555,57 +2289,36 @@ var getNodes$2 = function getNodes(main) {
   return fillTheGapNodes
 }
 
-function _templateObject3$2() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-bottom: 1px solid green;\n  margin-right: 5px;\n',
-  ])
-
-  _templateObject3$2 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$3() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-bottom: 1px solid black;\n  margin-right: 5px;\n  color: ',
-    ';\n',
-  ])
-
-  _templateObject2$3 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$7() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: inline-flex;\n\n  > .ProseMirror {\n    border-bottom: 1px solid #a6a6a6 !important;\n    border-radius: 4px;\n    box-shadow: none;\n    color: #008000;\n    display: inline;\n    min-width: 50px;\n    padding: 0px 2px 0px 2px !important;\n    white-space: break-spaces;\n    width: auto;\n    word-wrap: break-word;\n\n    &:focus {\n      outline: none;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n',
-  ])
-
-  _templateObject$7 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$4 = styled.span(_templateObject$7())
-var StudentAnswer = styled.span(_templateObject2$3(), function (props) {
-  return props.$isCorrect ? ' #008000' : 'red'
-})
-var CorrectAnswers = styled.span(_templateObject3$2())
-
-var EditorComponent = function EditorComponent(_ref) {
+var _templateObject$v, _templateObject2$o, _templateObject3$l
+var EditorWrapper$3 = styled.span(
+  _templateObject$v ||
+    (_templateObject$v = _taggedTemplateLiteral([
+      '\n  display: inline-flex;\n\n  > .ProseMirror {\n    border-bottom: 1px solid #a6a6a6 !important;\n    border-radius: 4px;\n    box-shadow: none;\n    color: #008000;\n    display: inline;\n    min-width: 50px;\n    padding: 0px 2px 0px 2px !important;\n    white-space: break-spaces;\n    width: auto;\n    word-wrap: break-word;\n\n    &:focus {\n      outline: none;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n',
+    ])),
+)
+var StudentAnswer = styled.span(
+  _templateObject2$o ||
+    (_templateObject2$o = _taggedTemplateLiteral([
+      '\n  border-bottom: 1px solid black;\n  margin-right: 5px;\n  color: ',
+      ';\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? ' #008000' : 'red'
+  },
+)
+var CorrectAnswers = styled.span(
+  _templateObject3$l ||
+    (_templateObject3$l = _taggedTemplateLiteral([
+      '\n  border-bottom: 1px solid green;\n  margin-right: 5px;\n',
+    ])),
+)
+var EditorComponent$1 = function EditorComponent(_ref) {
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
   var editorRef = useRef()
-
   var _useContext = useContext(ApplicationContext),
     app = _useContext.app
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var _main$props$customVal = main.props.customValues,
@@ -2617,7 +2330,6 @@ var EditorComponent = function EditorComponent(_ref) {
     return editable
   })
   var finalPlugins = []
-
   var createKeyBindings = function createKeyBindings() {
     var keys = getKeys()
     Object.keys(baseKeymap).forEach(function (key) {
@@ -2625,7 +2337,6 @@ var EditorComponent = function EditorComponent(_ref) {
     })
     return keys
   }
-
   var getKeys = function getKeys() {
     return {
       'Mod-z': function ModZ() {
@@ -2636,7 +2347,6 @@ var EditorComponent = function EditorComponent(_ref) {
       },
     }
   }
-
   var filteredplugins = app.PmPlugins.getAll().filter(function (plugin) {
     return (
       !plugin.key.includes('y-sync') &&
@@ -2696,53 +2406,51 @@ var EditorComponent = function EditorComponent(_ref) {
           spellcheck: 'false',
         },
       },
-    ) // Set Each note into Wax's Context
+    )
 
+    // Set Each note into Wax's Context
     context.updateView(_defineProperty({}, questionId, gapView), questionId)
     gapView.focus()
   }, [])
-
   var dispatchTransaction = function dispatchTransaction(tr) {
     var _gapView$state$applyT = gapView.state.applyTransaction(tr),
       state = _gapView$state$applyT.state,
       transactions = _gapView$state$applyT.transactions
-
     gapView.updateState(state)
     context.updateView({}, questionId)
-
     if (!tr.getMeta('fromOutside')) {
       var outerTr = view.state.tr
       var offsetMap = StepMap.offset(getPos() + 1)
-
       for (var i = 0; i < transactions.length; i += 1) {
         var steps = transactions[i].steps
-
-        for (var j = 0; j < steps.length; j += 1) {
+        for (var j = 0; j < steps.length; j += 1)
           outerTr.step(steps[j].map(offsetMap))
-        }
       }
-
       if (outerTr.docChanged)
         view.dispatch(outerTr.setMeta('outsideView', questionId))
     }
   }
-
   var isCorrect = false
-
   if (
     node.textContent.split(';').find(function (element) {
-      return element === node.attrs.answer.trim()
+      var _node$attrs$answer
+      return (
+        element ===
+        ((_node$attrs$answer = node.attrs.answer) === null ||
+        _node$attrs$answer === void 0
+          ? void 0
+          : _node$attrs$answer.trim())
+      )
     })
   ) {
     isCorrect = true
   }
-
   return (
     (isEditable &&
       !testMode &&
       !showFeedBack &&
       /*#__PURE__*/ React.createElement(
-        EditorWrapper$4,
+        EditorWrapper$3,
         null,
         /*#__PURE__*/ React.createElement('div', {
           ref: editorRef,
@@ -2752,7 +2460,7 @@ var EditorComponent = function EditorComponent(_ref) {
       !testMode &&
       !showFeedBack &&
       /*#__PURE__*/ React.createElement(
-        EditorWrapper$4,
+        EditorWrapper$3,
         null,
         /*#__PURE__*/ React.createElement('div', {
           ref: editorRef,
@@ -2791,7 +2499,7 @@ var GapComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
-  return /*#__PURE__*/ React.createElement(EditorComponent, {
+  return /*#__PURE__*/ React.createElement(EditorComponent$1, {
     getPos: getPos,
     node: node,
     view: view,
@@ -2806,6 +2514,9 @@ var feedbackNode = {
     id: {
       default: v4(),
     },
+    optionId: {
+      default: null,
+    },
   },
   group: 'block questions',
   content: 'block*',
@@ -2817,20 +2528,27 @@ var feedbackNode = {
         return {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
+          optionId: dom.getAttribute('data-option-id'),
         }
       },
     },
   ],
   toDOM: function toDOM(node) {
-    return ['div', node.attrs, 0]
+    return [
+      'div',
+      _objectSpread2(
+        _objectSpread2({}, node.attrs),
+        {},
+        {
+          'data-option-id': node.attrs.optionId,
+        },
+      ),
+      0,
+    ]
   },
 }
 
 var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(FeedbackNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(FeedbackNodeView)
-
   function FeedbackNodeView(
     node,
     view,
@@ -2841,11 +2559,8 @@ var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, FeedbackNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, FeedbackNodeView, [
       node,
       view,
       getPos,
@@ -2853,15 +2568,15 @@ var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(FeedbackNodeView, _QuestionsNodeView)
+  return _createClass(
     FeedbackNodeView,
     [
       {
@@ -2875,7 +2590,6 @@ var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -2890,76 +2604,40 @@ var FeedbackNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return FeedbackNodeView
 })(QuestionsNodeView)
 
-function _templateObject$8() {
-  var data = _taggedTemplateLiteral([
-    '\n  --space: 2.5rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n\n  > * {\n    /* \u2193 Any extant vertical margins are removed */\n    margin-bottom: 0;\n    margin-top: 0;\n  }\n\n  > * + * {\n    /* \u2193 Top margin is only applied to successive elements */\n    margin-top: var(--space, 2.5rem);\n  }\n',
-  ])
+var _templateObject$u
+styled.div(
+  _templateObject$u ||
+    (_templateObject$u = _taggedTemplateLiteral([
+      '\n  --space: 2.5rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n\n  > * {\n    /* \u2193 Any extant vertical margins are removed */\n    margin-bottom: 0;\n    margin-top: 0;\n  }\n\n  > * + * {\n    /* \u2193 Top margin is only applied to successive elements */\n    margin-top: var(--space, 2.5rem);\n  }\n',
+    ])),
+)
 
-  _templateObject$8 = function _templateObject() {
-    return data
-  }
+var _templateObject$t
+var Box = styled.div(
+  _templateObject$t ||
+    (_templateObject$t = _taggedTemplateLiteral([
+      '\n  --s1: 1rem;\n  padding: var(--s1);\n',
+    ])),
+)
 
-  return data
-}
-styled.div(_templateObject$8())
+var _templateObject$s
+styled.div(
+  _templateObject$s ||
+    (_templateObject$s = _taggedTemplateLiteral([
+      '\n  --max-width: 70ch;\n  --min-width: 0;\n  --s1: 1em;\n  /* \u2193 Remove padding from the width calculation */\n  box-sizing: content-box;\n  /* \u2193 Only affect horizontal margins */\n  margin-inline: auto;\n  /* \u2193 The maximum width is the maximum measure */\n  max-width: var(--max-width, 70ch);\n  min-width: var(--min-width, 0);\n  /* \u2193 Apply the minimum horizontal space */\n  padding-inline: var(--s1);\n',
+    ])),
+)
 
-function _templateObject$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  --s1: 1rem;\n  padding: var(--s1);\n',
-  ])
-
-  _templateObject$9 = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Box = styled.div(_templateObject$9())
-
-function _templateObject$a() {
-  var data = _taggedTemplateLiteral([
-    '\n  --max-width: 70ch;\n  --min-width: 0;\n  --s1: 1em;\n  /* \u2193 Remove padding from the width calculation */\n  box-sizing: content-box;\n  /* \u2193 Only affect horizontal margins */\n  margin-inline: auto;\n  /* \u2193 The maximum width is the maximum measure */\n  max-width: var(--max-width, 70ch);\n  min-width: var(--min-width, 0);\n  /* \u2193 Apply the minimum horizontal space */\n  padding-inline: var(--s1);\n',
-  ])
-
-  _templateObject$a = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-styled.div(_templateObject$a())
-
-function _templateObject2$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  font-weight: bold;\n  padding-inline: 15px;\n',
-  ])
-
-  _templateObject2$4 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$b() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-radius: 0 0 4px 4px;\n  border: 1px solid #a5a1a2;\n  border-top: none;\n  display: ',
-    ';\n  margin: 0 32px 20px 20px;\n  margin-right: ',
-    ';\n  padding: 0;\n\n  > div {\n    padding: 0 10px 10px;\n  }\n',
-  ])
-
-  _templateObject$b = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper = styled(Box)(
-  _templateObject$b(),
+var _templateObject$r, _templateObject2$n
+var Wrapper$b = styled(Box)(
+  _templateObject$r ||
+    (_templateObject$r = _taggedTemplateLiteral([
+      '\n  border-radius: 0 0 4px 4px;\n  border: 1px solid #a5a1a2;\n  border-top: none;\n  display: ',
+      ';\n  margin: 0 32px 20px 20px;\n  margin-right: ',
+      ';\n  padding: 0;\n\n  > div {\n    padding: 0 10px 10px;\n  }\n',
+    ])),
   function (p) {
     return p.$testMode ? 'none' : 'block'
   },
@@ -2967,7 +2645,12 @@ var Wrapper = styled(Box)(
     return p.$fullWidth ? '20px' : '32px'
   },
 )
-var FeedbackLabel = styled.span(_templateObject2$4())
+var FeedbackLabel = styled.span(
+  _templateObject2$n ||
+    (_templateObject2$n = _taggedTemplateLiteral([
+      '\n  font-weight: bold;\n  padding-inline: 15px;\n',
+    ])),
+)
 var FeedbackComponentNew = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -2981,7 +2664,7 @@ var FeedbackComponentNew = function (_ref) {
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
   return /*#__PURE__*/ React.createElement(
-    Wrapper,
+    Wrapper$b,
     {
       $fullWidth: showFeedBack || testMode || !isEditable,
       $testMode: testMode,
@@ -2991,22 +2674,17 @@ var FeedbackComponentNew = function (_ref) {
     /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
       getPos: getPos,
       node: node,
-      placeholderText: 'Insert feedback', // QuestionType="EssayQuestion"
+      placeholderText: 'Insert feedback',
+      // QuestionType="EssayQuestion"
       view: view,
     }),
   )
 }
 
-var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
-  _inherits(FillTheGapQuestionService$1, _Service)
-
-  var _super = _createSuper(FillTheGapQuestionService$1)
-
-  function FillTheGapQuestionService$1() {
+var FillTheGapQuestionService = /*#__PURE__*/ (function (_Service) {
+  function FillTheGapQuestionService() {
     var _this
-
-    _classCallCheck(this, FillTheGapQuestionService$1)
-
+    _classCallCheck(this, FillTheGapQuestionService)
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -3014,13 +2692,12 @@ var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
-    _this.dependencies = [new FillTheGapQuestionService()]
+    _this = _callSuper(this, FillTheGapQuestionService, [].concat(args))
+    _this.dependencies = [new FillTheGapQuestionService$1()]
     return _this
   }
-
-  _createClass(FillTheGapQuestionService$1, [
+  _inherits(FillTheGapQuestionService, _Service)
+  return _createClass(FillTheGapQuestionService, [
     {
       key: 'register',
       value: function register() {
@@ -3057,138 +2734,122 @@ var FillTheGapQuestionService$1 = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return FillTheGapQuestionService$1
 })(Service)
 
-var _dec$4, _class$4, _temp$4
+var _dec$9, _class$9
 var MatchingQuestion =
-  ((_dec$4 = injectable()),
-  _dec$4(
-    (_class$4 =
-      ((_temp$4 = /*#__PURE__*/ (function (_Tools) {
-        _inherits(MatchingQuestion, _Tools)
-
-        var _super = _createSuper(MatchingQuestion)
-
-        function MatchingQuestion() {
-          var _this
-
-          _classCallCheck(this, MatchingQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add Matching'
-          _this.label = 'Matching'
-          _this.name = 'Matching'
-
-          _this.select = function (state, activeViewId, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null || disallowedTools.includes('Matching'))
-              return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$9 = injectable()),
+  _dec$9(
+    (_class$9 = /*#__PURE__*/ (function (_Tools) {
+      function MatchingQuestion() {
+        var _this
+        _classCallCheck(this, MatchingQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(MatchingQuestion, [
-          {
-            key: 'run',
-            get: function get() {
-              return function (main, context) {
-                helpers.checkifEmpty(main)
-                var state = main.state,
-                  dispatch = main.dispatch
-                var _state$selection2 = state.selection,
-                  from = _state$selection2.from,
-                  to = _state$selection2.to
-                var option = state.config.schema.nodes.matching_option.create(
+        _this = _callSuper(this, MatchingQuestion, [].concat(args))
+        _this.title = 'Add Matching'
+        _this.label = 'Matching'
+        _this.name = 'Matching'
+        _this.select = function (state, activeViewId, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null || disallowedTools.includes('Matching'))
+            return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(MatchingQuestion, _Tools)
+      return _createClass(MatchingQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (main, context) {
+              helpers.checkifEmpty(main)
+              var state = main.state,
+                dispatch = main.dispatch
+              var _state$selection2 = state.selection,
+                from = _state$selection2.from,
+                to = _state$selection2.to
+              var option = state.config.schema.nodes.matching_option.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              var paragraph = state.config.schema.nodes.paragraph.create(
+                {
+                  id: v4(),
+                },
+                Fragment.from([option]),
+              )
+              var container =
+                state.config.schema.nodes.matching_container.create(
                   {
                     id: v4(),
                   },
-                  Fragment.empty,
+                  Fragment.from([paragraph]),
                 )
-                var paragraph = state.config.schema.nodes.paragraph.create(
-                  {
-                    id: v4(),
-                  },
-                  Fragment.from([option]),
-                )
-                var container =
-                  state.config.schema.nodes.matching_container.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.from([paragraph]),
-                  )
-                var feedback = state.config.schema.nodes.feedback_prompt.create(
-                  {
-                    id: v4(),
-                  },
-                  Fragment.empty,
-                )
-                var wrapper = state.config.schema.nodes.matching_wrapper.create(
-                  {
-                    id: v4(),
-                  },
-                  Fragment.from([container, feedback]),
-                )
-                var tr = state.tr
-                tr.replaceWith(from, to, wrapper)
-                dispatch(tr)
-                setTimeout(function () {
-                  helpers.createEmptyParagraph(context, feedback.attrs.id)
-                  context.pmViews[option.attrs.id].focus()
-                }, 150)
-              }
-            },
+              var feedback = state.config.schema.nodes.feedback_prompt.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              var wrapper = state.config.schema.nodes.matching_wrapper.create(
+                {
+                  id: v4(),
+                },
+                Fragment.from([container, feedback]),
+              )
+              var tr = state.tr
+              tr.replaceWith(from, to, wrapper)
+              dispatch(tr)
+              setTimeout(function () {
+                helpers.createEmptyParagraph(context, feedback.attrs.id)
+                context.pmViews[option.attrs.id].focus()
+              }, 150)
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.matching_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.matching_option,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.matching_container,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.matching_option,
+                )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-        ])
-
-        return MatchingQuestion
-      })(Tools)),
-      _temp$4)),
-  ) || _class$4)
+        },
+      ])
+    })(Tools)),
+  ) || _class$9)
 
 var matchingContainerNode = {
   attrs: {
@@ -3200,7 +2861,8 @@ var matchingContainerNode = {
     },
     options: {
       default: [],
-    }, // feedback: { default: '' },
+    },
+    // feedback: { default: '' },
   },
   group: 'block questions',
   isolating: true,
@@ -3287,7 +2949,7 @@ var matchingOptionNode = {
   },
 }
 
-var mathcingWrapperNode = {
+var mathcingWrapperNode$1 = {
   attrs: {
     id: {
       default: '',
@@ -3315,40 +2977,37 @@ var mathcingWrapperNode = {
   },
 }
 
-function _superPropBase(object, property) {
-  while (!Object.prototype.hasOwnProperty.call(object, property)) {
-    object = _getPrototypeOf(object)
-    if (object === null) break
-  }
-
-  return object
+function _superPropBase(t, o) {
+  for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t)); );
+  return t
 }
 
-function _get(target, property, receiver) {
-  if (typeof Reflect !== 'undefined' && Reflect.get) {
-    _get = Reflect.get
-  } else {
-    _get = function _get(target, property, receiver) {
-      var base = _superPropBase(target, property)
-      if (!base) return
-      var desc = Object.getOwnPropertyDescriptor(base, property)
+function _get() {
+  return (
+    (_get =
+      'undefined' != typeof Reflect && Reflect.get
+        ? Reflect.get.bind()
+        : function (e, t, r) {
+            var p = _superPropBase(e, t)
+            if (p) {
+              var n = Object.getOwnPropertyDescriptor(p, t)
+              return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value
+            }
+          }),
+    _get.apply(null, arguments)
+  )
+}
 
-      if (desc.get) {
-        return desc.get.call(receiver)
+function _superPropGet(t, o, e, r) {
+  var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e)
+  return 2 & r && 'function' == typeof p
+    ? function (t) {
+        return p.apply(e, t)
       }
-
-      return desc.value
-    }
-  }
-
-  return _get(target, property, receiver || target)
+    : p
 }
 
 var MatchingContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(MatchingContainerNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(MatchingContainerNodeView)
-
   function MatchingContainerNodeView(
     node,
     view,
@@ -3359,11 +3018,8 @@ var MatchingContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, MatchingContainerNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, MatchingContainerNodeView, [
       node,
       view,
       getPos,
@@ -3371,15 +3027,15 @@ var MatchingContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(MatchingContainerNodeView, _QuestionsNodeView)
+  return _createClass(
     MatchingContainerNodeView,
     [
       {
@@ -3388,12 +3044,12 @@ var MatchingContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           if (node.type.name === 'paragraph') {
             if (!node.sameMarkup(this.node)) return false
           }
-
-          return _get(
-            _getPrototypeOf(MatchingContainerNodeView.prototype),
+          return _superPropGet(
+            MatchingContainerNodeView,
             'update',
             this,
-          ).call(this, node)
+            3,
+          )([node])
         },
       },
       {
@@ -3407,7 +3063,6 @@ var MatchingContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -3422,15 +3077,9 @@ var MatchingContainerNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return MatchingContainerNodeView
 })(QuestionsNodeView)
 
 var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(MatchingOptionNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(MatchingOptionNodeView)
-
   function MatchingOptionNodeView(
     node,
     view,
@@ -3441,11 +3090,8 @@ var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, MatchingOptionNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, MatchingOptionNodeView, [
       node,
       view,
       getPos,
@@ -3453,15 +3099,15 @@ var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(MatchingOptionNodeView, _QuestionsNodeView)
+  return _createClass(
     MatchingOptionNodeView,
     [
       {
@@ -3470,7 +3116,6 @@ var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           if (event.target.type === 'text' || event.target.type === 'button') {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -3485,34 +3130,23 @@ var MatchingOptionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return MatchingOptionNodeView
 })(QuestionsNodeView)
 
-function _templateObject$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n\n  > .ProseMirror {\n    padding: 0px;\n    box-shadow: none;\n    width: 100%;\n\n    &:focus {\n      outline: none;\n    }\n\n    p {\n      margin: 0;\n\n      br {\n        display: none;\n      }\n    }\n  }\n',
-  ])
-
-  _templateObject$c = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$5 = styled.div(_templateObject$c())
-
+var _templateObject$q
+var EditorWrapper$2 = styled.div(
+  _templateObject$q ||
+    (_templateObject$q = _taggedTemplateLiteral([
+      '\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n\n  > .ProseMirror {\n    padding: 0px;\n    box-shadow: none;\n    width: 100%;\n\n    &:focus {\n      outline: none;\n    }\n\n    p {\n      margin: 0;\n\n      br {\n        display: none;\n      }\n    }\n  }\n',
+    ])),
+)
 var ContainerEditor$1 = function ContainerEditor(_ref) {
   var _node$attrs
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
   var editorRef = useRef()
-
   var _useContext = useContext(ApplicationContext),
     app = _useContext.app
-
   var context = useContext(WaxContext)
   var containerView
   var questionId =
@@ -3552,41 +3186,34 @@ var ContainerEditor$1 = function ContainerEditor(_ref) {
           'MultipleChoice',
         ],
       },
-    ) // Set Each note into Wax's Context
+    )
 
+    // Set Each note into Wax's Context
     context.updateView(
       _defineProperty({}, questionId, containerView),
       questionId,
     )
   }, [])
-
   var dispatchTransaction = function dispatchTransaction(tr) {
     var _containerView$state$ = containerView.state.applyTransaction(tr),
       state = _containerView$state$.state,
       transactions = _containerView$state$.transactions
-
     containerView.updateState(state)
     context.updateView({}, questionId)
-
     if (!tr.getMeta('fromOutside')) {
       var outerTr = view.state.tr
       var offsetMap = StepMap.offset(getPos() + 1)
-
       for (var i = 0; i < transactions.length; i++) {
         var steps = transactions[i].steps
-
-        for (var j = 0; j < steps.length; j++) {
+        for (var j = 0; j < steps.length; j++)
           outerTr.step(steps[j].map(offsetMap))
-        }
       }
-
       if (outerTr.docChanged)
         view.dispatch(outerTr.setMeta('outsideView', questionId))
     }
   }
-
   return /*#__PURE__*/ React.createElement(
-    EditorWrapper$5,
+    EditorWrapper$2,
     null,
     /*#__PURE__*/ React.createElement('div', {
       ref: editorRef,
@@ -3594,172 +3221,104 @@ var ContainerEditor$1 = function ContainerEditor(_ref) {
   )
 }
 
-function _templateObject11() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject11 = function _templateObject11() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject10() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 6px;\n  border: none;\n  position: relative;\n  bottom: 2px;\n  left: -11px;\n  float: right;\n',
-  ])
-
-  _templateObject10 = function _templateObject10() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject9() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n\n  input {\n    border: none;\n    border-bottom: 1px solid black;\n\n    &:focus {\n      outline: none;\n    }\n\n    ::placeholder {\n      color: rgb(170, 170, 170);\n      font-style: italic;\n    }\n  }\n\n  button {\n    background: #fff;\n    border: 1px solid #535e76;\n    color: #535e76;\n    cursor: pointer;\n    margin-left: 20px;\n    padding: 4px 8px 4px 8px;\n\n    &:hover {\n      background: #535e76;\n      border: 1px solid #535e76;\n      color: #fff;\n      cursor: pointer;\n      margin-right: 20px;\n      padding: 4px 8px 4px 8px;\n    }\n  }\n',
-  ])
-
-  _templateObject9 = function _templateObject9() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject8() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  width: 100%;\n\n  ul {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    margin: 0;\n    padding: 0;\n\n    li {\n      list-style-type: none;\n      padding-bottom: 7px;\n      padding-right: 7px;\n\n      span {\n        background: #535e76;\n        border-radius: 12px;\n        color: white;\n        padding: 3px 3px 3px 10px;\n      }\n\n      svg {\n        fill: white;\n        height: 16px;\n        width: 16px;\n      }\n    }\n  }\n',
-  ])
-
-  _templateObject8 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  padding-bottom: 10px;\n',
-  ])
-
-  _templateObject7 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$1() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject6$1 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$1() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  border: none;\n  cursor: pointer;\n  height: 24px;\n  padding-left: 0;\n',
-  ])
-
-  _templateObject5$1 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$2() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n\n  .feedback-prompt {\n    border: 0;\n    margin: 0;\n  }\n',
-  ])
-
-  _templateObject4$2 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$3() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-block: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n  padding: 10px;\n',
-  ])
-
-  _templateObject3$3 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$5() {
-  var data = _taggedTemplateLiteral([''])
-
-  _templateObject2$5 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$d() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  margin: 0;\n\n  .ProseMirror-selectednode {\n    outline: none;\n  }\n',
-  ])
-
-  _templateObject$d = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var MatchingWrapper = styled.div(_templateObject$d())
-var MatchingContainerTool = styled.div(_templateObject2$5())
-var MatchingContainer = styled.div(_templateObject3$3())
-var QuestionWrapper = styled.div(_templateObject4$2())
-var ActionButton$2 = styled.button(_templateObject5$1())
-var StyledIconAction$1 = styled(Icon)(_templateObject6$1())
-var CreateOptions = styled.div(_templateObject7())
-var OptionArea = styled.div(_templateObject8())
-var AddOption = styled.div(_templateObject9())
-var RemoveQuestionButton = styled.button(_templateObject10())
-var StyledIconActionRemove$2 = styled(Icon)(_templateObject11())
+var _templateObject$p,
+  _templateObject2$m,
+  _templateObject3$k,
+  _templateObject4$k,
+  _templateObject5$e,
+  _templateObject6$d,
+  _templateObject7$a,
+  _templateObject8$6,
+  _templateObject9$4,
+  _templateObject0$4,
+  _templateObject1
+var MatchingWrapper = styled.div(
+  _templateObject$p ||
+    (_templateObject$p = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  margin: 0;\n\n  .ProseMirror-selectednode {\n    outline: none;\n  }\n',
+    ])),
+)
+var MatchingContainerTool = styled.div(
+  _templateObject2$m || (_templateObject2$m = _taggedTemplateLiteral([''])),
+)
+var MatchingContainer = styled.div(
+  _templateObject3$k ||
+    (_templateObject3$k = _taggedTemplateLiteral([
+      '\n  border-block: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n  padding: 10px;\n',
+    ])),
+)
+var QuestionWrapper$4 = styled.div(
+  _templateObject4$k ||
+    (_templateObject4$k = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n\n  .feedback-prompt {\n    border: 0;\n    margin: 0;\n  }\n',
+    ])),
+)
+var ActionButton$7 = styled.button(
+  _templateObject5$e ||
+    (_templateObject5$e = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  border: none;\n  cursor: pointer;\n  height: 24px;\n  padding-left: 0;\n',
+    ])),
+)
+var StyledIconAction$7 = styled(Icon)(
+  _templateObject6$d ||
+    (_templateObject6$d = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var CreateOptions = styled.div(
+  _templateObject7$a ||
+    (_templateObject7$a = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  padding-bottom: 10px;\n',
+    ])),
+)
+var OptionArea = styled.div(
+  _templateObject8$6 ||
+    (_templateObject8$6 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  width: 100%;\n\n  ul {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    margin: 0;\n    padding: 0;\n\n    li {\n      list-style-type: none;\n      padding-bottom: 7px;\n      padding-right: 7px;\n\n      span {\n        background: #535e76;\n        border-radius: 12px;\n        color: white;\n        padding: 3px 3px 3px 10px;\n      }\n\n      svg {\n        fill: white;\n        height: 16px;\n        width: 16px;\n      }\n    }\n  }\n',
+    ])),
+)
+var AddOption$1 = styled.div(
+  _templateObject9$4 ||
+    (_templateObject9$4 = _taggedTemplateLiteral([
+      '\n  display: flex;\n\n  input {\n    border: none;\n    border-bottom: 1px solid black;\n\n    &:focus {\n      outline: none;\n    }\n\n    ::placeholder {\n      color: rgb(170, 170, 170);\n      font-style: italic;\n    }\n  }\n\n  button {\n    background: #fff;\n    border: 1px solid #535e76;\n    color: #535e76;\n    cursor: pointer;\n    margin-left: 20px;\n    padding: 4px 8px 4px 8px;\n\n    &:hover {\n      background: #535e76;\n      border: 1px solid #535e76;\n      color: #fff;\n      cursor: pointer;\n      margin-right: 20px;\n      padding: 4px 8px 4px 8px;\n    }\n  }\n',
+    ])),
+)
+var RemoveQuestionButton = styled.button(
+  _templateObject0$4 ||
+    (_templateObject0$4 = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 6px;\n  border: none;\n  position: relative;\n  bottom: 2px;\n  left: -11px;\n  float: right;\n',
+    ])),
+)
+var StyledIconActionRemove$2 = styled(Icon)(
+  _templateObject1 ||
+    (_templateObject1 = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
 var MatchingContainerComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
   var context = useContext(WaxContext)
   var main = context.pmViews.main
-
   var _useState = useState(node.attrs.options),
     _useState2 = _slicedToArray(_useState, 2),
     options = _useState2[0],
     setOptions = _useState2[1]
-
   var _useState3 = useState(''),
     _useState4 = _slicedToArray(_useState3, 2),
     optionText = _useState4[0],
     setOptionText = _useState4[1]
-
   var _useState5 = useState(false),
     _useState6 = _slicedToArray(_useState5, 2),
     addingOption = _useState6[0],
     setAddingOption = _useState6[1]
-
   var addOptionRef = useRef(null)
   var addOptionBtnRef = useRef(null)
-
   var _useDynamicRefs = useDynamicRefs(),
     _useDynamicRefs2 = _slicedToArray(_useDynamicRefs, 2),
     getRef = _useDynamicRefs2[0],
     setRef = _useDynamicRefs2[1]
-
   var customProps = main.props.customValues
   var isEditable = main.props.editable(function (editable) {
     return editable
@@ -3772,7 +3331,6 @@ var MatchingContainerComponent = function (_ref) {
         if (addOptionBtnRef.current) addOptionBtnRef.current.click()
       }
     }
-
     if (addOptionBtnRef.current)
       addOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -3782,9 +3340,9 @@ var MatchingContainerComponent = function (_ref) {
   }, [])
   useEffect(
     function () {
-      var allNodes = getNodes$3(main)
-      /* TEMP TO SAVE NODE OPTIONS TODO: SAVE IN CONTEXT OPTIONS */
+      var allNodes = getNodes$h(main)
 
+      /* TEMP TO SAVE NODE OPTIONS TODO: SAVE IN CONTEXT OPTIONS */
       saveInChildOptions(allNodes)
       if (!addingOption) return
       allNodes.forEach(function (singleNode) {
@@ -3807,7 +3365,6 @@ var MatchingContainerComponent = function (_ref) {
     },
     [options, JSON.stringify(context.pmViews.main.state)],
   )
-
   var addOption = function addOption() {
     if (addOptionRef.current.value.trim() === '') return
     var obj = {
@@ -3824,17 +3381,14 @@ var MatchingContainerComponent = function (_ref) {
     setOptionText('')
     addOptionRef.current.focus()
   }
-
   var updateOptionText = function updateOptionText() {
     setOptionText(addOptionRef.current.value)
   }
-
   var handleKeyDown = function handleKeyDown(event) {
     if (event.key === 'Enter' || event.which === 13) {
       addOption()
     }
   }
-
   var removeOption = function removeOption(value) {
     setOptions(
       options.filter(function (option) {
@@ -3845,7 +3399,8 @@ var MatchingContainerComponent = function (_ref) {
     setTimeout(function () {
       setAddingOption(false)
     })
-    var allNodes = getNodes$3(context.pmViews.main) // const allNodesOptions = getOptionsNodes(context.pmViews.main);
+    var allNodes = getNodes$h(context.pmViews.main)
+    // const allNodesOptions = getOptionsNodes(context.pmViews.main);
 
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
@@ -3869,7 +3424,6 @@ var MatchingContainerComponent = function (_ref) {
               optionNode.attrs.options = options.filter(function (option) {
                 return option.value !== value
               })
-
               if (optionNode.attrs.correct === value) {
                 // eslint-disable-next-line no-param-reassign
                 optionNode.attrs.correct = null
@@ -3880,7 +3434,6 @@ var MatchingContainerComponent = function (_ref) {
       }
     })
   }
-
   var saveInChildOptions = function saveInChildOptions(allNodes) {
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
@@ -3894,7 +3447,6 @@ var MatchingContainerComponent = function (_ref) {
       }
     })
   }
-
   useEffect(
     function () {
       var listener = function listener(event) {
@@ -3907,7 +3459,6 @@ var MatchingContainerComponent = function (_ref) {
           })
         }
       }
-
       options.forEach(function (option) {
         if (getRef(option.value) && getRef(option.value).current)
           getRef(option.value).current.addEventListener('keydown', listener)
@@ -3925,12 +3476,10 @@ var MatchingContainerComponent = function (_ref) {
     [options],
   )
   var testMode = customProps.testMode
-
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodesToDelete(context.pmViews.main)
+    var allNodes = getNodesToDelete$1(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
-
       var containerId =
         (_singleNode$node$cont = singleNode.node.content.content.find(function (
           n,
@@ -3939,7 +3488,6 @@ var MatchingContainerComponent = function (_ref) {
         })) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
-
       if (containerId === node.attrs.id) {
         context.pmViews.main.dispatch(
           context.pmViews.main.state.tr['delete'](
@@ -3950,7 +3498,6 @@ var MatchingContainerComponent = function (_ref) {
       }
     })
   }
-
   return /*#__PURE__*/ React.createElement(
     MatchingWrapper,
     null,
@@ -3977,7 +3524,7 @@ var MatchingContainerComponent = function (_ref) {
         className: 'matching',
       },
       /*#__PURE__*/ React.createElement(
-        QuestionWrapper,
+        QuestionWrapper$4,
         null,
         /*#__PURE__*/ React.createElement(ContainerEditor$1, {
           getPos: getPos,
@@ -4011,7 +3558,7 @@ var MatchingContainerComponent = function (_ref) {
                       ' \xA0',
                       !readOnly &&
                         /*#__PURE__*/ React.createElement(
-                          ActionButton$2,
+                          ActionButton$7,
                           {
                             'aria-label': 'delete '.concat(option.label),
                             onClick: function onClick() {
@@ -4021,7 +3568,7 @@ var MatchingContainerComponent = function (_ref) {
                             type: 'button',
                           },
                           /*#__PURE__*/ React.createElement(
-                            StyledIconAction$1,
+                            StyledIconAction$7,
                             {
                               label: 'delete '.concat(option.label),
                               name: 'deleteOutlined',
@@ -4035,7 +3582,7 @@ var MatchingContainerComponent = function (_ref) {
           ),
           !readOnly &&
             /*#__PURE__*/ React.createElement(
-              AddOption,
+              AddOption$1,
               null,
               /*#__PURE__*/ React.createElement('input', {
                 onChange: updateOptionText,
@@ -4060,8 +3607,7 @@ var MatchingContainerComponent = function (_ref) {
     ),
   )
 }
-
-var getNodes$3 = function getNodes(view) {
+var getNodes$h = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var matchingContainerNodes = []
   allNodes.forEach(function (node) {
@@ -4071,8 +3617,7 @@ var getNodes$3 = function getNodes(view) {
   })
   return matchingContainerNodes
 }
-
-var getNodesToDelete = function getNodesToDelete(view) {
+var getNodesToDelete$1 = function getNodesToDelete(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var matchingContainerNodes = []
   allNodes.forEach(function (node) {
@@ -4081,7 +3626,9 @@ var getNodesToDelete = function getNodesToDelete(view) {
     }
   })
   return matchingContainerNodes
-} // const getOptionsNodes = view => {
+}
+
+// const getOptionsNodes = view => {
 //   const allNodes = DocumentHelpers.findInlineNodes(view.state.doc);
 //   const matchingOptionNodes = [];
 //   allNodes.forEach(node => {
@@ -4092,28 +3639,20 @@ var getNodesToDelete = function getNodesToDelete(view) {
 //   return matchingOptionNodes;
 // };
 
-function _templateObject$e() {
-  var data = _taggedTemplateLiteral([
-    "\n  border: none;\n  display: flex;\n  width: 68%;\n\n  > .ProseMirror {\n    white-space: break-spaces;\n    width: 100% !important;\n    min-height: 25px !important;\n    word-wrap: break-word;\n    padding: 4px !important;\n    border: 12px solid #f4f4f7;\n    border-radius: 12px;\n    box-shadow: none !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    :empty::before {\n      content: 'Type your text';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject$e = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$6 = styled.div(_templateObject$e())
-
-var EditorComponent$1 = function EditorComponent(_ref) {
+var _templateObject$o
+var EditorWrapper$1 = styled.div(
+  _templateObject$o ||
+    (_templateObject$o = _taggedTemplateLiteral([
+      "\n  border: none;\n  display: flex;\n  width: 68%;\n\n  > .ProseMirror {\n    white-space: break-spaces;\n    width: 100% !important;\n    min-height: 25px !important;\n    word-wrap: break-word;\n    padding: 4px !important;\n    border: 12px solid #f4f4f7;\n    border-radius: 12px;\n    box-shadow: none !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    :empty::before {\n      content: 'Type your text';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n\n    p:first-child {\n      margin: 0;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+)
+var EditorComponent = function EditorComponent(_ref) {
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
   var editorRef = useRef()
-
   var _useContext = useContext(ApplicationContext),
     app = _useContext.app
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var questionView
@@ -4122,7 +3661,6 @@ var EditorComponent$1 = function EditorComponent(_ref) {
     return editable
   })
   var finalPlugins = [FakeCursorPlugin$1()]
-
   var createKeyBindings = function createKeyBindings() {
     var keys = getKeys()
     Object.keys(baseKeymap).forEach(function (key) {
@@ -4130,7 +3668,6 @@ var EditorComponent$1 = function EditorComponent(_ref) {
     })
     return keys
   }
-
   var getKeys = function getKeys() {
     return {
       'Mod-z': function ModZ() {
@@ -4141,7 +3678,6 @@ var EditorComponent$1 = function EditorComponent(_ref) {
       },
     }
   }
-
   var filteredplugins = app.PmPlugins.getAll().filter(function (plugin) {
     return (
       !plugin.key.includes('y-sync') &&
@@ -4153,13 +3689,11 @@ var EditorComponent$1 = function EditorComponent(_ref) {
   var plugins = [keymap(createKeyBindings())].concat(
     _toConsumableArray(filteredplugins),
   )
-
   var createPlaceholder = function createPlaceholder(placeholder) {
     return Placeholder({
       content: placeholder,
     })
   }
-
   finalPlugins = finalPlugins.concat(
     [createPlaceholder('Type your answer')].concat(_toConsumableArray(plugins)),
   )
@@ -4210,42 +3744,35 @@ var EditorComponent$1 = function EditorComponent(_ref) {
           spellcheck: 'false',
         },
       },
-    ) // Set Each note into Wax's Context
+    )
 
+    // Set Each note into Wax's Context
     context.updateView(
       _defineProperty({}, questionId, questionView),
       questionId,
     )
     questionView.focus()
   }, [])
-
   var dispatchTransaction = function dispatchTransaction(tr) {
     var _questionView$state$a = questionView.state.applyTransaction(tr),
       state = _questionView$state$a.state,
       transactions = _questionView$state$a.transactions
-
     questionView.updateState(state)
     context.updateView({}, questionId)
-
     if (!tr.getMeta('fromOutside')) {
       var outerTr = view.state.tr
       var offsetMap = StepMap.offset(getPos() + 1)
-
       for (var i = 0; i < transactions.length; i++) {
         var steps = transactions[i].steps
-
-        for (var j = 0; j < steps.length; j++) {
+        for (var j = 0; j < steps.length; j++)
           outerTr.step(steps[j].map(offsetMap))
-        }
       }
-
       if (outerTr.docChanged)
         view.dispatch(outerTr.setMeta('outsideView', questionId))
     }
   }
-
   return /*#__PURE__*/ React.createElement(
-    EditorWrapper$6,
+    EditorWrapper$1,
     null,
     /*#__PURE__*/ React.createElement('div', {
       ref: editorRef,
@@ -4253,57 +3780,20 @@ var EditorComponent$1 = function EditorComponent(_ref) {
   )
 }
 
-function _templateObject4$3() {
-  var data = _taggedTemplateLiteral([
-    '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
-  ])
-
-  _templateObject4$3 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  visibility: ',
-    ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 10px auto auto;\n  position: absolute;\n  width: 170px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
-  ])
-
-  _templateObject3$4 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$6() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
-    ';\n  opacity: ',
-    ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
-  ])
-
-  _templateObject2$6 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$f() {
-  var data = _taggedTemplateLiteral([''])
-
-  _templateObject$f = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$1 = styled.div(_templateObject$f())
-var DropDownButton = styled.button(
-  _templateObject2$6(),
+var _templateObject$n,
+  _templateObject2$l,
+  _templateObject3$j,
+  _templateObject4$j
+var Wrapper$a = styled.div(
+  _templateObject$n || (_templateObject$n = _taggedTemplateLiteral([''])),
+)
+var DropDownButton$4 = styled.button(
+  _templateObject2$l ||
+    (_templateObject2$l = _taggedTemplateLiteral([
+      '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
+      ';\n  opacity: ',
+      ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
+    ])),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -4311,37 +3801,42 @@ var DropDownButton = styled.button(
     return props.$disabled ? '0.4' : '1'
   },
 )
-var DropDownMenu = styled.div(_templateObject3$4(), function (props) {
-  return props.$isOpen ? 'visible' : 'hidden'
-})
-var StyledIcon = styled(Icon)(_templateObject4$3())
-
-var DropComponent = function DropComponent(_ref) {
+var DropDownMenu$4 = styled.div(
+  _templateObject3$j ||
+    (_templateObject3$j = _taggedTemplateLiteral([
+      '\n  visibility: ',
+      ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 10px auto auto;\n  position: absolute;\n  width: 170px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
+    ])),
+  function (props) {
+    return props.$isOpen ? 'visible' : 'hidden'
+  },
+)
+var StyledIcon$4 = styled(Icon)(
+  _templateObject4$j ||
+    (_templateObject4$j = _taggedTemplateLiteral([
+      '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
+    ])),
+)
+var DropComponent$1 = function DropComponent(_ref) {
   var _getMatchingNode, _getMatchingNode$attr
-
-  var getPos = _ref.getPos,
-    node = _ref.node,
-    view = _ref.view,
-    uniqueId = _ref.uniqueId
-
+  _ref.getPos
+  var node = _ref.node
+  _ref.view
+  var uniqueId = _ref.uniqueId
   var _useState = useState(node.attrs.correct),
     _useState2 = _slicedToArray(_useState, 2),
     selectedOption = _useState2[0],
     setSelectedOption = _useState2[1]
-
   var _useState3 = useState(node.attrs.options),
     _useState4 = _slicedToArray(_useState3, 2),
     allOptions = _useState4[0],
     setAllOptions = _useState4[1]
-
   var itemRefs = useRef([])
   var wrapperRef = useRef()
-
   var _useState5 = useState(false),
     _useState6 = _slicedToArray(_useState5, 2),
     isOpen = _useState6[0],
     setIsOpen = _useState6[1]
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main,
     activeView = context.activeView
@@ -4350,9 +3845,8 @@ var DropComponent = function DropComponent(_ref) {
   })
   var isDisabled = !isEditable
   if (allOptions && allOptions.length === 0) isDisabled = true
-
   var onChange = function onChange(option) {
-    var allNodes = getNodes$4(main)
+    var allNodes = getNodes$g(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -4373,14 +3867,12 @@ var DropComponent = function DropComponent(_ref) {
     openCloseMenu()
     setSelectedOption(option.value)
   }
-
   useOnClickOutside(wrapperRef, function () {
     return setIsOpen(false)
   })
   useEffect(
     function () {
       var _theNode$attrs, _theNode$attrs2
-
       var theNode = getMatchingNode(main, node)
       setAllOptions(
         theNode === null || theNode === void 0
@@ -4415,7 +3907,6 @@ var DropComponent = function DropComponent(_ref) {
     },
     [isDisabled],
   )
-
   var openCloseMenu = function openCloseMenu() {
     if (!isDisabled) setIsOpen(!isOpen)
     if (isOpen)
@@ -4423,10 +3914,8 @@ var DropComponent = function DropComponent(_ref) {
         activeView.focus()
       })
   }
-
   var _onKeyDown = function onKeyDown(e, index) {
     e.preventDefault()
-
     if (e.keyCode === 40) {
       // arrow down
       if (index === itemRefs.current.length - 1) {
@@ -4434,8 +3923,9 @@ var DropComponent = function DropComponent(_ref) {
       } else {
         itemRefs.current[index + 1].current.focus()
       }
-    } // arrow up
+    }
 
+    // arrow up
     if (e.keyCode === 38) {
       if (
         index === 0 &&
@@ -4445,37 +3935,35 @@ var DropComponent = function DropComponent(_ref) {
       } else {
         itemRefs.current[index - 1].current.focus()
       }
-    } // enter
+    }
 
+    // enter
     if (e.keyCode === 13) {
       itemRefs.current[index].current.click()
-    } // ESC
+    }
 
+    // ESC
     if (e.keyCode === 27) {
       setIsOpen(false)
     }
   }
-
   var MultipleDropDown = useMemo(
     function () {
       var _selectedValue$
-
       var selectedValue
-
       if (selectedOption) {
         selectedValue = allOptions.filter(function (option) {
           return option.value === selectedOption
         })
       }
-
       return /*#__PURE__*/ React.createElement(
-        Wrapper$1,
+        Wrapper$a,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
         },
         /*#__PURE__*/ React.createElement(
-          DropDownButton,
+          DropDownButton$4,
           {
             $disabled: isDisabled,
             'aria-controls': uniqueId,
@@ -4486,11 +3974,9 @@ var DropComponent = function DropComponent(_ref) {
                 if (!itemRefs.current[0].current) return
                 itemRefs.current[0].current.focus()
               }
-
               if (e.keyCode === 27) {
                 setIsOpen(false)
               }
-
               if (e.keyCode === 13 || e.keyCode === 32) {
                 setIsOpen(true)
               }
@@ -4505,12 +3991,12 @@ var DropComponent = function DropComponent(_ref) {
               _selectedValue$ === void 0
             ? void 0
             : _selectedValue$.label,
-          /*#__PURE__*/ React.createElement(StyledIcon, {
+          /*#__PURE__*/ React.createElement(StyledIcon$4, {
             name: 'expand',
           }),
         ),
         /*#__PURE__*/ React.createElement(
-          DropDownMenu,
+          DropDownMenu$4,
           {
             $isOpen: isOpen,
             'aria-label': 'Choose an option',
@@ -4519,7 +4005,8 @@ var DropComponent = function DropComponent(_ref) {
           },
           allOptions &&
             allOptions.map(function (option, index) {
-              itemRefs.current[index] = itemRefs.current[index] || createRef()
+              itemRefs.current[index] =
+                itemRefs.current[index] || /*#__PURE__*/ createRef()
               return /*#__PURE__*/ React.createElement(
                 'span',
                 {
@@ -4545,8 +4032,7 @@ var DropComponent = function DropComponent(_ref) {
   )
   return MultipleDropDown
 }
-
-var getNodes$4 = function getNodes(view) {
+var getNodes$g = function getNodes(view) {
   var allNodes = DocumentHelpers.findInlineNodes(view.state.doc)
   var matchingOptionNodes = []
   allNodes.forEach(function (node) {
@@ -4556,7 +4042,6 @@ var getNodes$4 = function getNodes(view) {
   })
   return matchingOptionNodes
 }
-
 var getMatchingNode = function getMatchingNode(view, node) {
   var allNodes = DocumentHelpers.findInlineNodes(view.state.doc)
   var matchingNode = ''
@@ -4571,57 +4056,20 @@ var getMatchingNode = function getMatchingNode(view, node) {
   return matchingNode
 }
 
-function _templateObject4$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
-  ])
-
-  _templateObject4$4 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  visibility: ',
-    ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 10px auto auto;\n  position: absolute;\n  width: 170px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
-  ])
-
-  _templateObject3$5 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$7() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
-    ';\n  opacity: ',
-    ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
-  ])
-
-  _templateObject2$7 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$g() {
-  var data = _taggedTemplateLiteral([''])
-
-  _templateObject$g = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$2 = styled.div(_templateObject$g())
-var DropDownButton$1 = styled.button(
-  _templateObject2$7(),
+var _templateObject$m,
+  _templateObject2$k,
+  _templateObject3$i,
+  _templateObject4$i
+var Wrapper$9 = styled.div(
+  _templateObject$m || (_templateObject$m = _taggedTemplateLiteral([''])),
+)
+var DropDownButton$3 = styled.button(
+  _templateObject2$k ||
+    (_templateObject2$k = _taggedTemplateLiteral([
+      '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
+      ';\n  opacity: ',
+      ';\n  display: flex;\n  position: relative;\n  width: 160px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n',
+    ])),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -4629,38 +4077,44 @@ var DropDownButton$1 = styled.button(
     return props.$disabled ? '0.4' : '1'
   },
 )
-var DropDownMenu$1 = styled.div(_templateObject3$5(), function (props) {
-  return props.$isOpen ? 'visible' : 'hidden'
-})
-var StyledIcon$1 = styled(Icon)(_templateObject4$4())
-
+var DropDownMenu$3 = styled.div(
+  _templateObject3$i ||
+    (_templateObject3$i = _taggedTemplateLiteral([
+      '\n  visibility: ',
+      ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 10px auto auto;\n  position: absolute;\n  width: 170px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
+    ])),
+  function (props) {
+    return props.$isOpen ? 'visible' : 'hidden'
+  },
+)
+var StyledIcon$3 = styled(Icon)(
+  _templateObject4$i ||
+    (_templateObject4$i = _taggedTemplateLiteral([
+      '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
+    ])),
+)
 var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
-  var getPos = _ref.getPos,
-    node = _ref.node,
-    view = _ref.view,
-    uniqueId = _ref.uniqueId
-
+  _ref.getPos
+  var node = _ref.node
+  _ref.view
+  var uniqueId = _ref.uniqueId
   var _useState = useState(undefined),
     _useState2 = _slicedToArray(_useState, 2),
     selectedOption = _useState2[0],
     setSelectedOption = _useState2[1]
-
   var itemRefs = useRef([])
   var wrapperRef = useRef()
-
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
     isOpen = _useState4[0],
     setIsOpen = _useState4[1]
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var isDisabled = false
   if (node.attrs.options.length === 0) isDisabled = true
-
   var onChange = function onChange(option) {
     setSelectedOption(option)
-    var allNodes = getNodes$5(main)
+    var allNodes = getNodes$f(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -4681,7 +4135,6 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
     openCloseMenu()
     setSelectedOption(option.value)
   }
-
   useOnClickOutside(wrapperRef, function () {
     return setIsOpen(false)
   })
@@ -4691,17 +4144,14 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
       var found = find(node.attrs.options, {
         value: value,
       })
-
       if (!found) {
         setSelectedOption(undefined)
       }
     },
     [node.attrs.options],
   )
-
   var _onKeyDown = function onKeyDown(e, index) {
     e.preventDefault()
-
     if (e.keyCode === 40) {
       // arrow down
       if (index === itemRefs.current.length - 1) {
@@ -4709,8 +4159,9 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
       } else {
         itemRefs.current[index + 1].current.focus()
       }
-    } // arrow up
+    }
 
+    // arrow up
     if (e.keyCode === 38) {
       if (
         index === 0 &&
@@ -4720,46 +4171,43 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
       } else {
         itemRefs.current[index - 1].current.focus()
       }
-    } // enter
+    }
 
+    // enter
     if (e.keyCode === 13) {
       itemRefs.current[index].current.click()
-    } // ESC
+    }
 
+    // ESC
     if (e.keyCode === 27) {
       setIsOpen(false)
     }
   }
-
   useEffect(
     function () {
       if (isDisabled) setIsOpen(false)
     },
     [isDisabled],
   )
-
   var openCloseMenu = function openCloseMenu() {
     if (!isDisabled) setIsOpen(!isOpen)
   }
-
   var ReadOnlyMultipleDropDown = useMemo(
     function () {
       var selectedValue
-
       if (selectedOption) {
         selectedValue = node.attrs.options.filter(function (option) {
           return option.value === selectedOption
         })
       }
-
       return /*#__PURE__*/ React.createElement(
-        Wrapper$2,
+        Wrapper$9,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
         },
         /*#__PURE__*/ React.createElement(
-          DropDownButton$1,
+          DropDownButton$3,
           {
             $disabled: isDisabled,
             'aria-controls': uniqueId,
@@ -4770,11 +4218,9 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
                 if (!itemRefs.current[0].current) return
                 itemRefs.current[0].current.focus()
               }
-
               if (e.keyCode === 27) {
                 setIsOpen(false)
               }
-
               if (e.keyCode === 13 || e.keyCode === 32) {
                 setIsOpen(true)
               }
@@ -4786,12 +4232,12 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
           selectedOption === null || !selectedOption
             ? 'Select Option'
             : selectedValue[0].label,
-          /*#__PURE__*/ React.createElement(StyledIcon$1, {
+          /*#__PURE__*/ React.createElement(StyledIcon$3, {
             name: 'expand',
           }),
         ),
         /*#__PURE__*/ React.createElement(
-          DropDownMenu$1,
+          DropDownMenu$3,
           {
             $isOpen: isOpen,
             'aria-label': 'Choose an option',
@@ -4799,7 +4245,8 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
             role: 'listbox',
           },
           node.attrs.options.map(function (option, index) {
-            itemRefs.current[index] = itemRefs.current[index] || createRef()
+            itemRefs.current[index] =
+              itemRefs.current[index] || /*#__PURE__*/ createRef()
             return /*#__PURE__*/ React.createElement(
               'span',
               {
@@ -4825,110 +4272,70 @@ var TestModeDropDownComponent = function TestModeDropDownComponent(_ref) {
   )
   return ReadOnlyMultipleDropDown
 }
-
-var getNodes$5 = function getNodes(view) {
+var getNodes$f = function getNodes(view) {
   return DocumentHelpers.findInlineNodes(view.state.doc)
 }
 
-function _templateObject8$1() {
-  var data = _taggedTemplateLiteral(['\n  span {\n    color: ', ';\n  }\n'])
-
-  _templateObject8$1 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7$1() {
-  var data = _taggedTemplateLiteral(['\n  span {\n    color: #008000;\n  }\n'])
-
-  _templateObject7$1 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$2() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  margin-left: 10px;\n',
-  ])
-
-  _templateObject6$2 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$2() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject5$2 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  border: none;\n  cursor: pointer;\n  height: 24px;\n  padding-left: 0;\n',
-  ])
-
-  _templateObject4$5 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$6() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n',
-  ])
-
-  _templateObject3$6 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$8() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  width: 7%;\n',
-  ])
-
-  _templateObject2$8 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$h() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 10px;\n  width: 100%;\n',
-  ])
-
-  _templateObject$h = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Option = styled.div(_templateObject$h())
-var ButtonsContainer = styled.div(_templateObject2$8())
-var DropDownContainer = styled.div(_templateObject3$6())
-var ActionButton$3 = styled.button(_templateObject4$5())
-var StyledIconAction$2 = styled(Icon)(_templateObject5$2())
-var AnswerContainer = styled.div(_templateObject6$2())
-var CorrectAnswer = styled.span(_templateObject7$1())
-var Answer = styled.span(_templateObject8$1(), function (props) {
-  return props.$isCorrect ? '#008000' : '#FF3030'
-})
+var _templateObject$l,
+  _templateObject2$j,
+  _templateObject3$h,
+  _templateObject4$h,
+  _templateObject5$d,
+  _templateObject6$c,
+  _templateObject7$9,
+  _templateObject8$5
+var Option$1 = styled.div(
+  _templateObject$l ||
+    (_templateObject$l = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 10px;\n  width: 100%;\n',
+    ])),
+)
+var ButtonsContainer = styled.div(
+  _templateObject2$j ||
+    (_templateObject2$j = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  width: 7%;\n',
+    ])),
+)
+var DropDownContainer = styled.div(
+  _templateObject3$h ||
+    (_templateObject3$h = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n',
+    ])),
+)
+var ActionButton$6 = styled.button(
+  _templateObject4$h ||
+    (_templateObject4$h = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  border: none;\n  cursor: pointer;\n  height: 24px;\n  padding-left: 0;\n',
+    ])),
+)
+var StyledIconAction$6 = styled(Icon)(
+  _templateObject5$d ||
+    (_templateObject5$d = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var AnswerContainer$6 = styled.div(
+  _templateObject6$c ||
+    (_templateObject6$c = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  margin-left: 10px;\n',
+    ])),
+)
+var CorrectAnswer$1 = styled.span(
+  _templateObject7$9 ||
+    (_templateObject7$9 = _taggedTemplateLiteral([
+      '\n  span {\n    color: #008000;\n  }\n',
+    ])),
+)
+var Answer$3 = styled.span(
+  _templateObject8$5 ||
+    (_templateObject8$5 = _taggedTemplateLiteral([
+      '\n  span {\n    color: ',
+      ';\n  }\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? '#008000' : '#FF3030'
+  },
+)
 var MatchingOptionComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -4942,7 +4349,6 @@ var MatchingOptionComponent = function (_ref) {
   var customProps = main.props.customValues
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
-
   var addAnswer = function addAnswer() {
     var nodeId = node.attrs.id
     var newAnswerId = v4()
@@ -4967,7 +4373,6 @@ var MatchingOptionComponent = function (_ref) {
       }
     })
   }
-
   var removeAnswer = function removeAnswer() {
     main.state.doc.descendants(function (sinlgeNode, pos) {
       if (sinlgeNode.attrs.id === node.attrs.id) {
@@ -4975,7 +4380,6 @@ var MatchingOptionComponent = function (_ref) {
       }
     })
   }
-
   var answer = node.attrs.options.find(function (option) {
     return option.value === node.attrs.answer
   })
@@ -4984,37 +4388,37 @@ var MatchingOptionComponent = function (_ref) {
   })
   var isCorrect = node.attrs.correct === node.attrs.answer
   return /*#__PURE__*/ React.createElement(
-    Option,
+    Option$1,
     null,
     !readOnly &&
       /*#__PURE__*/ React.createElement(
         ButtonsContainer,
         null,
         /*#__PURE__*/ React.createElement(
-          ActionButton$3,
+          ActionButton$6,
           {
             'aria-label': 'add new option',
             onClick: addAnswer,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$2, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$6, {
             name: 'plusSquare',
           }),
         ),
         !node.attrs.isfirst &&
           /*#__PURE__*/ React.createElement(
-            ActionButton$3,
+            ActionButton$6,
             {
               'aria-label': 'delete this option',
               onClick: removeAnswer,
               type: 'button',
             },
-            /*#__PURE__*/ React.createElement(StyledIconAction$2, {
+            /*#__PURE__*/ React.createElement(StyledIconAction$6, {
               name: 'deleteOutlined',
             }),
           ),
       ),
-    /*#__PURE__*/ React.createElement(EditorComponent$1, {
+    /*#__PURE__*/ React.createElement(EditorComponent, {
       getPos: getPos,
       node: node,
       view: view,
@@ -5023,7 +4427,7 @@ var MatchingOptionComponent = function (_ref) {
       DropDownContainer,
       null,
       (!readOnly || (readOnly && !testMode && !showFeedBack)) &&
-        /*#__PURE__*/ React.createElement(DropComponent, {
+        /*#__PURE__*/ React.createElement(DropComponent$1, {
           getPos: getPos,
           node: node,
           uniqueId: v4(),
@@ -5041,10 +4445,10 @@ var MatchingOptionComponent = function (_ref) {
       readOnly &&
         showFeedBack &&
         /*#__PURE__*/ React.createElement(
-          AnswerContainer,
+          AnswerContainer$6,
           null,
           /*#__PURE__*/ React.createElement(
-            CorrectAnswer,
+            CorrectAnswer$1,
             null,
             'Correct : \xA0',
             correct &&
@@ -5056,7 +4460,7 @@ var MatchingOptionComponent = function (_ref) {
               ),
           ),
           /*#__PURE__*/ React.createElement(
-            Answer,
+            Answer$3,
             {
               $isCorrect: isCorrect,
             },
@@ -5075,15 +4479,9 @@ var MatchingOptionComponent = function (_ref) {
 }
 
 var MatchingService = /*#__PURE__*/ (function (_Service) {
-  _inherits(MatchingService, _Service)
-
-  var _super = _createSuper(MatchingService)
-
   function MatchingService() {
     var _this
-
     _classCallCheck(this, MatchingService)
-
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -5091,13 +4489,12 @@ var MatchingService = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
+    _this = _callSuper(this, MatchingService, [].concat(args))
     _this.name = 'MatchingService'
     return _this
   }
-
-  _createClass(MatchingService, [
+  _inherits(MatchingService, _Service)
+  return _createClass(MatchingService, [
     {
       key: 'register',
       value: function register() {
@@ -5105,7 +4502,7 @@ var MatchingService = /*#__PURE__*/ (function (_Service) {
         var createNode = this.container.get('CreateNode')
         var addPortal = this.container.get('AddPortal')
         createNode({
-          matching_wrapper: mathcingWrapperNode,
+          matching_wrapper: mathcingWrapperNode$1,
         })
         createNode({
           matching_container: matchingContainerNode,
@@ -5134,137 +4531,117 @@ var MatchingService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return MatchingService
 })(Service)
 
-var _dec$5, _class$5, _temp$5
+var _dec$8, _class$8
 var MultipleDropDownQuestion =
-  ((_dec$5 = injectable()),
-  _dec$5(
-    (_class$5 =
-      ((_temp$5 = /*#__PURE__*/ (function (_Tools) {
-        _inherits(MultipleDropDownQuestion, _Tools)
-
-        var _super = _createSuper(MultipleDropDownQuestion)
-
-        function MultipleDropDownQuestion() {
-          var _this
-
-          _classCallCheck(this, MultipleDropDownQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add Multiple Drop Down Question'
-          _this.icon = 'mulitpleDropDownQuestion'
-          _this.name = 'Multiple Drop Down'
-
-          _this.select = function (state, activeViewId, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null || disallowedTools.includes('MultipleDropDown'))
-              return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$8 = injectable()),
+  _dec$8(
+    (_class$8 = /*#__PURE__*/ (function (_Tools) {
+      function MultipleDropDownQuestion() {
+        var _this
+        _classCallCheck(this, MultipleDropDownQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(MultipleDropDownQuestion, [
-          {
-            key: 'run',
-            get: function get() {
-              return function (main, context) {
-                helpers.checkifEmpty(main)
-                var state = main.state,
-                  dispatch = main.dispatch
-                var _state$selection2 = state.selection,
-                  from = _state$selection2.from,
-                  to = _state$selection2.to
-                var container =
-                  state.config.schema.nodes.multiple_drop_down_container.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.empty,
-                  )
-                var feedback = state.config.schema.nodes.feedback_prompt.create(
+        _this = _callSuper(this, MultipleDropDownQuestion, [].concat(args))
+        _this.title = 'Add Multiple Drop Down Question'
+        _this.icon = 'mulitpleDropDownQuestion'
+        _this.name = 'Multiple Drop Down'
+        _this.select = function (state, activeViewId, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null || disallowedTools.includes('MultipleDropDown'))
+            return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(MultipleDropDownQuestion, _Tools)
+      return _createClass(MultipleDropDownQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (main, context) {
+              helpers.checkifEmpty(main)
+              var state = main.state,
+                dispatch = main.dispatch
+              var _state$selection2 = state.selection,
+                from = _state$selection2.from,
+                to = _state$selection2.to
+              var container =
+                state.config.schema.nodes.multiple_drop_down_container.create(
                   {
                     id: v4(),
                   },
                   Fragment.empty,
                 )
-                var wrapper =
-                  state.config.schema.nodes.multiple_drop_down_wrapper.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.from([container, feedback]),
-                  )
-                var tr = state.tr
-                tr.replaceWith(from, to, wrapper)
-                dispatch(tr)
-                setTimeout(function () {
-                  helpers.createEmptyParagraph(context, container.attrs.id)
-                  context.pmViews[container.attrs.id].focus()
-                }, 150)
+              var feedback = state.config.schema.nodes.feedback_prompt.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              var wrapper =
+                state.config.schema.nodes.multiple_drop_down_wrapper.create(
+                  {
+                    id: v4(),
+                  },
+                  Fragment.from([container, feedback]),
+                )
+              var tr = state.tr
+              tr.replaceWith(from, to, wrapper)
+              dispatch(tr)
+              setTimeout(function () {
+                helpers.createEmptyParagraph(context, container.attrs.id)
+                context.pmViews[container.attrs.id].focus()
+              }, 150)
+            }
+          },
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.multiple_drop_down_container,
+                )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.multiple_drop_down_container,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
-              }
-            },
+        },
+        {
+          key: 'enable',
+          get: function get() {
+            return function () {}
           },
-          {
-            key: 'enable',
-            get: function get() {
-              return function () {}
-            },
-          },
-        ])
-
-        return MultipleDropDownQuestion
-      })(Tools)),
-      _temp$5)),
-  ) || _class$5)
+        },
+      ])
+    })(Tools)),
+  ) || _class$8)
 
 var MultipleDropDownContainerNodeView = /*#__PURE__*/ (function (
   _QuestionsNodeView,
 ) {
-  _inherits(MultipleDropDownContainerNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(MultipleDropDownContainerNodeView)
-
   function MultipleDropDownContainerNodeView(
     node,
     view,
@@ -5275,11 +4652,8 @@ var MultipleDropDownContainerNodeView = /*#__PURE__*/ (function (
     context,
   ) {
     var _this
-
     _classCallCheck(this, MultipleDropDownContainerNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, MultipleDropDownContainerNodeView, [
       node,
       view,
       getPos,
@@ -5287,15 +4661,15 @@ var MultipleDropDownContainerNodeView = /*#__PURE__*/ (function (
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(MultipleDropDownContainerNodeView, _QuestionsNodeView)
+  return _createClass(
     MultipleDropDownContainerNodeView,
     [
       {
@@ -5308,7 +4682,6 @@ var MultipleDropDownContainerNodeView = /*#__PURE__*/ (function (
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -5323,8 +4696,6 @@ var MultipleDropDownContainerNodeView = /*#__PURE__*/ (function (
       },
     ],
   )
-
-  return MultipleDropDownContainerNodeView
 })(QuestionsNodeView)
 
 var multipleDropDownContainerNode = {
@@ -5360,7 +4731,7 @@ var multipleDropDownContainerNode = {
   },
 }
 
-var mathcingWrapperNode$1 = {
+var mathcingWrapperNode = {
   attrs: {
     id: {
       default: '',
@@ -5388,90 +4759,76 @@ var mathcingWrapperNode$1 = {
   },
 }
 
-var _dec$6, _class$6, _temp$6
+var _dec$7, _class$7
 var CreateDropDown =
-  ((_dec$6 = injectable()),
-  _dec$6(
-    (_class$6 =
-      ((_temp$6 = /*#__PURE__*/ (function (_Tools) {
-        _inherits(CreateDropDown, _Tools)
-
-        var _super = _createSuper(CreateDropDown)
-
-        function CreateDropDown() {
-          var _this
-
-          _classCallCheck(this, CreateDropDown)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Create Drop Down'
-          _this.icon = 'mulitpleDropDown'
-          _this.name = 'Create_Drop_Down'
-          _this.label = 'Insert answer options'
-
-          _this.select = function (state, activeViewId, activeView) {
-            if (
-              activeView.props.type &&
-              activeView.props.type === 'MultipleDropDownContainer'
-            )
-              return true
-            return false
-          }
-
-          return _this
+  ((_dec$7 = injectable()),
+  _dec$7(
+    (_class$7 = /*#__PURE__*/ (function (_Tools) {
+      function CreateDropDown() {
+        var _this
+        _classCallCheck(this, CreateDropDown)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(CreateDropDown, [
-          {
-            key: 'run',
-            get: function get() {
-              return function (state, dispatch) {
-                var content = Fragment.empty
-                var tr = state.tr
-                var createGap =
-                  state.config.schema.nodes.multiple_drop_down_option.create(
-                    {
-                      id: v4(),
-                      options: [],
-                    },
-                    content,
-                  )
-                tr.replaceSelectionWith(createGap)
-                var resolvedPos = tr.doc.resolve(
-                  tr.selection.anchor -
-                    tr.selection.$anchor.nodeBefore.nodeSize,
+        _this = _callSuper(this, CreateDropDown, [].concat(args))
+        _this.title = 'Create Drop Down'
+        _this.icon = 'mulitpleDropDown'
+        _this.name = 'Create_Drop_Down'
+        _this.label = 'Insert answer options'
+        _this.select = function (state, activeViewId, activeView) {
+          if (
+            activeView.props.type &&
+            activeView.props.type === 'MultipleDropDownContainer'
+          )
+            return true
+          return false
+        }
+        return _this
+      }
+      _inherits(CreateDropDown, _Tools)
+      return _createClass(CreateDropDown, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (state, dispatch) {
+              var content = Fragment.empty
+              var tr = state.tr
+              var createGap =
+                state.config.schema.nodes.multiple_drop_down_option.create(
+                  {
+                    id: v4(),
+                    options: [],
+                  },
+                  content,
                 )
-                tr.setSelection(new NodeSelection(resolvedPos))
-                dispatch(tr)
-              }
-            },
+              tr.replaceSelectionWith(createGap)
+              var resolvedPos = tr.doc.resolve(
+                tr.selection.anchor - tr.selection.$anchor.nodeBefore.nodeSize,
+              )
+              tr.setSelection(new NodeSelection(resolvedPos))
+              dispatch(tr)
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {}
-            },
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {}
           },
-          {
-            key: 'enable',
-            get: function get() {
-              return function (state) {}
-            },
+        },
+        {
+          key: 'enable',
+          get: function get() {
+            return function (state) {}
           },
-        ])
-
-        return CreateDropDown
-      })(Tools)),
-      _temp$6)),
-  ) || _class$6)
+        },
+      ])
+    })(Tools)),
+  ) || _class$7)
 
 var multipleDropDownOptionNode = {
   attrs: {
@@ -5523,10 +4880,6 @@ var multipleDropDownOptionNode = {
 }
 
 var MultipleDropDownNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(MultipleDropDownNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(MultipleDropDownNodeView)
-
   function MultipleDropDownNodeView(
     node,
     view,
@@ -5537,11 +4890,8 @@ var MultipleDropDownNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, MultipleDropDownNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, MultipleDropDownNodeView, [
       node,
       view,
       getPos,
@@ -5549,15 +4899,15 @@ var MultipleDropDownNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(MultipleDropDownNodeView, _QuestionsNodeView)
+  return _createClass(
     MultipleDropDownNodeView,
     [
       {
@@ -5566,7 +4916,6 @@ var MultipleDropDownNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           if (event.target.type === 'text') {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -5581,61 +4930,25 @@ var MultipleDropDownNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return MultipleDropDownNodeView
 })(QuestionsNodeView)
 
-function _templateObject4$6() {
-  var data = _taggedTemplateLiteral([
-    '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
-  ])
-
-  _templateObject4$6 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$7() {
-  var data = _taggedTemplateLiteral([
-    '\n  visibility: ',
-    ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 35px auto auto;\n  position: absolute;\n  width: 170px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
-  ])
-
-  _templateObject3$7 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: #fff;\n  border: 1px solid rgb(204, 204, 204);\n  color: #000;\n  cursor: ',
-    ';\n  display: inline-flex;\n  opacity: ',
-    ';\n  padding: 8px 4px 4px 4px;\n  position: relative;\n  width: 165px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n  &focus {\n    outline: 0;\n  }\n',
-  ])
-
-  _templateObject2$9 = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$i() {
-  var data = _taggedTemplateLiteral(['\n  display: inline-flex;\n'])
-
-  _templateObject$i = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$3 = styled.div(_templateObject$i())
+var _templateObject$k,
+  _templateObject2$i,
+  _templateObject3$g,
+  _templateObject4$g
+var Wrapper$8 = styled.div(
+  _templateObject$k ||
+    (_templateObject$k = _taggedTemplateLiteral([
+      '\n  display: inline-flex;\n',
+    ])),
+)
 var DropDownButton$2 = styled.button(
-  _templateObject2$9(),
+  _templateObject2$i ||
+    (_templateObject2$i = _taggedTemplateLiteral([
+      '\n  background: #fff;\n  border: 1px solid rgb(204, 204, 204);\n  color: #000;\n  cursor: ',
+      ';\n  display: inline-flex;\n  opacity: ',
+      ';\n  padding: 8px 4px 4px 4px;\n  position: relative;\n  width: 165px;\n\n  span {\n    position: relative;\n    top: 2px;\n  }\n  &focus {\n    outline: 0;\n  }\n',
+    ])),
   function (props) {
     return props.$disabled ? 'not-allowed' : 'pointer'
   },
@@ -5643,28 +4956,35 @@ var DropDownButton$2 = styled.button(
     return props.$disabled ? '0.4' : '1'
   },
 )
-var DropDownMenu$2 = styled.div(_templateObject3$7(), function (props) {
-  return props.$isOpen ? 'visible' : 'hidden'
-})
-var StyledIcon$2 = styled(Icon)(_templateObject4$6())
-
-var DropComponent$1 = function DropComponent(_ref) {
+var DropDownMenu$2 = styled.div(
+  _templateObject3$g ||
+    (_templateObject3$g = _taggedTemplateLiteral([
+      '\n  visibility: ',
+      ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 35px auto auto;\n  position: absolute;\n  width: 170px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
+    ])),
+  function (props) {
+    return props.$isOpen ? 'visible' : 'hidden'
+  },
+)
+var StyledIcon$2 = styled(Icon)(
+  _templateObject4$g ||
+    (_templateObject4$g = _taggedTemplateLiteral([
+      '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n',
+    ])),
+)
+var DropComponent = function DropComponent(_ref) {
   var node = _ref.node,
     uniqueId = _ref.uniqueId
-
   var _useState = useState(undefined),
     _useState2 = _slicedToArray(_useState, 2),
     selectedOption = _useState2[0],
     setSelectedOption = _useState2[1]
-
   var itemRefs = useRef([])
   var wrapperRef = useRef()
-
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
     isOpen = _useState4[0],
     setIsOpen = _useState4[1]
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var customProps = main.props.customValues
@@ -5677,9 +4997,8 @@ var DropComponent$1 = function DropComponent(_ref) {
     })
     if (!testMode && currentOption[0]) setSelectedOption(currentOption[0].value)
   }, [])
-
   var onChange = function onChange(option) {
-    var allNodes = getNodes$6(main)
+    var allNodes = getNodes$e(main)
     var tr = main.state.tr
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
@@ -5700,14 +5019,11 @@ var DropComponent$1 = function DropComponent(_ref) {
     openCloseMenu()
     setSelectedOption(option.value)
   }
-
   useOnClickOutside(wrapperRef, function () {
     return setIsOpen(false)
   })
-
   var _onKeyDown = function onKeyDown(e, index) {
     e.preventDefault()
-
     if (e.keyCode === 40) {
       // arrow down
       if (index === itemRefs.current.length - 1) {
@@ -5715,8 +5031,9 @@ var DropComponent$1 = function DropComponent(_ref) {
       } else {
         itemRefs.current[index + 1].current.focus()
       }
-    } // arrow up
+    }
 
+    // arrow up
     if (e.keyCode === 38) {
       if (
         index === 0 &&
@@ -5726,33 +5043,31 @@ var DropComponent$1 = function DropComponent(_ref) {
       } else {
         itemRefs.current[index - 1].current.focus()
       }
-    } // enter
+    }
 
+    // enter
     if (e.keyCode === 13) {
       itemRefs.current[index].current.click()
-    } // ESC
+    }
 
+    // ESC
     if (e.keyCode === 27) {
       setIsOpen(false)
     }
   }
-
   var openCloseMenu = function openCloseMenu() {
     if (!isDisabled) setIsOpen(!isOpen)
   }
-
   var MultipleDropDown = useMemo(
     function () {
       var selectedValue
-
       if (selectedOption) {
         selectedValue = node.attrs.options.filter(function (option) {
           return option.value === selectedOption
         })
       }
-
       return /*#__PURE__*/ React.createElement(
-        Wrapper$3,
+        Wrapper$8,
         {
           disabled: isDisabled,
           ref: wrapperRef,
@@ -5769,11 +5084,9 @@ var DropComponent$1 = function DropComponent(_ref) {
                 if (!itemRefs.current[0].current) return
                 itemRefs.current[0].current.focus()
               }
-
               if (e.keyCode === 27) {
                 setIsOpen(false)
               }
-
               if (e.keyCode === 13 || e.keyCode === 32) {
                 setIsOpen(true)
               }
@@ -5798,7 +5111,8 @@ var DropComponent$1 = function DropComponent(_ref) {
             role: 'listbox',
           },
           node.attrs.options.map(function (option, index) {
-            itemRefs.current[index] = itemRefs.current[index] || createRef()
+            itemRefs.current[index] =
+              itemRefs.current[index] || /*#__PURE__*/ createRef()
             return /*#__PURE__*/ React.createElement(
               'span',
               {
@@ -5824,104 +5138,60 @@ var DropComponent$1 = function DropComponent(_ref) {
   )
   return MultipleDropDown
 }
-
-var getNodes$6 = function getNodes(view) {
+var getNodes$e = function getNodes(view) {
   return DocumentHelpers.findInlineNodes(view.state.doc)
 }
 
-function _templateObject7$2() {
-  var data = _taggedTemplateLiteral([''])
-
-  _templateObject7$2 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$3() {
-  var data = _taggedTemplateLiteral([''])
-
-  _templateObject6$3 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$3() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: inline-block;\n  border: ',
-    ';\n  padding: 2px 4px 2px 4px;\n',
-  ])
-
-  _templateObject5$3 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$7() {
-  var data = _taggedTemplateLiteral(['\n  ', '\n'])
-
-  _templateObject4$7 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$8() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: inline-block;\n  height: 24px;\n  width: 24px;\n  cursor: pointer;\n  ',
-    '\n',
-  ])
-
-  _templateObject3$8 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$a() {
-  var data = _taggedTemplateLiteral(['\n  fill: white;\n'])
-
-  _templateObject2$a = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$j() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: #535e76;\n  border-radius: 2px;\n',
-  ])
-
-  _templateObject$j = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var activeStylesContainer = css(_templateObject$j())
-var activeStylesSvg = css(_templateObject2$a())
+var _templateObject$j,
+  _templateObject2$h,
+  _templateObject3$f,
+  _templateObject4$f,
+  _templateObject5$c,
+  _templateObject6$b,
+  _templateObject7$8
+var activeStylesContainer = css(
+  _templateObject$j ||
+    (_templateObject$j = _taggedTemplateLiteral([
+      '\n  background: #535e76;\n  border-radius: 2px;\n',
+    ])),
+)
+var activeStylesSvg = css(
+  _templateObject2$h ||
+    (_templateObject2$h = _taggedTemplateLiteral(['\n  fill: white;\n'])),
+)
 var StyledIconActionContainer = styled.span(
-  _templateObject3$8(),
+  _templateObject3$f ||
+    (_templateObject3$f = _taggedTemplateLiteral([
+      '\n  display: inline-block;\n  height: 24px;\n  width: 24px;\n  cursor: pointer;\n  ',
+      '\n',
+    ])),
   function (props) {
     return props.$isActive && activeStylesContainer
   },
 )
-var StyledIconAction$3 = styled(Icon)(_templateObject4$7(), function (props) {
-  return props.$isActive && activeStylesSvg
-})
-var AnswerContainer$1 = styled.div(_templateObject5$3(), function (props) {
-  return props.$isCorrect ? '1px solid #008000;' : '1px solid #FF3030'
-})
-var CorrectAnswer$1 = styled.span(_templateObject6$3())
-var Answer$1 = styled.span(_templateObject7$2())
+var StyledIconAction$5 = styled(Icon)(
+  _templateObject4$f ||
+    (_templateObject4$f = _taggedTemplateLiteral(['\n  ', '\n'])),
+  function (props) {
+    return props.$isActive && activeStylesSvg
+  },
+)
+var AnswerContainer$5 = styled.div(
+  _templateObject5$c ||
+    (_templateObject5$c = _taggedTemplateLiteral([
+      '\n  display: inline-block;\n  border: ',
+      ';\n  padding: 2px 4px 2px 4px;\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? '1px solid #008000;' : '1px solid #FF3030'
+  },
+)
+var CorrectAnswer = styled.span(
+  _templateObject6$b || (_templateObject6$b = _taggedTemplateLiteral([''])),
+)
+var Answer$2 = styled.span(
+  _templateObject7$8 || (_templateObject7$8 = _taggedTemplateLiteral([''])),
+)
 var MultipleDropDownComponent = function (_ref) {
   var node = _ref.node,
     getPos = _ref.getPos
@@ -5929,12 +5199,10 @@ var MultipleDropDownComponent = function (_ref) {
   var main = context.pmViews.main,
     pmViews = context.pmViews,
     activeViewId = context.activeViewId
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     isActive = _useState2[0],
     setIsActive = _useState2[1]
-
   var customProps = main.props.customValues
   var posFrom = pmViews[activeViewId].state.selection.from
   var isEditable = main.props.editable(function (editable) {
@@ -5944,27 +5212,24 @@ var MultipleDropDownComponent = function (_ref) {
   useEffect(
     function () {
       setIsActive(false)
-
       if (getPos() === posFrom) {
         setIsActive(true)
       }
     },
     [posFrom],
   )
-
   if (!readOnly) {
     return /*#__PURE__*/ React.createElement(
       StyledIconActionContainer,
       {
         $isActive: isActive,
       },
-      /*#__PURE__*/ React.createElement(StyledIconAction$3, {
+      /*#__PURE__*/ React.createElement(StyledIconAction$5, {
         $isActive: isActive,
         name: 'mulitpleDropDown',
       }),
     )
   }
-
   if (!(readOnly && customProps && !customProps.showFeedBack)) {
     var answer = node.attrs.options.find(function (option) {
       return option.value === node.attrs.answer
@@ -5974,14 +5239,14 @@ var MultipleDropDownComponent = function (_ref) {
     })
     var isCorrect = node.attrs.correct === node.attrs.answer
     return /*#__PURE__*/ React.createElement(
-      AnswerContainer$1,
+      AnswerContainer$5,
       {
         $isCorrect: isCorrect,
       },
       'Correct:',
       correct &&
         /*#__PURE__*/ React.createElement(
-          CorrectAnswer$1,
+          CorrectAnswer,
           null,
           ' ',
           correct.label,
@@ -5989,53 +5254,38 @@ var MultipleDropDownComponent = function (_ref) {
         ),
       'Answer: ',
       answer &&
-        /*#__PURE__*/ React.createElement(Answer$1, null, ' ', answer.label),
+        /*#__PURE__*/ React.createElement(Answer$2, null, ' ', answer.label),
     )
   }
-
-  return /*#__PURE__*/ React.createElement(DropComponent$1, {
+  return /*#__PURE__*/ React.createElement(DropComponent, {
     getPos: getPos,
     node: node,
     uniqueId: v4(),
   })
 }
 
-function _templateObject2$b() {
-  var data = _taggedTemplateLiteral([
-    "\n  position: absolute;\n  top: 0;\n  left: 0;\n  height: 15px;\n  width: 15px;\n  background-color: #eee;\n  border-radius: 50%;\n\n  &:after {\n    content: '';\n    position: absolute;\n    display: none;\n  }\n",
-  ])
-
-  _templateObject2$b = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$k() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: block;\n  position: relative;\n  padding-left: 20px;\n  margin-bottom: 5px;\n  cursor: pointer;\n  user-select: none;\n\n  input {\n    position: absolute;\n    opacity: 0;\n    cursor: pointer;\n    height: 0;\n    width: 0;\n  }\n\n  &:hover input ~ span {\n    background-color: #ccc;\n  }\n\n  input:checked ~ span {\n    background-color: #535e76;\n  }\n\n  input:checked ~ .span:after {\n    display: block;\n  }\n\n  span:after {\n    top: 9px;\n    left: 9px;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: white;\n  }\n',
-  ])
-
-  _templateObject$k = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var CheckContainer = styled.label(_templateObject$k())
-var RadioBtn = styled.span(_templateObject2$b())
+var _templateObject$i, _templateObject2$g
+var CheckContainer = styled.label(
+  _templateObject$i ||
+    (_templateObject$i = _taggedTemplateLiteral([
+      '\n  display: block;\n  position: relative;\n  padding-left: 20px;\n  margin-bottom: 5px;\n  cursor: pointer;\n  user-select: none;\n\n  input {\n    position: absolute;\n    opacity: 0;\n    cursor: pointer;\n    height: 0;\n    width: 0;\n  }\n\n  &:hover input ~ span {\n    background-color: #ccc;\n  }\n\n  input:checked ~ span {\n    background-color: #535e76;\n  }\n\n  input:checked ~ .span:after {\n    display: block;\n  }\n\n  span:after {\n    top: 9px;\n    left: 9px;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: white;\n  }\n',
+    ])),
+)
+var RadioBtn = styled.span(
+  _templateObject2$g ||
+    (_templateObject2$g = _taggedTemplateLiteral([
+      "\n  position: absolute;\n  top: 0;\n  left: 0;\n  height: 15px;\n  width: 15px;\n  background-color: #eee;\n  border-radius: 50%;\n\n  &:after {\n    content: '';\n    position: absolute;\n    display: none;\n  }\n",
+    ])),
+)
 var RadioButton = function (_ref) {
   var item = _ref.item,
     node = _ref.node
   var context = useContext(WaxContext)
   var activeView = context.activeView
-
   var _useState = useState(node.node.attrs.correct),
     _useState2 = _slicedToArray(_useState, 2),
     correctOption = _useState2[0],
     setCorrectOption = _useState2[1]
-
   var onChange = function onChange() {
     var tr = activeView.state.tr
     setCorrectOption(item.value)
@@ -6054,7 +5304,6 @@ var RadioButton = function (_ref) {
     tr.setSelection(new NodeSelection(resolvedPos))
     activeView.dispatch(tr.setMeta('reject', true))
   }
-
   return /*#__PURE__*/ React.createElement(
     CheckContainer,
     null,
@@ -6069,85 +5318,50 @@ var RadioButton = function (_ref) {
   )
 }
 
-function _templateObject6$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  cursor: pointer;\n  position: relative;\n  top: 2px;\n  left: 6px;\n  height: 16px;\n  width: 16px;\n',
-  ])
-
-  _templateObject6$4 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  margin-top: auto;\n  input {\n    border: none;\n    border-bottom: 1px solid black;\n    width: 160px;\n    &:focus {\n      outline: none;\n    }\n\n    ::placeholder {\n      color: rgb(170, 170, 170);\n      font-style: italic;\n      font-size: 10px;\n    }\n  }\n  button {\n    border: 1px solid #535e76;\n    cursor: pointer;\n    color: #535e76;\n    margin-left: 20px;\n    background: #fff;\n    padding: 4px 8px 4px 8px;\n    &:hover {\n      border: 1px solid #535e76;\n      cursor: pointer;\n      color: #535e76;\n      margin-right: 10px;\n      background: #fff;\n      background: #535e76;\n      color: #fff;\n      padding: 4px 8px 4px 8px;\n    }\n  }\n',
-  ])
-
-  _templateObject5$4 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$8() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 96%;\n',
-  ])
-
-  _templateObject4$8 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  height: 100px;\n  font-size: 11px;\n  overflow-y: auto;\n',
-  ])
-
-  _templateObject3$9 = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  width: 174px;\n  height: 150px;\n  background: white;\n  border: 1px solid #535e76;\n  display: flex;\n  flex-direction: column;\n  padding: 5px;\n',
-  ])
-
-  _templateObject2$c = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$l() {
-  var data = _taggedTemplateLiteral([
-    '\n  width: 0;\n  height: 0;\n  margin: 0px auto;\n  border-left: 6px solid transparent;\n  border-right: 6px solid transparent;\n  border-bottom: 10px solid #535e76;\n',
-  ])
-
-  _templateObject$l = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var TriangleTop = styled.div(_templateObject$l())
-var DropDownComponent = styled.div(_templateObject2$c())
-var Options = styled.div(_templateObject3$9())
-var Option$1 = styled.div(_templateObject4$8())
-var AddOption$1 = styled.div(_templateObject5$4())
-var IconRemove = styled(Icon)(_templateObject6$4())
+var _templateObject$h,
+  _templateObject2$f,
+  _templateObject3$e,
+  _templateObject4$e,
+  _templateObject5$b,
+  _templateObject6$a
+var TriangleTop = styled.div(
+  _templateObject$h ||
+    (_templateObject$h = _taggedTemplateLiteral([
+      '\n  width: 0;\n  height: 0;\n  margin: 0px auto;\n  border-left: 6px solid transparent;\n  border-right: 6px solid transparent;\n  border-bottom: 10px solid #535e76;\n',
+    ])),
+)
+var DropDownComponent$1 = styled.div(
+  _templateObject2$f ||
+    (_templateObject2$f = _taggedTemplateLiteral([
+      '\n  width: 174px;\n  height: 150px;\n  background: white;\n  border: 1px solid #535e76;\n  display: flex;\n  flex-direction: column;\n  padding: 5px;\n',
+    ])),
+)
+var Options = styled.div(
+  _templateObject3$e ||
+    (_templateObject3$e = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  height: 100px;\n  font-size: 11px;\n  overflow-y: auto;\n',
+    ])),
+)
+var Option = styled.div(
+  _templateObject4$e ||
+    (_templateObject4$e = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: row;\n  width: 96%;\n',
+    ])),
+)
+var AddOption = styled.div(
+  _templateObject5$b ||
+    (_templateObject5$b = _taggedTemplateLiteral([
+      '\n  display: flex;\n  margin-top: auto;\n  input {\n    border: none;\n    border-bottom: 1px solid black;\n    width: 160px;\n    &:focus {\n      outline: none;\n    }\n\n    ::placeholder {\n      color: rgb(170, 170, 170);\n      font-style: italic;\n      font-size: 10px;\n    }\n  }\n  button {\n    border: 1px solid #535e76;\n    cursor: pointer;\n    color: #535e76;\n    margin-left: 20px;\n    background: #fff;\n    padding: 4px 8px 4px 8px;\n    &:hover {\n      border: 1px solid #535e76;\n      cursor: pointer;\n      color: #535e76;\n      margin-right: 10px;\n      background: #fff;\n      background: #535e76;\n      color: #fff;\n      padding: 4px 8px 4px 8px;\n    }\n  }\n',
+    ])),
+)
+var IconRemove = styled(Icon)(
+  _templateObject6$a ||
+    (_templateObject6$a = _taggedTemplateLiteral([
+      '\n  cursor: pointer;\n  position: relative;\n  top: 2px;\n  left: 6px;\n  height: 16px;\n  width: 16px;\n',
+    ])),
+)
 var previousNode = ''
-var DropDownComponent$1 = function (_ref) {
+var DropDownComponent$2 = function (_ref) {
   var setPosition = _ref.setPosition,
     position = _ref.position
   var context = useContext(WaxContext)
@@ -6159,17 +5373,14 @@ var DropDownComponent$1 = function (_ref) {
   var currentNode = position.node
   var currentOptions = currentNode.node.attrs.options
   var readOnly = !isEditable
-
   var _useState = useState(currentOptions),
     _useState2 = _slicedToArray(_useState, 2),
     options = _useState2[0],
     setOptions = _useState2[1]
-
   var _useState3 = useState(''),
     _useState4 = _slicedToArray(_useState3, 2),
     optionText = _useState4[0],
     setOptionText = _useState4[1]
-
   var addOptionRef = useRef(null)
   useLayoutEffect(
     function () {
@@ -6197,7 +5408,6 @@ var DropDownComponent$1 = function (_ref) {
       if (addOptionRef.current) addOptionRef.current.focus()
       if (!activeView.state.selection.node) return
       var tr = activeView.state.tr
-
       if (previousNode.from !== currentNode.from) {
         tr.setNodeMarkup(
           position.from,
@@ -6224,7 +5434,6 @@ var DropDownComponent$1 = function (_ref) {
           ),
         )
       }
-
       previousNode = currentNode
       var resolvedPos = tr.doc.resolve(position.from)
       tr.setSelection(new NodeSelection(resolvedPos))
@@ -6232,17 +5441,14 @@ var DropDownComponent$1 = function (_ref) {
     },
     [options, position.from],
   )
-
   var updateOptionText = function updateOptionText() {
     setOptionText(addOptionRef.current.value)
   }
-
   var handleKeyDown = function handleKeyDown(event) {
     if (event.key === 'Enter' || event.which === 13) {
       addOption()
     }
   }
-
   var addOption = function addOption() {
     if (addOptionRef.current.value.trim() === '') return
     var obj = {
@@ -6255,7 +5461,6 @@ var DropDownComponent$1 = function (_ref) {
     setOptionText('')
     addOptionRef.current.focus()
   }
-
   var removeOption = function removeOption(id) {
     setOptions(
       options.filter(function (option) {
@@ -6264,21 +5469,20 @@ var DropDownComponent$1 = function (_ref) {
     )
     setOptionText('')
   }
-
   if (!readOnly) {
     return /*#__PURE__*/ React.createElement(
       React.Fragment,
       null,
       /*#__PURE__*/ React.createElement(TriangleTop, null),
       /*#__PURE__*/ React.createElement(
-        DropDownComponent,
+        DropDownComponent$1,
         null,
         /*#__PURE__*/ React.createElement(
           Options,
           null,
           options.map(function (value) {
             return /*#__PURE__*/ React.createElement(
-              Option$1,
+              Option,
               {
                 key: v4(),
               },
@@ -6306,7 +5510,7 @@ var DropDownComponent$1 = function (_ref) {
           }),
         ),
         /*#__PURE__*/ React.createElement(
-          AddOption$1,
+          AddOption,
           null,
           /*#__PURE__*/ React.createElement('input', {
             onChange: updateOptionText,
@@ -6320,51 +5524,37 @@ var DropDownComponent$1 = function (_ref) {
       ),
     )
   }
-
   return null
 }
 
-var _dec$7, _class$7, _temp$7
+var _dec$6, _class$6
 var MultipleDropDown =
-  ((_dec$7 = injectable()),
-  _dec$7(
-    (_class$7 =
-      ((_temp$7 = /*#__PURE__*/ (function (_ToolGroup) {
-        _inherits(MultipleDropDown, _ToolGroup)
-
-        var _super = _createSuper(MultipleDropDown)
-
-        function MultipleDropDown(CreateDropDown) {
-          var _this
-
-          _classCallCheck(this, MultipleDropDown)
-
-          _this = _super.call(this)
-          _this.tools = []
-          _this.tools = [CreateDropDown]
-          return _this
-        }
-
-        MultipleDropDown =
-          inject('CreateDropDown')(MultipleDropDown, undefined, 0) ||
-          MultipleDropDown
-        return MultipleDropDown
-      })(ToolGroup)),
-      _temp$7)),
-  ) || _class$7)
+  ((_dec$6 = injectable()),
+  _dec$6(
+    (_class$6 = /*#__PURE__*/ (function (_ToolGroup) {
+      function MultipleDropDown(CreateDropDown) {
+        var _this
+        _classCallCheck(this, MultipleDropDown)
+        _this = _callSuper(this, MultipleDropDown)
+        _this.tools = []
+        _this.tools = [CreateDropDown]
+        return _this
+      }
+      MultipleDropDown =
+        inject('CreateDropDown')(MultipleDropDown, undefined, 0) ||
+        MultipleDropDown
+      _inherits(MultipleDropDown, _ToolGroup)
+      return _createClass(MultipleDropDown)
+    })(ToolGroup)),
+  ) || _class$6)
 
 var MultipleDropDownToolGroupService = /*#__PURE__*/ (function (_Service) {
-  _inherits(MultipleDropDownToolGroupService, _Service)
-
-  var _super = _createSuper(MultipleDropDownToolGroupService)
-
   function MultipleDropDownToolGroupService() {
     _classCallCheck(this, MultipleDropDownToolGroupService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, MultipleDropDownToolGroupService, arguments)
   }
-
-  _createClass(MultipleDropDownToolGroupService, [
+  _inherits(MultipleDropDownToolGroupService, _Service)
+  return _createClass(MultipleDropDownToolGroupService, [
     {
       key: 'register',
       value: function register() {
@@ -6372,20 +5562,12 @@ var MultipleDropDownToolGroupService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return MultipleDropDownToolGroupService
 })(Service)
 
 var CreateDropDownService = /*#__PURE__*/ (function (_Service) {
-  _inherits(CreateDropDownService, _Service)
-
-  var _super = _createSuper(CreateDropDownService)
-
   function CreateDropDownService() {
     var _this
-
     _classCallCheck(this, CreateDropDownService)
-
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -6393,20 +5575,19 @@ var CreateDropDownService = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
+    _this = _callSuper(this, CreateDropDownService, [].concat(args))
     _this.name = 'CreateDropDownService'
     _this.dependencies = [new MultipleDropDownToolGroupService()]
     return _this
   }
-
-  _createClass(CreateDropDownService, [
+  _inherits(CreateDropDownService, _Service)
+  return _createClass(CreateDropDownService, [
     {
       key: 'boot',
       value: function boot() {
         var createOverlay = this.container.get('CreateOverlay')
         createOverlay(
-          DropDownComponent$1,
+          DropDownComponent$2,
           {},
           {
             nodeType: 'multiple_drop_down_option',
@@ -6434,38 +5615,26 @@ var CreateDropDownService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return CreateDropDownService
 })(Service)
 
-function _templateObject$m() {
-  var data = _taggedTemplateLiteral([
-    "\n  position: relative;\n  height: 100%;\n\n  > .ProseMirror {\n    padding: 5px !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    img[class='ProseMirror-separator'] {\n      display: inline !important;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject$m = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var EditorWrapper$7 = styled.div(_templateObject$m())
-
-var WaxOverlays$1 = function WaxOverlays() {
+var _templateObject$g
+var EditorWrapper = styled.div(
+  _templateObject$g ||
+    (_templateObject$g = _taggedTemplateLiteral([
+      "\n  position: relative;\n  height: 100%;\n\n  > .ProseMirror {\n    padding: 5px !important;\n\n    &:focus {\n      outline: none;\n    }\n\n    img[class='ProseMirror-separator'] {\n      display: inline !important;\n    }\n\n    p.empty-node:first-child::before {\n      content: attr(data-content);\n    }\n\n    .empty-node::before {\n      color: rgb(170, 170, 170);\n      float: left;\n      font-style: italic;\n      height: 0px;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+)
+var WaxOverlays = function WaxOverlays() {
   return true
 }
-
-var ContainerEditor$2 = function ContainerEditor(_ref) {
+var ContainerEditor = function ContainerEditor(_ref) {
   var _node$attrs
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
   var editorRef = useRef()
-
   var _useContext = useContext(ApplicationContext),
     app = _useContext.app
-
   var context = useContext(WaxContext)
   var main = context.pmViews.main
   var multipleDropDownContainerNodeView
@@ -6479,7 +5648,6 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
     return editable
   })
   var finalPlugins = [FakeCursorPlugin()]
-
   var createKeyBindings = function createKeyBindings() {
     var keys = getKeys()
     Object.keys(baseKeymap).forEach(function (key) {
@@ -6491,7 +5659,6 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
     })
     return keys
   }
-
   var pressEnter = function pressEnter(state, dispatch) {
     if (state.selection.node && state.selection.node.type.name === 'image') {
       var _state$selection = state.selection,
@@ -6501,16 +5668,14 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
       var pos = $from.before(same)
       dispatch(state.tr.setSelection(NodeSelection.create(state.doc, pos)))
       return true
-    } // LISTS
-
+    }
+    // LISTS
     if (splitListItem(state.schema.nodes.list_item)(state)) {
       splitListItem(state.schema.nodes.list_item)(state, dispatch)
       return true
     }
-
     return false
   }
-
   var getKeys = function getKeys() {
     return {
       'Mod-z': function ModZ() {
@@ -6529,7 +5694,6 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
       Enter: pressEnter,
     }
   }
-
   var filteredplugins = app.PmPlugins.getAll().filter(function (plugin) {
     return (
       !plugin.key.includes('y-sync') &&
@@ -6543,7 +5707,7 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
   )
   finalPlugins = finalPlugins.concat(_toConsumableArray(plugins))
   useEffect(function () {
-    WaxOverlays$1 = ComponentPlugin('waxOverlays')
+    WaxOverlays = ComponentPlugin('waxOverlays')
     multipleDropDownContainerNodeView = new EditorView(
       {
         mount: editorRef.current,
@@ -6581,36 +5745,30 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
           spellcheck: 'false',
         },
       },
-    ) // Set Each note into Wax's Context
+    )
 
+    // Set Each note into Wax's Context
     context.updateView(
       _defineProperty({}, questionId, multipleDropDownContainerNodeView),
       questionId,
     )
     multipleDropDownContainerNodeView.focus()
   }, [])
-
   var dispatchTransaction = function dispatchTransaction(tr) {
     var _multipleDropDownCont =
         multipleDropDownContainerNodeView.state.applyTransaction(tr),
       state = _multipleDropDownCont.state,
       transactions = _multipleDropDownCont.transactions
-
     multipleDropDownContainerNodeView.updateState(state)
     context.updateView({}, questionId)
-
     if (!tr.getMeta('fromOutside')) {
       var outerTr = view.state.tr
       var offsetMap = StepMap.offset(getPos() + 1)
-
       for (var i = 0; i < transactions.length; i++) {
         var steps = transactions[i].steps
-
-        for (var j = 0; j < steps.length; j++) {
+        for (var j = 0; j < steps.length; j++)
           outerTr.step(steps[j].map(offsetMap))
-        }
       }
-
       if (outerTr.docChanged) {
         var history = true
         if (tr.getMeta('reject')) history = false
@@ -6622,80 +5780,51 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
       }
     }
   }
-
   return /*#__PURE__*/ React.createElement(
-    EditorWrapper$7,
+    EditorWrapper,
     null,
     /*#__PURE__*/ React.createElement('div', {
       ref: editorRef,
     }),
-    /*#__PURE__*/ React.createElement(WaxOverlays$1, {
+    /*#__PURE__*/ React.createElement(WaxOverlays, {
       activeViewId: questionId,
       group: 'questions',
     }),
   )
 }
 
-function _templateObject5$5() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject5$5 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: -11px;\n  float: right;\n',
-  ])
-
-  _templateObject4$9 = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$a() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-block: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
-  ])
-
-  _templateObject3$a = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$d() {
-  var data = _taggedTemplateLiteral([
-    '\n  span {\n    position: relative;\n    top: 3px;\n  }\n',
-  ])
-
-  _templateObject2$d = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$n() {
-  var data = _taggedTemplateLiteral([''])
-
-  _templateObject$n = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var MultipleDropDownpWrapper = styled.div(_templateObject$n())
-var MultipleDropDownContainerTool = styled.div(_templateObject2$d())
-var MultipleDropDownpContainer = styled.div(_templateObject3$a())
-var ActionButton$4 = styled.button(_templateObject4$9())
-var StyledIconActionRemove$3 = styled(Icon)(_templateObject5$5())
+var _templateObject$f,
+  _templateObject2$e,
+  _templateObject3$d,
+  _templateObject4$d,
+  _templateObject5$a
+var MultipleDropDownpWrapper = styled.div(
+  _templateObject$f || (_templateObject$f = _taggedTemplateLiteral([''])),
+)
+var MultipleDropDownContainerTool = styled.div(
+  _templateObject2$e ||
+    (_templateObject2$e = _taggedTemplateLiteral([
+      '\n  span {\n    position: relative;\n    top: 3px;\n  }\n',
+    ])),
+)
+var MultipleDropDownpContainer = styled.div(
+  _templateObject3$d ||
+    (_templateObject3$d = _taggedTemplateLiteral([
+      '\n  border-block: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
+    ])),
+)
+var ActionButton$5 = styled.button(
+  _templateObject4$d ||
+    (_templateObject4$d = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n  border: none;\n  position: relative;\n  bottom: 14px;\n  left: -11px;\n  float: right;\n',
+    ])),
+)
+var StyledIconActionRemove$1 = styled(Icon)(
+  _templateObject5$a ||
+    (_templateObject5$a = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
 var MultipleDropDownContainerComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -6709,12 +5838,10 @@ var MultipleDropDownContainerComponent = function (_ref) {
   })
   var readOnly = !isEditable
   var testMode = customProps.testMode
-
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodes$7(context.pmViews.main)
+    var allNodes = getNodes$d(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
-
       var containerId =
         (_singleNode$node$cont = singleNode.node.content.content.find(function (
           n,
@@ -6723,7 +5850,6 @@ var MultipleDropDownContainerComponent = function (_ref) {
         })) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
-
       if (containerId === node.attrs.id) {
         context.pmViews.main.dispatch(
           context.pmViews.main.state.tr['delete'](
@@ -6734,7 +5860,6 @@ var MultipleDropDownContainerComponent = function (_ref) {
       }
     })
   }
-
   return /*#__PURE__*/ React.createElement(
     MultipleDropDownpWrapper,
     null,
@@ -6748,13 +5873,13 @@ var MultipleDropDownContainerComponent = function (_ref) {
           null,
           /*#__PURE__*/ React.createElement(MultipleDropDown, null),
           /*#__PURE__*/ React.createElement(
-            ActionButton$4,
+            ActionButton$5,
             {
               'aria-label': 'delete this question',
               onClick: removeQuestion,
               type: 'button',
             },
-            /*#__PURE__*/ React.createElement(StyledIconActionRemove$3, {
+            /*#__PURE__*/ React.createElement(StyledIconActionRemove$1, {
               name: 'deleteOutlinedQuestion',
             }),
           ),
@@ -6765,7 +5890,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
       {
         className: 'multiple-drop-down',
       },
-      /*#__PURE__*/ React.createElement(ContainerEditor$2, {
+      /*#__PURE__*/ React.createElement(ContainerEditor, {
         getPos: getPos,
         node: node,
         view: view,
@@ -6773,8 +5898,7 @@ var MultipleDropDownContainerComponent = function (_ref) {
     ),
   )
 }
-
-var getNodes$7 = function getNodes(view) {
+var getNodes$d = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleDropContainerNodes = []
   allNodes.forEach(function (node) {
@@ -6786,15 +5910,9 @@ var getNodes$7 = function getNodes(view) {
 }
 
 var MultipleDropDownService = /*#__PURE__*/ (function (_Service) {
-  _inherits(MultipleDropDownService, _Service)
-
-  var _super = _createSuper(MultipleDropDownService)
-
   function MultipleDropDownService() {
     var _this
-
     _classCallCheck(this, MultipleDropDownService)
-
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -6802,14 +5920,13 @@ var MultipleDropDownService = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
+    _this = _callSuper(this, MultipleDropDownService, [].concat(args))
     _this.name = 'MultipleDropDownService'
     _this.dependencies = [new CreateDropDownService()]
     return _this
   }
-
-  _createClass(MultipleDropDownService, [
+  _inherits(MultipleDropDownService, _Service)
+  return _createClass(MultipleDropDownService, [
     {
       key: 'register',
       value: function register() {
@@ -6819,7 +5936,7 @@ var MultipleDropDownService = /*#__PURE__*/ (function (_Service) {
         var createNode = this.container.get('CreateNode')
         var addPortal = this.container.get('AddPortal')
         createNode({
-          multiple_drop_down_wrapper: mathcingWrapperNode$1,
+          multiple_drop_down_wrapper: mathcingWrapperNode,
         })
         createNode({
           multiple_drop_down_container: multipleDropDownContainerNode,
@@ -6840,8 +5957,6 @@ var MultipleDropDownService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return MultipleDropDownService
 })(Service)
 
 var NumericalAnswerContainerNode = {
@@ -6947,107 +6062,92 @@ var NumericalWrapperNode = {
   },
 }
 
-var _dec$8, _class$8, _temp$8
+var _dec$5, _class$5
 var NumericalAnswerQuestion =
-  ((_dec$8 = injectable()),
-  _dec$8(
-    (_class$8 =
-      ((_temp$8 = /*#__PURE__*/ (function (_Tools) {
-        _inherits(NumericalAnswerQuestion, _Tools)
-
-        var _super = _createSuper(NumericalAnswerQuestion)
-
-        function NumericalAnswerQuestion() {
-          var _this
-
-          _classCallCheck(this, NumericalAnswerQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Numerical Answer Question'
-          _this.icon = ''
-          _this.name = 'Numerical Answer'
-          return _this
+  ((_dec$5 = injectable()),
+  _dec$5(
+    (_class$5 = /*#__PURE__*/ (function (_Tools) {
+      function NumericalAnswerQuestion() {
+        var _this
+        _classCallCheck(this, NumericalAnswerQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(NumericalAnswerQuestion, [
-          {
-            key: 'run',
-            get: function get() {
-              return function (main, context) {
-                helpers.checkifEmpty(main)
-                var state = main.state,
-                  dispatch = main.dispatch
-                var _state$selection = state.selection,
-                  from = _state$selection.from,
-                  to = _state$selection.to
-                var container =
-                  state.config.schema.nodes.numerical_answer_container.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.empty,
-                  )
-                var feedback = state.config.schema.nodes.feedback_prompt.create(
+        _this = _callSuper(this, NumericalAnswerQuestion, [].concat(args))
+        _this.title = 'Numerical Answer Question'
+        _this.icon = ''
+        _this.name = 'Numerical Answer'
+        return _this
+      }
+      _inherits(NumericalAnswerQuestion, _Tools)
+      return _createClass(NumericalAnswerQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (main, context) {
+              helpers.checkifEmpty(main)
+              var state = main.state,
+                dispatch = main.dispatch
+              var _state$selection = state.selection,
+                from = _state$selection.from,
+                to = _state$selection.to
+              var container =
+                state.config.schema.nodes.numerical_answer_container.create(
                   {
                     id: v4(),
                   },
                   Fragment.empty,
                 )
-                var wrapper =
-                  state.config.schema.nodes.numerical_wrapper.create(
-                    {
-                      id: v4(),
-                    },
-                    Fragment.from([container, feedback]),
-                  )
-                var tr = state.tr
-                tr.replaceWith(from, to, wrapper)
-                dispatch(tr)
-                setTimeout(function () {
-                  helpers.createEmptyParagraph(context, container.attrs.id)
-                }, 150)
-              }
-            },
+              var feedback = state.config.schema.nodes.feedback_prompt.create(
+                {
+                  id: v4(),
+                },
+                Fragment.empty,
+              )
+              var wrapper = state.config.schema.nodes.numerical_wrapper.create(
+                {
+                  id: v4(),
+                },
+                Fragment.from([container, feedback]),
+              )
+              var tr = state.tr
+              tr.replaceWith(from, to, wrapper)
+              dispatch(tr)
+              setTimeout(function () {
+                helpers.createEmptyParagraph(context, container.attrs.id)
+              }, 150)
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.numerical_answer_container,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.numerical_answer_container,
+                )
+              ) {
+                return true
               }
-            }, // select = (state, activeViewId, activeView) => {};
+              return false
+            }
           },
-        ])
 
-        return NumericalAnswerQuestion
-      })(Tools)),
-      _temp$8)),
-  ) || _class$8)
+          // select = (state, activeViewId, activeView) => {};
+        },
+      ])
+    })(Tools)),
+  ) || _class$5)
 
 var NumericalAnswerContainerNodeView = /*#__PURE__*/ (function (
   _QuestionsNodeView,
 ) {
-  _inherits(NumericalAnswerContainerNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(NumericalAnswerContainerNodeView)
-
   function NumericalAnswerContainerNodeView(
     node,
     view,
@@ -7058,11 +6158,8 @@ var NumericalAnswerContainerNodeView = /*#__PURE__*/ (function (
     context,
   ) {
     var _this
-
     _classCallCheck(this, NumericalAnswerContainerNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, NumericalAnswerContainerNodeView, [
       node,
       view,
       getPos,
@@ -7070,15 +6167,15 @@ var NumericalAnswerContainerNodeView = /*#__PURE__*/ (function (
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(NumericalAnswerContainerNodeView, _QuestionsNodeView)
+  return _createClass(
     NumericalAnswerContainerNodeView,
     [
       {
@@ -7103,68 +6200,48 @@ var NumericalAnswerContainerNodeView = /*#__PURE__*/ (function (
       },
     ],
   )
-
-  return NumericalAnswerContainerNodeView
 })(QuestionsNodeView)
 
-function _templateObject4$a() {
-  var data = _taggedTemplateLiteral([
-    '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n  position: relative;\n  top: 1px;\n',
-  ])
-
-  _templateObject4$a = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$b() {
-  var data = _taggedTemplateLiteral([
-    '\n  visibility: ',
-    ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 2px auto auto;\n  position: absolute;\n  width: 235px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    border-bottom: 1px solid #f4f4f4;\n    font-size: 11px;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
-  ])
-
-  _templateObject3$b = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$e() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: #fff;\n  border: 1px solid #f4f4f4;\n  color: #000;\n  cursor: ',
-    ';\n  display: flex;\n  position: relative;\n  top: 2px;\n  left: 3px;\n  width: 235px;\n  height: 26px;\n\n  span {\n    position: relative;\n    top: 4px;\n  }\n',
-  ])
-
-  _templateObject2$e = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$o() {
-  var data = _taggedTemplateLiteral(['\n  opacity: ', ';\n  z-index: 999;\n'])
-
-  _templateObject$o = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$4 = styled.div(_templateObject$o(), function (props) {
-  return props.$disabled ? '0.4' : '1'
-})
-var DropDownButton$3 = styled.button(_templateObject2$e(), function (props) {
-  return props.$disabled ? 'not-allowed' : 'pointer'
-})
-var DropDownMenu$3 = styled.div(_templateObject3$b(), function (props) {
-  return props.$isOpen ? 'visible' : 'hidden'
-})
-var StyledIcon$3 = styled(Icon)(_templateObject4$a())
-
+var _templateObject$e,
+  _templateObject2$d,
+  _templateObject3$c,
+  _templateObject4$c
+var Wrapper$7 = styled.div(
+  _templateObject$e ||
+    (_templateObject$e = _taggedTemplateLiteral([
+      '\n  opacity: ',
+      ';\n  z-index: 999;\n',
+    ])),
+  function (props) {
+    return props.$disabled ? '0.4' : '1'
+  },
+)
+var DropDownButton$1 = styled.button(
+  _templateObject2$d ||
+    (_templateObject2$d = _taggedTemplateLiteral([
+      '\n  background: #fff;\n  border: 1px solid #f4f4f4;\n  color: #000;\n  cursor: ',
+      ';\n  display: flex;\n  position: relative;\n  top: 2px;\n  left: 3px;\n  width: 235px;\n  height: 26px;\n\n  span {\n    position: relative;\n    top: 4px;\n  }\n',
+    ])),
+  function (props) {
+    return props.$disabled ? 'not-allowed' : 'pointer'
+  },
+)
+var DropDownMenu$1 = styled.div(
+  _templateObject3$c ||
+    (_templateObject3$c = _taggedTemplateLiteral([
+      '\n  visibility: ',
+      ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 2px auto auto;\n  position: absolute;\n  width: 235px;\n  max-height: 150px;\n  overflow-y: auto;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    border-bottom: 1px solid #f4f4f4;\n    font-size: 11px;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
+    ])),
+  function (props) {
+    return props.$isOpen ? 'visible' : 'hidden'
+  },
+)
+var StyledIcon$1 = styled(Icon)(
+  _templateObject4$c ||
+    (_templateObject4$c = _taggedTemplateLiteral([
+      '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n  position: relative;\n  top: 1px;\n',
+    ])),
+)
 var NumericalAnswerDropDownCompontent =
   function NumericalAnswerDropDownCompontent(_ref) {
     var node = _ref.node
@@ -7189,21 +6266,17 @@ var NumericalAnswerDropDownCompontent =
       options = context.options
     var itemRefs = useRef([])
     var wrapperRef = useRef()
-
     var _useState = useState(false),
       _useState2 = _slicedToArray(_useState, 2),
       isOpen = _useState2[0],
       setIsOpen = _useState2[1]
-
     useOnClickOutside(wrapperRef, function () {
       return setIsOpen(false)
     })
-
     var _useState3 = useState('Select Type'),
       _useState4 = _slicedToArray(_useState3, 2),
       label = _useState4[0],
       setLabel = _useState4[1]
-
     var isEditable = main.props.editable(function (editable) {
       return editable
     })
@@ -7216,7 +6289,6 @@ var NumericalAnswerDropDownCompontent =
       )
       dropDownOptions.forEach(function (option) {
         var _options$node$attrs$i
-
         if (
           ((_options$node$attrs$i = options[node.attrs.id]) === null ||
           _options$node$attrs$i === void 0
@@ -7227,7 +6299,8 @@ var NumericalAnswerDropDownCompontent =
         }
       })
     }, [])
-    var isDisabled = !isEditable // if (activeView.props?.type !== 'NumericalAnswer') isDisabled = true;
+    var isDisabled = !isEditable
+    // if (activeView.props?.type !== 'NumericalAnswer') isDisabled = true;
 
     useEffect(
       function () {
@@ -7235,7 +6308,6 @@ var NumericalAnswerDropDownCompontent =
       },
       [isDisabled],
     )
-
     var openCloseMenu = function openCloseMenu() {
       if (!isDisabled) setIsOpen(!isOpen)
       if (isOpen)
@@ -7243,37 +6315,38 @@ var NumericalAnswerDropDownCompontent =
           activeView.focus()
         })
     }
-
     var _onKeyDown = function onKeyDown(e, index) {
-      e.preventDefault() // arrow down
-
+      e.preventDefault()
+      // arrow down
       if (e.keyCode === 40) {
         if (index === itemRefs.current.length - 1) {
           itemRefs.current[0].current.focus()
         } else {
           itemRefs.current[index + 1].current.focus()
         }
-      } // arrow up
+      }
 
+      // arrow up
       if (e.keyCode === 38) {
         if (index === 0) {
           itemRefs.current[itemRefs.current.length - 1].current.focus()
         } else {
           itemRefs.current[index - 1].current.focus()
         }
-      } // enter
+      }
 
+      // enter
       if (e.keyCode === 13) {
         itemRefs.current[index].current.click()
-      } // ESC
+      }
 
+      // ESC
       if (e.keyCode === 27) {
         setIsOpen(false)
       }
     }
-
     var SaveTypeToNode = function SaveTypeToNode(option) {
-      var allNodes = getNodes$8(context.pmViews.main)
+      var allNodes = getNodes$c(context.pmViews.main)
       allNodes.forEach(function (singleNode) {
         if (singleNode.node.attrs.id === node.attrs.id) {
           context.pmViews.main.dispatch(
@@ -7295,7 +6368,6 @@ var NumericalAnswerDropDownCompontent =
         }
       })
     }
-
     var onChange = function onChange(option) {
       context.setOption(
         _defineProperty({}, node.attrs.id, {
@@ -7307,17 +6379,16 @@ var NumericalAnswerDropDownCompontent =
       SaveTypeToNode(option.value)
       activeView.focus()
     }
-
     var NumericalAnswerDropDown = useMemo(
       function () {
         return /*#__PURE__*/ React.createElement(
-          Wrapper$4,
+          Wrapper$7,
           {
             $disabled: isDisabled,
             ref: wrapperRef,
           },
           /*#__PURE__*/ React.createElement(
-            DropDownButton$3,
+            DropDownButton$1,
             {
               $disabled: isDisabled,
               'aria-controls': 'numerical-answer-list',
@@ -7327,11 +6398,9 @@ var NumericalAnswerDropDownCompontent =
                 if (e.keyCode === 40) {
                   itemRefs.current[0].current.focus()
                 }
-
                 if (e.keyCode === 27) {
                   setIsOpen(false)
                 }
-
                 if (e.keyCode === 13 || e.keyCode === 32) {
                   setIsOpen(true)
                 }
@@ -7341,12 +6410,12 @@ var NumericalAnswerDropDownCompontent =
             },
             /*#__PURE__*/ React.createElement('span', null, label),
             ' ',
-            /*#__PURE__*/ React.createElement(StyledIcon$3, {
+            /*#__PURE__*/ React.createElement(StyledIcon$1, {
               name: 'expand',
             }),
           ),
           /*#__PURE__*/ React.createElement(
-            DropDownMenu$3,
+            DropDownMenu$1,
             {
               $isOpen: isOpen,
               'aria-label': 'Choose an item type',
@@ -7354,7 +6423,8 @@ var NumericalAnswerDropDownCompontent =
               role: 'menu',
             },
             dropDownOptions.map(function (option, index) {
-              itemRefs.current[index] = itemRefs.current[index] || createRef()
+              itemRefs.current[index] =
+                itemRefs.current[index] || /*#__PURE__*/ createRef()
               return /*#__PURE__*/ React.createElement(
                 'span',
                 {
@@ -7379,8 +6449,7 @@ var NumericalAnswerDropDownCompontent =
     )
     return NumericalAnswerDropDown
   }
-
-var getNodes$8 = function getNodes(view) {
+var getNodes$c = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -7391,97 +6460,59 @@ var getNodes$8 = function getNodes(view) {
   return numericalAnswerpContainerNodes
 }
 
-function _templateObject7$3() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject7$3 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject6$5 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$6() {
-  var data = _taggedTemplateLiteral(['\n  color: ', ';\n  font-weight: 999;\n'])
-
-  _templateObject5$6 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$b() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n',
-  ])
-
-  _templateObject4$b = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n',
-  ])
-
-  _templateObject3$c = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$f() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
-  ])
-
-  _templateObject2$f = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$p() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
-  ])
-
-  _templateObject$p = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var AnswerContainer$2 = styled.div(_templateObject$p())
-var ValueContainer = styled.div(_templateObject2$f())
-var ValueInnerContainer = styled.div(_templateObject3$c())
-var ResultContainer = styled.div(_templateObject4$b())
-var FinalResult = styled.span(_templateObject5$6(), function (props) {
-  return props.$isCorrect ? ' #008000' : 'red'
-})
-var StyledIconCorrect = styled(Icon)(_templateObject6$5())
-var StyledIconWrong = styled(Icon)(_templateObject7$3())
-
+var _templateObject$d,
+  _templateObject2$c,
+  _templateObject3$b,
+  _templateObject4$b,
+  _templateObject5$9,
+  _templateObject6$9,
+  _templateObject7$7
+var AnswerContainer$4 = styled.div(
+  _templateObject$d ||
+    (_templateObject$d = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
+    ])),
+)
+var ValueContainer$2 = styled.div(
+  _templateObject2$c ||
+    (_templateObject2$c = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
+    ])),
+)
+var ValueInnerContainer$2 = styled.div(
+  _templateObject3$b ||
+    (_templateObject3$b = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n',
+    ])),
+)
+var ResultContainer$2 = styled.div(
+  _templateObject4$b ||
+    (_templateObject4$b = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n',
+    ])),
+)
+var FinalResult$2 = styled.span(
+  _templateObject5$9 ||
+    (_templateObject5$9 = _taggedTemplateLiteral([
+      '\n  color: ',
+      ';\n  font-weight: 999;\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? ' #008000' : 'red'
+  },
+)
+var StyledIconCorrect$4 = styled(Icon)(
+  _templateObject6$9 ||
+    (_templateObject6$9 = _taggedTemplateLiteral([
+      '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
+var StyledIconWrong$4 = styled(Icon)(
+  _templateObject7$7 ||
+    (_templateObject7$7 = _taggedTemplateLiteral([
+      '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
 var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
   var _node$attrs,
     _node$attrs$answersEx,
@@ -7492,13 +6523,11 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
     _node$attrs4$answersE,
     _node$attrs5,
     _node$attrs5$answersE
-
   var node = _ref.node,
     readOnly = _ref.readOnly,
     testMode = _ref.testMode,
     showFeedBack = _ref.showFeedBack
   var context = useContext(WaxContext)
-
   var _useState = useState(
       (node === null || node === void 0
         ? void 0
@@ -7512,7 +6541,6 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
     _useState2 = _slicedToArray(_useState, 2),
     exact = _useState2[0],
     setExact = _useState2[1]
-
   var _useState3 = useState(
       (node === null || node === void 0
         ? void 0
@@ -7526,7 +6554,6 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     marginError = _useState4[0],
     setMarginError = _useState4[1]
-
   var _useState5 = useState(
       (node === null || node === void 0
         ? void 0
@@ -7537,11 +6564,9 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     exactStudent = _useState6[0],
     setExactStudent = _useState6[1]
-
   var exactRef = useRef(null)
   var errorRef = useRef(null)
   var exactStudentRef = useRef(null)
-
   var onlyNumbers = function onlyNumbers(value) {
     return value
       .replace(/[^-?0-9.]/g, '')
@@ -7549,9 +6574,8 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       .replace(/(\..*?)\..*/g, '$1')
       .replace(/^0[^.]/, '0')
   }
-
   var SaveValuesToNode = function SaveValuesToNode() {
-    var allNodes = getNodes$9(context.pmViews.main)
+    var allNodes = getNodes$b(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         var obj = {
@@ -7574,20 +6598,17 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       }
     })
   }
-
   var onChangeExact = function onChangeExact() {
     setExact(onlyNumbers(exactRef.current.value))
     SaveValuesToNode()
   }
-
   var onChangeError = function onChangeError() {
     setMarginError(onlyNumbers(errorRef.current.value))
     SaveValuesToNode()
   }
-
   var onChangeExactStudent = function onChangeExactStudent() {
     setExactStudent(onlyNumbers(exactStudentRef.current.value))
-    var allNodes = getNodes$9(context.pmViews.main)
+    var allNodes = getNodes$b(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -7605,8 +6626,9 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
         )
       }
     })
-  } // SUBMIT
+  }
 
+  // SUBMIT
   var exactMultMargin = Math.abs(parseFloat((exact * marginError) / 100))
   var castExactStudent = ['-', '-.', '.'].includes(exactStudent)
     ? 0
@@ -7617,7 +6639,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
     castExactStudent <= computedMaxValue && castExactStudent >= computedMinValue
   )
   return /*#__PURE__*/ React.createElement(
-    AnswerContainer$2,
+    AnswerContainer$4,
     null,
     !testMode &&
       !showFeedBack &&
@@ -7625,7 +6647,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
         React.Fragment,
         null,
         /*#__PURE__*/ React.createElement(
-          ValueContainer,
+          ValueContainer$2,
           null,
           /*#__PURE__*/ React.createElement(
             'label',
@@ -7633,7 +6655,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
               htmlFor: 'exactAnswer',
             },
             /*#__PURE__*/ React.createElement(
-              ValueInnerContainer,
+              ValueInnerContainer$2,
               null,
               /*#__PURE__*/ React.createElement('span', null, 'Exact Answer'),
               /*#__PURE__*/ React.createElement('input', {
@@ -7657,7 +6679,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
           ),
         ),
         /*#__PURE__*/ React.createElement(
-          ValueContainer,
+          ValueContainer$2,
           null,
           /*#__PURE__*/ React.createElement(
             'label',
@@ -7665,7 +6687,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
               htmlFor: 'errorAnswer',
             },
             /*#__PURE__*/ React.createElement(
-              ValueInnerContainer,
+              ValueInnerContainer$2,
               null,
               /*#__PURE__*/ React.createElement(
                 'span',
@@ -7695,7 +6717,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       ),
     testMode &&
       /*#__PURE__*/ React.createElement(
-        ValueContainer,
+        ValueContainer$2,
         null,
         /*#__PURE__*/ React.createElement(
           'label',
@@ -7703,7 +6725,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
             htmlFor: 'exactAnswerStudent',
           },
           /*#__PURE__*/ React.createElement(
-            ValueInnerContainer,
+            ValueInnerContainer$2,
             null,
             /*#__PURE__*/ React.createElement('span', null, 'Exact Answer'),
             /*#__PURE__*/ React.createElement('input', {
@@ -7719,7 +6741,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
     readOnly &&
       showFeedBack &&
       /*#__PURE__*/ React.createElement(
-        ResultContainer,
+        ResultContainer$2,
         null,
         /*#__PURE__*/ React.createElement(
           'span',
@@ -7735,18 +6757,18 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
           'Answer:',
           ' ',
           /*#__PURE__*/ React.createElement(
-            FinalResult,
+            FinalResult$2,
             {
               $isCorrect: isCorrect,
             },
             exactStudent,
             ' ',
             isCorrect &&
-              /*#__PURE__*/ React.createElement(StyledIconCorrect, {
+              /*#__PURE__*/ React.createElement(StyledIconCorrect$4, {
                 name: 'done',
               }),
             !isCorrect &&
-              /*#__PURE__*/ React.createElement(StyledIconWrong, {
+              /*#__PURE__*/ React.createElement(StyledIconWrong$4, {
                 name: 'close',
               }),
           ),
@@ -7754,8 +6776,7 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       ),
   )
 }
-
-var getNodes$9 = function getNodes(view) {
+var getNodes$b = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -7766,110 +6787,70 @@ var getNodes$9 = function getNodes(view) {
   return numericalAnswerpContainerNodes
 }
 
-function _templateObject7$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject7$4 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$6() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject6$6 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$7() {
-  var data = _taggedTemplateLiteral(['\n  color: ', ';\n  font-weight: 999;\n'])
-
-  _templateObject5$7 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n',
-  ])
-
-  _templateObject4$c = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$d() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n',
-  ])
-
-  _templateObject3$d = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$g() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
-  ])
-
-  _templateObject2$g = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$q() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
-  ])
-
-  _templateObject$q = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var AnswerContainer$3 = styled.div(_templateObject$q())
-var ValueContainer$1 = styled.div(_templateObject2$g())
-var ValueInnerContainer$1 = styled.div(_templateObject3$d())
-var ResultContainer$1 = styled.div(_templateObject4$c())
-var FinalResult$1 = styled.span(_templateObject5$7(), function (props) {
-  return props.$isCorrect ? ' #008000' : 'red'
-})
-var StyledIconCorrect$1 = styled(Icon)(_templateObject6$6())
-var StyledIconWrong$1 = styled(Icon)(_templateObject7$4())
-
+var _templateObject$c,
+  _templateObject2$b,
+  _templateObject3$a,
+  _templateObject4$a,
+  _templateObject5$8,
+  _templateObject6$8,
+  _templateObject7$6
+var AnswerContainer$3 = styled.div(
+  _templateObject$c ||
+    (_templateObject$c = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
+    ])),
+)
+var ValueContainer$1 = styled.div(
+  _templateObject2$b ||
+    (_templateObject2$b = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
+    ])),
+)
+var ValueInnerContainer$1 = styled.div(
+  _templateObject3$a ||
+    (_templateObject3$a = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n',
+    ])),
+)
+var ResultContainer$1 = styled.div(
+  _templateObject4$a ||
+    (_templateObject4$a = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n',
+    ])),
+)
+var FinalResult$1 = styled.span(
+  _templateObject5$8 ||
+    (_templateObject5$8 = _taggedTemplateLiteral([
+      '\n  color: ',
+      ';\n  font-weight: 999;\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? ' #008000' : 'red'
+  },
+)
+var StyledIconCorrect$3 = styled(Icon)(
+  _templateObject6$8 ||
+    (_templateObject6$8 = _taggedTemplateLiteral([
+      '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
+var StyledIconWrong$3 = styled(Icon)(
+  _templateObject7$6 ||
+    (_templateObject7$6 = _taggedTemplateLiteral([
+      '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
 var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
   var _node$attrs,
     _node$attrs$answersPr,
     _node$attrs2,
     _node$attrs3,
     _node$attrs3$answersP
-
   var node = _ref.node,
     readOnly = _ref.readOnly,
     testMode = _ref.testMode,
     showFeedBack = _ref.showFeedBack
   var context = useContext(WaxContext)
-
   var _useState = useState(
       (node === null || node === void 0
         ? void 0
@@ -7883,7 +6864,6 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
     _useState2 = _slicedToArray(_useState, 2),
     precise = _useState2[0],
     setPrecise = _useState2[1]
-
   var _useState3 = useState(
       (node === null || node === void 0
         ? void 0
@@ -7894,17 +6874,14 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     preciseStudent = _useState4[0],
     setPreciseStudent = _useState4[1]
-
   var preciseRef = useRef(null)
   var preciseStudentRef = useRef(null)
-
   var onlyNumbers = function onlyNumbers(value) {
     return value
       .replace(/[^-?0-9.;]/g, '')
       .replace(/(\..*?)\..*/g, '$1')
       .replace(/^0[^.]/, '0')
   }
-
   var SaveValuesToNode = function SaveValuesToNode() {
     var allNodes = getNodes$a(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
@@ -7928,12 +6905,10 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
       }
     })
   }
-
   var onChangePrecice = function onChangePrecice() {
     setPrecise(onlyNumbers(preciseRef.current.value))
     SaveValuesToNode()
   }
-
   var onChangePreciseStudent = function onChangePreciseStudent() {
     setPreciseStudent(onlyNumbers(preciseStudentRef.current.value))
     var allNodes = getNodes$a(context.pmViews.main)
@@ -7955,7 +6930,6 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
       }
     })
   }
-
   var isCorrect = precise.split(';').find(function (element) {
     return element === preciseStudent.trim()
   })
@@ -8042,11 +7016,11 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
             preciseStudent,
             ' ',
             isCorrect &&
-              /*#__PURE__*/ React.createElement(StyledIconCorrect$1, {
+              /*#__PURE__*/ React.createElement(StyledIconCorrect$3, {
                 name: 'done',
               }),
             !isCorrect &&
-              /*#__PURE__*/ React.createElement(StyledIconWrong$1, {
+              /*#__PURE__*/ React.createElement(StyledIconWrong$3, {
                 name: 'close',
               }),
           ),
@@ -8054,7 +7028,6 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
       ),
   )
 }
-
 var getNodes$a = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
@@ -8066,97 +7039,59 @@ var getNodes$a = function getNodes(view) {
   return numericalAnswerpContainerNodes
 }
 
-function _templateObject7$5() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject7$5 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$7() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject6$7 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$8() {
-  var data = _taggedTemplateLiteral(['\n  color: ', ';\n  font-weight: 999;\n'])
-
-  _templateObject5$8 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$d() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n',
-  ])
-
-  _templateObject4$d = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$e() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n',
-  ])
-
-  _templateObject3$e = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$h() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
-  ])
-
-  _templateObject2$h = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$r() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
-  ])
-
-  _templateObject$r = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var AnswerContainer$4 = styled.div(_templateObject$r())
-var ValueContainer$2 = styled.div(_templateObject2$h())
-var ValueInnerContainer$2 = styled.div(_templateObject3$e())
-var ResultContainer$2 = styled.div(_templateObject4$d())
-var FinalResult$2 = styled.span(_templateObject5$8(), function (props) {
-  return props.$isCorrect ? ' #008000' : 'red'
-})
-var StyledIconCorrect$2 = styled(Icon)(_templateObject6$7())
-var StyledIconWrong$2 = styled(Icon)(_templateObject7$5())
-
+var _templateObject$b,
+  _templateObject2$a,
+  _templateObject3$9,
+  _templateObject4$9,
+  _templateObject5$7,
+  _templateObject6$7,
+  _templateObject7$5
+var AnswerContainer$2 = styled.div(
+  _templateObject$b ||
+    (_templateObject$b = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: row;\n  width: 100%;\n',
+    ])),
+)
+var ValueContainer = styled.div(
+  _templateObject2$a ||
+    (_templateObject2$a = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  margin-right: 25px;\n\n  label {\n    font-size: 12px;\n  }\n\n  input:focus {\n    outline: none;\n  }\n',
+    ])),
+)
+var ValueInnerContainer = styled.div(
+  _templateObject3$9 ||
+    (_templateObject3$9 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n',
+    ])),
+)
+var ResultContainer = styled.div(
+  _templateObject4$9 ||
+    (_templateObject4$9 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n',
+    ])),
+)
+var FinalResult = styled.span(
+  _templateObject5$7 ||
+    (_templateObject5$7 = _taggedTemplateLiteral([
+      '\n  color: ',
+      ';\n  font-weight: 999;\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? ' #008000' : 'red'
+  },
+)
+var StyledIconCorrect$2 = styled(Icon)(
+  _templateObject6$7 ||
+    (_templateObject6$7 = _taggedTemplateLiteral([
+      '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
+var StyledIconWrong$2 = styled(Icon)(
+  _templateObject7$5 ||
+    (_templateObject7$5 = _taggedTemplateLiteral([
+      '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
 var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
   var _node$attrs,
     _node$attrs$answersRa,
@@ -8167,13 +7102,11 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
     _node$attrs4$answersR,
     _node$attrs5,
     _node$attrs5$answersR
-
   var node = _ref.node,
     readOnly = _ref.readOnly,
     testMode = _ref.testMode,
     showFeedBack = _ref.showFeedBack
   var context = useContext(WaxContext)
-
   var _useState = useState(
       (node === null || node === void 0
         ? void 0
@@ -8187,7 +7120,6 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
     _useState2 = _slicedToArray(_useState, 2),
     minValue = _useState2[0],
     setMinValue = _useState2[1]
-
   var _useState3 = useState(
       (node === null || node === void 0
         ? void 0
@@ -8201,7 +7133,6 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     maxValue = _useState4[0],
     setMaxValue = _useState4[1]
-
   var _useState5 = useState(
       (node === null || node === void 0
         ? void 0
@@ -8212,11 +7143,9 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     rangeStudentValue = _useState6[0],
     setRangeStudentValue = _useState6[1]
-
   var minRef = useRef(null)
   var maxRef = useRef(null)
   var rangeStudentRef = useRef(null)
-
   var onlyNumbers = function onlyNumbers(value) {
     return value
       .replace(/[^-?0-9.]/g, '')
@@ -8224,9 +7153,8 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       .replace(/(\..*?)\..*/g, '$1')
       .replace(/^0[^.]/, '0')
   }
-
   var SaveValuesToNode = function SaveValuesToNode() {
-    var allNodes = getNodes$b(context.pmViews.main)
+    var allNodes = getNodes$9(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         var obj = {
@@ -8249,20 +7177,17 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       }
     })
   }
-
   var onChangeMin = function onChangeMin() {
     setMinValue(onlyNumbers(minRef.current.value))
     SaveValuesToNode()
   }
-
   var onChangeMax = function onChangeMax() {
     setMaxValue(onlyNumbers(maxRef.current.value))
     SaveValuesToNode()
   }
-
   var onChangeRangeStudent = function onChangeRangeStudent() {
     setRangeStudentValue(onlyNumbers(rangeStudentRef.current.value))
-    var allNodes = getNodes$b(context.pmViews.main)
+    var allNodes = getNodes$9(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         context.pmViews.main.dispatch(
@@ -8280,8 +7205,9 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
         )
       }
     })
-  } // SUBMIT
+  }
 
+  // SUBMIT
   var castExactStudent = ['-', '-.', '.'].includes(rangeStudentValue)
     ? 0
     : Number(rangeStudentValue)
@@ -8289,7 +7215,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
     castExactStudent <= Number(maxValue) && castExactStudent >= Number(minValue)
   )
   return /*#__PURE__*/ React.createElement(
-    AnswerContainer$4,
+    AnswerContainer$2,
     null,
     !testMode &&
       !showFeedBack &&
@@ -8297,7 +7223,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
         React.Fragment,
         null,
         /*#__PURE__*/ React.createElement(
-          ValueContainer$2,
+          ValueContainer,
           null,
           /*#__PURE__*/ React.createElement(
             'label',
@@ -8305,7 +7231,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
               htmlFor: 'minAnswer',
             },
             /*#__PURE__*/ React.createElement(
-              ValueInnerContainer$2,
+              ValueInnerContainer,
               null,
               /*#__PURE__*/ React.createElement('span', null, 'Min'),
               /*#__PURE__*/ React.createElement('input', {
@@ -8329,7 +7255,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
           ),
         ),
         /*#__PURE__*/ React.createElement(
-          ValueContainer$2,
+          ValueContainer,
           null,
           /*#__PURE__*/ React.createElement(
             'label',
@@ -8337,7 +7263,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
               htmlFor: 'maxAnswer',
             },
             /*#__PURE__*/ React.createElement(
-              ValueInnerContainer$2,
+              ValueInnerContainer,
               null,
               /*#__PURE__*/ React.createElement('span', null, 'Max'),
               /*#__PURE__*/ React.createElement('input', {
@@ -8363,7 +7289,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       ),
     testMode &&
       /*#__PURE__*/ React.createElement(
-        ValueContainer$2,
+        ValueContainer,
         null,
         /*#__PURE__*/ React.createElement(
           'label',
@@ -8371,7 +7297,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
             htmlFor: 'exactAnswerStudent',
           },
           /*#__PURE__*/ React.createElement(
-            ValueInnerContainer$2,
+            ValueInnerContainer,
             null,
             /*#__PURE__*/ React.createElement('span', null, 'Answer'),
             /*#__PURE__*/ React.createElement('input', {
@@ -8387,7 +7313,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
     readOnly &&
       showFeedBack &&
       /*#__PURE__*/ React.createElement(
-        ResultContainer$2,
+        ResultContainer,
         null,
         /*#__PURE__*/ React.createElement(
           'span',
@@ -8403,7 +7329,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
           'Answer:',
           ' ',
           /*#__PURE__*/ React.createElement(
-            FinalResult$2,
+            FinalResult,
             {
               $isCorrect: isCorrect,
             },
@@ -8422,8 +7348,7 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       ),
   )
 }
-
-var getNodes$b = function getNodes(view) {
+var getNodes$9 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -8434,106 +7359,62 @@ var getNodes$b = function getNodes(view) {
   return numericalAnswerpContainerNodes
 }
 
-function _templateObject8$2() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject8$2 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7$6() {
-  var data = _taggedTemplateLiteral([
-    '\n  color: #fff;\n  display: none;\n  user-select: none;\n  position: absolute;\n  width: 100%;\n\n  span {\n    background: ',
-    ';\n    bottom: 35px;\n    border-radius: 4px;\n    float: right;\n    right: 162px;\n    padding: 4px;\n    position: relative;\n  }\n',
-  ])
-
-  _templateObject7$6 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$8() {
-  var data = _taggedTemplateLiteral([
-    '\n  position: relative;\n  right: 4px;\n  cursor: pointer;\n  height: 24px;\n  width: 24px;\n  z-index: 999;\n',
-  ])
-
-  _templateObject6$8 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  float: right;\n  position: relative;\n  top: 3px;\n',
-  ])
-
-  _templateObject5$9 = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$e() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  border: none;\n  margin-left: auto;\n  z-index: 999;\n',
-  ])
-
-  _templateObject4$e = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$f() {
-  var data = _taggedTemplateLiteral(['\n  padding: 8px;\n'])
-
-  _templateObject3$f = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$i() {
-  var data = _taggedTemplateLiteral([
-    '\n  /* border: 3px solid #f5f5f7;\n  border-bottom: none; */\n  height: 33px;\n  display: flex;\n  flex-direction: row;\n',
-  ])
-
-  _templateObject2$i = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$s() {
-  var data = _taggedTemplateLiteral([
-    '\n  border-bottom: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
-  ])
-
-  _templateObject$s = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var NumericalAnswerContainer = styled.div(_templateObject$s())
-var NumericalAnswerContainerTool = styled.div(_templateObject2$i())
-var NumericalAnswerOption = styled.div(_templateObject3$f())
-var ActionButton$5 = styled.button(_templateObject4$e())
-var StyledIconContainer$1 = styled.span(_templateObject5$9())
-var StyledIconAction$4 = styled(Icon)(_templateObject6$8())
-var InfoMsg$1 = styled.div(_templateObject7$6(), th('colorPrimary'))
-var StyledIconActionRemove$4 = styled(Icon)(_templateObject8$2())
+var _templateObject$a,
+  _templateObject2$9,
+  _templateObject3$8,
+  _templateObject4$8,
+  _templateObject5$6,
+  _templateObject6$6,
+  _templateObject7$4,
+  _templateObject8$4
+var NumericalAnswerContainer = styled.div(
+  _templateObject$a ||
+    (_templateObject$a = _taggedTemplateLiteral([
+      '\n  border-bottom: 3px solid #f5f5f7;\n  margin-bottom: 30px;\n',
+    ])),
+)
+var NumericalAnswerContainerTool = styled.div(
+  _templateObject2$9 ||
+    (_templateObject2$9 = _taggedTemplateLiteral([
+      '\n  /* border: 3px solid #f5f5f7;\n  border-bottom: none; */\n  height: 33px;\n  display: flex;\n  flex-direction: row;\n',
+    ])),
+)
+var NumericalAnswerOption = styled.div(
+  _templateObject3$8 ||
+    (_templateObject3$8 = _taggedTemplateLiteral(['\n  padding: 8px;\n'])),
+)
+var ActionButton$4 = styled.button(
+  _templateObject4$8 ||
+    (_templateObject4$8 = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  border: none;\n  margin-left: auto;\n  z-index: 999;\n',
+    ])),
+)
+var StyledIconContainer = styled.span(
+  _templateObject5$6 ||
+    (_templateObject5$6 = _taggedTemplateLiteral([
+      '\n  float: right;\n  position: relative;\n  top: 3px;\n',
+    ])),
+)
+var StyledIconAction$4 = styled(Icon)(
+  _templateObject6$6 ||
+    (_templateObject6$6 = _taggedTemplateLiteral([
+      '\n  position: relative;\n  right: 4px;\n  cursor: pointer;\n  height: 24px;\n  width: 24px;\n  z-index: 999;\n',
+    ])),
+)
+var InfoMsg = styled.div(
+  _templateObject7$4 ||
+    (_templateObject7$4 = _taggedTemplateLiteral([
+      '\n  color: #fff;\n  display: none;\n  user-select: none;\n  position: absolute;\n  width: 100%;\n\n  span {\n    background: ',
+      ';\n    bottom: 35px;\n    border-radius: 4px;\n    float: right;\n    right: 162px;\n    padding: 4px;\n    position: relative;\n  }\n',
+    ])),
+  th('colorPrimary'),
+)
+var StyledIconActionRemove = styled(Icon)(
+  _templateObject8$4 ||
+    (_templateObject8$4 = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
 var NumericalAnswerContainerComponent = function (_ref) {
   var _getUpdatedNode,
     _getUpdatedNode$node,
@@ -8554,7 +7435,6 @@ var NumericalAnswerContainerComponent = function (_ref) {
     _getUpdatedNode8$node,
     _getUpdatedNode8$node2,
     _getUpdatedNode9
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -8564,22 +7444,18 @@ var NumericalAnswerContainerComponent = function (_ref) {
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
   var infoMsgRef = useRef()
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     infoMsgIsOpen = _useState2[0],
     setInfoMsgIsOpen = _useState2[1]
-
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
   var readOnly = !isEditable
-
   var removeQuestion = function removeQuestion() {
-    var allNodes = getNodesToDelete$1(context.pmViews.main)
+    var allNodes = getNodesToDelete(context.pmViews.main)
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
-
       var containerId =
         (_singleNode$node$cont = singleNode.node.content.content.find(function (
           n,
@@ -8588,7 +7464,6 @@ var NumericalAnswerContainerComponent = function (_ref) {
         })) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
-
       if (containerId === node.attrs.id) {
         context.pmViews.main.dispatch(
           context.pmViews.main.state.tr['delete'](
@@ -8598,7 +7473,9 @@ var NumericalAnswerContainerComponent = function (_ref) {
         )
       }
     })
-  } // useEffect(() => {
+  }
+
+  // useEffect(() => {
   //   setOption({
   //     [getUpdatedNode().node.attrs.id]: {
   //       numericalAnswer: node.attrs.answerType,
@@ -8613,10 +7490,9 @@ var NumericalAnswerContainerComponent = function (_ref) {
       infoMsgRef.current.style.display = 'none'
     setInfoMsgIsOpen(!infoMsgIsOpen)
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$c(context.pmViews.main)
+    var allNodes = getNodes$8(context.pmViews.main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -8624,7 +7500,6 @@ var NumericalAnswerContainerComponent = function (_ref) {
     })
     return nodeFound
   }
-
   return /*#__PURE__*/ React.createElement(
     'div',
     null,
@@ -8640,13 +7515,13 @@ var NumericalAnswerContainerComponent = function (_ref) {
             node: node,
           }),
           /*#__PURE__*/ React.createElement(
-            ActionButton$5,
+            ActionButton$4,
             {
               'aria-label': 'delete this question',
               onClick: removeQuestion,
               type: 'button',
             },
-            /*#__PURE__*/ React.createElement(StyledIconActionRemove$4, {
+            /*#__PURE__*/ React.createElement(StyledIconActionRemove, {
               name: 'deleteOutlinedQuestion',
             }),
           ),
@@ -8661,7 +7536,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
             ? void 0
             : _getUpdatedNode$node$.answerType) === 'preciseAnswer' &&
             /*#__PURE__*/ React.createElement(
-              StyledIconContainer$1,
+              StyledIconContainer,
               {
                 onClick: displayInfoMsg,
                 onKeyPress: function onKeyPress() {},
@@ -8673,7 +7548,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
               }),
             ),
           /*#__PURE__*/ React.createElement(
-            InfoMsg$1,
+            InfoMsg,
             {
               ref: infoMsgRef,
             },
@@ -8782,8 +7657,7 @@ var NumericalAnswerContainerComponent = function (_ref) {
     ),
   )
 }
-
-var getNodes$c = function getNodes(view) {
+var getNodes$8 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -8793,8 +7667,7 @@ var getNodes$c = function getNodes(view) {
   })
   return numericalAnswerpContainerNodes
 }
-
-var getNodesToDelete$1 = function getNodesToDelete(view) {
+var getNodesToDelete = function getNodesToDelete(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var numericalAnswerpContainerNodes = []
   allNodes.forEach(function (node) {
@@ -8806,17 +7679,12 @@ var getNodesToDelete$1 = function getNodesToDelete(view) {
 }
 
 var NumericalAnswerService = /*#__PURE__*/ (function (_Service) {
-  _inherits(NumericalAnswerService, _Service)
-
-  var _super = _createSuper(NumericalAnswerService)
-
   function NumericalAnswerService() {
     _classCallCheck(this, NumericalAnswerService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, NumericalAnswerService, arguments)
   }
-
-  _createClass(NumericalAnswerService, [
+  _inherits(NumericalAnswerService, _Service)
+  return _createClass(NumericalAnswerService, [
     {
       key: 'register',
       value: function register() {
@@ -8847,69 +7715,46 @@ var NumericalAnswerService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return NumericalAnswerService
 })(Service)
 
-function _templateObject4$f() {
-  var data = _taggedTemplateLiteral([
-    '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n  position: relative;\n  top: 10px;\n',
-  ])
-
-  _templateObject4$f = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$g() {
-  var data = _taggedTemplateLiteral([
-    '\n  visibility: ',
-    ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 2px auto auto;\n  position: absolute;\n  width: 220px;\n  max-height: 150px;\n  overflow-y: scroll;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
-  ])
-
-  _templateObject3$g = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$j() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
-    ';\n  display: flex;\n  position: relative;\n  width: 215px;\n  height: 100%;\n\n  span {\n    position: relative;\n    top: 12px;\n  }\n',
-  ])
-
-  _templateObject2$j = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$t() {
-  var data = _taggedTemplateLiteral(['\n  opacity: ', ';\n'])
-
-  _templateObject$t = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$5 = styled.div(_templateObject$t(), function (props) {
-  return props.$disabled ? '0.4' : '1'
-})
-var DropDownButton$4 = styled.button(_templateObject2$j(), function (props) {
-  return props.$disabled ? 'not-allowed' : 'pointer'
-})
-var DropDownMenu$4 = styled.div(_templateObject3$g(), function (props) {
-  return props.$isOpen ? 'visible' : 'hidden'
-})
-var StyledIcon$4 = styled(Icon)(_templateObject4$f())
-
-var DropDownComponent$2 = function DropDownComponent(_ref) {
+var _templateObject$9,
+  _templateObject2$8,
+  _templateObject3$7,
+  _templateObject4$7
+var Wrapper$6 = styled.div(
+  _templateObject$9 ||
+    (_templateObject$9 = _taggedTemplateLiteral(['\n  opacity: ', ';\n'])),
+  function (props) {
+    return props.$disabled ? '0.4' : '1'
+  },
+)
+var DropDownButton = styled.button(
+  _templateObject2$8 ||
+    (_templateObject2$8 = _taggedTemplateLiteral([
+      '\n  background: #fff;\n  border: none;\n  color: #000;\n  cursor: ',
+      ';\n  display: flex;\n  position: relative;\n  width: 215px;\n  height: 100%;\n\n  span {\n    position: relative;\n    top: 12px;\n  }\n',
+    ])),
+  function (props) {
+    return props.$disabled ? 'not-allowed' : 'pointer'
+  },
+)
+var DropDownMenu = styled.div(
+  _templateObject3$7 ||
+    (_templateObject3$7 = _taggedTemplateLiteral([
+      '\n  visibility: ',
+      ';\n  background: #fff;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ddd;\n  border-radius: 0.25rem;\n  box-shadow: 0 0.2rem 0.4rem rgb(0 0 0 / 10%);\n  margin: 2px auto auto;\n  position: absolute;\n  width: 220px;\n  max-height: 150px;\n  overflow-y: scroll;\n  z-index: 2;\n\n  span {\n    cursor: pointer;\n    padding: 8px 10px;\n  }\n\n  span:focus,\n  span:hover {\n    background: #f2f9fc;\n    outline: 2px solid #f2f9fc;\n  }\n',
+    ])),
+  function (props) {
+    return props.$isOpen ? 'visible' : 'hidden'
+  },
+)
+var StyledIcon = styled(Icon)(
+  _templateObject4$7 ||
+    (_templateObject4$7 = _taggedTemplateLiteral([
+      '\n  height: 18px;\n  width: 18px;\n  margin-left: auto;\n  position: relative;\n  top: 10px;\n',
+    ])),
+)
+var DropDownComponent = function DropDownComponent(_ref) {
   var view = _ref.view,
     tools = _ref.tools
   var dropDownOptions = [
@@ -8966,21 +7811,17 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
   var state = view.state
   var itemRefs = useRef([])
   var wrapperRef = useRef()
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     isOpen = _useState2[0],
     setIsOpen = _useState2[1]
-
   useOnClickOutside(wrapperRef, function () {
     return setIsOpen(false)
   })
-
   var _useState3 = useState('Question Type'),
     _useState4 = _slicedToArray(_useState3, 2),
     label = _useState4[0],
     setLabel = _useState4[1]
-
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -9002,7 +7843,6 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
     },
     [isDisabled],
   )
-
   var openCloseMenu = function openCloseMenu() {
     if (!isDisabled) setIsOpen(!isOpen)
     if (isOpen)
@@ -9010,52 +7850,51 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
         activeView.focus()
       })
   }
-
   if (!isEditable) isDisabled = true
-
   var _onKeyDown = function onKeyDown(e, index) {
-    e.preventDefault() // arrow down
-
+    e.preventDefault()
+    // arrow down
     if (e.keyCode === 40) {
       if (index === itemRefs.current.length - 1) {
         itemRefs.current[0].current.focus()
       } else {
         itemRefs.current[index + 1].current.focus()
       }
-    } // arrow up
+    }
 
+    // arrow up
     if (e.keyCode === 38) {
       if (index === 0) {
         itemRefs.current[itemRefs.current.length - 1].current.focus()
       } else {
         itemRefs.current[index - 1].current.focus()
       }
-    } // enter
+    }
 
+    // enter
     if (e.keyCode === 13) {
       itemRefs.current[index].current.click()
-    } // ESC
+    }
 
+    // ESC
     if (e.keyCode === 27) {
       setIsOpen(false)
     }
   }
-
   var onChange = function onChange(option) {
     tools[option.value].run(main, context)
     openCloseMenu()
   }
-
   var MultipleDropDown = useMemo(
     function () {
       return /*#__PURE__*/ React.createElement(
-        Wrapper$5,
+        Wrapper$6,
         {
           $disabled: isDisabled,
           ref: wrapperRef,
         },
         /*#__PURE__*/ React.createElement(
-          DropDownButton$4,
+          DropDownButton,
           {
             $disabled: isDisabled,
             'aria-controls': 'questions-list',
@@ -9065,11 +7904,9 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
               if (e.keyCode === 40) {
                 itemRefs.current[0].current.focus()
               }
-
               if (e.keyCode === 27) {
                 setIsOpen(false)
               }
-
               if (e.keyCode === 13 || e.keyCode === 32) {
                 setIsOpen(true)
               }
@@ -9079,12 +7916,12 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
           },
           /*#__PURE__*/ React.createElement('span', null, label),
           ' ',
-          /*#__PURE__*/ React.createElement(StyledIcon$4, {
+          /*#__PURE__*/ React.createElement(StyledIcon, {
             name: 'expand',
           }),
         ),
         /*#__PURE__*/ React.createElement(
-          DropDownMenu$4,
+          DropDownMenu,
           {
             $isOpen: isOpen,
             'aria-label': 'Choose an item type',
@@ -9092,7 +7929,8 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
             role: 'menu',
           },
           dropDownOptions.map(function (option, index) {
-            itemRefs.current[index] = itemRefs.current[index] || createRef()
+            itemRefs.current[index] =
+              itemRefs.current[index] || /*#__PURE__*/ createRef()
             return /*#__PURE__*/ React.createElement(
               'span',
               {
@@ -9118,17 +7956,27 @@ var DropDownComponent$2 = function DropDownComponent(_ref) {
   return MultipleDropDown
 }
 
-var _dec$9, _class$9, _temp$9
+var _dec$4, _class$4
 var QuestionsDropDown =
-  ((_dec$9 = injectable()),
-  _dec$9(
-    (_class$9 =
-      ((_temp$9 = /*#__PURE__*/ (function (_ToolGroup) {
-        _inherits(QuestionsDropDown, _ToolGroup)
-
-        var _super = _createSuper(QuestionsDropDown)
-
-        function QuestionsDropDown(
+  ((_dec$4 = injectable()),
+  _dec$4(
+    (_class$4 = /*#__PURE__*/ (function (_ToolGroup) {
+      function QuestionsDropDown(
+        multipleChoiceQuestion,
+        multipleChoiceSingleCorrectQuestion,
+        trueFalseQuestion,
+        trueFalseSingleCorrectQuestion,
+        matchingQuestion,
+        essayQuestion,
+        MultipleDropDownQuestion,
+        FillTheGapQuestion,
+        NumericalAnswerQuestion,
+      ) {
+        var _this
+        _classCallCheck(this, QuestionsDropDown)
+        _this = _callSuper(this, QuestionsDropDown)
+        _this.tools = []
+        _this.tools = [
           multipleChoiceQuestion,
           multipleChoiceSingleCorrectQuestion,
           trueFalseQuestion,
@@ -9138,97 +7986,70 @@ var QuestionsDropDown =
           MultipleDropDownQuestion,
           FillTheGapQuestion,
           NumericalAnswerQuestion,
-        ) {
-          var _this
-
-          _classCallCheck(this, QuestionsDropDown)
-
-          _this = _super.call(this)
-          _this.tools = []
-          _this.tools = [
-            multipleChoiceQuestion,
-            multipleChoiceSingleCorrectQuestion,
-            trueFalseQuestion,
-            trueFalseSingleCorrectQuestion,
-            matchingQuestion,
-            essayQuestion,
-            MultipleDropDownQuestion,
-            FillTheGapQuestion,
-            NumericalAnswerQuestion,
-          ]
-          return _this
-        }
-
-        QuestionsDropDown =
-          inject('NumericalAnswerQuestion')(QuestionsDropDown, undefined, 8) ||
-          QuestionsDropDown
-        QuestionsDropDown =
-          inject('FillTheGapQuestion')(QuestionsDropDown, undefined, 7) ||
-          QuestionsDropDown
-        QuestionsDropDown =
-          inject('MultipleDropDownQuestion')(QuestionsDropDown, undefined, 6) ||
-          QuestionsDropDown
-        QuestionsDropDown =
-          inject('EssayQuestion')(QuestionsDropDown, undefined, 5) ||
-          QuestionsDropDown
-        QuestionsDropDown =
-          inject('MatchingQuestion')(QuestionsDropDown, undefined, 4) ||
-          QuestionsDropDown
-        QuestionsDropDown =
-          inject('TrueFalseSingleCorrectQuestion')(
-            QuestionsDropDown,
-            undefined,
-            3,
-          ) || QuestionsDropDown
-        QuestionsDropDown =
-          inject('TrueFalseQuestion')(QuestionsDropDown, undefined, 2) ||
-          QuestionsDropDown
-        QuestionsDropDown =
-          inject('MultipleChoiceSingleCorrectQuestion')(
-            QuestionsDropDown,
-            undefined,
-            1,
-          ) || QuestionsDropDown
-        QuestionsDropDown =
-          inject('MultipleChoiceQuestion')(QuestionsDropDown, undefined, 0) ||
-          QuestionsDropDown
-
-        _createClass(QuestionsDropDown, [
-          {
-            key: 'renderTools',
-            value: function renderTools(view) {
-              var _this2 = this
-
-              if (isEmpty(view)) return null
-              var MultipleDropDown = useMemo(function () {
-                return /*#__PURE__*/ React.createElement(DropDownComponent$2, {
-                  key: v4(),
-                  tools: _this2._tools,
-                  view: view,
-                })
-              }, [])
-              return MultipleDropDown
-            },
+        ]
+        return _this
+      }
+      QuestionsDropDown =
+        inject('NumericalAnswerQuestion')(QuestionsDropDown, undefined, 8) ||
+        QuestionsDropDown
+      QuestionsDropDown =
+        inject('FillTheGapQuestion')(QuestionsDropDown, undefined, 7) ||
+        QuestionsDropDown
+      QuestionsDropDown =
+        inject('MultipleDropDownQuestion')(QuestionsDropDown, undefined, 6) ||
+        QuestionsDropDown
+      QuestionsDropDown =
+        inject('EssayQuestion')(QuestionsDropDown, undefined, 5) ||
+        QuestionsDropDown
+      QuestionsDropDown =
+        inject('MatchingQuestion')(QuestionsDropDown, undefined, 4) ||
+        QuestionsDropDown
+      QuestionsDropDown =
+        inject('TrueFalseSingleCorrectQuestion')(
+          QuestionsDropDown,
+          undefined,
+          3,
+        ) || QuestionsDropDown
+      QuestionsDropDown =
+        inject('TrueFalseQuestion')(QuestionsDropDown, undefined, 2) ||
+        QuestionsDropDown
+      QuestionsDropDown =
+        inject('MultipleChoiceSingleCorrectQuestion')(
+          QuestionsDropDown,
+          undefined,
+          1,
+        ) || QuestionsDropDown
+      QuestionsDropDown =
+        inject('MultipleChoiceQuestion')(QuestionsDropDown, undefined, 0) ||
+        QuestionsDropDown
+      _inherits(QuestionsDropDown, _ToolGroup)
+      return _createClass(QuestionsDropDown, [
+        {
+          key: 'renderTools',
+          value: function renderTools(view) {
+            var _this2 = this
+            if (isEmpty(view)) return null
+            var MultipleDropDown = useMemo(function () {
+              return /*#__PURE__*/ React.createElement(DropDownComponent, {
+                key: v4(),
+                tools: _this2._tools,
+                view: view,
+              })
+            }, [])
+            return MultipleDropDown
           },
-        ])
-
-        return QuestionsDropDown
-      })(ToolGroup)),
-      _temp$9)),
-  ) || _class$9)
+        },
+      ])
+    })(ToolGroup)),
+  ) || _class$4)
 
 var QuestionsDropDownToolGroupService = /*#__PURE__*/ (function (_Service) {
-  _inherits(QuestionsDropDownToolGroupService, _Service)
-
-  var _super = _createSuper(QuestionsDropDownToolGroupService)
-
   function QuestionsDropDownToolGroupService() {
     _classCallCheck(this, QuestionsDropDownToolGroupService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, QuestionsDropDownToolGroupService, arguments)
   }
-
-  _createClass(QuestionsDropDownToolGroupService, [
+  _inherits(QuestionsDropDownToolGroupService, _Service)
+  return _createClass(QuestionsDropDownToolGroupService, [
     {
       key: 'register',
       value: function register() {
@@ -9236,35 +8057,23 @@ var QuestionsDropDownToolGroupService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return QuestionsDropDownToolGroupService
 })(Service)
 
-function _templateObject2$k() {
-  var data = _taggedTemplateLiteral(['\n  ', '\n'])
-
-  _templateObject2$k = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$u() {
-  var data = _taggedTemplateLiteral(['\n  pointer-events: none;\n'])
-
-  _templateObject$u = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var activeStyles$1 = css(_templateObject$u())
-var StyledButton$1 = styled(MenuButton)(_templateObject2$k(), function (props) {
-  return props.active && activeStyles$1
-})
-
-var ToolBarBtn$1 = function ToolBarBtn(_ref) {
+var _templateObject$8, _templateObject2$7
+var activeStyles = css(
+  _templateObject$8 ||
+    (_templateObject$8 = _taggedTemplateLiteral([
+      '\n  pointer-events: none;\n',
+    ])),
+)
+var StyledButton = styled(MenuButton)(
+  _templateObject2$7 ||
+    (_templateObject2$7 = _taggedTemplateLiteral(['\n  ', '\n'])),
+  function (props) {
+    return props.active && activeStyles
+  },
+)
+var ToolBarBtn = function ToolBarBtn(_ref) {
   var _ref$view = _ref.view,
     view = _ref$view === void 0 ? {} : _ref$view,
     item = _ref.item
@@ -9273,11 +8082,9 @@ var ToolBarBtn$1 = function ToolBarBtn(_ref) {
     select = item.select,
     title = item.title
   var context = useContext(WaxContext)
-
   var _useContext = useContext(WaxContext),
     main = _useContext.pmViews.main,
     activeView = _useContext.activeView
-
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -9286,7 +8093,7 @@ var ToolBarBtn$1 = function ToolBarBtn(_ref) {
   if (!isEditable) isDisabled = true
   var ToolBarBtnComponent = useMemo(
     function () {
-      return /*#__PURE__*/ React.createElement(StyledButton$1, {
+      return /*#__PURE__*/ React.createElement(StyledButton, {
         active: false,
         disabled: isDisabled,
         iconName: icon,
@@ -9303,112 +8110,98 @@ var ToolBarBtn$1 = function ToolBarBtn(_ref) {
   return ToolBarBtnComponent
 }
 
-var _dec$a, _class$a, _temp$a
+var _dec$3, _class$3
 var MultipleChoiceQuestion =
-  ((_dec$a = injectable()),
-  _dec$a(
-    (_class$a =
-      ((_temp$a = /*#__PURE__*/ (function (_Tools) {
-        _inherits(MultipleChoiceQuestion, _Tools)
-
-        var _super = _createSuper(MultipleChoiceQuestion)
-
-        function MultipleChoiceQuestion() {
-          var _this
-
-          _classCallCheck(this, MultipleChoiceQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add Multiple Choice Question'
-          _this.icon = 'multipleChoice'
-          _this.name = 'Multiple choice'
-          _this.label = 'Multiple choice'
-
-          _this.select = function (state, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            if (disallowedTools.includes('MultipleChoice')) return false
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null) return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$3 = injectable()),
+  _dec$3(
+    (_class$3 = /*#__PURE__*/ (function (_Tools) {
+      function MultipleChoiceQuestion() {
+        var _this
+        _classCallCheck(this, MultipleChoiceQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(MultipleChoiceQuestion, [
-          {
-            key: 'renderTool',
-            value: function renderTool(view) {
-              if (isEmpty(view)) return null
-              return this.isDisplayed()
-                ? /*#__PURE__*/ React.createElement(ToolBarBtn$1, {
-                    item: this.toJSON(),
-                    key: v4(),
-                    view: view,
-                  })
-                : null
-            },
+        _this = _callSuper(this, MultipleChoiceQuestion, [].concat(args))
+        _this.title = 'Add Multiple Choice Question'
+        _this.icon = 'multipleChoice'
+        _this.name = 'Multiple choice'
+        _this.label = 'Multiple choice'
+        _this.select = function (state, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          if (disallowedTools.includes('MultipleChoice')) return false
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null) return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(MultipleChoiceQuestion, _Tools)
+      return _createClass(MultipleChoiceQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (view, context) {
+              helpers.createOptions(
+                view,
+                context,
+                view.state.config.schema.nodes.multiple_choice_container,
+                view.state.config.schema.nodes.question_node_multiple,
+                view.state.config.schema.nodes.multiple_choice,
+                view.state.config.schema.nodes.feedback_prompt,
+              )
+            }
           },
-          {
-            key: 'run',
-            get: function get() {
-              return function (view, context) {
-                helpers.createOptions(
-                  view,
-                  context,
-                  view.state.config.schema.nodes.multiple_choice_container,
-                  view.state.config.schema.nodes.question_node_multiple,
-                  view.state.config.schema.nodes.multiple_choice,
-                  view.state.config.schema.nodes.feedback_prompt,
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.multiple_choice,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.question_node_multiple,
                 )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.multiple_choice,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.question_node_multiple,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
-              }
-            },
+        },
+        {
+          key: 'renderTool',
+          value: function renderTool(view) {
+            if (isEmpty(view)) return null
+            return this.isDisplayed()
+              ? /*#__PURE__*/ React.createElement(ToolBarBtn, {
+                  item: this.toJSON(),
+                  key: v4(),
+                  view: view,
+                })
+              : null
           },
-        ])
-
-        return MultipleChoiceQuestion
-      })(Tools)),
-      _temp$a)),
-  ) || _class$a)
+        },
+      ])
+    })(Tools)),
+  ) || _class$3)
 
 var multipleChoiceNode = {
   attrs: {
@@ -9423,7 +8216,8 @@ var multipleChoiceNode = {
     },
     answer: {
       default: false,
-    }, // feedback: { default: '' },
+    },
+    // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
@@ -9436,7 +8230,8 @@ var multipleChoiceNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
+          // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -9486,6 +8281,7 @@ var questionNode = {
   group: 'block questions',
   content: 'block*',
   // defining: true,
+
   parseDOM: [
     {
       tag: 'div.multiple-choice-question',
@@ -9502,98 +8298,78 @@ var questionNode = {
   },
 }
 
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {}
-  var target = {}
-  var sourceKeys = Object.keys(source)
-  var key, i
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i]
-    if (excluded.indexOf(key) >= 0) continue
-    target[key] = source[key]
-  }
-
-  return target
-}
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {}
-  var target = _objectWithoutPropertiesLoose(source, excluded)
-  var key, i
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source)
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i]
-      if (excluded.indexOf(key) >= 0) continue
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue
-      target[key] = source[key]
+function _objectWithoutPropertiesLoose(r, e) {
+  if (null == r) return {}
+  var t = {}
+  for (var n in r)
+    if ({}.hasOwnProperty.call(r, n)) {
+      if (-1 !== e.indexOf(n)) continue
+      t[n] = r[n]
     }
-  }
-
-  return target
+  return t
 }
 
-function _templateObject4$g() {
-  var data = _taggedTemplateLiteral(['\n      margin-left: ', ';\n    '])
-
-  _templateObject4$g = function _templateObject4() {
-    return data
+function _objectWithoutProperties(e, t) {
+  if (null == e) return {}
+  var o,
+    r,
+    i = _objectWithoutPropertiesLoose(e, t)
+  if (Object.getOwnPropertySymbols) {
+    var n = Object.getOwnPropertySymbols(e)
+    for (r = 0; r < n.length; r++)
+      (o = n[r]),
+        -1 === t.indexOf(o) &&
+          {}.propertyIsEnumerable.call(e, o) &&
+          (i[o] = e[o])
   }
-
-  return data
+  return i
 }
 
-function _templateObject3$h() {
-  var data = _taggedTemplateLiteral(['\n      margin-right: ', ';\n    '])
-
-  _templateObject3$h = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$l() {
-  var data = _taggedTemplateLiteral([
-    '\n  ',
-    '\n\n  ',
-    '\n    cursor: pointer;\n',
-  ])
-
-  _templateObject2$l = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$v() {
-  var data = _taggedTemplateLiteral([
-    '\n  button {\n    width: 55px;\n  }\n\n  .rc-switch-inner {\n    left: 31px;\n  }\n\n  .rc-switch-checked {\n    border: 1px solid #008000;\n    background-color: #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &:after {\n      left: 33px;\n    }\n  }\n',
-  ])
-
-  _templateObject$v = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$6 = styled.span(_templateObject$v())
+var _excluded = ['className', 'label', 'labelPosition', 'onChange', 'text']
+var _templateObject$7,
+  _templateObject2$6,
+  _templateObject3$6,
+  _templateObject4$6
+var Wrapper$5 = styled.span(
+  _templateObject$7 ||
+    (_templateObject$7 = _taggedTemplateLiteral([
+      '\n  button {\n    width: 55px;\n  }\n\n  .rc-switch-inner {\n    left: 31px;\n  }\n\n  .rc-switch-checked {\n    border: 1px solid #008000;\n    background-color: #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &:after {\n      left: 33px;\n    }\n  }\n',
+    ])),
+)
 var Label = styled.label(
-  _templateObject2$l(),
+  _templateObject2$6 ||
+    (_templateObject2$6 = _taggedTemplateLiteral([
+      '\n  ',
+      '\n\n  ',
+      '\n    cursor: pointer;\n',
+    ])),
   function (props) {
-    return props.$labelPosition === 'left' && css(_templateObject3$h(), grid(2))
+    return (
+      props.$labelPosition === 'left' &&
+      css(
+        _templateObject3$6 ||
+          (_templateObject3$6 = _taggedTemplateLiteral([
+            '\n      margin-right: ',
+            ';\n    ',
+          ])),
+        grid(2),
+      )
+    )
   },
   function (props) {
     return (
-      props.$labelPosition === 'right' && css(_templateObject4$g(), grid(2))
+      props.$labelPosition === 'right' &&
+      css(
+        _templateObject4$6 ||
+          (_templateObject4$6 = _taggedTemplateLiteral([
+            '\n      margin-left: ',
+            ';\n    ',
+          ])),
+        grid(2),
+      )
     )
   },
 )
-
 var SwitchComponent = function SwitchComponent(props) {
   var className = props.className,
     label = props.label,
@@ -9609,16 +8385,9 @@ var SwitchComponent = function SwitchComponent(props) {
         : _props$onChange,
     _props$text = props.text,
     text = _props$text === void 0 ? '' : _props$text,
-    rest = _objectWithoutProperties(props, [
-      'className',
-      'label',
-      'labelPosition',
-      'onChange',
-      'text',
-    ])
-
+    rest = _objectWithoutProperties(props, _excluded)
   return /*#__PURE__*/ React.createElement(
-    Wrapper$6,
+    Wrapper$5,
     {
       className: className,
     },
@@ -9655,85 +8424,50 @@ var SwitchComponent = function SwitchComponent(props) {
   )
 }
 
-function _templateObject6$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject6$9 = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$a() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject5$a = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$h() {
-  var data = _taggedTemplateLiteral([
-    '\n  margin-right: 10px;\n\n  span {\n    color: ',
-    ';\n  }\n',
-  ])
-
-  _templateObject4$h = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$i() {
-  var data = _taggedTemplateLiteral([
-    '\n  margin-right: 10px;\n\n  span {\n    color: #008000;\n  }\n',
-  ])
-
-  _templateObject3$i = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$m() {
-  var data = _taggedTemplateLiteral(['\n  margin-left: auto;\n'])
-
-  _templateObject2$m = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$w() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  margin-left: auto;\n',
-  ])
-
-  _templateObject$w = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var StyledSwitch = styled(SwitchComponent)(_templateObject$w())
-var AnswerContainer$5 = styled.span(_templateObject2$m())
-var Correct = styled.span(_templateObject3$i())
-var Answer$2 = styled.span(_templateObject4$h(), function (props) {
-  return props.$isCorrect ? ' #008000' : 'red'
-})
-var StyledIconCorrect$3 = styled(Icon)(_templateObject5$a())
-var StyledIconWrong$3 = styled(Icon)(_templateObject6$9())
-
+var _templateObject$6,
+  _templateObject2$5,
+  _templateObject3$5,
+  _templateObject4$5,
+  _templateObject5$5,
+  _templateObject6$5
+var StyledSwitch$1 = styled(SwitchComponent)(
+  _templateObject$6 ||
+    (_templateObject$6 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  margin-left: auto;\n',
+    ])),
+)
+var AnswerContainer$1 = styled.span(
+  _templateObject2$5 ||
+    (_templateObject2$5 = _taggedTemplateLiteral(['\n  margin-left: auto;\n'])),
+)
+var Correct$1 = styled.span(
+  _templateObject3$5 ||
+    (_templateObject3$5 = _taggedTemplateLiteral([
+      '\n  margin-right: 10px;\n\n  span {\n    color: #008000;\n  }\n',
+    ])),
+)
+var Answer$1 = styled.span(
+  _templateObject4$5 ||
+    (_templateObject4$5 = _taggedTemplateLiteral([
+      '\n  margin-right: 10px;\n\n  span {\n    color: ',
+      ';\n  }\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? ' #008000' : 'red'
+  },
+)
+var StyledIconCorrect$1 = styled(Icon)(
+  _templateObject5$5 ||
+    (_templateObject5$5 = _taggedTemplateLiteral([
+      '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
+var StyledIconWrong$1 = styled(Icon)(
+  _templateObject6$5 ||
+    (_templateObject6$5 = _taggedTemplateLiteral([
+      '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
 var YesNoSwitch = function YesNoSwitch(_ref) {
   var customProps = _ref.customProps,
     node = _ref.node.node,
@@ -9743,22 +8477,21 @@ var YesNoSwitch = function YesNoSwitch(_ref) {
     checkedAnswerMode = _ref.checkedAnswerMode
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
-
   if (showFeedBack && node) {
     var correct = node.attrs.correct ? 'YES' : 'NO'
     var answer = node.attrs.answer ? 'YES' : 'NO'
     var isCorrect = node.attrs.correct === node.attrs.answer
     return /*#__PURE__*/ React.createElement(
-      AnswerContainer$5,
+      AnswerContainer$1,
       null,
       /*#__PURE__*/ React.createElement(
-        Correct,
+        Correct$1,
         null,
         'Correct:',
         /*#__PURE__*/ React.createElement('span', null, correct),
       ),
       /*#__PURE__*/ React.createElement(
-        Answer$2,
+        Answer$1,
         {
           $isCorrect: isCorrect,
         },
@@ -9766,17 +8499,16 @@ var YesNoSwitch = function YesNoSwitch(_ref) {
         /*#__PURE__*/ React.createElement('span', null, answer),
       ),
       isCorrect &&
-        /*#__PURE__*/ React.createElement(StyledIconCorrect$3, {
+        /*#__PURE__*/ React.createElement(StyledIconCorrect$1, {
           name: 'done',
         }),
       !isCorrect &&
-        /*#__PURE__*/ React.createElement(StyledIconWrong$3, {
+        /*#__PURE__*/ React.createElement(StyledIconWrong$1, {
           name: 'close',
         }),
     )
   }
-
-  return /*#__PURE__*/ React.createElement(StyledSwitch, {
+  return /*#__PURE__*/ React.createElement(StyledSwitch$1, {
     checked:
       isEditable || (!isEditable && !testMode) ? checked : checkedAnswerMode,
     checkedChildren: 'YES',
@@ -9789,21 +8521,18 @@ var YesNoSwitch = function YesNoSwitch(_ref) {
   })
 }
 
-var CustomSwitch = function CustomSwitch(_ref) {
+var CustomSwitch$3 = function CustomSwitch(_ref) {
   var node = _ref.node,
     getPos = _ref.getPos
   var context = useContext(WaxContext)
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     checked = _useState2[0],
     setChecked = _useState2[1]
-
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
     checkedAnswerMode = _useState4[0],
     setCheckedAnswerMode = _useState4[1]
-
   var main = context.pmViews.main
   var customProps = main.props.customValues
   var isEditable = main.props.editable(function (editable) {
@@ -9811,7 +8540,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
   })
   useEffect(
     function () {
-      var allNodes = getNodes$d(main)
+      var allNodes = getNodes$7(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -9819,15 +8548,14 @@ var CustomSwitch = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$d(main)],
+    [getNodes$7(main)],
   )
-
   var handleChange = function handleChange() {
     setChecked(!checked)
     setCheckedAnswerMode(!checkedAnswerMode)
     var key = isEditable ? 'correct' : 'answer'
     var value = isEditable ? !checked : !checkedAnswerMode
-    var allNodes = getNodes$d(main)
+    var allNodes = getNodes$7(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -9844,10 +8572,9 @@ var CustomSwitch = function CustomSwitch(_ref) {
       }
     })
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$d(main)
+    var allNodes = getNodes$7(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -9855,7 +8582,6 @@ var CustomSwitch = function CustomSwitch(_ref) {
     })
     return nodeFound
   }
-
   return /*#__PURE__*/ React.createElement(YesNoSwitch, {
     checked: checked,
     checkedAnswerMode: checkedAnswerMode,
@@ -9865,8 +8591,7 @@ var CustomSwitch = function CustomSwitch(_ref) {
     node: getUpdatedNode(),
   })
 }
-
-var getNodes$d = function getNodes(view) {
+var getNodes$7 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -9877,138 +8602,84 @@ var getNodes$d = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject10$1() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject10$1 = function _templateObject10() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject9$1() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
-  ])
-
-  _templateObject9$1 = function _templateObject9() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject8$3() {
-  var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject8$3 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7$7() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
-  ])
-
-  _templateObject7$7 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$a() {
-  var data = _taggedTemplateLiteral([
-    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
-  ])
-
-  _templateObject6$a = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$b() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
-    '\n',
-  ])
-
-  _templateObject5$b = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$i() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
-  ])
-
-  _templateObject4$i = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$j() {
-  var data = _taggedTemplateLiteral([
-    "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
-  ])
-
-  _templateObject3$j = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$n() {
-  var data = _taggedTemplateLiteral([
-    '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
-  ])
-
-  _templateObject2$n = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$x() {
-  var data = _taggedTemplateLiteral([
-    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
-  ])
-
-  _templateObject$x = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$7 = styled(Box)(_templateObject$x())
-var InfoRow = styled.div(_templateObject2$n())
-var QuestionNunber = styled.span(_templateObject3$j())
-var QuestionControlsWrapper = styled.div(_templateObject4$i())
-var QuestionWrapper$1 = styled.div(_templateObject5$b(), function (props) {
-  return props.$testMode && css(_templateObject6$a())
-})
-var IconsWrapper = styled.div(_templateObject7$7())
-var QuestionData = styled.div(_templateObject8$3())
-var ActionButton$6 = styled.button(_templateObject9$1())
-var StyledIconAction$5 = styled(Icon)(_templateObject10$1())
-var AnswerComponent = function (_ref) {
+var _templateObject$5,
+  _templateObject2$4,
+  _templateObject3$4,
+  _templateObject4$4,
+  _templateObject5$4,
+  _templateObject6$4,
+  _templateObject7$3,
+  _templateObject8$3,
+  _templateObject9$3,
+  _templateObject0$3
+var Wrapper$4 = styled(Box)(
+  _templateObject$5 ||
+    (_templateObject$5 = _taggedTemplateLiteral([
+      '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
+    ])),
+)
+var InfoRow$3 = styled.div(
+  _templateObject2$4 ||
+    (_templateObject2$4 = _taggedTemplateLiteral([
+      '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
+    ])),
+)
+var QuestionNunber$3 = styled.span(
+  _templateObject3$4 ||
+    (_templateObject3$4 = _taggedTemplateLiteral([
+      "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
+    ])),
+)
+var QuestionControlsWrapper$3 = styled.div(
+  _templateObject4$4 ||
+    (_templateObject4$4 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
+    ])),
+)
+var QuestionWrapper$3 = styled.div(
+  _templateObject5$4 ||
+    (_templateObject5$4 = _taggedTemplateLiteral([
+      '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+      '\n',
+    ])),
+  function (props) {
+    return (
+      props.$testMode &&
+      css(
+        _templateObject6$4 ||
+          (_templateObject6$4 = _taggedTemplateLiteral([
+            '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
+          ])),
+      )
+    )
+  },
+)
+var IconsWrapper$3 = styled.div(
+  _templateObject7$3 ||
+    (_templateObject7$3 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    ])),
+)
+var QuestionData$3 = styled.div(
+  _templateObject8$3 ||
+    (_templateObject8$3 = _taggedTemplateLiteral([
+      "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+)
+var ActionButton$3 = styled.button(
+  _templateObject9$3 ||
+    (_templateObject9$3 = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    ])),
+)
+var StyledIconAction$3 = styled(Icon)(
+  _templateObject0$3 ||
+    (_templateObject0$3 = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var AnswerComponent$3 = function (_ref) {
   var _getUpdatedNode$node, _getUpdatedNode$node2
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -10028,7 +8699,6 @@ var AnswerComponent = function (_ref) {
         if (addOptionBtnRef.current) addOptionBtnRef.current.click()
       }
     }
-
     if (addOptionBtnRef.current)
       addOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -10043,7 +8713,6 @@ var AnswerComponent = function (_ref) {
         if (removeOptionBtnRef.current) removeOptionBtnRef.current.click()
       }
     }
-
     if (removeOptionBtnRef.current)
       removeOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -10051,18 +8720,16 @@ var AnswerComponent = function (_ref) {
         removeOptionBtnRef.current.removeEventListener('keydown', listener)
     }
   }, [])
-
   var removeOption = function removeOption() {
     var answersCount = findAnswerCount()
-
     if (answersCount.count >= 1) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
-            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
-
+            var optionSize = sinlgeNode.nodeSize
+            // Also delete the following feedback_prompt sibling
             var nextPos = getPos() + optionSize
             var nextNode = main.state.doc.nodeAt(nextPos)
             var feedbackSize =
@@ -10087,7 +8754,6 @@ var AnswerComponent = function (_ref) {
       main.dispatch(main.state.tr.deleteSelection())
     }
   }
-
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
     var newFeedbackId = v4()
@@ -10138,7 +8804,6 @@ var AnswerComponent = function (_ref) {
       }
     })
   }
-
   var findAnswerCount = function findAnswerCount() {
     main.dispatch(
       main.state.tr.setSelection(
@@ -10170,12 +8835,10 @@ var AnswerComponent = function (_ref) {
       parentContainer: parentContainer,
     }
   }
-
   var readOnly = !isEditable
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$e(main)
+    var allNodes = getNodes$6(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -10183,29 +8846,28 @@ var AnswerComponent = function (_ref) {
     })
     return nodeFound
   }
-
   return /*#__PURE__*/ React.createElement(
-    Wrapper$7,
+    Wrapper$4,
     null,
     /*#__PURE__*/ React.createElement(
-      QuestionControlsWrapper,
+      QuestionControlsWrapper$3,
       null,
       /*#__PURE__*/ React.createElement(
-        InfoRow,
+        InfoRow$3,
         null,
-        /*#__PURE__*/ React.createElement(QuestionNunber, null),
-        /*#__PURE__*/ React.createElement(CustomSwitch, {
+        /*#__PURE__*/ React.createElement(QuestionNunber$3, null),
+        /*#__PURE__*/ React.createElement(CustomSwitch$3, {
           getPos: getPos,
           node: node,
         }),
       ),
       /*#__PURE__*/ React.createElement(
-        QuestionWrapper$1,
+        QuestionWrapper$3,
         {
           $testMode: testMode,
         },
         /*#__PURE__*/ React.createElement(
-          QuestionData,
+          QuestionData$3,
           null,
           /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
             getPos: getPos,
@@ -10217,11 +8879,11 @@ var AnswerComponent = function (_ref) {
       ),
     ),
     /*#__PURE__*/ React.createElement(
-      IconsWrapper,
+      IconsWrapper$3,
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$6,
+          ActionButton$3,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -10235,13 +8897,13 @@ var AnswerComponent = function (_ref) {
             ref: addOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$5, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$3, {
             name: 'plusSquare',
           }),
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$6,
+          ActionButton$3,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -10253,15 +8915,14 @@ var AnswerComponent = function (_ref) {
             ref: removeOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$5, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$3, {
             name: 'deleteOutlined',
           }),
         ),
     ),
   )
 }
-
-var getNodes$e = function getNodes(view) {
+var getNodes$6 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -10272,18 +8933,13 @@ var getNodes$e = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject$y() {
-  var data = _taggedTemplateLiteral([
-    '\n  > div:has(> .ProseMirror) {\n    padding: 10px;\n  }\n',
-  ])
-
-  _templateObject$y = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$8 = styled.div(_templateObject$y())
+var _templateObject$4
+var Wrapper$3 = styled.div(
+  _templateObject$4 ||
+    (_templateObject$4 = _taggedTemplateLiteral([
+      '\n  > div:has(> .ProseMirror) {\n    padding: 10px;\n  }\n',
+    ])),
+)
 var QuestionComponent = function (_ref) {
   var node = _ref.node,
     view = _ref.view,
@@ -10296,7 +8952,7 @@ var QuestionComponent = function (_ref) {
     return editable
   })
   return /*#__PURE__*/ React.createElement(
-    Wrapper$8,
+    Wrapper$3,
     null,
     /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
       getPos: getPos,
@@ -10308,10 +8964,6 @@ var QuestionComponent = function (_ref) {
 }
 
 var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(MultipleChoiceNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(MultipleChoiceNodeView)
-
   function MultipleChoiceNodeView(
     node,
     view,
@@ -10322,11 +8974,8 @@ var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, MultipleChoiceNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, MultipleChoiceNodeView, [
       node,
       view,
       getPos,
@@ -10334,15 +8983,15 @@ var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(MultipleChoiceNodeView, _QuestionsNodeView)
+  return _createClass(
     MultipleChoiceNodeView,
     [
       {
@@ -10356,7 +9005,6 @@ var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -10371,15 +9019,9 @@ var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return MultipleChoiceNodeView
 })(QuestionsNodeView)
 
 var QuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(QuestionNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(QuestionNodeView)
-
   function QuestionNodeView(
     node,
     view,
@@ -10390,11 +9032,8 @@ var QuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, QuestionNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, QuestionNodeView, [
       node,
       view,
       getPos,
@@ -10402,15 +9041,15 @@ var QuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(QuestionNodeView, _QuestionsNodeView)
+  return _createClass(
     QuestionNodeView,
     [
       {
@@ -10422,7 +9061,6 @@ var QuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -10437,122 +9075,110 @@ var QuestionNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return QuestionNodeView
 })(QuestionsNodeView)
 
-var _dec$b, _class$b, _temp$b
+var _dec$2, _class$2
 var MultipleChoiceSingleCorrectQuestion =
-  ((_dec$b = injectable()),
-  _dec$b(
-    (_class$b =
-      ((_temp$b = /*#__PURE__*/ (function (_Tools) {
-        _inherits(MultipleChoiceSingleCorrectQuestion, _Tools)
-
-        var _super = _createSuper(MultipleChoiceSingleCorrectQuestion)
-
-        function MultipleChoiceSingleCorrectQuestion() {
-          var _this
-
-          _classCallCheck(this, MultipleChoiceSingleCorrectQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add Multiple Choice Single Correct Question'
-          _this.icon = 'multipleChoice'
-          _this.name = 'Multiple choice (single correct)'
-          _this.label = 'Multiple choice (single correct)'
-
-          _this.select = function (state, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            if (disallowedTools.includes('MultipleChoice')) return false
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null) return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$2 = injectable()),
+  _dec$2(
+    (_class$2 = /*#__PURE__*/ (function (_Tools) {
+      function MultipleChoiceSingleCorrectQuestion() {
+        var _this
+        _classCallCheck(this, MultipleChoiceSingleCorrectQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(MultipleChoiceSingleCorrectQuestion, [
-          {
-            key: 'renderTool',
-            value: function renderTool(view) {
-              if (isEmpty(view)) return null
-              return this.isDisplayed()
-                ? /*#__PURE__*/ React.createElement(ToolBarBtn$1, {
-                    item: this.toJSON(),
-                    key: v4(),
-                    view: view,
-                  })
-                : null
-            },
+        _this = _callSuper(
+          this,
+          MultipleChoiceSingleCorrectQuestion,
+          [].concat(args),
+        )
+        _this.title = 'Add Multiple Choice Single Correct Question'
+        _this.icon = 'multipleChoice'
+        _this.name = 'Multiple choice (single correct)'
+        _this.label = 'Multiple choice (single correct)'
+        _this.select = function (state, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          if (disallowedTools.includes('MultipleChoice')) return false
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null) return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(MultipleChoiceSingleCorrectQuestion, _Tools)
+      return _createClass(MultipleChoiceSingleCorrectQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (view, context) {
+              helpers.createOptions(
+                view,
+                context,
+                view.state.config.schema.nodes
+                  .multiple_choice_single_correct_container,
+                view.state.config.schema.nodes.question_node_multiple_single,
+                view.state.config.schema.nodes.multiple_choice_single_correct,
+                view.state.config.schema.nodes.feedback_prompt,
+              )
+            }
           },
-          {
-            key: 'run',
-            get: function get() {
-              return function (view, context) {
-                helpers.createOptions(
-                  view,
-                  context,
-                  view.state.config.schema.nodes
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes
                     .multiple_choice_single_correct_container,
-                  view.state.config.schema.nodes.question_node_multiple_single,
-                  view.state.config.schema.nodes.multiple_choice_single_correct,
-                  view.state.config.schema.nodes.feedback_prompt,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.multiple_choice_single_correct,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.question_node_multiple_single,
                 )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes
-                      .multiple_choice_single_correct_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.multiple_choice_single_correct,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.question_node_multiple_single,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
-              }
-            },
+        },
+        {
+          key: 'renderTool',
+          value: function renderTool(view) {
+            if (isEmpty(view)) return null
+            return this.isDisplayed()
+              ? /*#__PURE__*/ React.createElement(ToolBarBtn, {
+                  item: this.toJSON(),
+                  key: v4(),
+                  view: view,
+                })
+              : null
           },
-        ])
-
-        return MultipleChoiceSingleCorrectQuestion
-      })(Tools)),
-      _temp$b)),
-  ) || _class$b)
+        },
+      ])
+    })(Tools)),
+  ) || _class$2)
 
 var multipleChoiceSingleCorrectNode = {
   attrs: {
@@ -10567,11 +9193,13 @@ var multipleChoiceSingleCorrectNode = {
     },
     answer: {
       default: false,
-    }, // feedback: { default: '' },
+    },
+    // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
   // defining: true,
+
   parseDOM: [
     {
       tag: 'div.multiple-choice-option-single-correct',
@@ -10580,7 +9208,8 @@ var multipleChoiceSingleCorrectNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
+          // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -10636,6 +9265,7 @@ var questionSingleNode = {
   group: 'block questions',
   content: 'block*',
   // defining: true,
+
   // atom: true,
   parseDOM: [
     {
@@ -10653,21 +9283,18 @@ var questionSingleNode = {
   },
 }
 
-var CustomSwitch$1 = function CustomSwitch(_ref) {
+var CustomSwitch$2 = function CustomSwitch(_ref) {
   var node = _ref.node,
     getPos = _ref.getPos
   var context = useContext(WaxContext)
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     checked = _useState2[0],
     setChecked = _useState2[1]
-
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
     checkedAnswerMode = _useState4[0],
     setCheckedAnswerMode = _useState4[1]
-
   var main = context.pmViews.main
   var isEditable = main.props.editable(function (editable) {
     return editable
@@ -10675,7 +9302,7 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
   var customProps = main.props.customValues
   useEffect(
     function () {
-      var allNodes = getNodes$f(main)
+      var allNodes = getNodes$5(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -10683,9 +9310,8 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$f(main)],
+    [getNodes$5(main)],
   )
-
   var handleChange = function handleChange() {
     setChecked(!checked)
     setCheckedAnswerMode(!checkedAnswerMode)
@@ -10741,10 +9367,9 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
     })
     main.dispatch(tr)
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$f(main)
+    var allNodes = getNodes$5(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -10752,7 +9377,6 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
     })
     return nodeFound
   }
-
   return /*#__PURE__*/ React.createElement(YesNoSwitch, {
     checked: checked,
     checkedAnswerMode: checkedAnswerMode,
@@ -10762,8 +9386,7 @@ var CustomSwitch$1 = function CustomSwitch(_ref) {
     node: getUpdatedNode(),
   })
 }
-
-var getNodes$f = function getNodes(view) {
+var getNodes$5 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -10774,138 +9397,84 @@ var getNodes$f = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject10$2() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject10$2 = function _templateObject10() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject9$2() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
-  ])
-
-  _templateObject9$2 = function _templateObject9() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject8$4() {
-  var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject8$4 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7$8() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
-  ])
-
-  _templateObject7$8 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$b() {
-  var data = _taggedTemplateLiteral([
-    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
-  ])
-
-  _templateObject6$b = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
-    '\n',
-  ])
-
-  _templateObject5$c = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$j() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
-  ])
-
-  _templateObject4$j = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$k() {
-  var data = _taggedTemplateLiteral([
-    "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
-  ])
-
-  _templateObject3$k = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$o() {
-  var data = _taggedTemplateLiteral([
-    '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
-  ])
-
-  _templateObject2$o = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$z() {
-  var data = _taggedTemplateLiteral([
-    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
-  ])
-
-  _templateObject$z = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$9 = styled(Box)(_templateObject$z())
-var InfoRow$1 = styled.div(_templateObject2$o())
-var QuestionNunber$1 = styled.span(_templateObject3$k())
-var QuestionControlsWrapper$1 = styled.div(_templateObject4$j())
-var QuestionWrapper$2 = styled.div(_templateObject5$c(), function (props) {
-  return props.$testMode && css(_templateObject6$b())
-})
-var IconsWrapper$1 = styled.div(_templateObject7$8())
-var QuestionData$1 = styled.div(_templateObject8$4())
-var ActionButton$7 = styled.button(_templateObject9$2())
-var StyledIconAction$6 = styled(Icon)(_templateObject10$2())
-var AnswerComponent$1 = function (_ref) {
+var _templateObject$3,
+  _templateObject2$3,
+  _templateObject3$3,
+  _templateObject4$3,
+  _templateObject5$3,
+  _templateObject6$3,
+  _templateObject7$2,
+  _templateObject8$2,
+  _templateObject9$2,
+  _templateObject0$2
+var Wrapper$2 = styled(Box)(
+  _templateObject$3 ||
+    (_templateObject$3 = _taggedTemplateLiteral([
+      '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
+    ])),
+)
+var InfoRow$2 = styled.div(
+  _templateObject2$3 ||
+    (_templateObject2$3 = _taggedTemplateLiteral([
+      '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
+    ])),
+)
+var QuestionNunber$2 = styled.span(
+  _templateObject3$3 ||
+    (_templateObject3$3 = _taggedTemplateLiteral([
+      "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
+    ])),
+)
+var QuestionControlsWrapper$2 = styled.div(
+  _templateObject4$3 ||
+    (_templateObject4$3 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
+    ])),
+)
+var QuestionWrapper$2 = styled.div(
+  _templateObject5$3 ||
+    (_templateObject5$3 = _taggedTemplateLiteral([
+      '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+      '\n',
+    ])),
+  function (props) {
+    return (
+      props.$testMode &&
+      css(
+        _templateObject6$3 ||
+          (_templateObject6$3 = _taggedTemplateLiteral([
+            '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
+          ])),
+      )
+    )
+  },
+)
+var IconsWrapper$2 = styled.div(
+  _templateObject7$2 ||
+    (_templateObject7$2 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    ])),
+)
+var QuestionData$2 = styled.div(
+  _templateObject8$2 ||
+    (_templateObject8$2 = _taggedTemplateLiteral([
+      "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+)
+var ActionButton$2 = styled.button(
+  _templateObject9$2 ||
+    (_templateObject9$2 = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    ])),
+)
+var StyledIconAction$2 = styled(Icon)(
+  _templateObject0$2 ||
+    (_templateObject0$2 = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var AnswerComponent$2 = function (_ref) {
   var _getUpdatedNode, _getUpdatedNode$node, _getUpdatedNode$node2
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -10925,7 +9494,6 @@ var AnswerComponent$1 = function (_ref) {
         if (addOptionBtnRef.current) addOptionBtnRef.current.click()
       }
     }
-
     if (addOptionBtnRef.current)
       addOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -10940,7 +9508,6 @@ var AnswerComponent$1 = function (_ref) {
         if (removeOptionBtnRef.current) removeOptionBtnRef.current.click()
       }
     }
-
     if (removeOptionBtnRef.current)
       removeOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -10948,18 +9515,16 @@ var AnswerComponent$1 = function (_ref) {
         removeOptionBtnRef.current.removeEventListener('keydown', listener)
     }
   }, [])
-
   var removeOption = function removeOption() {
     var answersCount = findAnswerCount()
-
     if (answersCount.count >= 1) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
-            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
-
+            var optionSize = sinlgeNode.nodeSize
+            // Also delete the following feedback_prompt sibling
             var nextPos = getPos() + optionSize
             var nextNode = main.state.doc.nodeAt(nextPos)
             var feedbackSize =
@@ -10984,7 +9549,6 @@ var AnswerComponent$1 = function (_ref) {
       main.dispatch(main.state.tr.deleteSelection())
     }
   }
-
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
     var newFeedbackId = v4()
@@ -11026,8 +9590,8 @@ var AnswerComponent$1 = function (_ref) {
               ),
             ),
           )
-          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption)) // create Empty Paragraph
-
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption))
+          // create Empty Paragraph
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
             helpers.createEmptyParagraph(context, newFeedbackId)
@@ -11036,7 +9600,6 @@ var AnswerComponent$1 = function (_ref) {
       }
     })
   }
-
   var findAnswerCount = function findAnswerCount() {
     main.dispatch(
       main.state.tr.setSelection(
@@ -11068,10 +9631,9 @@ var AnswerComponent$1 = function (_ref) {
       parentContainer: parentContainer,
     }
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$g(main)
+    var allNodes = getNodes$4(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -11079,19 +9641,18 @@ var AnswerComponent$1 = function (_ref) {
     })
     return nodeFound
   }
-
   var readOnly = !isEditable
   return /*#__PURE__*/ React.createElement(
-    Wrapper$9,
+    Wrapper$2,
     null,
     /*#__PURE__*/ React.createElement(
-      QuestionControlsWrapper$1,
+      QuestionControlsWrapper$2,
       null,
       /*#__PURE__*/ React.createElement(
-        InfoRow$1,
+        InfoRow$2,
         null,
-        /*#__PURE__*/ React.createElement(QuestionNunber$1, null),
-        /*#__PURE__*/ React.createElement(CustomSwitch$1, {
+        /*#__PURE__*/ React.createElement(QuestionNunber$2, null),
+        /*#__PURE__*/ React.createElement(CustomSwitch$2, {
           getPos: getPos,
           node: node,
         }),
@@ -11102,7 +9663,7 @@ var AnswerComponent$1 = function (_ref) {
           $testMode: testMode,
         },
         /*#__PURE__*/ React.createElement(
-          QuestionData$1,
+          QuestionData$2,
           null,
           /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
             getPos: getPos,
@@ -11118,11 +9679,11 @@ var AnswerComponent$1 = function (_ref) {
       ),
     ),
     /*#__PURE__*/ React.createElement(
-      IconsWrapper$1,
+      IconsWrapper$2,
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$7,
+          ActionButton$2,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -11136,13 +9697,13 @@ var AnswerComponent$1 = function (_ref) {
             ref: addOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$6, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$2, {
             name: 'plusSquare',
           }),
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$7,
+          ActionButton$2,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -11154,15 +9715,14 @@ var AnswerComponent$1 = function (_ref) {
             ref: removeOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$6, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$2, {
             name: 'deleteOutlined',
           }),
         ),
     ),
   )
 }
-
-var getNodes$g = function getNodes(view) {
+var getNodes$4 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -11176,10 +9736,6 @@ var getNodes$g = function getNodes(view) {
 var MultipleChoiceSingleCorrectNodeView = /*#__PURE__*/ (function (
   _QuestionsNodeView,
 ) {
-  _inherits(MultipleChoiceSingleCorrectNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(MultipleChoiceSingleCorrectNodeView)
-
   function MultipleChoiceSingleCorrectNodeView(
     node,
     view,
@@ -11190,11 +9746,8 @@ var MultipleChoiceSingleCorrectNodeView = /*#__PURE__*/ (function (
     context,
   ) {
     var _this
-
     _classCallCheck(this, MultipleChoiceSingleCorrectNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, MultipleChoiceSingleCorrectNodeView, [
       node,
       view,
       getPos,
@@ -11202,15 +9755,15 @@ var MultipleChoiceSingleCorrectNodeView = /*#__PURE__*/ (function (
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(MultipleChoiceSingleCorrectNodeView, _QuestionsNodeView)
+  return _createClass(
     MultipleChoiceSingleCorrectNodeView,
     [
       {
@@ -11224,7 +9777,6 @@ var MultipleChoiceSingleCorrectNodeView = /*#__PURE__*/ (function (
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -11239,17 +9791,11 @@ var MultipleChoiceSingleCorrectNodeView = /*#__PURE__*/ (function (
       },
     ],
   )
-
-  return MultipleChoiceSingleCorrectNodeView
 })(QuestionsNodeView)
 
 var QuestionMultipleSingleNodeView = /*#__PURE__*/ (function (
   _QuestionsNodeView,
 ) {
-  _inherits(QuestionMultipleSingleNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(QuestionMultipleSingleNodeView)
-
   function QuestionMultipleSingleNodeView(
     node,
     view,
@@ -11260,11 +9806,8 @@ var QuestionMultipleSingleNodeView = /*#__PURE__*/ (function (
     context,
   ) {
     var _this
-
     _classCallCheck(this, QuestionMultipleSingleNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, QuestionMultipleSingleNodeView, [
       node,
       view,
       getPos,
@@ -11272,15 +9815,15 @@ var QuestionMultipleSingleNodeView = /*#__PURE__*/ (function (
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(QuestionMultipleSingleNodeView, _QuestionsNodeView)
+  return _createClass(
     QuestionMultipleSingleNodeView,
     [
       {
@@ -11294,7 +9837,6 @@ var QuestionMultipleSingleNodeView = /*#__PURE__*/ (function (
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -11309,24 +9851,21 @@ var QuestionMultipleSingleNodeView = /*#__PURE__*/ (function (
       },
     ],
   )
-
-  return QuestionMultipleSingleNodeView
 })(QuestionsNodeView)
 
 var MultipleChoiceSingleCorrectQuestionService = /*#__PURE__*/ (function (
   _Service,
 ) {
-  _inherits(MultipleChoiceSingleCorrectQuestionService, _Service)
-
-  var _super = _createSuper(MultipleChoiceSingleCorrectQuestionService)
-
   function MultipleChoiceSingleCorrectQuestionService() {
     _classCallCheck(this, MultipleChoiceSingleCorrectQuestionService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(
+      this,
+      MultipleChoiceSingleCorrectQuestionService,
+      arguments,
+    )
   }
-
-  _createClass(MultipleChoiceSingleCorrectQuestionService, [
+  _inherits(MultipleChoiceSingleCorrectQuestionService, _Service)
+  return _createClass(MultipleChoiceSingleCorrectQuestionService, [
     {
       key: 'register',
       value: function register() {
@@ -11355,7 +9894,7 @@ var MultipleChoiceSingleCorrectQuestionService = /*#__PURE__*/ (function (
         })
         addPortal({
           nodeView: MultipleChoiceSingleCorrectNodeView,
-          component: AnswerComponent$1,
+          component: AnswerComponent$2,
           context: this.app,
         })
         addPortal({
@@ -11366,120 +9905,104 @@ var MultipleChoiceSingleCorrectQuestionService = /*#__PURE__*/ (function (
       },
     },
   ])
-
-  return MultipleChoiceSingleCorrectQuestionService
 })(Service)
 
-var _dec$c, _class$c, _temp$c
+var _dec$1, _class$1
 var TrueFalseQuestion =
-  ((_dec$c = injectable()),
-  _dec$c(
-    (_class$c =
-      ((_temp$c = /*#__PURE__*/ (function (_Tools) {
-        _inherits(TrueFalseQuestion, _Tools)
-
-        var _super = _createSuper(TrueFalseQuestion)
-
-        function TrueFalseQuestion() {
-          var _this
-
-          _classCallCheck(this, TrueFalseQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add True False Question'
-          _this.icon = 'multipleChoice'
-          _this.name = 'TrueFalse'
-          _this.label = 'True False'
-
-          _this.select = function (state, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            if (disallowedTools.includes('MultipleChoice')) return false
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null) return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec$1 = injectable()),
+  _dec$1(
+    (_class$1 = /*#__PURE__*/ (function (_Tools) {
+      function TrueFalseQuestion() {
+        var _this
+        _classCallCheck(this, TrueFalseQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(TrueFalseQuestion, [
-          {
-            key: 'renderTool',
-            value: function renderTool(view) {
-              if (isEmpty(view)) return null
-              return this.isDisplayed()
-                ? /*#__PURE__*/ React.createElement(ToolBarBtn$1, {
-                    item: this.toJSON(),
-                    key: v4(),
-                    view: view,
-                  })
-                : null
-            },
+        _this = _callSuper(this, TrueFalseQuestion, [].concat(args))
+        _this.title = 'Add True False Question'
+        _this.icon = 'multipleChoice'
+        _this.name = 'TrueFalse'
+        _this.label = 'True False'
+        _this.select = function (state, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          if (disallowedTools.includes('MultipleChoice')) return false
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null) return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(TrueFalseQuestion, _Tools)
+      return _createClass(TrueFalseQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (view, context) {
+              helpers.createOptions(
+                view,
+                context,
+                view.state.config.schema.nodes.true_false_container,
+                view.state.config.schema.nodes.question_node_true_false,
+                view.state.config.schema.nodes.true_false,
+                view.state.config.schema.nodes.feedback_prompt,
+              )
+            }
           },
-          {
-            key: 'run',
-            get: function get() {
-              return function (view, context) {
-                helpers.createOptions(
-                  view,
-                  context,
-                  view.state.config.schema.nodes.true_false_container,
-                  view.state.config.schema.nodes.question_node_true_false,
-                  view.state.config.schema.nodes.true_false,
-                  view.state.config.schema.nodes.feedback_prompt,
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.true_false_container,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.true_false,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.question_node_true_false,
                 )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.true_false_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.true_false,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.question_node_true_false,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
-              }
-            },
+        },
+        {
+          key: 'renderTool',
+          value: function renderTool(view) {
+            if (isEmpty(view)) return null
+            return this.isDisplayed()
+              ? /*#__PURE__*/ React.createElement(ToolBarBtn, {
+                  item: this.toJSON(),
+                  key: v4(),
+                  view: view,
+                })
+              : null
           },
-        ])
-
-        return TrueFalseQuestion
-      })(Tools)),
-      _temp$c)),
-  ) || _class$c)
+        },
+      ])
+    })(Tools)),
+  ) || _class$1)
 
 var trueFalseNode = {
   attrs: {
@@ -11494,11 +10017,13 @@ var trueFalseNode = {
     },
     answer: {
       default: false,
-    }, // feedback: { default: '' },
+    },
+    // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
   // defining: true,
+
   parseDOM: [
     {
       tag: 'div.true-false-option',
@@ -11507,7 +10032,8 @@ var trueFalseNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
+          // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -11517,7 +10043,7 @@ var trueFalseNode = {
   },
 }
 
-var questionTrueFalseNode = {
+var questionTrueFalseNode$1 = {
   attrs: {
     id: {
       default: '',
@@ -11530,6 +10056,7 @@ var questionTrueFalseNode = {
   // content: 'paragraph* bulletlist* orderedlist*',
   content: 'block*',
   // defining: true,
+
   // atom: true,
   parseDOM: [
     {
@@ -11577,85 +10104,50 @@ var trueFalseContainerNode = {
   },
 }
 
-function _templateObject6$c() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject6$c = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$d() {
-  var data = _taggedTemplateLiteral([
-    '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
-  ])
-
-  _templateObject5$d = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$k() {
-  var data = _taggedTemplateLiteral([
-    '\n  margin-right: 10px;\n\n  span {\n    color: ',
-    ';\n  }\n',
-  ])
-
-  _templateObject4$k = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$l() {
-  var data = _taggedTemplateLiteral([
-    '\n  margin-right: 10px;\n\n  span {\n    color: #008000;\n  }\n',
-  ])
-
-  _templateObject3$l = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$p() {
-  var data = _taggedTemplateLiteral(['\n  margin-left: auto;\n'])
-
-  _templateObject2$p = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$A() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  margin-left: auto;\n\n  button {\n    width: 65px;\n  }\n\n  .rc-switch-inner {\n    font-size: 14px;\n    left: 25px;\n  }\n\n  .rc-switch-checked {\n    background-color: #008000;\n    border: 1px solid #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &::after {\n      left: 42px;\n    }\n  }\n',
-  ])
-
-  _templateObject$A = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var StyledSwitch$1 = styled(SwitchComponent)(_templateObject$A())
-var AnswerContainer$6 = styled.span(_templateObject2$p())
-var Correct$1 = styled.span(_templateObject3$l())
-var Answer$3 = styled.span(_templateObject4$k(), function (props) {
-  return props.$isCorrect ? ' #008000' : 'red'
-})
-var StyledIconCorrect$4 = styled(Icon)(_templateObject5$d())
-var StyledIconWrong$4 = styled(Icon)(_templateObject6$c())
-
+var _templateObject$2,
+  _templateObject2$2,
+  _templateObject3$2,
+  _templateObject4$2,
+  _templateObject5$2,
+  _templateObject6$2
+var StyledSwitch = styled(SwitchComponent)(
+  _templateObject$2 ||
+    (_templateObject$2 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  margin-left: auto;\n\n  button {\n    width: 65px;\n  }\n\n  .rc-switch-inner {\n    font-size: 14px;\n    left: 25px;\n  }\n\n  .rc-switch-checked {\n    background-color: #008000;\n    border: 1px solid #008000;\n\n    .rc-switch-inner {\n      left: 6px;\n    }\n\n    &::after {\n      left: 42px;\n    }\n  }\n',
+    ])),
+)
+var AnswerContainer = styled.span(
+  _templateObject2$2 ||
+    (_templateObject2$2 = _taggedTemplateLiteral(['\n  margin-left: auto;\n'])),
+)
+var Correct = styled.span(
+  _templateObject3$2 ||
+    (_templateObject3$2 = _taggedTemplateLiteral([
+      '\n  margin-right: 10px;\n\n  span {\n    color: #008000;\n  }\n',
+    ])),
+)
+var Answer = styled.span(
+  _templateObject4$2 ||
+    (_templateObject4$2 = _taggedTemplateLiteral([
+      '\n  margin-right: 10px;\n\n  span {\n    color: ',
+      ';\n  }\n',
+    ])),
+  function (props) {
+    return props.$isCorrect ? ' #008000' : 'red'
+  },
+)
+var StyledIconCorrect = styled(Icon)(
+  _templateObject5$2 ||
+    (_templateObject5$2 = _taggedTemplateLiteral([
+      '\n  fill: #008000;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
+var StyledIconWrong = styled(Icon)(
+  _templateObject6$2 ||
+    (_templateObject6$2 = _taggedTemplateLiteral([
+      '\n  fill: red;\n  height: 24px;\n  pointer-events: none;\n  width: 24px;\n',
+    ])),
+)
 var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
   var customProps = _ref.customProps,
     node = _ref.node.node,
@@ -11665,22 +10157,21 @@ var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
     checkedAnswerMode = _ref.checkedAnswerMode
   var testMode = customProps.testMode,
     showFeedBack = customProps.showFeedBack
-
   if (showFeedBack && node) {
     var correct = node.attrs.correct ? 'TRUE' : 'FALSE'
     var answer = node.attrs.answer ? 'TRUE' : 'FALSE'
     var isCorrect = node.attrs.correct === node.attrs.answer
     return /*#__PURE__*/ React.createElement(
-      AnswerContainer$6,
+      AnswerContainer,
       null,
       /*#__PURE__*/ React.createElement(
-        Correct$1,
+        Correct,
         null,
         'Correct:',
         /*#__PURE__*/ React.createElement('span', null, correct),
       ),
       /*#__PURE__*/ React.createElement(
-        Answer$3,
+        Answer,
         {
           $isCorrect: isCorrect,
         },
@@ -11688,17 +10179,16 @@ var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
         /*#__PURE__*/ React.createElement('span', null, answer),
       ),
       isCorrect &&
-        /*#__PURE__*/ React.createElement(StyledIconCorrect$4, {
+        /*#__PURE__*/ React.createElement(StyledIconCorrect, {
           name: 'done',
         }),
       !isCorrect &&
-        /*#__PURE__*/ React.createElement(StyledIconWrong$4, {
+        /*#__PURE__*/ React.createElement(StyledIconWrong, {
           name: 'close',
         }),
     )
   }
-
-  return /*#__PURE__*/ React.createElement(StyledSwitch$1, {
+  return /*#__PURE__*/ React.createElement(StyledSwitch, {
     checked:
       isEditable || (!isEditable && !testMode) ? checked : checkedAnswerMode,
     checkedChildren: 'True',
@@ -11710,21 +10200,18 @@ var TrueFalseSwitch = function TrueFalseSwitch(_ref) {
   })
 }
 
-var CustomSwitch$2 = function CustomSwitch(_ref) {
+var CustomSwitch$1 = function CustomSwitch(_ref) {
   var node = _ref.node,
     getPos = _ref.getPos
   var context = useContext(WaxContext)
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     checked = _useState2[0],
     setChecked = _useState2[1]
-
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
     checkedAnswerMode = _useState4[0],
     setCheckedAnswerMode = _useState4[1]
-
   var main = context.pmViews.main
   var customProps = main.props.customValues
   var isEditable = main.props.editable(function (editable) {
@@ -11732,7 +10219,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
   })
   useEffect(
     function () {
-      var allNodes = getNodes$h(main)
+      var allNodes = getNodes$3(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -11740,15 +10227,14 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$h(main)],
+    [getNodes$3(main)],
   )
-
   var handleChange = function handleChange() {
     setChecked(!checked)
     setCheckedAnswerMode(!checkedAnswerMode)
     var key = isEditable ? 'correct' : 'answer'
     var value = isEditable ? !checked : !checkedAnswerMode
-    var allNodes = getNodes$h(main)
+    var allNodes = getNodes$3(main)
     allNodes.forEach(function (singleNode) {
       if (singleNode.node.attrs.id === node.attrs.id) {
         main.dispatch(
@@ -11765,10 +10251,9 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
       }
     })
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$h(main)
+    var allNodes = getNodes$3(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -11776,7 +10261,6 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
     })
     return nodeFound
   }
-
   return /*#__PURE__*/ React.createElement(TrueFalseSwitch, {
     checked: checked,
     checkedAnswerMode: checkedAnswerMode,
@@ -11786,8 +10270,7 @@ var CustomSwitch$2 = function CustomSwitch(_ref) {
     node: getUpdatedNode(),
   })
 }
-
-var getNodes$h = function getNodes(view) {
+var getNodes$3 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -11798,138 +10281,84 @@ var getNodes$h = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject10$3() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject10$3 = function _templateObject10() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject9$3() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
-  ])
-
-  _templateObject9$3 = function _templateObject9() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject8$5() {
-  var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject8$5 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7$9() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
-  ])
-
-  _templateObject7$9 = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$d() {
-  var data = _taggedTemplateLiteral([
-    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
-  ])
-
-  _templateObject6$d = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$e() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
-    '\n',
-  ])
-
-  _templateObject5$e = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$l() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
-  ])
-
-  _templateObject4$l = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$m() {
-  var data = _taggedTemplateLiteral([
-    "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
-  ])
-
-  _templateObject3$m = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$q() {
-  var data = _taggedTemplateLiteral([
-    '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
-  ])
-
-  _templateObject2$q = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$B() {
-  var data = _taggedTemplateLiteral([
-    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
-  ])
-
-  _templateObject$B = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$a = styled(Box)(_templateObject$B())
-var InfoRow$2 = styled.div(_templateObject2$q())
-var QuestionNunber$2 = styled.span(_templateObject3$m())
-var QuestionControlsWrapper$2 = styled.div(_templateObject4$l())
-var QuestionWrapper$3 = styled.div(_templateObject5$e(), function (props) {
-  return props.$testMode && css(_templateObject6$d())
-})
-var IconsWrapper$2 = styled.div(_templateObject7$9())
-var QuestionData$2 = styled.div(_templateObject8$5())
-var ActionButton$8 = styled.button(_templateObject9$3())
-var StyledIconAction$7 = styled(Icon)(_templateObject10$3())
-var AnswerComponent$2 = function (_ref) {
+var _templateObject$1,
+  _templateObject2$1,
+  _templateObject3$1,
+  _templateObject4$1,
+  _templateObject5$1,
+  _templateObject6$1,
+  _templateObject7$1,
+  _templateObject8$1,
+  _templateObject9$1,
+  _templateObject0$1
+var Wrapper$1 = styled(Box)(
+  _templateObject$1 ||
+    (_templateObject$1 = _taggedTemplateLiteral([
+      '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
+    ])),
+)
+var InfoRow$1 = styled.div(
+  _templateObject2$1 ||
+    (_templateObject2$1 = _taggedTemplateLiteral([
+      '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
+    ])),
+)
+var QuestionNunber$1 = styled.span(
+  _templateObject3$1 ||
+    (_templateObject3$1 = _taggedTemplateLiteral([
+      "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
+    ])),
+)
+var QuestionControlsWrapper$1 = styled.div(
+  _templateObject4$1 ||
+    (_templateObject4$1 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
+    ])),
+)
+var QuestionWrapper$1 = styled.div(
+  _templateObject5$1 ||
+    (_templateObject5$1 = _taggedTemplateLiteral([
+      '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+      '\n',
+    ])),
+  function (props) {
+    return (
+      props.$testMode &&
+      css(
+        _templateObject6$1 ||
+          (_templateObject6$1 = _taggedTemplateLiteral([
+            '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
+          ])),
+      )
+    )
+  },
+)
+var IconsWrapper$1 = styled.div(
+  _templateObject7$1 ||
+    (_templateObject7$1 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    ])),
+)
+var QuestionData$1 = styled.div(
+  _templateObject8$1 ||
+    (_templateObject8$1 = _taggedTemplateLiteral([
+      "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+)
+var ActionButton$1 = styled.button(
+  _templateObject9$1 ||
+    (_templateObject9$1 = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    ])),
+)
+var StyledIconAction$1 = styled(Icon)(
+  _templateObject0$1 ||
+    (_templateObject0$1 = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var AnswerComponent$1 = function (_ref) {
   var _getUpdatedNode$node, _getUpdatedNode$node2
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -11949,7 +10378,6 @@ var AnswerComponent$2 = function (_ref) {
         if (addOptionBtnRef.current) addOptionBtnRef.current.click()
       }
     }
-
     if (addOptionBtnRef.current)
       addOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -11964,7 +10392,6 @@ var AnswerComponent$2 = function (_ref) {
         if (removeOptionBtnRef.current) removeOptionBtnRef.current.click()
       }
     }
-
     if (removeOptionBtnRef.current)
       removeOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -11972,18 +10399,16 @@ var AnswerComponent$2 = function (_ref) {
         removeOptionBtnRef.current.removeEventListener('keydown', listener)
     }
   }, [])
-
   var removeOption = function removeOption() {
     var answersCount = findAnswerCount()
-
     if (answersCount.count >= 1) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
-            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
-
+            var optionSize = sinlgeNode.nodeSize
+            // Also delete the following feedback_prompt sibling
             var nextPos = getPos() + optionSize
             var nextNode = main.state.doc.nodeAt(nextPos)
             var feedbackSize =
@@ -12008,7 +10433,6 @@ var AnswerComponent$2 = function (_ref) {
       main.dispatch(main.state.tr.deleteSelection())
     }
   }
-
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
     var newFeedbackId = v4()
@@ -12049,8 +10473,8 @@ var AnswerComponent$2 = function (_ref) {
               ),
             ),
           )
-          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption)) // create Empty Paragraph
-
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption))
+          // create Empty Paragraph
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
             helpers.createEmptyParagraph(context, newFeedbackId)
@@ -12059,7 +10483,6 @@ var AnswerComponent$2 = function (_ref) {
       }
     })
   }
-
   var findAnswerCount = function findAnswerCount() {
     main.dispatch(
       main.state.tr.setSelection(
@@ -12091,10 +10514,9 @@ var AnswerComponent$2 = function (_ref) {
       parentContainer: parentContainer,
     }
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$i(main)
+    var allNodes = getNodes$2(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -12102,30 +10524,29 @@ var AnswerComponent$2 = function (_ref) {
     })
     return nodeFound
   }
-
   var readOnly = !isEditable
   return /*#__PURE__*/ React.createElement(
-    Wrapper$a,
+    Wrapper$1,
     null,
     /*#__PURE__*/ React.createElement(
-      QuestionControlsWrapper$2,
+      QuestionControlsWrapper$1,
       null,
       /*#__PURE__*/ React.createElement(
-        InfoRow$2,
+        InfoRow$1,
         null,
-        /*#__PURE__*/ React.createElement(QuestionNunber$2, null),
-        /*#__PURE__*/ React.createElement(CustomSwitch$2, {
+        /*#__PURE__*/ React.createElement(QuestionNunber$1, null),
+        /*#__PURE__*/ React.createElement(CustomSwitch$1, {
           getPos: getPos,
           node: node,
         }),
       ),
       /*#__PURE__*/ React.createElement(
-        QuestionWrapper$3,
+        QuestionWrapper$1,
         {
           $testMode: testMode,
         },
         /*#__PURE__*/ React.createElement(
-          QuestionData$2,
+          QuestionData$1,
           null,
           /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
             getPos: getPos,
@@ -12137,11 +10558,11 @@ var AnswerComponent$2 = function (_ref) {
       ),
     ),
     /*#__PURE__*/ React.createElement(
-      IconsWrapper$2,
+      IconsWrapper$1,
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$8,
+          ActionButton$1,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -12155,13 +10576,13 @@ var AnswerComponent$2 = function (_ref) {
             ref: addOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$7, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$1, {
             name: 'plusSquare',
           }),
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$8,
+          ActionButton$1,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -12173,15 +10594,14 @@ var AnswerComponent$2 = function (_ref) {
             ref: removeOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$7, {
+          /*#__PURE__*/ React.createElement(StyledIconAction$1, {
             name: 'deleteOutlined',
           }),
         ),
     ),
   )
 }
-
-var getNodes$i = function getNodes(view) {
+var getNodes$2 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -12193,10 +10613,6 @@ var getNodes$i = function getNodes(view) {
 }
 
 var TrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(TrueFalseNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(TrueFalseNodeView)
-
   function TrueFalseNodeView(
     node,
     view,
@@ -12207,11 +10623,8 @@ var TrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, TrueFalseNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, TrueFalseNodeView, [
       node,
       view,
       getPos,
@@ -12219,15 +10632,15 @@ var TrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(TrueFalseNodeView, _QuestionsNodeView)
+  return _createClass(
     TrueFalseNodeView,
     [
       {
@@ -12241,7 +10654,6 @@ var TrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -12256,15 +10668,9 @@ var TrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return TrueFalseNodeView
 })(QuestionsNodeView)
 
 var QuestionTrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
-  _inherits(QuestionTrueFalseNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(QuestionTrueFalseNodeView)
-
   function QuestionTrueFalseNodeView(
     node,
     view,
@@ -12275,11 +10681,8 @@ var QuestionTrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
     context,
   ) {
     var _this
-
     _classCallCheck(this, QuestionTrueFalseNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, QuestionTrueFalseNodeView, [
       node,
       view,
       getPos,
@@ -12287,15 +10690,15 @@ var QuestionTrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(QuestionTrueFalseNodeView, _QuestionsNodeView)
+  return _createClass(
     QuestionTrueFalseNodeView,
     [
       {
@@ -12309,7 +10712,6 @@ var QuestionTrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -12324,22 +10726,15 @@ var QuestionTrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
       },
     ],
   )
-
-  return QuestionTrueFalseNodeView
 })(QuestionsNodeView)
 
 var TrueFalseQuestionService = /*#__PURE__*/ (function (_Service) {
-  _inherits(TrueFalseQuestionService, _Service)
-
-  var _super = _createSuper(TrueFalseQuestionService)
-
   function TrueFalseQuestionService() {
     _classCallCheck(this, TrueFalseQuestionService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, TrueFalseQuestionService, arguments)
   }
-
-  _createClass(TrueFalseQuestionService, [
+  _inherits(TrueFalseQuestionService, _Service)
+  return _createClass(TrueFalseQuestionService, [
     {
       key: 'register',
       value: function register() {
@@ -12356,7 +10751,7 @@ var TrueFalseQuestionService = /*#__PURE__*/ (function (_Service) {
           true_false: trueFalseNode,
         })
         createNode({
-          question_node_true_false: questionTrueFalseNode,
+          question_node_true_false: questionTrueFalseNode$1,
         })
         addPortal({
           nodeView: QuestionTrueFalseNodeView,
@@ -12365,7 +10760,7 @@ var TrueFalseQuestionService = /*#__PURE__*/ (function (_Service) {
         })
         addPortal({
           nodeView: TrueFalseNodeView,
-          component: AnswerComponent$2,
+          component: AnswerComponent$1,
           context: this.app,
         })
         addPortal({
@@ -12376,123 +10771,109 @@ var TrueFalseQuestionService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return TrueFalseQuestionService
 })(Service)
 
-var _dec$d, _class$d, _temp$d
+var _dec, _class
 var TrueFalseSingleCorrectQuestion =
-  ((_dec$d = injectable()),
-  _dec$d(
-    (_class$d =
-      ((_temp$d = /*#__PURE__*/ (function (_Tools) {
-        _inherits(TrueFalseSingleCorrectQuestion, _Tools)
-
-        var _super = _createSuper(TrueFalseSingleCorrectQuestion)
-
-        function TrueFalseSingleCorrectQuestion() {
-          var _this
-
-          _classCallCheck(this, TrueFalseSingleCorrectQuestion)
-
-          for (
-            var _len = arguments.length, args = new Array(_len), _key = 0;
-            _key < _len;
-            _key++
-          ) {
-            args[_key] = arguments[_key]
-          }
-
-          _this = _super.call.apply(_super, [this].concat(args))
-          _this.title = 'Add True False Single Correct Question'
-          _this.icon = 'multipleChoice'
-          _this.name = 'True False (single correct)'
-          _this.label = 'True False (single correct)'
-
-          _this.select = function (state, activeView) {
-            var _activeView$props$dis = activeView.props.disallowedTools,
-              disallowedTools =
-                _activeView$props$dis === void 0 ? [] : _activeView$props$dis
-            if (disallowedTools.includes('MultipleChoice')) return false
-            var status = true
-            var _state$selection = state.selection,
-              from = _state$selection.from,
-              to = _state$selection.to
-            if (from === null) return false
-            state.doc.nodesBetween(from, to, function (node) {
-              if (node.type.groups.includes('questions')) {
-                status = false
-              }
-            })
-            return status
-          }
-
-          return _this
+  ((_dec = injectable()),
+  _dec(
+    (_class = /*#__PURE__*/ (function (_Tools) {
+      function TrueFalseSingleCorrectQuestion() {
+        var _this
+        _classCallCheck(this, TrueFalseSingleCorrectQuestion)
+        for (
+          var _len = arguments.length, args = new Array(_len), _key = 0;
+          _key < _len;
+          _key++
+        ) {
+          args[_key] = arguments[_key]
         }
-
-        _createClass(TrueFalseSingleCorrectQuestion, [
-          {
-            key: 'renderTool',
-            value: function renderTool(view) {
-              if (isEmpty(view)) return null
-              return this.isDisplayed()
-                ? /*#__PURE__*/ React.createElement(ToolBarBtn$1, {
-                    item: this.toJSON(),
-                    key: v4(),
-                    view: view,
-                  })
-                : null
-            },
+        _this = _callSuper(
+          this,
+          TrueFalseSingleCorrectQuestion,
+          [].concat(args),
+        )
+        _this.title = 'Add True False Single Correct Question'
+        _this.icon = 'multipleChoice'
+        _this.name = 'True False (single correct)'
+        _this.label = 'True False (single correct)'
+        _this.select = function (state, activeView) {
+          var _activeView$props$dis = activeView.props.disallowedTools,
+            disallowedTools =
+              _activeView$props$dis === void 0 ? [] : _activeView$props$dis
+          if (disallowedTools.includes('MultipleChoice')) return false
+          var status = true
+          var _state$selection = state.selection,
+            from = _state$selection.from,
+            to = _state$selection.to
+          if (from === null) return false
+          state.doc.nodesBetween(from, to, function (node) {
+            if (node.type.groups.includes('questions')) {
+              status = false
+            }
+          })
+          return status
+        }
+        return _this
+      }
+      _inherits(TrueFalseSingleCorrectQuestion, _Tools)
+      return _createClass(TrueFalseSingleCorrectQuestion, [
+        {
+          key: 'run',
+          get: function get() {
+            return function (view, context) {
+              helpers.createOptions(
+                view,
+                context,
+                view.state.config.schema.nodes
+                  .true_false_single_correct_container,
+                view.state.config.schema.nodes.question_node_true_false_single,
+                view.state.config.schema.nodes.true_false_single_correct,
+                view.state.config.schema.nodes.feedback_prompt,
+              )
+            }
           },
-          {
-            key: 'run',
-            get: function get() {
-              return function (view, context) {
-                helpers.createOptions(
-                  view,
-                  context,
-                  view.state.config.schema.nodes
-                    .true_false_single_correct_container,
-                  view.state.config.schema.nodes
-                    .question_node_true_false_single,
-                  view.state.config.schema.nodes.true_false_single_correct,
-                  view.state.config.schema.nodes.feedback_prompt,
+        },
+        {
+          key: 'active',
+          get: function get() {
+            return function (state) {
+              if (
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.true_false_single_correct_container,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.true_false_single_correct,
+                ) ||
+                Commands.isParentOfType(
+                  state,
+                  state.config.schema.nodes.question_node_true_false_single,
                 )
+              ) {
+                return true
               }
-            },
+              return false
+            }
           },
-          {
-            key: 'active',
-            get: function get() {
-              return function (state) {
-                if (
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes
-                      .true_false_single_correct_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.true_false_single_correct,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
-                    state.config.schema.nodes.question_node_true_false_single,
-                  )
-                ) {
-                  return true
-                }
-
-                return false
-              }
-            },
+        },
+        {
+          key: 'renderTool',
+          value: function renderTool(view) {
+            if (isEmpty(view)) return null
+            return this.isDisplayed()
+              ? /*#__PURE__*/ React.createElement(ToolBarBtn, {
+                  item: this.toJSON(),
+                  key: v4(),
+                  view: view,
+                })
+              : null
           },
-        ])
-
-        return TrueFalseSingleCorrectQuestion
-      })(Tools)),
-      _temp$d)),
-  ) || _class$d)
+        },
+      ])
+    })(Tools)),
+  ) || _class)
 
 var trueFalseSingleCorrectNode = {
   attrs: {
@@ -12507,11 +10888,13 @@ var trueFalseSingleCorrectNode = {
     },
     answer: {
       default: false,
-    }, // feedback: { default: '' },
+    },
+    // feedback: { default: '' },
   },
   group: 'block questions',
   content: 'block*',
   // defining: true,
+
   parseDOM: [
     {
       tag: 'div.true-false-single-correct-option',
@@ -12520,7 +10903,8 @@ var trueFalseSingleCorrectNode = {
           id: dom.getAttribute('id'),
           class: dom.getAttribute('class'),
           correct: JSON.parse(dom.getAttribute('correct').toLowerCase()),
-          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()), // feedback: dom.getAttribute('feedback'),
+          answer: JSON.parse(dom.getAttribute('answer').toLowerCase()),
+          // feedback: dom.getAttribute('feedback'),
         }
       },
     },
@@ -12560,7 +10944,7 @@ var trueFalseSingleCorrectContainerNode = {
   },
 }
 
-var questionTrueFalseNode$1 = {
+var questionTrueFalseNode = {
   attrs: {
     id: {
       default: '',
@@ -12588,21 +10972,18 @@ var questionTrueFalseNode$1 = {
   },
 }
 
-var CustomSwitch$3 = function CustomSwitch(_ref) {
+var CustomSwitch = function CustomSwitch(_ref) {
   var node = _ref.node,
     getPos = _ref.getPos
   var context = useContext(WaxContext)
-
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     checked = _useState2[0],
     setChecked = _useState2[1]
-
   var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
     checkedAnswerMode = _useState4[0],
     setCheckedAnswerMode = _useState4[1]
-
   var main = context.pmViews.main
   var customProps = main.props.customValues
   var isEditable = main.props.editable(function (editable) {
@@ -12610,7 +10991,7 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
   })
   useEffect(
     function () {
-      var allNodes = getNodes$j(main)
+      var allNodes = getNodes$1(main)
       allNodes.forEach(function (singNode) {
         if (singNode.node.attrs.id === node.attrs.id) {
           setChecked(singNode.node.attrs.correct)
@@ -12618,9 +10999,8 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
         }
       })
     },
-    [getNodes$j(main)],
+    [getNodes$1(main)],
   )
-
   var handleChange = function handleChange() {
     setChecked(!checked)
     setCheckedAnswerMode(!checkedAnswerMode)
@@ -12676,10 +11056,9 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
     })
     main.dispatch(tr)
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$j(main)
+    var allNodes = getNodes$1(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -12687,7 +11066,6 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
     })
     return nodeFound
   }
-
   return /*#__PURE__*/ React.createElement(TrueFalseSwitch, {
     checked: checked,
     checkedAnswerMode: checkedAnswerMode,
@@ -12697,8 +11075,7 @@ var CustomSwitch$3 = function CustomSwitch(_ref) {
     node: getUpdatedNode(),
   })
 }
-
-var getNodes$j = function getNodes(view) {
+var getNodes$1 = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -12709,138 +11086,84 @@ var getNodes$j = function getNodes(view) {
   return multipleChoiceNodes
 }
 
-function _templateObject10$4() {
-  var data = _taggedTemplateLiteral(['\n  height: 24px;\n  width: 24px;\n'])
-
-  _templateObject10$4 = function _templateObject10() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject9$4() {
-  var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
-  ])
-
-  _templateObject9$4 = function _templateObject9() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject8$6() {
-  var data = _taggedTemplateLiteral([
-    "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
-  ])
-
-  _templateObject8$6 = function _templateObject8() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject7$a() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
-  ])
-
-  _templateObject7$a = function _templateObject7() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject6$e() {
-  var data = _taggedTemplateLiteral([
-    '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
-  ])
-
-  _templateObject6$e = function _templateObject6() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject5$f() {
-  var data = _taggedTemplateLiteral([
-    '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
-    '\n',
-  ])
-
-  _templateObject5$f = function _templateObject5() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject4$m() {
-  var data = _taggedTemplateLiteral([
-    '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
-  ])
-
-  _templateObject4$m = function _templateObject4() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject3$n() {
-  var data = _taggedTemplateLiteral([
-    "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
-  ])
-
-  _templateObject3$n = function _templateObject3() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject2$r() {
-  var data = _taggedTemplateLiteral([
-    '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
-  ])
-
-  _templateObject2$r = function _templateObject2() {
-    return data
-  }
-
-  return data
-}
-
-function _templateObject$C() {
-  var data = _taggedTemplateLiteral([
-    '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
-  ])
-
-  _templateObject$C = function _templateObject() {
-    return data
-  }
-
-  return data
-}
-var Wrapper$b = styled(Box)(_templateObject$C())
-var InfoRow$3 = styled.div(_templateObject2$r())
-var QuestionNunber$3 = styled.span(_templateObject3$n())
-var QuestionControlsWrapper$3 = styled.div(_templateObject4$m())
-var QuestionWrapper$4 = styled.div(_templateObject5$f(), function (props) {
-  return props.$testMode && css(_templateObject6$e())
-})
-var IconsWrapper$3 = styled.div(_templateObject7$a())
-var QuestionData$3 = styled.div(_templateObject8$6())
-var ActionButton$9 = styled.button(_templateObject9$4())
-var StyledIconAction$8 = styled(Icon)(_templateObject10$4())
-var AnswerComponent$3 = function (_ref) {
+var _templateObject,
+  _templateObject2,
+  _templateObject3,
+  _templateObject4,
+  _templateObject5,
+  _templateObject6,
+  _templateObject7,
+  _templateObject8,
+  _templateObject9,
+  _templateObject0
+var Wrapper = styled(Box)(
+  _templateObject ||
+    (_templateObject = _taggedTemplateLiteral([
+      '\n  --s1: 20px;\n  display: flex;\n  flex-direction: row;\n  padding-bottom: 0;\n',
+    ])),
+)
+var InfoRow = styled.div(
+  _templateObject2 ||
+    (_templateObject2 = _taggedTemplateLiteral([
+      '\n  color: black;\n  display: flex;\n  flex-direction: row;\n  padding: 10px 0px 4px 0px;\n',
+    ])),
+)
+var QuestionNunber = styled.span(
+  _templateObject3 ||
+    (_templateObject3 = _taggedTemplateLiteral([
+      "\n  &:before {\n    content: 'Answer ' counter(question-item-multiple);\n    counter-increment: question-item-multiple;\n  }\n",
+    ])),
+)
+var QuestionControlsWrapper = styled.div(
+  _templateObject4 ||
+    (_templateObject4 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n',
+    ])),
+)
+var QuestionWrapper = styled.div(
+  _templateObject5 ||
+    (_templateObject5 = _taggedTemplateLiteral([
+      '\n  border: 1px solid #a5a1a2;\n  border-bottom: none;\n  border-radius: 4px 4px 0 0;\n  color: black;\n  display: flex;\n  flex: 2 1 auto;\n  flex-direction: column;\n  padding: 10px;\n\n  ',
+      '\n',
+    ])),
+  function (props) {
+    return (
+      props.$testMode &&
+      css(
+        _templateObject6 ||
+          (_templateObject6 = _taggedTemplateLiteral([
+            '\n      border-radius: 4px;\n      border-bottom: 1px solid #a5a1a2;\n      margin-bottom: 20px;\n    ',
+          ])),
+      )
+    )
+  },
+)
+var IconsWrapper = styled.div(
+  _templateObject7 ||
+    (_templateObject7 = _taggedTemplateLiteral([
+      '\n  display: flex;\n  flex-direction: column;\n  justify-content: end;\n  margin: 20px -20px 0 0;\n\n  button {\n    border: none;\n    box-shadow: none;\n  }\n\n  span {\n    cursor: pointer;\n  }\n',
+    ])),
+)
+var QuestionData = styled.div(
+  _templateObject8 ||
+    (_templateObject8 = _taggedTemplateLiteral([
+      "\n  align-items: normal;\n  display: flex;\n  flex-direction: row;\n\n  .ProseMirror {\n    :empty::before {\n      content: 'Type option';\n      color: #aaa;\n      float: left;\n      font-style: italic;\n      pointer-events: none;\n    }\n  }\n",
+    ])),
+)
+var ActionButton = styled.button(
+  _templateObject9 ||
+    (_templateObject9 = _taggedTemplateLiteral([
+      '\n  background: transparent;\n  cursor: pointer;\n  margin-top: 16px;\n',
+    ])),
+)
+var StyledIconAction = styled(Icon)(
+  _templateObject0 ||
+    (_templateObject0 = _taggedTemplateLiteral([
+      '\n  height: 24px;\n  width: 24px;\n',
+    ])),
+)
+var AnswerComponent = function (_ref) {
   var _getUpdatedNode$node, _getUpdatedNode$node2
-
   var node = _ref.node,
     view = _ref.view,
     getPos = _ref.getPos
@@ -12860,7 +11183,6 @@ var AnswerComponent$3 = function (_ref) {
         if (addOptionBtnRef.current) addOptionBtnRef.current.click()
       }
     }
-
     if (addOptionBtnRef.current)
       addOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -12875,7 +11197,6 @@ var AnswerComponent$3 = function (_ref) {
         if (removeOptionBtnRef.current) removeOptionBtnRef.current.click()
       }
     }
-
     if (removeOptionBtnRef.current)
       removeOptionBtnRef.current.addEventListener('keydown', listener)
     return function () {
@@ -12883,18 +11204,16 @@ var AnswerComponent$3 = function (_ref) {
         removeOptionBtnRef.current.removeEventListener('keydown', listener)
     }
   }, [])
-
   var removeOption = function removeOption() {
     var answersCount = findAnswerCount()
-
     if (answersCount.count >= 1) {
       main.state.doc.nodesBetween(
         getPos(),
         getPos() + 1,
         function (sinlgeNode) {
           if (sinlgeNode.attrs.id === node.attrs.id) {
-            var optionSize = sinlgeNode.nodeSize // Also delete the following feedback_prompt sibling
-
+            var optionSize = sinlgeNode.nodeSize
+            // Also delete the following feedback_prompt sibling
             var nextPos = getPos() + optionSize
             var nextNode = main.state.doc.nodeAt(nextPos)
             var feedbackSize =
@@ -12920,7 +11239,6 @@ var AnswerComponent$3 = function (_ref) {
       main.dispatch(main.state.tr.deleteSelection())
     }
   }
-
   var addOption = function addOption(nodeId) {
     var newAnswerId = v4()
     var newFeedbackId = v4()
@@ -12962,8 +11280,8 @@ var AnswerComponent$3 = function (_ref) {
               ),
             ),
           )
-          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption)) // create Empty Paragraph
-
+          main.dispatch(main.state.tr.replaceSelectionWith(feedbackOption))
+          // create Empty Paragraph
           setTimeout(function () {
             helpers.createEmptyParagraph(context, newAnswerId)
           }, 120)
@@ -12971,7 +11289,6 @@ var AnswerComponent$3 = function (_ref) {
       }
     })
   }
-
   var findAnswerCount = function findAnswerCount() {
     main.dispatch(
       main.state.tr.setSelection(
@@ -13003,10 +11320,9 @@ var AnswerComponent$3 = function (_ref) {
       parentContainer: parentContainer,
     }
   }
-
   var getUpdatedNode = function getUpdatedNode() {
     var nodeFound = node
-    var allNodes = getNodes$k(main)
+    var allNodes = getNodes(main)
     allNodes.forEach(function (singNode) {
       if (singNode.node.attrs.id === node.attrs.id) {
         nodeFound = singNode
@@ -13014,30 +11330,29 @@ var AnswerComponent$3 = function (_ref) {
     })
     return nodeFound
   }
-
   var readOnly = !isEditable
   return /*#__PURE__*/ React.createElement(
-    Wrapper$b,
+    Wrapper,
     null,
     /*#__PURE__*/ React.createElement(
-      QuestionControlsWrapper$3,
+      QuestionControlsWrapper,
       null,
       /*#__PURE__*/ React.createElement(
-        InfoRow$3,
+        InfoRow,
         null,
-        /*#__PURE__*/ React.createElement(QuestionNunber$3, null),
-        /*#__PURE__*/ React.createElement(CustomSwitch$3, {
+        /*#__PURE__*/ React.createElement(QuestionNunber, null),
+        /*#__PURE__*/ React.createElement(CustomSwitch, {
           getPos: getPos,
           node: node,
         }),
       ),
       /*#__PURE__*/ React.createElement(
-        QuestionWrapper$4,
+        QuestionWrapper,
         {
           $testMode: testMode,
         },
         /*#__PURE__*/ React.createElement(
-          QuestionData$3,
+          QuestionData,
           null,
           /*#__PURE__*/ React.createElement(QuestionEditorComponent, {
             getPos: getPos,
@@ -13049,11 +11364,11 @@ var AnswerComponent$3 = function (_ref) {
       ),
     ),
     /*#__PURE__*/ React.createElement(
-      IconsWrapper$3,
+      IconsWrapper,
       null,
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$9,
+          ActionButton,
           {
             'aria-label': 'Add new option below '.concat(
               (_getUpdatedNode$node = getUpdatedNode().node) === null ||
@@ -13067,13 +11382,13 @@ var AnswerComponent$3 = function (_ref) {
             ref: addOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$8, {
+          /*#__PURE__*/ React.createElement(StyledIconAction, {
             name: 'plusSquare',
           }),
         ),
       !readOnly &&
         /*#__PURE__*/ React.createElement(
-          ActionButton$9,
+          ActionButton,
           {
             'aria-label': 'delete this option '.concat(
               (_getUpdatedNode$node2 = getUpdatedNode().node) === null ||
@@ -13085,15 +11400,14 @@ var AnswerComponent$3 = function (_ref) {
             ref: removeOptionBtnRef,
             type: 'button',
           },
-          /*#__PURE__*/ React.createElement(StyledIconAction$8, {
+          /*#__PURE__*/ React.createElement(StyledIconAction, {
             name: 'deleteOutlined',
           }),
         ),
     ),
   )
 }
-
-var getNodes$k = function getNodes(view) {
+var getNodes = function getNodes(view) {
   var allNodes = DocumentHelpers.findBlockNodes(view.state.doc)
   var multipleChoiceNodes = []
   allNodes.forEach(function (node) {
@@ -13107,10 +11421,6 @@ var getNodes$k = function getNodes(view) {
 var TrueFalseSingleCorrectNodeView = /*#__PURE__*/ (function (
   _QuestionsNodeView,
 ) {
-  _inherits(TrueFalseSingleCorrectNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(TrueFalseSingleCorrectNodeView)
-
   function TrueFalseSingleCorrectNodeView(
     node,
     view,
@@ -13121,11 +11431,8 @@ var TrueFalseSingleCorrectNodeView = /*#__PURE__*/ (function (
     context,
   ) {
     var _this
-
     _classCallCheck(this, TrueFalseSingleCorrectNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, TrueFalseSingleCorrectNodeView, [
       node,
       view,
       getPos,
@@ -13133,15 +11440,15 @@ var TrueFalseSingleCorrectNodeView = /*#__PURE__*/ (function (
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(TrueFalseSingleCorrectNodeView, _QuestionsNodeView)
+  return _createClass(
     TrueFalseSingleCorrectNodeView,
     [
       {
@@ -13155,7 +11462,6 @@ var TrueFalseSingleCorrectNodeView = /*#__PURE__*/ (function (
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -13170,17 +11476,11 @@ var TrueFalseSingleCorrectNodeView = /*#__PURE__*/ (function (
       },
     ],
   )
-
-  return TrueFalseSingleCorrectNodeView
 })(QuestionsNodeView)
 
 var QuestionTrueFalseSingleNodeView = /*#__PURE__*/ (function (
   _QuestionsNodeView,
 ) {
-  _inherits(QuestionTrueFalseSingleNodeView, _QuestionsNodeView)
-
-  var _super = _createSuper(QuestionTrueFalseSingleNodeView)
-
   function QuestionTrueFalseSingleNodeView(
     node,
     view,
@@ -13191,11 +11491,8 @@ var QuestionTrueFalseSingleNodeView = /*#__PURE__*/ (function (
     context,
   ) {
     var _this
-
     _classCallCheck(this, QuestionTrueFalseSingleNodeView)
-
-    _this = _super.call(
-      this,
+    _this = _callSuper(this, QuestionTrueFalseSingleNodeView, [
       node,
       view,
       getPos,
@@ -13203,15 +11500,15 @@ var QuestionTrueFalseSingleNodeView = /*#__PURE__*/ (function (
       createPortal,
       Component,
       context,
-    )
+    ])
     _this.node = node
     _this.outerView = view
     _this.getPos = getPos
     _this.context = context
     return _this
   }
-
-  _createClass(
+  _inherits(QuestionTrueFalseSingleNodeView, _QuestionsNodeView)
+  return _createClass(
     QuestionTrueFalseSingleNodeView,
     [
       {
@@ -13225,7 +11522,6 @@ var QuestionTrueFalseSingleNodeView = /*#__PURE__*/ (function (
           ) {
             return true
           }
-
           var innerView = this.context.pmViews[this.node.attrs.id]
           return innerView && innerView.dom.contains(event.target)
         },
@@ -13240,22 +11536,15 @@ var QuestionTrueFalseSingleNodeView = /*#__PURE__*/ (function (
       },
     ],
   )
-
-  return QuestionTrueFalseSingleNodeView
 })(QuestionsNodeView)
 
 var TrueFalseSingleCorrectQuestionService = /*#__PURE__*/ (function (_Service) {
-  _inherits(TrueFalseSingleCorrectQuestionService, _Service)
-
-  var _super = _createSuper(TrueFalseSingleCorrectQuestionService)
-
   function TrueFalseSingleCorrectQuestionService() {
     _classCallCheck(this, TrueFalseSingleCorrectQuestionService)
-
-    return _super.apply(this, arguments)
+    return _callSuper(this, TrueFalseSingleCorrectQuestionService, arguments)
   }
-
-  _createClass(TrueFalseSingleCorrectQuestionService, [
+  _inherits(TrueFalseSingleCorrectQuestionService, _Service)
+  return _createClass(TrueFalseSingleCorrectQuestionService, [
     {
       key: 'register',
       value: function register() {
@@ -13272,7 +11561,7 @@ var TrueFalseSingleCorrectQuestionService = /*#__PURE__*/ (function (_Service) {
           feedback_prompt: feedbackNode,
         })
         createNode({
-          question_node_true_false_single: questionTrueFalseNode$1,
+          question_node_true_false_single: questionTrueFalseNode,
         })
         createNode({
           true_false_single_correct: trueFalseSingleCorrectNode,
@@ -13284,7 +11573,7 @@ var TrueFalseSingleCorrectQuestionService = /*#__PURE__*/ (function (_Service) {
         })
         addPortal({
           nodeView: TrueFalseSingleCorrectNodeView,
-          component: AnswerComponent$3,
+          component: AnswerComponent,
           context: this.app,
         })
         addPortal({
@@ -13295,20 +11584,12 @@ var TrueFalseSingleCorrectQuestionService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return TrueFalseSingleCorrectQuestionService
 })(Service)
 
 var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
-  _inherits(MultipleChoiceQuestionService, _Service)
-
-  var _super = _createSuper(MultipleChoiceQuestionService)
-
   function MultipleChoiceQuestionService() {
     var _this
-
     _classCallCheck(this, MultipleChoiceQuestionService)
-
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -13316,8 +11597,7 @@ var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
+    _this = _callSuper(this, MultipleChoiceQuestionService, [].concat(args))
     _this.dependencies = [
       new MultipleChoiceSingleCorrectQuestionService(),
       new TrueFalseQuestionService(),
@@ -13325,8 +11605,8 @@ var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
     ]
     return _this
   }
-
-  _createClass(MultipleChoiceQuestionService, [
+  _inherits(MultipleChoiceQuestionService, _Service)
+  return _createClass(MultipleChoiceQuestionService, [
     {
       key: 'register',
       value: function register() {
@@ -13352,7 +11632,7 @@ var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
         })
         addPortal({
           nodeView: MultipleChoiceNodeView,
-          component: AnswerComponent,
+          component: AnswerComponent$3,
           context: this.app,
         })
         addPortal({
@@ -13363,20 +11643,12 @@ var MultipleChoiceQuestionService = /*#__PURE__*/ (function (_Service) {
       },
     },
   ])
-
-  return MultipleChoiceQuestionService
 })(Service)
 
 var QuestionsService = /*#__PURE__*/ (function (_Service) {
-  _inherits(QuestionsService, _Service)
-
-  var _super = _createSuper(QuestionsService)
-
   function QuestionsService() {
     var _this
-
     _classCallCheck(this, QuestionsService)
-
     for (
       var _len = arguments.length, args = new Array(_len), _key = 0;
       _key < _len;
@@ -13384,13 +11656,12 @@ var QuestionsService = /*#__PURE__*/ (function (_Service) {
     ) {
       args[_key] = arguments[_key]
     }
-
-    _this = _super.call.apply(_super, [this].concat(args))
+    _this = _callSuper(this, QuestionsService, [].concat(args))
     _this.name = 'QuestionsService'
     _this.dependencies = [
       new MultipleChoiceQuestionService(),
       new EssayService(),
-      new FillTheGapQuestionService$1(),
+      new FillTheGapQuestionService(),
       new MatchingService(),
       new MultipleDropDownService(),
       new NumericalAnswerService(),
@@ -13398,8 +11669,8 @@ var QuestionsService = /*#__PURE__*/ (function (_Service) {
     ]
     return _this
   }
-
-  return QuestionsService
+  _inherits(QuestionsService, _Service)
+  return _createClass(QuestionsService)
 })(Service)
 
 export { QuestionsService }
