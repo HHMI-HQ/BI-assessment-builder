@@ -57,6 +57,7 @@ import {
   Notifications,
   ManageResources,
   ManageMetadata,
+  QuestionContentEditingPage,
 } from './pages'
 
 import { CURRENT_USER, DELETED_SUBSCRIPTION } from './graphql'
@@ -516,6 +517,15 @@ const routes = (
                     render={() => (
                       <Authenticated>
                         <ManageUsers />
+                      </Authenticated>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/secret-editing-page"
+                    render={() => (
+                      <Authenticated>
+                        <QuestionContentEditingPage />
                       </Authenticated>
                     )}
                   />
