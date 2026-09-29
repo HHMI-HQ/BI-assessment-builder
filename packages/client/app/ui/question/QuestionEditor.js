@@ -105,7 +105,7 @@ const QuestionEditor = props => {
     <EditorWrapper aria-label="Question editor">
       <EditorScrollContainer>
         <ComplexItemSetContext.Provider value={contextValue}>
-          {enhancedEditor !== null && content && Object.keys(content).length ? (
+          {enhancedEditor !== null ? (
             <ErrorBoundary
               content={content}
               onError={(error, info) => console.error(error, info)}

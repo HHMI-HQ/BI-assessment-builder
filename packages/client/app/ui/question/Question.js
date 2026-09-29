@@ -36,6 +36,7 @@ import {
 } from '../common'
 import {
   REVIEWER_STATUSES,
+  emptyEditorContent,
   extractDocumentText,
   // extractNode,
   // applyNodeFeedback,
@@ -711,10 +712,7 @@ const Question = props => {
   const handleContentReset = () => {
     return new Promise(resolve => {
       setAutoSaving(true)
-      onEditorContentAutoSave({
-        type: 'doc',
-        content: [{ type: 'paragraph', attrs: { class: 'paragraph' } }],
-      }).then(({ update }) => {
+      onEditorContentAutoSave(emptyEditorContent).then(({ update }) => {
         setRefreshEditorContent(update)
         setAutoSaving(false)
         resolve()

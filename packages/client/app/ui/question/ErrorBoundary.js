@@ -71,20 +71,22 @@ class ErrorBoundaryInner extends React.Component {
     const presentGroups = new Map() // groupIndex -> [{ type, path }]
     const stack = [['doc', content]]
 
-    while (stack.length) {
-      const [path, node] = stack.pop()
+    if (content && Object.keys(content).length) {
+      while (stack.length) {
+        const [path, node] = stack.pop()
 
-      if (node && typeof node === 'object') {
-        if (node.type && typeToGroup.has(node.type)) {
-          const g = typeToGroup.get(node.type)
-          if (!presentGroups.has(g)) presentGroups.set(g, [])
-          presentGroups.get(g).push({ type: node.type, path })
-        }
+        if (node && typeof node === 'object') {
+          if (node.type && typeToGroup.has(node.type)) {
+            const g = typeToGroup.get(node.type)
+            if (!presentGroups.has(g)) presentGroups.set(g, [])
+            presentGroups.get(g).push({ type: node.type, path })
+          }
 
-        if (Array.isArray(node.content)) {
-          node.content.forEach((child, i) => {
-            stack.push([`${path}.content[${i}]`, child])
-          })
+          if (Array.isArray(node.content)) {
+            node.content.forEach((child, i) => {
+              stack.push([`${path}.content[${i}]`, child])
+            })
+          }
         }
       }
     }
