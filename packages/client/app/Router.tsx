@@ -70,7 +70,7 @@ const AppRoutes = (): ReactNode => {
             path="/signup-profile"
             element={
                 <Authenticated>
-                <UserProfile signup />
+                    <UserProfile signup />
                 </Authenticated>
             }
         />
@@ -79,7 +79,7 @@ const AppRoutes = (): ReactNode => {
             path="/dashboard"
             element={
                 <Authenticated>
-                <Dashboard />
+                    <Dashboard />
                 </Authenticated>
             }
         />
@@ -88,7 +88,7 @@ const AppRoutes = (): ReactNode => {
             path="/discover"
             element={
                 <Authenticated>
-                <Discover />
+                    <Discover />
                 </Authenticated>
             }
         />
@@ -97,7 +97,7 @@ const AppRoutes = (): ReactNode => {
             path="/lists"
             element={
                 <Authenticated>
-                <Lists />
+                    <Lists />
                 </Authenticated>
             }
         />
@@ -106,7 +106,7 @@ const AppRoutes = (): ReactNode => {
             path="/list/:id"
             element={
                 <Authenticated>
-                <ListContent />
+                    <ListContent />
                 </Authenticated>
             }
         />
@@ -115,7 +115,7 @@ const AppRoutes = (): ReactNode => {
             path="/question/:id/test"
             element={
                 <Authenticated>
-                <Question testMode />
+                    <Question testMode />
                 </Authenticated>
             }
         />
@@ -124,7 +124,7 @@ const AppRoutes = (): ReactNode => {
             path="/question/:id"
             element={
                 <Authenticated>
-                <Question />
+                    <Question />
                 </Authenticated>
             }
         />
@@ -132,7 +132,7 @@ const AppRoutes = (): ReactNode => {
             path="/manage-users"
             element={
                 <Authenticated>
-                <ManageUsers />
+                    <ManageUsers />
                 </Authenticated>
             }
         />
@@ -147,103 +147,103 @@ const AppRoutes = (): ReactNode => {
         /> */}
 
         <Route
-        path="/manage-teams"
-        element={
-            <Authenticated>
-            <TeamManager />
-            </Authenticated>
-        }
+            path="/manage-teams"
+            element={
+                <Authenticated>
+                    <TeamManager />
+                </Authenticated>
+            }
         />
 
         <Route
-        path="/manage-resources"
-        element={
-            <Authenticated>
-            <ManageResources />
-            </Authenticated>
-        }
+            path="/manage-resources"
+            element={
+                <Authenticated>
+                    <ManageResources />
+                </Authenticated>
+            }
         />
 
         <Route
-        path="/manage-metadata"
-        element={
-            <Authenticated>
-            <ManageMetadata />
-            </Authenticated>
-        }
+            path="/manage-metadata"
+            element={
+                <Authenticated>
+                    <ManageMetadata />
+                </Authenticated>
+            }
         />
 
         <Route
-        path="/profile"
-        element={
-            <Authenticated>
-            <UserProfile />
-            </Authenticated>
-        }
+            path="/profile"
+            element={
+                <Authenticated>
+                    <UserProfile />
+                </Authenticated>
+            }
         />
         <Route
-        path="/profile/:id"
-        element={
-            <Authenticated>
-            <UserProfile />
-            </Authenticated>
-        }
+            path="/profile/:id"
+            element={
+                <Authenticated>
+                    <UserProfile />
+                </Authenticated>
+            }
         />
 
-        <Route element={Login}  path="/login" />
-        <Route element={Signup}  path="/signup" />
+        <Route element={<Login />}  path="/login" />
+        <Route element={<Signup />}  path="/signup" />
         <Route
-        element={VerifyEmail}
-        path="/email-verification/:token"
+            element={<VerifyEmail />}
+            path="/email-verification/:token"
         />
         <Route
-        element={RequestPasswordReset}
-        path="/request-password-reset"
+            element={<RequestPasswordReset />}
+            path="/request-password-reset"
         />
         <Route
-        element={ResetPassword}
-        path="/password-reset/:token"
+            element={<ResetPassword />}
+            path="/password-reset/:token"
         />
         <Route
-        element={VerifyCheck}
-        path="/ensure-verified-login"
+            element={<VerifyCheck />}
+            path="/ensure-verified-login"
         />
         <Route
-        element={BioInteractiveOauth}
-        path="/biointeractive-oauth"
+            element={<BioInteractiveOauth />}
+            path="/biointeractive-oauth"
         />
         <Route
-        path="/sets"
-        element={
-            <Authenticated>
-            <ComplexItemSetsList />
-            </Authenticated>
-        }
+            path="/sets"
+            element={
+                <Authenticated>
+                    <ComplexItemSetsList />
+                </Authenticated>
+            }
         />
         <Route
-        path="/notifications/"
-        element={
-            <Authenticated>
-            <Notifications />
-            </Authenticated>
-        }
+            path="/notifications/"
+            element={
+                <Authenticated>
+                    <Notifications />
+                </Authenticated>
+            }
         />
         <Route
-        path="/set/new"
-        element={
-            <Authenticated>
-            <ComplexItemSet />
-            </Authenticated>
-        }
+            path="/set/new"
+            element={
+                <Authenticated>
+                    <ComplexItemSet />
+                </Authenticated>
+            }
         />
         {/* individual sets and their questions can be viewed by all visitors */}
         <Route
-        path="/set/:id"
-        element={
-            <Authenticated>
-            <ComplexItemSet />
-            </Authenticated>
-        }
+            path="/set/:id"
+            element={
+                <Authenticated>
+                    <ComplexItemSet />
+                </Authenticated>
+            }
         />
         <Route element={DeactivatedUser} path="/deactivated-user" />
         {/* Static pages hosted elsewhere */}
@@ -262,8 +262,8 @@ const AppRoutes = (): ReactNode => {
         <Route
         element={
             <External
-            ariaLabel="Proffessional learning page"
-            src="/drupal/professional-learning"
+                ariaLabel="Proffessional learning page"
+                src="/drupal/professional-learning"
             />
         }
         path="/learning"

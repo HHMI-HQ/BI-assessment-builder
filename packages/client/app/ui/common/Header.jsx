@@ -600,14 +600,14 @@ const StyledIcon = styled.img`
 const LinksList = ({
   sourceLinks,
   currentPath,
-  ListWrapper,
+  ListWrapper = StyledList,
   wrapperProps,
   renderCondition,
 }) => {
   // const [Wrapper, wrapperProps = {}] = listWrapper
   return (
     renderCondition && (
-      <StyledList {...wrapperProps}>
+      <ListWrapper {...wrapperProps}>
         {[...sourceLinks].map(
           ({
             link,
@@ -634,7 +634,7 @@ const LinksList = ({
               </li>
             ),
         )}
-      </StyledList>
+      </ListWrapper>
     )
   )
 }
@@ -878,35 +878,8 @@ const Header = props => {
             <LinksList
               currentPath={currentPath}
               sourceLinks={linksObject.navigation}
+              renderCondition={true}
             />
-            {/* <StyledList>
-              {[...linksObject.navigation].map(
-                ({
-                  link,
-                  text,
-                  click,
-                  icon,
-                  renderIf = true,
-                  Component = StyledLink,
-                  ariaCurrent = currentPath === link ? 'page' : false,
-                  className = 'menu-link',
-                  ...remaining
-                }) =>
-                  renderIf && (
-                    <li key={`${text}-link`}>
-                      {icon}
-                      <Component
-                        aria-current={ariaCurrent}
-                        className={className}
-                        to={link}
-                        {...remaining}
-                      >
-                        <span>{text}</span>
-                      </Component>
-                    </li>
-                  ),
-              )}
-            </StyledList> */}
             <Separator />
             <RightNavContainer>
               <LinksList
@@ -914,36 +887,6 @@ const Header = props => {
                 renderCondition={windowWidth >= 1200}
                 sourceLinks={linksObject.info}
               />
-              {/* {windowWidth >= 1200 && (
-                <StyledList>
-                  {[...linksObject.info].map(
-                    ({
-                      link,
-                      text,
-                      click,
-                      icon,
-                      renderIf = true,
-                      Component = StyledLink,
-                      ariaCurrent = currentPath === link ? 'page' : false,
-                      className = 'menu-link',
-                      ...remaining
-                    }) =>
-                      renderIf && (
-                        <li key={`${text}-link`}>
-                          {icon}
-                          <Component
-                            aria-current={ariaCurrent}
-                            className={className}
-                            to={link}
-                            {...remaining}
-                          >
-                            <span>{text}</span>
-                          </Component>
-                        </li>
-                      ),
-                  )}
-                </StyledList>
-              )} */}
               {loggedin ? (
                 <UserMenuWrapper>
                   <p>{displayName}</p>
@@ -961,7 +904,7 @@ const Header = props => {
                       counts={notificationsTotal}
                     />
                   </UserMenuButton>
-                  {/* <LinksList
+                  <LinksList
                     currentPath={currentPath}
                     ListWrapper={CollapsableMenu}
                     wrapperProps={{
@@ -970,36 +913,7 @@ const Header = props => {
                         isOpen: userMenuIsOpen,
                       }}
                     sourceLinks={linksObject.userLinks}
-                  /> */}
-                  <CollapsableMenu aria-label='User menu' id='user-menu' isOpen={userMenuIsOpen}>
-                    {[...linksObject.userLinks].map(
-                      ({
-                        link,
-                        text,
-                        click,
-                        icon,
-                        renderIf = true,
-                        Component = StyledLink,
-                        ariaCurrent = currentPath === link ? 'page' : false,
-                        className = 'menu-link',
-                        ...remaining
-                      }) =>
-                        renderIf && (
-                          <li key={`${text}-link`}>
-                            {icon}
-                            <Component
-                              aria-current={ariaCurrent}
-                              className={className}
-                              to={link}
-                              {...remaining}
-                            >
-                              <span>{text}</span>
-                            </Component>
-                          </li>
-                        ),
-                    )}
-                  </CollapsableMenu>
-                  
+                  />
                 </UserMenuWrapper>
               ) : (
                 <StyledLogin onClick={closeMenus} to={links.login}>
@@ -1011,36 +925,6 @@ const Header = props => {
                 renderCondition={windowWidth < 1200}
                 sourceLinks={linksObject.info}
               />
-              {/* {windowWidth < 1200 && (
-                <StyledList>
-                  {[...linksObject.info].map(
-                    ({
-                      link,
-                      text,
-                      click,
-                      icon,
-                      renderIf = true,
-                      Component = StyledLink,
-                      ariaCurrent = currentPath === link ? 'page' : false,
-                      className = 'menu-link',
-                      ...remaining
-                    }) =>
-                      renderIf && (
-                        <li key={`${text}-link`}>
-                          {icon}
-                          <Component
-                            aria-current={ariaCurrent}
-                            className={className}
-                            to={link}
-                            {...remaining}
-                          >
-                            <span>{text}</span>
-                          </Component>
-                        </li>
-                      ),
-                  )}
-                </StyledList>
-              )} */}
             </RightNavContainer>
           </NavWrapper>
         </MainNav>
