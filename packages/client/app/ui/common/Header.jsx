@@ -1,6 +1,6 @@
 /* stylelint-disable string-quotes */
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th, darken } from '@coko/client'
@@ -38,6 +38,24 @@ const StyledHeader = styled.header`
   @media screen and (min-width: ${th('mediaQueries.small')}) {
     flex-direction: row;
     padding-left: ${grid(3)};
+  }
+`
+const SkipLink = styled.a`
+  background-color: ${th('colorTextDark')};
+  border-radius: 0 0 ${grid(1)} ${grid(1)};
+  color: ${th('colorTextReverse')};
+  height: 30px;
+  left: 50%;
+  padding: ${grid(1)} ${grid(2)};
+  position: absolute;
+  top: -100px;
+  transform: translateX(-50%);
+  transition: top 300ms ease-in;
+  width: auto;
+  z-index: 3;
+
+  &:focus {
+    top: 0;
   }
 `
 
@@ -335,7 +353,7 @@ const StyledLogin = styled(Link)`
 const MobileMenuToggle = styled.button`
   aspect-ratio: 1 / 1;
   background-color: ${th('colorBody')};
-  background-image: url(${menuOpen});
+  /* background-image: url(${menuOpen}); */
   background-size: cover;
 
   border: none;
@@ -352,9 +370,9 @@ const MobileMenuToggle = styled.button`
     outline-offset: 1px;
   }
 
-  &[aria-expanded='true'] {
+  /* &[aria-expanded='true'] {
     background-image: url(${menuClose});
-  }
+  } */
 
   @media screen and (max-width: ${th('mediaQueries.large')}) {
     &[aria-expanded='true'] ~ ${MainNav} {
@@ -567,25 +585,6 @@ const Separator = styled.hr`
   }
 `
 
-const SkipLink = styled.a`
-  background-color: ${th('colorTextDark')};
-  border-radius: 0 0 ${grid(1)} ${grid(1)};
-  color: ${th('colorTextReverse')};
-  height: 30px;
-  left: 50%;
-  padding: ${grid(1)} ${grid(2)};
-  position: absolute;
-  top: -100px;
-  transform: translateX(-50%);
-  transition: top 300ms ease-in;
-  width: auto;
-  z-index: 3;
-
-  &:focus {
-    top: 0;
-  }
-`
-
 const StyledIcon = styled.img`
   filter: brightness(20%);
   margin: 0 0.5rem;
@@ -601,13 +600,14 @@ const StyledIcon = styled.img`
 const LinksList = ({
   sourceLinks,
   currentPath,
-  listWrapper,
+  ListWrapper,
+  wrapperProps,
   renderCondition,
 }) => {
-  const [Wrapper, wrapperProps = {}] = listWrapper
+  // const [Wrapper, wrapperProps = {}] = listWrapper
   return (
     renderCondition && (
-      <Wrapper {...wrapperProps}>
+      <StyledList {...wrapperProps}>
         {[...sourceLinks].map(
           ({
             link,
@@ -634,7 +634,7 @@ const LinksList = ({
               </li>
             ),
         )}
-      </Wrapper>
+      </StyledList>
     )
   )
 }
@@ -843,11 +843,11 @@ const Header = props => {
   }, [])
 
   return (
+      // have an href to be valid link
+      // focus main element with js to avoid polluting the url with #main-content
     <StyledHeader id="main-page-header" role="banner" {...rest}>
       <SkipLink
-        // have an href to be valid link
         href="#main-content"
-        // focus main element with js to avoid polluting the url with #main-content
         onClick={e => {
           e.preventDefault()
           document.getElementById('main-content').focus()
@@ -879,6 +879,34 @@ const Header = props => {
               currentPath={currentPath}
               sourceLinks={linksObject.navigation}
             />
+            {/* <StyledList>
+              {[...linksObject.navigation].map(
+                ({
+                  link,
+                  text,
+                  click,
+                  icon,
+                  renderIf = true,
+                  Component = StyledLink,
+                  ariaCurrent = currentPath === link ? 'page' : false,
+                  className = 'menu-link',
+                  ...remaining
+                }) =>
+                  renderIf && (
+                    <li key={`${text}-link`}>
+                      {icon}
+                      <Component
+                        aria-current={ariaCurrent}
+                        className={className}
+                        to={link}
+                        {...remaining}
+                      >
+                        <span>{text}</span>
+                      </Component>
+                    </li>
+                  ),
+              )}
+            </StyledList> */}
             <Separator />
             <RightNavContainer>
               <LinksList
@@ -886,6 +914,36 @@ const Header = props => {
                 renderCondition={windowWidth >= 1200}
                 sourceLinks={linksObject.info}
               />
+              {/* {windowWidth >= 1200 && (
+                <StyledList>
+                  {[...linksObject.info].map(
+                    ({
+                      link,
+                      text,
+                      click,
+                      icon,
+                      renderIf = true,
+                      Component = StyledLink,
+                      ariaCurrent = currentPath === link ? 'page' : false,
+                      className = 'menu-link',
+                      ...remaining
+                    }) =>
+                      renderIf && (
+                        <li key={`${text}-link`}>
+                          {icon}
+                          <Component
+                            aria-current={ariaCurrent}
+                            className={className}
+                            to={link}
+                            {...remaining}
+                          >
+                            <span>{text}</span>
+                          </Component>
+                        </li>
+                      ),
+                  )}
+                </StyledList>
+              )} */}
               {loggedin ? (
                 <UserMenuWrapper>
                   <p>{displayName}</p>
@@ -903,18 +961,45 @@ const Header = props => {
                       counts={notificationsTotal}
                     />
                   </UserMenuButton>
-                  <LinksList
+                  {/* <LinksList
                     currentPath={currentPath}
-                    listWrapper={[
-                      CollapsableMenu,
-                      {
+                    ListWrapper={CollapsableMenu}
+                    wrapperProps={{
                         'aria-label': 'User menu',
-                        id: 'user-menu',
+                         id:'user-menu',
                         isOpen: userMenuIsOpen,
-                      },
-                    ]}
+                      }}
                     sourceLinks={linksObject.userLinks}
-                  />
+                  /> */}
+                  <CollapsableMenu aria-label='User menu' id='user-menu' isOpen={userMenuIsOpen}>
+                    {[...linksObject.userLinks].map(
+                      ({
+                        link,
+                        text,
+                        click,
+                        icon,
+                        renderIf = true,
+                        Component = StyledLink,
+                        ariaCurrent = currentPath === link ? 'page' : false,
+                        className = 'menu-link',
+                        ...remaining
+                      }) =>
+                        renderIf && (
+                          <li key={`${text}-link`}>
+                            {icon}
+                            <Component
+                              aria-current={ariaCurrent}
+                              className={className}
+                              to={link}
+                              {...remaining}
+                            >
+                              <span>{text}</span>
+                            </Component>
+                          </li>
+                        ),
+                    )}
+                  </CollapsableMenu>
+                  
                 </UserMenuWrapper>
               ) : (
                 <StyledLogin onClick={closeMenus} to={links.login}>
@@ -926,6 +1011,36 @@ const Header = props => {
                 renderCondition={windowWidth < 1200}
                 sourceLinks={linksObject.info}
               />
+              {/* {windowWidth < 1200 && (
+                <StyledList>
+                  {[...linksObject.info].map(
+                    ({
+                      link,
+                      text,
+                      click,
+                      icon,
+                      renderIf = true,
+                      Component = StyledLink,
+                      ariaCurrent = currentPath === link ? 'page' : false,
+                      className = 'menu-link',
+                      ...remaining
+                    }) =>
+                      renderIf && (
+                        <li key={`${text}-link`}>
+                          {icon}
+                          <Component
+                            aria-current={ariaCurrent}
+                            className={className}
+                            to={link}
+                            {...remaining}
+                          >
+                            <span>{text}</span>
+                          </Component>
+                        </li>
+                      ),
+                  )}
+                </StyledList>
+              )} */}
             </RightNavContainer>
           </NavWrapper>
         </MainNav>
@@ -973,13 +1088,15 @@ Header.defaultProps = {
 LinksList.propTypes = {
   sourceLinks: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   currentPath: PropTypes.string,
-  listWrapper: PropTypes.oneOfType([PropTypes.array]),
+  ListWrapper: PropTypes.element,
+  wrapperProps: PropTypes.shape(),
   renderCondition: PropTypes.bool,
 }
 
 LinksList.defaultProps = {
   currentPath: '',
-  listWrapper: [StyledList, {}],
+  ListWrapper: StyledList,
+  wrapperProps: {},
   renderCondition: true,
 }
 

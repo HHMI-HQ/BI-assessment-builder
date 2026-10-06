@@ -1,5 +1,5 @@
 import React from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 
 import { Signup } from 'ui'
 import { SIGNUP } from '../graphql'

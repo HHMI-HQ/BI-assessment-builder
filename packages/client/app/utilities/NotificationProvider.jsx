@@ -4,9 +4,9 @@ import {
   useMutation,
   useQuery,
   useSubscription,
-} from '@apollo/client'
+} from '@apollo/client/react'
 import { useCurrentUser } from '@coko/client'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import styled from 'styled-components'
 import {
   GET_USER_NOTIFICATIONS,

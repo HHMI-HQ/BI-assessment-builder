@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { th } from '@coko/client'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import { VisuallyHiddenElement } from '@coko/client/dist/ui'
+import { Link } from 'react-router'
+import { VisuallyHiddenElement } from '@coko/client'
 
 const Wrapper = styled.div`
   align-items: center;
@@ -74,7 +74,7 @@ export const CounterBadge = ({ counts, $pos = '', ...rest }) => {
 
 export const CounterWrapper = ({ children, Component = Wrapper, ...rest }) => {
   return (
-    <Component>
+    <Component id="COUNTER">
       {children}
       <CounterBadge {...rest} />
     </Component>

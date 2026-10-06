@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useHistory, useParams, Link, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useParams, useLocation } from 'react-router'
 import {
   useQuery,
   useMutation,
   useLazyQuery,
   useSubscription,
-} from '@apollo/client'
+} from '@apollo/client/react'
 import debounce from 'lodash/debounce'
 
 import { serverUrl, uuid } from '@coko/client'
@@ -240,7 +240,7 @@ const QuestionPage = props => {
   const hasIndex = rawId.indexOf('#')
   const id = hasIndex > -1 ? rawId.substring(0, hasIndex) : rawId
   const [firstRender, setFirstRender] = useState(true)
-  const history = useHistory()
+  const navigate = useNavigate()
   const { metadata } = useMetadata()
   const { unreadMentions, markAsRead } = useNotifications()
   const unread = notificationsMapper(unreadMentions, id)
@@ -342,7 +342,7 @@ const QuestionPage = props => {
     UNPUBLISH_QUESTION_VERSION,
     {
       onCompleted: () => {
-        history.push(`/question/${id}/`)
+        navigate(`/question/${id}/`)
       },
       update: clearPublishedQuestionsCache,
     },
@@ -1047,9 +1047,9 @@ const QuestionPage = props => {
   const handleClickBackButton = () => {
     if (testMode) {
       // quetions in testMode are found in discovery, and all questions in discovery are in testMode, so back == discover page
-      history.push('/discover')
+      navigate('/discover')
     } else {
-      history.push('/dashboard')
+      navigate('/dashboard')
     }
   }
 
@@ -1137,8 +1137,7 @@ const QuestionPage = props => {
 
       if (currentIndex > 0 && which === 'PREV') {
         newQuestionId = relatedQuestionIds[currentIndex - 1]
-        history.push({
-          pathname: `/question/${newQuestionId}/test`,
+        navigate(`/question/${newQuestionId}/test`, {
           state: { relatedQuestionIds },
         })
       } else if (
@@ -1146,8 +1145,7 @@ const QuestionPage = props => {
         which === 'NEXT'
       ) {
         newQuestionId = relatedQuestionIds[currentIndex + 1]
-        history.push({
-          pathname: `/question/${newQuestionId}/test`,
+        navigate(`/question/${newQuestionId}/test`, {
           state: { relatedQuestionIds },
         })
       } else {
@@ -1349,8 +1347,6 @@ const QuestionPage = props => {
 
   const handleUpgradeEditor = async () => {
     // eslint-disable-next-line no-console
-    console.log('UPGRADE EDITOR')
-
     const variables = {
       questionVersionId: version?.id,
     }

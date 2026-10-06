@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useLocation, Redirect } from 'react-router-dom'
-import { useMutation, useQuery } from '@apollo/client'
+import { useLocation, Navigate } from 'react-router'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { useCurrentUser, uuid } from '@coko/client'
 
 import { Login } from 'ui'
@@ -63,7 +63,7 @@ const LoginPage = () => {
     )
   }
 
-  if (currentUser) return <Redirect to={redirectUrl} />
+  if (currentUser) return <Navigate to={redirectUrl} />
   if (currentUser === null) localStorage.removeItem('profileSubmitted')
 
   let errorMessage = 'Something went wrong!'
@@ -78,7 +78,7 @@ const LoginPage = () => {
 
     if (token) {
       localStorage.setItem('token', token)
-      return <Redirect to={redirectUrl} />
+      return <Navigate to={redirectUrl} />
     }
 
     console.error('No token returned from mutation!')

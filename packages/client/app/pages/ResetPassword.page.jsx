@@ -1,12 +1,12 @@
 import React from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router'
+import { useMutation } from '@apollo/client/react'
 
 import { ResetPassword } from 'ui'
 import { RESET_PASSWORD } from '../graphql'
 
-const ResetPasswordPage = props => {
-  const history = useHistory()
+const ResetPasswordPage = () => {
+  const navigate = useNavigate()
   const { token } = useParams()
 
   const [resetPasswordMutation, { data, loading, error }] =
@@ -26,7 +26,7 @@ const ResetPasswordPage = props => {
   }
 
   const redirectToLogin = () => {
-    history.push('/login')
+    navigate('/login')
   }
 
   return (

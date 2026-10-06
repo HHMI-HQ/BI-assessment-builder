@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { List, Button, Modal } from '../common'
 import ComplexItemSetListItem from './ComplexItemSetListItem'
 import ExportListToWordButton from '../myList/ExportModal'
@@ -73,7 +73,7 @@ const ComplexItemSetList = props => {
     canDeleteSets,
   } = props
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const [modal, contextHolder] = Modal.useModal()
   const [selectedSets, setSelectedSets] = useState([])
 
@@ -86,7 +86,7 @@ const ComplexItemSetList = props => {
   }
 
   const handleCreateNewSetClick = () => {
-    history.push('/set/new')
+    navigate('/set/new')
   }
 
   const onSetsSelected = ids => {

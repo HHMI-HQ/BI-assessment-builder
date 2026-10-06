@@ -15,5 +15,6 @@ export * from './question'
 // export * from './editor'
 export * from './review'
 export { default as PageNotFound } from './PageNotFound'
+export { default as LayoutWrapper } from './LayoutWrapper.ts'
 
 // export * from './review'

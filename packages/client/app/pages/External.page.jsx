@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import PropTypes from 'prop-types'
 import { Iframe, PageNotFound } from 'ui'
 
@@ -7,13 +7,13 @@ const External = props => {
   const { src, ariaLabel } = props
   const [notFound, setNotFound] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const frameRef = useRef(null)
 
   const handleMessage = event => {
     if (event.origin !== window.origin || event.data.type !== 'location') return
 
-    history.push(event.data.url)
+    navigate(event.data.url)
   }
 
   const postMessage = newLocation => {

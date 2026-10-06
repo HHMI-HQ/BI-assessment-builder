@@ -1,13 +1,13 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
+import { Navigate } from 'react-router'
+import { useMutation } from '@apollo/client/react'
 import { useCurrentUser } from '@coko/client'
 
 import { VerifyCheck } from 'ui'
 
 import { RESEND_VERIFICATION_EMAIL_AFTER_LOGIN } from '../graphql'
 
-const VeriryCheckPage = props => {
+const VeriryCheckPage = () => {
   const [verifyingLoader, setVerifyingLoader] = React.useState(false)
   const loaderDelay = 2000
 
@@ -28,7 +28,7 @@ const VeriryCheckPage = props => {
   if (!currentUser) return null
 
   if (currentUser?.defaultIdentity.isVerified) {
-    return <Redirect to="/" />
+    return <Navigate to="/" />
   }
 
   return (

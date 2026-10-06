@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { MetadataContext } from './metadataContext'
 import { GET_METADATA_OPTIMIZED } from '../graphql'
 

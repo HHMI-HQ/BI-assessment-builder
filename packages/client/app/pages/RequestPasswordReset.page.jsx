@@ -1,5 +1,5 @@
 import React from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 
 import { RequestPasswordReset } from 'ui'
 import { REQUEST_PASSWORD_RESET } from '../graphql'

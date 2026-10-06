@@ -1,14 +1,14 @@
 import React from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
+import { useNavigate, useParams } from 'react-router'
+import { useMutation } from '@apollo/client/react'
 
 import { VerifyEmail } from 'ui'
 import { RESEND_VERIFICATION_EMAIL, VERIFY_EMAIL } from '../graphql'
 
 const VerifyEmailPage = props => {
   const { token } = useParams()
-  const history = useHistory()
-  const redirectToLogin = () => history.push('/login')
+  const navigate = useNavigate()
+  const redirectToLogin = () => navigate('/login')
   const loaderDelay = 2000
 
   // add a small delay on purpose to keep ui transitions smooth

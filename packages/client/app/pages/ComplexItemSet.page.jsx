@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams, useHistory, useLocation } from 'react-router-dom'
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useParams, useNavigate, useLocation, Link } from 'react-router'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client/react'
 import DOMPurify from 'dompurify'
 import { serverUrl } from '@coko/client'
 import { ComplexItemSet, Result, Spin } from 'ui'
@@ -47,7 +47,7 @@ const sortOptions = [
 
 const ComplexItemSetPage = () => {
   const { id } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
   const { state } = useLocation()
 
   const { metadata } = useMetadata()
@@ -173,7 +173,7 @@ const ComplexItemSetPage = () => {
   useEffect(() => {
     // if no compelx item set was found for given id, redirect to /sets
     if (data?.complexItemSet === null) {
-      history.push('/sets')
+      navigate('/sets')
     }
 
     if (data?.complexItemSet?.title) {
@@ -239,8 +239,7 @@ const ComplexItemSetPage = () => {
       })
         .then(result => {
           // redirect to context-dependent item set page: /set/:id, id is in the result
-          history.push({
-            pathname: `/set/${result.data.createComplexItemSet.id}`,
+          navigate(`/set/${result.data.createComplexItemSet.id}`, {
             state: { created: true },
           })
         })
@@ -299,7 +298,7 @@ const ComplexItemSetPage = () => {
     })
       .then(res => {
         const { id: questionId } = res.data.createQuestion
-        history.push(`/question/${questionId}`)
+        navigate(`/question/${questionId}`)
       })
       .catch(e => console.error(e))
   }
@@ -313,7 +312,7 @@ const ComplexItemSetPage = () => {
 
     return deleteSetMutation(mutationData)
       .then(() => {
-        history.push('/sets')
+        navigate('/sets')
       })
       .catch(e => {
         console.error(e)

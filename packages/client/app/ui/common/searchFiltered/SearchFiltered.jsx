@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { PropTypes, oneOfType } from 'prop-types'
 import styled from 'styled-components'
 import { th } from '@coko/client'
-import { VisuallyHiddenElement } from '@coko/client/dist/ui'
+import { VisuallyHiddenElement } from '@coko/client'
 
 import { Input } from 'antd'
 

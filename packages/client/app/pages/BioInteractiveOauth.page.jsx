@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { Redirect, useHistory, useLocation } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
+import { Navigate, useNavigate, useLocation } from 'react-router'
+import { useMutation } from '@apollo/client/react'
 import { useCurrentUser } from '@coko/client'
 
 import { BioInteractiveOauth } from 'ui'
@@ -8,13 +8,14 @@ import { BioInteractiveOauth } from 'ui'
 import { BIOINTERACTIVE_LOGIN } from '../graphql'
 
 const BioInteractiveLoginPage = () => {
-  const { search } = useLocation()
-  const history = useHistory()
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
   const { currentUser } = useCurrentUser()
 
-  const authCode = new URLSearchParams(search).get('code')
-  const state = new URLSearchParams(search).get('state')
-  const oauthError = new URLSearchParams(search).get('error')
+  const params = new URLSearchParams(search)
+  const authCode = params(search).get('code')
+  const state = params(search).get('state')
+  const oauthError = params(search).get('error')
 
   const [bioInteractiveLoginMutation, { error: loginError }] =
     useMutation(BIOINTERACTIVE_LOGIN)
@@ -28,10 +29,10 @@ const BioInteractiveLoginPage = () => {
     if (localStorage.getItem('redirectTo')) {
       const redirect = localStorage.getItem('redirectTo').substring(6)
       localStorage.removeItem('redirectTo')
-      return <Redirect to={redirect} />
+      return  <Navigate replace to={redirect} />
     }
 
-    return <Redirect to="/discover" />
+    return <Navigate replace to="/discover" />
   }
 
   const login = () => {
@@ -43,7 +44,8 @@ const BioInteractiveLoginPage = () => {
         if (token) {
           localStorage.removeItem('oauthState')
           localStorage.setItem('token', token)
-          history.go(0)
+          // history.go(0) 
+          navigate(pathname + search, { replace: true });
         }
 
         console.error('No token returned from mutation!')

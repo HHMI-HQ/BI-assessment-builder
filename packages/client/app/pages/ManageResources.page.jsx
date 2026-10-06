@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client/react'
 import { ResourcesTable } from 'ui'
 import {
   GET_RESOURCES,

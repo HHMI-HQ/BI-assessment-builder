@@ -1,5 +1,5 @@
 import React from 'react'
-import { Divider, TextArea } from '@coko/client/dist/ui'
+import { Divider, TextArea } from '@coko/client'
 
 import {
   FormHeading,

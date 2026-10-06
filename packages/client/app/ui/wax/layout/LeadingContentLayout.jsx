@@ -2,7 +2,7 @@
 import React from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { grid, th } from '@coko/client'
-import { VisuallyHiddenElement } from '@coko/client/dist/ui'
+import { VisuallyHiddenElement } from '@coko/client'
 import { WaxView } from 'wax-prosemirror-core'
 import theme from '../../../theme'
 import commonStyles from './commonWaxStyles'

@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 
 import { Discover, VisuallyHiddenElement } from 'ui'
-import { useQuery, useMutation } from '@apollo/client'
-import { useHistory } from 'react-router-dom'
+import { useQuery, useMutation } from '@apollo/client/react'
+import { useNavigate } from 'react-router'
 import { useCurrentUser } from '@coko/client'
 
 import { useMetadata, useFilters, dashboardDataMapper } from '../utilities'
@@ -52,7 +52,7 @@ const DiscoverPage = () => {
 
   const { metadata } = useMetadata()
   const initialRender = useRef(true)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const { data: { getAvailableSets: complexItemSetOptions } = {} } = useQuery(
     GET_COMPLEX_ITEM_SETS_OPTIONS,
@@ -109,7 +109,7 @@ const DiscoverPage = () => {
     useMutation(DUPLICATE_QUESTION, {
       refetchQueries: [{ query: CURRENT_USER, fetchPolicy: 'network-only' }],
       onCompleted: ({ duplicateQuestion }) => {
-        history.push(`/question/${duplicateQuestion.id}`)
+        navigate(`/question/${duplicateQuestion.id}`)
       },
     })
 

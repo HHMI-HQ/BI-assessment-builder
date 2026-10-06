@@ -4,8 +4,8 @@ import {
   useLazyQuery,
   useMutation,
   useSubscription,
-} from '@apollo/client'
-import { useHistory } from 'react-router-dom'
+} from '@apollo/client/react'
+import { useNavigate } from 'react-router'
 
 import { Dashboard, VisuallyHiddenElement } from 'ui'
 // import { useCurrentUser } from '@coko/client'
@@ -50,7 +50,7 @@ const defaultSearchOptions = {
 
 const DashboardPage = () => {
   // #region hooks
-  const history = useHistory()
+  const navigate = useNavigate()
   // const { setCurrentUser } = useCurrentUser()
   const { unreadMentions } = useNotifications()
 
@@ -405,7 +405,7 @@ const DashboardPage = () => {
     createQuestionMutation()
       .then(res => {
         const { id } = res.data.createQuestion
-        history.push(`/question/${id}`)
+        navigate(`/question/${id}`)
       })
       .catch(e => console.error(e))
   }

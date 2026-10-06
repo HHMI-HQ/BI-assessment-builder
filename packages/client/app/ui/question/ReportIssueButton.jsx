@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { th } from '@coko/client'
-import { TextArea } from '@coko/client/dist/ui'
+import { TextArea } from '@coko/client'
 
 import Button from '../common/Button'
 import Form from '../common/Form'

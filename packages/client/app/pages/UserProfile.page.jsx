@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Navigate } from 'react-router'
 import PropTypes from 'prop-types'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { useCurrentUser } from '@coko/client'
 
 import { Profile, SignupQuestionnaire, VisuallyHiddenElement } from 'ui'
@@ -89,13 +89,15 @@ const UserProfile = props => {
   const [submissionStatus, setSubmissionStatus] = useState(null)
   const [submitted, setSubmitted] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const { id: userId } = useParams()
 
   const { currentUser, setCurrentUser } = useCurrentUser()
 
   if (currentUser.id === userId) {
-    window.history.replaceState({}, '', '/profile')
+    TODO
+    // window.history.replaceState({}, '', '/profile')
+    return <Navigate to="/profile" replace />;
   }
 
   const { data: userData, loading: userLoading } = useQuery(GET_USER_DATA, {
@@ -165,7 +167,7 @@ const UserProfile = props => {
         // redirect to '/' after completing the signup questionnaire
         setSubmitted(true)
         setTimeout(() => {
-          history.push('/')
+          navigate('/')
         }, 3000)
       } else {
         await updateProfileMutation(mutationData)

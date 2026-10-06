@@ -13,7 +13,6 @@ import styled from 'styled-components'
 
 import {
   PageLayout as Page,
-  RequireAuth,
   useCurrentUser,
 } from '@coko/client'
 
@@ -23,9 +22,10 @@ import {
   VisuallyHiddenElement,
   Spin,
   ToastNotification,
+  LayoutWrapper,
 } from './ui'
 
-import GlobalStyles from './globalStyles'
+import GlobalStyles from './globalStyles' 
 import {
   hasGlobalRole,
   MetadataProvider,
@@ -34,39 +34,23 @@ import {
   useNotifications,
 } from './utilities'
 
-import {
-  Login,
-  Signup,
-  VerifyEmail,
-  RequestPasswordReset,
-  ResetPassword,
-  VerifyCheck,
-  Dashboard,
-  Discover,
-  Question,
-  ManageUsers,
-  TeamManager,
-  UserProfile,
-  DeactivatedUser,
-  Lists,
-  ListContent,
-  BioInteractiveOauth,
-  External,
-  PageNotFound,
-  ComplexItemSet,
-  ComplexItemSetsList,
-  Notifications,
-  ManageResources,
-  ManageMetadata,
-  // QuestionContentEditingPage,
-} from './pages'
+import Router from './Router'
 
-import { CURRENT_USER, DELETED_SUBSCRIPTION } from './graphql'
+import { DELETED_SUBSCRIPTION } from './graphql'
 
-const LayoutWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+
+const StyledPage = styled(Page)`
+  height: calc(100% - 60px - 50px);
+`
+
+const StyledSpin = styled(Spin)`
+  display: grid;
   height: 100vh;
+  place-content: center;
+`
+
+const StyledMain = styled.main`
+  height: 100%;
 `
 
 const regexPaths = [
@@ -101,6 +85,10 @@ const regexPaths = [
   {
     path: /^\/manage-teams$/,
     name: 'Team Manager',
+  },
+  {
+    path: /^\/manage-metadata$/,
+    name: 'Metadata manager',
   },
   {
     path: /^\/notifications$/,
@@ -205,7 +193,7 @@ const Wrapper = props => {
   // }, [])
 
   useEffect(() => {
-    const keyDownListener = (e: any) => {
+    const keyDownListener = (e) => {
       if (e.key === 'Tab') {
         // select only visible antd modal dialog
         const dialog = document.querySelector(
@@ -230,10 +218,10 @@ const Wrapper = props => {
             ].join(', '),
           )
 
-          const firstFocusableElement = focusableElements[0] as HTMLElement | null
+          const firstFocusableElement = focusableElements[0]
 
           const lastFocusableElement =
-            focusableElements[focusableElements.length - 1] as HTMLElement | null
+            focusableElements[focusableElements.length - 1]
 
           if (e.shiftKey) {
             if (document.activeElement === firstFocusableElement) {
@@ -256,7 +244,7 @@ const Wrapper = props => {
   useEffect(() => {
     if (
       // temporary, create a wrapper hook that extends the User type
-      (currentUser as any)?.profileSubmitted &&
+      (currentUser)?.profileSubmitted &&
       !localStorage.getItem('profileSubmitted')
     ) {
       localStorage.setItem('profileSubmitted', 'true')
@@ -272,11 +260,11 @@ const Wrapper = props => {
     // }
   }, [currentUser])
 
-  interface DeletedSubscriptionResult {
-    userDeleted: string;
-  }
+  // interface DeletedSubscriptionResult {
+  //   userDeleted: string;
+  // }
 
-  useSubscription<DeletedSubscriptionResult>(DELETED_SUBSCRIPTION, {
+  useSubscription(DELETED_SUBSCRIPTION, {
     onData: ({
       data: {
         data: { userDeleted },
@@ -287,7 +275,9 @@ const Wrapper = props => {
   })
 
   return (
-    <LayoutWrapper>
+    <LayoutWrapper style={{ display: 'flex',
+  'flex-direction': 'column',
+  'height': '100vh'}}>
       {children}
       <VisuallyHiddenElement
         aria-live="polite"
@@ -298,16 +288,6 @@ const Wrapper = props => {
     </LayoutWrapper>
   )
 }
-
-const StyledPage = styled(Page)`
-  height: calc(100% - 60px - 50px);
-`
-
-const StyledSpin = styled(Spin)`
-  display: grid;
-  height: 100vh;
-  place-content: center;
-`
 
 const Loader = props => {
   const { pathname } = useLocation()
@@ -422,50 +402,38 @@ const ToastNotifications = () => {
   return <ToastNotification notification={newNotification} />
 }
 
-const StyledMain = styled.main`
-  height: 100%;
-`
+// const RequireProfile = ({ children }) => {
+//   const { pathname } = useLocation()
+//   const { currentUser } = useCurrentUser()
 
-const RequireProfile = ({ children }) => {
-  const { pathname } = useLocation()
-  const { currentUser } = useCurrentUser()
+//   if (!currentUser) return null
 
-  if (!currentUser) return null
+//   if (!currentUser.isActive && pathname !== '/deactivated-user') {
+//     return <Navigate replace to="/deactivated-user" />
+//   }
 
-  if (!currentUser.isActive && pathname !== '/deactivated-user') {
-    return <Navigate replace to="/deactivated-user" />
-  }
+//   if (
+//     pathname !== '/signup-profile' &&
+//     !(currentUser as any).profileSubmitted &&
+//     !localStorage.getItem('profileSubmitted')
+//   ) {
+//     return <Navigate replace to="/signup-profile" />
+//   }
 
-  if (
-    pathname !== '/signup-profile' &&
-    !(currentUser as any).profileSubmitted &&
-    !localStorage.getItem('profileSubmitted')
-  ) {
-    return <Navigate replace to="/signup-profile" />
-  }
+//   return children
+// }
 
-  return children
-}
-
-const Authenticated = ({ children }) => {
-  return (
-    <RequireAuth notAuthenticatedRedirectTo="/login">
-      <RequireProfile>{children}</RequireProfile>
-    </RequireAuth>
-  )
-}
-
-{/* <Authenticate currentUserQuery={CURRENT_USER} loadingComponent={Loader}> */}
 const routes = (
-    <Wrapper>
-      <GlobalStyles />
-      <NotificationsProvider>
-        <SiteHeader />
-        <MetadataProvider>
-          <FiltersProvider>
+  <Wrapper>
+    <GlobalStyles />
+    <NotificationsProvider>
+      <SiteHeader />
+      <MetadataProvider>
+        <FiltersProvider>
+          <StyledMain id="main-content" tabIndex={-1}>
             <StyledPage fadeInPages={false} padPages={false}>
-              <StyledMain id="main-content" tabIndex={-1}>
-                <Routes>
+              <Router />
+                {/* <Routes>
                   <Route
                     path="/signup-profile"
                     element={
@@ -536,15 +504,6 @@ const routes = (
                       </Authenticated>
                     }
                   />
-                  {/* <Route
-                    exact
-                    path="/secret-editing-page"
-                    render={() => (
-                      <Authenticated>
-                        <QuestionContentEditingPage />
-                      </Authenticated>
-                    )}
-                  /> */}
 
                   <Route
                     path="/manage-teams"
@@ -636,7 +595,6 @@ const routes = (
                       </Authenticated>
                     }
                   />
-                  {/* individual sets and their questions can be viewed by all visitors */}
                   <Route
                     path="/set/:id"
                     element={
@@ -646,7 +604,7 @@ const routes = (
                     }
                   />
                   <Route element={DeactivatedUser} path="/deactivated-user" />
-                  {/* Static pages hosted elsewhere */}
+
                   <Route
                     element={
                       <External ariaLabel="Home page" src="/drupal/" />
@@ -670,23 +628,22 @@ const routes = (
                   />
                   <Route element={PageNotFound} path="/404" />
                   <Route element={PageNotFound} path="*" />
-                </Routes>
-              </StyledMain>
+                </Routes> */}
               <ToastNotifications />
             </StyledPage>
-          </FiltersProvider>
-        </MetadataProvider>
-      </NotificationsProvider>
+          </StyledMain>
+        </FiltersProvider>
+      </MetadataProvider>
+    </NotificationsProvider>
 
-      <Footer
-        links={{
-          termsOfUse: 'https://www.hhmi.org/terms-of-use',
-          privacyPolicy: 'https://www.hhmi.org/privacy-policy',
-          homepage: '/',
-        }}
-      />
+    <Footer
+      links={{
+        termsOfUse: 'https://www.hhmi.org/terms-of-use',
+        privacyPolicy: 'https://www.hhmi.org/privacy-policy',
+        homepage: '/',
+      }}
+    />
     </Wrapper>
 )
-// </Authenticate>
 
 export default routes

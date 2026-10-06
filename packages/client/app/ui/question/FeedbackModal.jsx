@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th } from '@coko/client'
-import { Divider } from '@coko/client/dist/ui/common'
+import { Divider } from '@coko/client/common'
 import { Button, Modal } from '../common'
 
 import Wax from '../wax/Wax'

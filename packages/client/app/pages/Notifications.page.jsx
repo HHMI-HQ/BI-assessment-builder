@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import {
-  useHistory,
-  useLocation,
-} from 'react-router-dom/cjs/react-router-dom.min'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useNavigate, useLocation } from 'react-router'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react'
 import { isBoolean } from 'lodash'
 import { NotificationsUI } from '../ui/notifications'
 import { VisuallyHiddenElement } from '../ui'
@@ -55,7 +52,7 @@ const NotificationPage = () => {
   } = useNotifications()
 
   const location = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
   // eslint-disable-next-line no-unused-vars
   const [currentPage, setCurrentPage] = useState(Number('0'))
   const [pageSize, setPageSize] = useState(PAGE_SIZE)
@@ -132,7 +129,7 @@ const NotificationPage = () => {
   }, [location])
 
   useEffect(() => {
-    tabKey && history.push(`/notifications/${tabKey}`)
+    tabKey && navigate(`/notifications/${tabKey}`)
   }, [tabKey])
 
   useEffect(() => {

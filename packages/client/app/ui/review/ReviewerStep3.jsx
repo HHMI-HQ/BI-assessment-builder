@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Divider, TextArea } from '@coko/client/dist/ui'
+import { Divider, TextArea } from '@coko/client'
 
 import {
   FormHeading,

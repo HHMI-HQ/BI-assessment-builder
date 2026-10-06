@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { Link } from 'react-router'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client/react'
 import { useCurrentUser } from '@coko/client'
 import { hasGlobalRole } from '../utilities'
 

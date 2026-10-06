@@ -1,7 +1,7 @@
-import { css, DefaultTheme } from 'styled-components'
+import { css } from 'styled-components'
 import { lighten } from '@coko/client'
 
-const theme: DefaultTheme = {
+const theme = {
   colorBackground: '#ffffff',
   colorBackgroundHue: '#f5f5f5',
   colorBody: '#000000',

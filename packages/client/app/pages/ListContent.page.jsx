@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
-import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import { useParams, useNavigate } from 'react-router'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client/react'
 import DOMPurify from 'dompurify'
 import { serverUrl } from '@coko/client'
 import { ListContent } from 'ui'
@@ -21,7 +21,7 @@ const PAGE_SIZE = 10
 
 const ListContentPage = () => {
   const { id } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
   const { metadata } = useMetadata()
   const [questions, setQuetions] = useState([])
   const { data: { currentUser } = {} } = useQuery(CURRENT_USER)
@@ -94,7 +94,7 @@ const ListContentPage = () => {
 
   const [copyListMutation] = useMutation(COPY_LIST, {
     onCompleted({ copyList: { id: newListId } = {} }) {
-      history.push(`/list/${newListId}`)
+      navigate(`/list/${newListId}`)
     },
     refetchQueries: [
       { query: CURRENT_USER },
