@@ -1,6 +1,6 @@
 const { logger } = require('@coko/server')
 
-exports.up = async knex => {
+export const up = async knex => {
   try {
     const newField = await knex.schema.table('complexItemSets', table => {
       table.boolean('isPublished').defaultTo(false)
@@ -25,7 +25,7 @@ exports.up = async knex => {
   }
 }
 
-exports.down = knex =>
+export const down = knex =>
   knex.schema.table('complexItemSets', table => {
     table.dropColumn('isPublished')
   })

@@ -1,6 +1,6 @@
 const { logger } = require('@coko/server')
 
-exports.up = knex => {
+export const up = knex => {
   try {
     return knex.schema.table('question_versions', table => {
       table.smallint('amountOfReviewers').notNullable().defaultTo(0)
@@ -15,7 +15,7 @@ exports.up = knex => {
   }
 }
 
-exports.down = knex =>
+export const down = knex =>
   knex.schema.table('question_versions', table => {
     table.dropColumn('amountOfReviewers')
     table.dropColumn('isReviewerAutomationOn')

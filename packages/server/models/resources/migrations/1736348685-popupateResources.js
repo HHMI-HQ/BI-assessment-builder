@@ -6936,7 +6936,7 @@ const resources = [
   },
 ]
 
-exports.up = knex => {
+export const up = knex => {
   try {
     return useTransaction(async trx => {
       await Promise.all(
@@ -6965,4 +6965,4 @@ exports.up = knex => {
   }
 }
 
-exports.down = knex => knex('resources').del()
+export const down = knex => knex('resources').del()

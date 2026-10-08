@@ -1,5 +1,5 @@
 const { useTransaction, logger } = require('@coko/server')
-const { File, Identity } = require('@coko/server/src/models')
+const { File, Identity } = require('@coko/server/dist/models')
 const config = require('config')
 
 const { Review, TeamMember, Team, QuestionVersion } = require('../models')

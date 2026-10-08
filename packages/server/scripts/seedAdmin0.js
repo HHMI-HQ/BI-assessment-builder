@@ -1,6 +1,5 @@
-const { logger, User, db, useTransaction } = require('@coko/server')
+const { logger, User, db, useTransaction, Identity } = require('@coko/server')
 const crypto = require('crypto')
-const { Identity } = require('../models')
 const { addToTeams } = require('./utils/user')
 
 // eslint-disable-next-line import/newline-after-import
