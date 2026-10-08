@@ -5,13 +5,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { grid, th, darken } from '@coko/client'
 import { EditOutlined, LogoutOutlined, TagsFilled } from '@ant-design/icons'
-import logoMobile from '../../../static/hhmi-logo-white-sm.svg'
-import manageTeamIcon from '../../../static/team.svg'
-import manageUserIcon from '../../../static/manageuser.svg'
-import userIcon from '../../../static/user-icon.svg'
-import logo from '../../../static/hhmi-ab-logo-sm.svg'
-import menuOpen from '../../../static/waffle-white.svg'
-import menuClose from '../../../static/close-white.svg'
+import logoMobile from '../assets/hhmi-logo-white-sm.svg'
+import manageTeamIcon from '../assets/team.svg'
+import manageUserIcon from '../assets/manageuser.svg'
+import userIcon from '../assets/user-icon.svg'
+import logo from '../assets/hhmi-ab-logo-sm.svg'
+import menuOpen from '../assets/waffle-white.svg'
+import menuClose from '../assets/close-white.svg'
 
 import Button from './Button'
 import useWindowSize from '../_helpers/useWindowSize'
@@ -40,6 +40,7 @@ const StyledHeader = styled.header`
     padding-left: ${grid(3)};
   }
 `
+
 const SkipLink = styled.a`
   background-color: ${th('colorTextDark')};
   border-radius: 0 0 ${grid(1)} ${grid(1)};
@@ -353,7 +354,7 @@ const StyledLogin = styled(Link)`
 const MobileMenuToggle = styled.button`
   aspect-ratio: 1 / 1;
   background-color: ${th('colorBody')};
-  /* background-image: url(${menuOpen}); */
+  background-image: url("${menuOpen}");
   background-size: cover;
 
   border: none;
@@ -370,9 +371,9 @@ const MobileMenuToggle = styled.button`
     outline-offset: 1px;
   }
 
-  /* &[aria-expanded='true'] {
-    background-image: url(${menuClose});
-  } */
+  &[aria-expanded='true'] {
+    background-image: url("${menuClose}");
+  }
 
   @media screen and (max-width: ${th('mediaQueries.large')}) {
     &[aria-expanded='true'] ~ ${MainNav} {
@@ -597,13 +598,7 @@ const StyledIcon = styled.img`
 `
 // #endregion styleds
 
-const LinksList = ({
-  sourceLinks,
-  currentPath,
-  ListWrapper = StyledList,
-  wrapperProps,
-  renderCondition,
-}) => {
+const LinksList = ({ sourceLinks, currentPath = '', ListWrapper = StyledList, wrapperProps = {}, renderCondition = true }) => {
   // const [Wrapper, wrapperProps = {}] = listWrapper
   return (
     renderCondition && (
@@ -733,7 +728,6 @@ const createHeaderLinksObject = ({
       {
         Component: UserNotificationsUI,
         link: [links.messages, links.tasks],
-        mediaBreak: windowWidth >= 1200,
         tasks: pendingTsks,
         renderIf: loggedin,
         unreadMentionsCount,
@@ -877,8 +871,8 @@ const Header = props => {
           <NavWrapper data-testid="nav-wrapper" show={mainMenuIsOpen}>
             <LinksList
               currentPath={currentPath}
+              renderCondition
               sourceLinks={linksObject.navigation}
-              renderCondition={true}
             />
             <Separator />
             <RightNavContainer>
@@ -907,12 +901,12 @@ const Header = props => {
                   <LinksList
                     currentPath={currentPath}
                     ListWrapper={CollapsableMenu}
+                    sourceLinks={linksObject.userLinks}
                     wrapperProps={{
                         'aria-label': 'User menu',
                          id:'user-menu',
                         isOpen: userMenuIsOpen,
                       }}
-                    sourceLinks={linksObject.userLinks}
                   />
                 </UserMenuWrapper>
               ) : (
@@ -977,11 +971,6 @@ LinksList.propTypes = {
   renderCondition: PropTypes.bool,
 }
 
-LinksList.defaultProps = {
-  currentPath: '',
-  ListWrapper: StyledList,
-  wrapperProps: {},
-  renderCondition: true,
-}
+
 
 export default Header

@@ -1,4 +1,4 @@
-import React, { cloneElement, useRef, useEffect, useState } from 'react'
+import { cloneElement, useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { uuid, grid } from '@coko/client'
 import PropTypes from 'prop-types'
@@ -45,15 +45,20 @@ const Wrapper = styled.div`
   position: relative;
 `
 
-const Popup = ({
-  alignment,
-  children,
-  focusableContent,
-  id,
-  toggle,
-  position,
-  ...rest
-}) => {
+const Popup = ({ alignment = 'start', children, focusableContent = [
+    'a[href]',
+    'area[href]',
+    'input:not([disabled]):not([type=hidden])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'button:not([disabled])',
+    'object',
+    'embed',
+    '[tabindex]:not([tabindex="-1"])',
+    'audio[controls]',
+    'video[controls]',
+    '[contenteditable]:not([contenteditable="false"])',
+  ], id = uuid(), toggle, position = 'block-start', ...rest }) => {
   const WrapperRef = useRef(null)
   const popupRef = useRef(null)
 
@@ -150,24 +155,6 @@ Popup.propTypes = {
   ]),
 }
 
-Popup.defaultProps = {
-  id: uuid(),
-  focusableContent: [
-    'a[href]',
-    'area[href]',
-    'input:not([disabled]):not([type=hidden])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
-    'button:not([disabled])',
-    'object',
-    'embed',
-    '[tabindex]:not([tabindex="-1"])',
-    'audio[controls]',
-    'video[controls]',
-    '[contenteditable]:not([contenteditable="false"])',
-  ],
-  position: 'block-start',
-  alignment: 'start',
-}
+
 
 export default Popup

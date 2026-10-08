@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { th } from '@coko/client'
+import { th , VisuallyHiddenElement } from '@coko/client'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
-import { VisuallyHiddenElement } from '@coko/client'
 
 const Wrapper = styled.div`
   align-items: center;
@@ -45,7 +44,7 @@ export const StyledCounter = styled.div`
 
 const StyledNotificationIcon = styled(Link)`
   aspect-ratio: 1 / 1;
-  background: url(${p => p.$src});
+  background: url("${p => p.$src}");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 80%;
@@ -59,7 +58,7 @@ const StyledNotificationIcon = styled(Link)`
   }
 `
 
-export const CounterBadge = ({ counts, $pos = '', ...rest }) => {
+export const CounterBadge = ({ counts = 0, $pos = '', ...rest }) => {
   return (
     <StyledCounter
       $pos={$pos}
@@ -72,7 +71,7 @@ export const CounterBadge = ({ counts, $pos = '', ...rest }) => {
   )
 }
 
-export const CounterWrapper = ({ children, Component = Wrapper, ...rest }) => {
+export const CounterWrapper = ({ children = null, Component = Wrapper, counts = 0, ...rest }) => {
   return (
     <Component id="COUNTER">
       {children}
@@ -82,13 +81,7 @@ export const CounterWrapper = ({ children, Component = Wrapper, ...rest }) => {
 }
 
 // eslint-disable-next-line react/prop-types
-export const NotificationIcon = ({
-  iconSrc,
-  pending = 0,
-  onClick,
-  text,
-  ...rest
-}) => {
+export const NotificationIcon = ({ iconSrc = '', pending = 0, onClick = () => {}, text = 'Notifications', ...rest }) => {
   return (
     <CounterWrapper
       $pos="-3px 3px 0 0"
@@ -111,16 +104,6 @@ CounterBadge.propTypes = {
   counts: PropTypes.oneOfType([PropTypes.any]),
   $pos: PropTypes.string,
 }
-CounterBadge.defaultProps = {
-  counts: 0,
-  $pos: '',
-}
-
-CounterWrapper.defaultProps = {
-  children: null,
-  counts: 0,
-  Component: Wrapper,
-}
 
 CounterWrapper.propTypes = {
   children: PropTypes.node,
@@ -135,9 +118,4 @@ NotificationIcon.propTypes = {
   text: PropTypes.string,
 }
 
-NotificationIcon.defaultProps = {
-  iconSrc: '',
-  pending: [],
-  onClick: () => {},
-  text: 'Notifications',
-}
+

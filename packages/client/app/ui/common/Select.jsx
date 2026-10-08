@@ -191,11 +191,11 @@ const Select = props => {
   return (
     <SelectWrapper className={className} ref={selectRef}>
       <StyledSelect
-        dropdownRender={customDropdownRender}
+        popupRender={customDropdownRender}
         filterOption={async && !filterOption ? false : filterOption}
         id={id}
         notFoundContent={!notFoundContent && async ? null : notFoundContent}
-        onDropdownVisibleChange={o => setOpen(o)}
+        onOpenChange={o => setOpen(o)}
         onSearch={onSearch && searchFunc}
         open={open}
         options={options}

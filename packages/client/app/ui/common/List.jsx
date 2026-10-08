@@ -6,11 +6,10 @@ import styled from 'styled-components'
 import without from 'lodash/without'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-import { List as AntList } from 'antd'
+import { Listy as AntList } from 'antd'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-import { grid, th } from '@coko/client'
-import { VisuallyHiddenElement } from '@coko/client'
+import { grid, th , VisuallyHiddenElement } from '@coko/client'
 
 import UICheckBox, { SelectAllCheckbox } from './Checkbox'
 // import Search from './Search'
@@ -482,7 +481,7 @@ const List = props => {
               {infiniteScroll.enabled ? (
                 <StyledScrollWrapper {...infiniteScroll?.props}>
                   <AntList
-                    dataSource={splitDataSource}
+                    items={splitDataSource}
                     loading={
                       loading
                         ? { spinning: true, indicator: <StyledLoader /> }
@@ -490,7 +489,7 @@ const List = props => {
                     }
                     locale={mergedLocale}
                     ref={listRef}
-                    renderItem={listItemToRender}
+                    itemRender={listItemToRender}
                     {...rest}
                     pagination={false}
                   />

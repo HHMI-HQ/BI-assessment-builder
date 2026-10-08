@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 // import pendingTasksIcon from '../../../static/taskIcon.svg'
 import styled from 'styled-components'
 import { th, grid } from '@coko/client'
-import messagesIcon from '../../../static/messagesIcon.svg'
+import messagesIcon from '../assets/messagesIcon.svg'
 import { NotificationIcon } from './NotificationIcon'
 
 const Wrapper = styled.span`

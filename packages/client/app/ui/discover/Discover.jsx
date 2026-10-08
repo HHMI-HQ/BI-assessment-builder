@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid, th } from '@coko/client'
+import { grid, th , Divider } from '@coko/client'
 import { CheckOutlined } from '@ant-design/icons'
-import { Divider } from '@coko/client'
 
 import Sidebar from './Sidebar'
 import {
@@ -115,7 +114,7 @@ const StyledDivider = styled(Divider)`
   margin-block: ${grid(4)};
 `
 
-const ModalContext = React.createContext(null)
+const ModalContext = createContext(null)
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer
 

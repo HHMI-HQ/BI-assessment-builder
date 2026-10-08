@@ -286,17 +286,7 @@ Preview.propTypes = {
   }).isRequired,
 }
 
-export const MentionsList = ({
-  // withPreview,
-  totalCount,
-  mentions,
-  fullListOfIds,
-  infiniteScroll,
-  locale,
-  loading,
-  markMentionsAs,
-  onSearch,
-}) => {
+export const MentionsList = ({ totalCount = 0, mentions = [], fullListOfIds = null, infiniteScroll = {}, locale = {}, loading = false, markMentionsAs = () => {}, onSearch = () => {}, userMentions = {} }) => {
   const [selectedItems, setSelectedItems] = useState([])
 
   const customComponents = {
@@ -391,16 +381,5 @@ MentionsList.propTypes = {
   markMentionsAs: PropTypes.func,
   onSearch: PropTypes.func,
 }
-MentionsList.defaultProps = {
-  mentions: [],
-  totalCount: 0,
-  markMentionsAs: () => {},
-  userMentions: {},
-  // withPreview: false,
-  fullListOfIds: null,
-  loading: false,
-  infiniteScroll: {},
-  locale: {},
-  onSearch: () => {},
-}
+
 export default MentionsList

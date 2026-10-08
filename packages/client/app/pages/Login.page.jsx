@@ -74,7 +74,7 @@ const LoginPage = () => {
   if (data) {
     const token = data.login?.token
 
-    setCurrentUser(data.login?.user)
+    // setCurrentUser(data.login?.user)
 
     if (token) {
       localStorage.setItem('token', token)

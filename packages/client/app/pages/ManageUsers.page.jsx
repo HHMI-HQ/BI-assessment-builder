@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react'
 import { serverUrl, useCurrentUser, Link } from '@coko/client'
-import { UserList, Result } from 'ui'
+import { UserList, Result , Spin } from 'ui'
 import { useQuery, useMutation } from '@apollo/client/react'
 import {
   FILTER_USERS,
@@ -13,7 +13,6 @@ import {
 } from '../graphql'
 import { hasGlobalRole, useMetadata } from '../utilities'
 import { userRoleFilters } from '../ui/_helpers/searchFilters'
-import { Spin } from 'ui'
 
 const usersApiToUi = users => {
   if (!users) return []

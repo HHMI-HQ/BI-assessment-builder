@@ -101,7 +101,7 @@ const AssignAuthorButton = props => {
       </Button>
       <Modal
         afterClose={() => document.querySelector('#assignAuthor').focus()}
-        destroyOnClose
+        destroyOnHidden
         footer={
           <ModalFooter>
             <Button onClick={assignAuthorForm.submit} type="primary">

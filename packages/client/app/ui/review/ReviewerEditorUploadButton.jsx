@@ -118,7 +118,7 @@ const ReviewerEditorUploadButton = props => {
         afterClose={() =>
           document.getElementById('reviewerEditorUploadReview').focus()
         }
-        destroyOnClose
+        destroyOnHidden
         footer={footer}
         onCancel={() => setShowModal(false)}
         open={showModal}

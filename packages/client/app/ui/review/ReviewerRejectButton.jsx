@@ -62,7 +62,7 @@ const ReviewerRejectButton = props => {
         Reject Invite
       </Button>
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={footer}
         onCancel={() => setShowModal(false)}
         open={showModal}

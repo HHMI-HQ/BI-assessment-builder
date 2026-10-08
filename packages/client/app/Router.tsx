@@ -221,7 +221,7 @@ const AppRoutes = (): ReactNode => {
             }
         />
         <Route
-            path="/notifications/"
+            path="/notifications/messages"
             element={
                 <Authenticated>
                     <Notifications />
@@ -245,7 +245,7 @@ const AppRoutes = (): ReactNode => {
                 </Authenticated>
             }
         />
-        <Route element={DeactivatedUser} path="/deactivated-user" />
+        <Route element={<DeactivatedUser />} path="/deactivated-user" />
         {/* Static pages hosted elsewhere */}
         <Route
         element={

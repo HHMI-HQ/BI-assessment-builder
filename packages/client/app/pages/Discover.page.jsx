@@ -51,6 +51,8 @@ const DiscoverPage = () => {
   const { currentUser } = useCurrentUser()
 
   const { metadata } = useMetadata()
+  console.log(metadata);
+  
   const initialRender = useRef(true)
   const navigate = useNavigate()
 

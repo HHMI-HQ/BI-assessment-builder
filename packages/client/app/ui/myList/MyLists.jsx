@@ -488,10 +488,10 @@ const MyLists = props => {
             columnTitle: (
               <StyledCheckBox
                 checked={
-                  selectedRows.length === data.length && selectedRows.length > 0
+                  selectedRows.length === data?.length && selectedRows.length > 0
                 }
                 indeterminate={
-                  selectedRows.length > 0 && selectedRows.length < data.length
+                  selectedRows.length > 0 && selectedRows.length < data?.length
                 }
                 onChange={toggleSelectAll}
               >

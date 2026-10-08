@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 const StyledAntUpload = styled(AntUpload)``
 
-const Upload = ({ files, onChange, onRemove, ...rest }) => {
+const Upload = ({ files = [], onChange, onRemove, ...rest }) => {
   return (
     <StyledAntUpload
       beforeUpload={() => false}
@@ -22,9 +22,7 @@ const Upload = ({ files, onChange, onRemove, ...rest }) => {
   )
 }
 
-Upload.defaultProps = {
-  files: [],
-}
+
 
 Upload.propTypes = {
   files: PropTypes.arrayOf(PropTypes.shape()),

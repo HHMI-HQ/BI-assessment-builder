@@ -40,7 +40,7 @@ const ArchiveItemsButton = props => {
       </Button>
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={footer}
         onCancel={() => setShowModal(false)}
         open={showModal}

@@ -6,8 +6,7 @@ import styled from 'styled-components'
 import { debounce } from 'lodash'
 
 import { Form as AntForm } from 'antd'
-import { grid, th } from '@coko/client'
-import { Ribbon as UIRibbon } from '@coko/client'
+import { grid, th , Ribbon as UIRibbon } from '@coko/client'
 
 const FormWrapper = styled.div`
   .ant-form-item-explain-error {

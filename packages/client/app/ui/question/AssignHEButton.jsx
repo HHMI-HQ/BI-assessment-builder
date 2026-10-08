@@ -158,7 +158,7 @@ const AssignHEButton = props => {
 
       <Modal
         afterClose={() => document.body.querySelector('#assignHE').focus()}
-        destroyOnClose
+        destroyOnHidden
         footer={[
           <ModalFooter key="footer">
             <Button onClick={() => setShowModal(false)}>Cancel</Button>

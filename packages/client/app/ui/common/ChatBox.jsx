@@ -53,7 +53,7 @@ const StyledChatBox = styled.span`
   }
 `
 
-const ChatBox = ({ header, content, footer, children, ...rest }) => {
+const ChatBox = ({ header = null, content = null, footer = null, children, ...rest }) => {
   return (
     <StyledChatBox {...rest}>
       <span
@@ -73,6 +73,6 @@ ChatBox.propTypes = {
   content: PropTypes.oneOfType([PropTypes.any]),
   footer: PropTypes.oneOfType([PropTypes.any]),
 }
-ChatBox.defaultProps = { header: null, content: null, footer: null }
+
 
 export default ChatBox

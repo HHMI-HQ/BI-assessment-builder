@@ -116,32 +116,7 @@ const ModalContext = React.createContext(null)
 const { footer: ModalFooter, header: ModalHeader } = Modal
 
 // QUESTION results placement seems a bit odd here
-const UserList = ({
-  className,
-  currentPage,
-  currentUserId,
-  data,
-  loading,
-  locale,
-  onBulkActivate,
-  onBulkDeactivate,
-  onBulkDelete,
-  onBulkDownload,
-  onChangePageSize,
-  onPageChange,
-  onSearch,
-  pageSize,
-  searchLoading,
-  totalUserCount,
-  selectedRows,
-  setSelectedRows,
-  showDeactivated,
-  onClickShowDeactivated,
-  filters,
-  withFilters,
-  expertiseOptions,
-  onSortChange,
-}) => {
+const UserList = ({ className, currentPage, currentUserId, data = [], loading = false, locale = null, onBulkActivate, onBulkDeactivate, onBulkDelete, onBulkDownload, onChangePageSize = () => {}, onPageChange, onSearch, pageSize = 10, searchLoading = false, totalUserCount = 0, selectedRows, setSelectedRows, showDeactivated, onClickShowDeactivated, filters = [], withFilters = false, expertiseOptions = [], onSortChange = () => {} }) => {
   const [modal, contextHolder] = Modal.useModal()
   const { confirm, error } = modal
 
@@ -533,18 +508,6 @@ UserList.propTypes = {
   withFilters: PropTypes.bool,
   expertiseOptions: PropTypes.arrayOf(PropTypes.shape()),
 }
-UserList.defaultProps = {
-  data: [],
-  loading: false,
-  locale: null,
-  pageSize: 10,
-  searchLoading: false,
-  totalUserCount: 0,
-  filters: [],
-  withFilters: false,
-  onChangePageSize: () => {},
-  onSortChange: () => {},
-  expertiseOptions: [],
-}
+
 
 export default UserList

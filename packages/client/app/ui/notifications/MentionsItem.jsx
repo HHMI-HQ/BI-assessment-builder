@@ -210,7 +210,14 @@ const formatDate = dateString => {
     .replace(/-/g, '/')
 }
 
-const MentionsItem = ({ item, markAs }) => {
+const MentionsItem = ({ item = {
+    from: '',
+    content: '',
+    date: '',
+    id: '',
+    unread: false,
+    links: ['', ''],
+  }, markAs = () => {} }) => {
   const { from, content, date, id, unread, links } = item
   const [chatLink, itemLink] = links
   const [day, hours] = formatDate(date).split(' ')
@@ -293,16 +300,6 @@ MentionsItem.propTypes = {
   markAs: PropTypes.func,
 }
 
-MentionsItem.defaultProps = {
-  item: {
-    from: '',
-    content: '',
-    date: '',
-    id: '',
-    unread: false,
-    links: ['', ''],
-  },
-  markAs: () => {},
-}
+
 
 export default MentionsItem

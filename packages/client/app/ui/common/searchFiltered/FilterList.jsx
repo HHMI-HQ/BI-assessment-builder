@@ -254,18 +254,7 @@ finish hiding the dropdown list 'cause if not the border remains there */
   z-index: 9999;
 `
 
-const FilterList = ({
-  currentIndex,
-  filters,
-  currentOptions,
-  show,
-  visualfocus,
-  setFilterShape,
-  undoFilter,
-  activeFilters,
-  setIndex,
-  inputValue,
-}) => {
+const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}], show = false, visualfocus = false, setFilterShape = () => {}, undoFilter = () => {}, activeFilters = [], setIndex = () => {}, inputValue = '' }) => {
   const setFilterValueFromInput = (e, i) => {
     setFilterShape(
       {
@@ -434,17 +423,6 @@ FilterList.propTypes = {
   inputValue: PropTypes.string,
 }
 
-FilterList.defaultProps = {
-  filters: [{}],
-  currentOptions: [{}],
-  currentIndex: null,
-  show: false,
-  visualfocus: false,
-  activeFilters: [],
-  inputValue: '',
-  undoFilter: () => {},
-  setFilterShape: () => {},
-  setIndex: () => {},
-}
+
 
 export default FilterList

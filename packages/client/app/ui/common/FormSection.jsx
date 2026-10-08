@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { grid } from '@coko/client'
+import { grid , Divider } from '@coko/client'
 
-import { Divider } from '@coko/client'
 import { H2 } from './Headings'
 
 const Wrapper = styled.div`

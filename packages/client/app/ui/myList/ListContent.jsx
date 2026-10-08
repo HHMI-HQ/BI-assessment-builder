@@ -89,23 +89,7 @@ const ModalContext = React.createContext(null)
 const ModalHeader = Modal.header
 const ModalFooter = Modal.footer
 
-const ListContent = ({
-  title,
-  loading,
-  onDragEnd,
-  onExport,
-  onExportQTI,
-  onSearch,
-  onRemoveFromList,
-  questions,
-  totalCount,
-  questionsPerPage,
-  showRowCheckboxes,
-  locale,
-  isAuthor,
-  onCopyList,
-  ...rest
-}) => {
+const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, onExport = () => {}, onExportQTI = () => {}, onSearch = () => {}, onRemoveFromList = () => {}, questions = [], totalCount = 0, questionsPerPage = 10, showRowCheckboxes = true, locale = null, isAuthor = false, onCopyList = () => {}, ...rest }) => {
   const [modal, contextHolder] = Modal.useModal()
   const { confirm, error, warning } = modal
   const [copyListForm] = Form.useForm()
@@ -553,21 +537,6 @@ ListContent.propTypes = {
   onCopyList: PropTypes.func,
 }
 
-ListContent.defaultProps = {
-  title: 'List',
-  loading: false,
-  onDragEnd: () => {},
-  onExport: () => {},
-  onExportQTI: () => {},
-  onSearch: () => {},
-  onRemoveFromList: () => {},
-  questions: [],
-  showRowCheckboxes: true,
-  questionsPerPage: 10,
-  totalCount: 0,
-  locale: null,
-  isAuthor: false,
-  onCopyList: () => {},
-}
+
 
 export default ListContent

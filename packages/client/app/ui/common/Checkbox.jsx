@@ -33,16 +33,7 @@ const Checkbox = props => {
   )
 }
 
-export const SelectAllCheckbox = ({
-  CustomRender = { CheckBox: Checkbox },
-  setItems,
-  dataSource,
-  items,
-  label,
-  listKey,
-  onChange,
-  ...rest
-}) => {
+export const SelectAllCheckbox = ({ CustomRender = { CheckBox: Checkbox }, setItems = () => null, dataSource, items, label = 'Select All', listKey = null, onChange = () => null, ...rest }) => {
   const { length: itemslgth } = items
   const { length: datalgth } = dataSource
 
@@ -78,14 +69,6 @@ SelectAllCheckbox.propTypes = {
   listKey: PropTypes.string,
 }
 
-SelectAllCheckbox.defaultProps = {
-  CustomRender: {
-    CheckBox: Checkbox,
-  },
-  label: 'Select All',
-  listKey: null,
-  setItems: () => null,
-  onChange: () => null,
-}
+
 
 export default Checkbox

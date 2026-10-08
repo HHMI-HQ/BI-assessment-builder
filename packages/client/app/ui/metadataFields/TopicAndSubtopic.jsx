@@ -2,19 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Select } from '../common'
 
-const TopicAndSubtopic = props => {
-  const {
-    filterMode,
-    getFieldValue,
-    isRequired,
-    index,
-    readOnly,
-    setFieldsValue,
-    subtopicKey,
-    supplementaryKey,
-    topicKey,
-    topicsMetadata,
-  } = props
+const TopicAndSubtopic = ({ filterMode = false, getFieldValue, isRequired = false, index = 1, readOnly = false, setFieldsValue, subtopicKey = 'subtopic', supplementaryKey = '', topicKey = 'topic', topicsMetadata }) => {
 
   const topicName = supplementaryKey ? [index, topicKey] : topicKey
 
@@ -47,7 +35,7 @@ const TopicAndSubtopic = props => {
     const selectedTopic = getFieldValue(topicField)
 
     if (selectedTopic) {
-      return topicsMetadata.find(t => t.value === selectedTopic).subtopics
+      return topicsMetadata.find(t => t.value === selectedTopic)?.subtopics
     }
 
     const allSubtopics = topicsMetadata
@@ -122,14 +110,6 @@ TopicAndSubtopic.propTypes = {
   topicsMetadata: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 }
 
-TopicAndSubtopic.defaultProps = {
-  readOnly: false,
-  index: 1,
-  isRequired: false,
-  filterMode: false,
-  subtopicKey: 'subtopic',
-  supplementaryKey: '',
-  topicKey: 'topic',
-}
+
 
 export default TopicAndSubtopic

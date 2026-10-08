@@ -5,8 +5,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { th } from '@coko/client'
-import { TextArea } from '@coko/client'
+import { th , TextArea } from '@coko/client'
 
 import Button from '../common/Button'
 import Form from '../common/Form'
@@ -115,7 +114,7 @@ const ReportIssueButton = props => {
       />
       <Modal
         afterClose={() => document.body.querySelector('#report-issue').focus()}
-        destroyOnClose
+        destroyOnHidden
         footer={[
           <ModalFooter key="footer">
             <Button onClick={() => setShowReportModal(false)}>Cancel</Button>

@@ -4,8 +4,7 @@ import { uuid } from '@coko/client/dist'
 import { Form, Select } from '../common'
 import { mapMetadataToSelectOptions } from '../../utilities'
 
-const VisionAndChangeMetadata = props => {
-  const {
+const VisionAndChangeMetadata = ({
     conceptsAndCompetencies,
     filterMode,
     isRequired,
@@ -20,7 +19,7 @@ const VisionAndChangeMetadata = props => {
     subcompetenceStatementKey,
     supplementaryKey,
     index,
-  } = props
+  }) => {
 
   const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
 

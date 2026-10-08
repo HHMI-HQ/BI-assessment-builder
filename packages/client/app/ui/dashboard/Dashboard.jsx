@@ -294,7 +294,7 @@ const Dashboard = props => {
 
   return (
     <Wrapper>
-      <Spin renderBackground={false} spinning={loading}>
+      {/* <Spin renderBackground={false} spinning={loading}> */}
         <StyledTabs
           className={className}
           defaultActiveKey={initialTabKey}
@@ -344,7 +344,7 @@ const Dashboard = props => {
           onChange={handleTabChange}
           tabBarExtraContent={CreateQuestionButton}
         />
-      </Spin>
+      {/* </Spin> */}
     </Wrapper>
   )
 }

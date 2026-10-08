@@ -93,7 +93,7 @@ const ExportToWordButton = props => {
 
       <Modal
         afterClose={() => document.body.querySelector('#exportToWord').focus()}
-        destroyOnClose
+        destroyOnHidden
         footer={[
           <ModalFooter key="footer">
             <Button onClick={() => setShowModal(false)}>Cancel</Button>
@@ -128,7 +128,7 @@ const ExportToWordButton = props => {
       </Modal>
 
       <Modal
-        destroyOnClose
+        destroyOnHidden
         footer={[
           <ModalFooter key="footer">
             <Button onClick={() => setShowDependenciesModal(false)}>

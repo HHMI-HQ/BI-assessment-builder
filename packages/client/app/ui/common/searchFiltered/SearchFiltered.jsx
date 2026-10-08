@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { PropTypes, oneOfType } from 'prop-types'
 import styled from 'styled-components'
-import { th } from '@coko/client'
-import { VisuallyHiddenElement } from '@coko/client'
+import { th , VisuallyHiddenElement } from '@coko/client'
 
 import { Input } from 'antd'
 
@@ -80,15 +79,7 @@ the search button gets beyond the container limits and breaks the layout */
   }
 `
 
-const SearchFiltered = ({
-  searchOnChange,
-  filters,
-  placeholder,
-  onSearch,
-  loading,
-  ariaLabel,
-  ...rest
-}) => {
+const SearchFiltered = ({ searchOnChange = false, filters = ['author'], placeholder = 'Search...', onSearch = () => {}, loading = false, ariaLabel = 'Search Filtered', ...rest }) => {
   // #region hooks
   const searchRef = useRef(null)
 
@@ -420,14 +411,7 @@ const SearchFiltered = ({
   )
 }
 
-SearchFiltered.defaultProps = {
-  searchOnChange: false,
-  filters: ['author'],
-  placeholder: 'Search...',
-  onSearch: () => {},
-  loading: false,
-  ariaLabel: 'Search Filtered',
-}
+
 SearchFiltered.propTypes = {
   searchOnChange: PropTypes.bool,
   filters: PropTypes.arrayOf(

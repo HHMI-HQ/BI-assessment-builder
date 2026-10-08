@@ -97,7 +97,7 @@ const UserProfile = props => {
   if (currentUser.id === userId) {
     TODO
     // window.history.replaceState({}, '', '/profile')
-    return <Navigate to="/profile" replace />;
+    return <Navigate replace to="/profile" />;
   }
 
   const { data: userData, loading: userLoading } = useQuery(GET_USER_DATA, {
