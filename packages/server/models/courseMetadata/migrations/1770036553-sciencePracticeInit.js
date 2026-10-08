@@ -1,6 +1,6 @@
 const { logger } = require('@coko/server')
 
-exports.up = knex => {
+export const up = knex => {
   try {
     return knex.schema.createTable('science_practice', table => {
       table.uuid('id').primary()
@@ -21,4 +21,4 @@ exports.up = knex => {
   }
 }
 
-exports.down = knex => knex.schema.dropTable('science_practice')
+export const down = knex => knex.schema.dropTable('science_practice')

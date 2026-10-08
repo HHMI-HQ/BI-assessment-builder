@@ -1,4 +1,4 @@
-FROM cokoapps/base:20 as server
+FROM cokoapps/base:24 as server
 
 RUN apt-get update \ 
     && apt-get upgrade -y \

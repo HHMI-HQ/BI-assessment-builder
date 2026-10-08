@@ -1,5 +1,5 @@
 const { logger, useTransaction, subscriptionManager } = require('@coko/server')
-const { ChatChannel } = require('@coko/server/src/models')
+const { ChatChannel } = require('@coko/server/dist/models')
 const config = require('config')
 const { uniq } = require('lodash')
 

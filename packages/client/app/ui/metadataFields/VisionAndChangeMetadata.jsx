@@ -1,0 +1,469 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { uuid } from '@coko/client/dist'
+import { Form, Select } from '../common'
+import { mapMetadataToSelectOptions } from '../../utilities'
+
+const VisionAndChangeMetadata = ({
+    conceptsAndCompetencies,
+    filterMode,
+    isRequired,
+    getFieldValue,
+    readOnly,
+    setFieldsValue,
+    coreConceptKey,
+    subdisciplineKey,
+    subdisciplineStatementKey,
+    coreCompetenceKey,
+    subcompetenceKey,
+    subcompetenceStatementKey,
+    supplementaryKey,
+    index,
+  }) => {
+
+  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
+
+  const coreConceptName = supplementaryKey
+    ? [index, coreConceptKey]
+    : coreConceptKey
+
+  const coreConceptField = supplementaryKey
+    ? [supplementaryKey, index, coreConceptKey]
+    : coreConceptKey
+
+  const subdisciplineName = supplementaryKey
+    ? [index, subdisciplineKey]
+    : subdisciplineKey
+
+  const subdisciplineField = supplementaryKey
+    ? [supplementaryKey, index, subdisciplineKey]
+    : subdisciplineKey
+
+  const subdisciplineStatementName = supplementaryKey
+    ? [index, subdisciplineStatementKey]
+    : subdisciplineStatementKey
+
+  const coreCompetenceName = supplementaryKey
+    ? [index, coreCompetenceKey]
+    : coreCompetenceKey
+
+  const coreCompetenceField = supplementaryKey
+    ? [supplementaryKey, index, coreCompetenceKey]
+    : coreCompetenceKey
+
+  const subcompetenceName = supplementaryKey
+    ? [index, subcompetenceKey]
+    : subcompetenceKey
+
+  const subcompetenceField = supplementaryKey
+    ? [supplementaryKey, index, subcompetenceKey]
+    : subcompetenceKey
+
+  const subcompetenceStatementName = supplementaryKey
+    ? [index, subcompetenceStatementKey]
+    : subcompetenceStatementKey
+
+  const handleCoreConceptChange = () => {
+    if (supplementaryKey) {
+      const cloned = [...getFieldValue(supplementaryKey)]
+
+      cloned[index] = {
+        ...cloned[index],
+        [subdisciplineKey]: null,
+        [subdisciplineStatementKey]: null,
+      }
+
+      setFieldsValue({
+        [supplementaryKey]: cloned,
+      })
+    } else {
+      setFieldsValue({
+        [subdisciplineKey]: null,
+        [subdisciplineStatementKey]: null,
+      })
+    }
+  }
+
+  const handleSubdisciplineChange = () => {
+    if (supplementaryKey) {
+      const cloned = [...getFieldValue(supplementaryKey)]
+
+      cloned[index] = {
+        ...cloned[index],
+        [subdisciplineStatementKey]: null,
+      }
+
+      setFieldsValue({
+        [supplementaryKey]: cloned,
+      })
+    } else {
+      setFieldsValue({
+        [subdisciplineStatementKey]: null,
+      })
+    }
+  }
+
+  const handleCoreCompetenceChange = () => {
+    if (supplementaryKey) {
+      const cloned = [...getFieldValue(supplementaryKey)]
+
+      cloned[index] = {
+        ...cloned[index],
+        [subcompetenceKey]: null,
+        [subcompetenceStatementKey]: null,
+      }
+
+      setFieldsValue({
+        [supplementaryKey]: cloned,
+      })
+    } else {
+      setFieldsValue({
+        [subcompetenceKey]: null,
+        [subcompetenceStatementKey]: null,
+      })
+    }
+  }
+
+  const handleSubcompetenceChange = () => {
+    if (supplementaryKey) {
+      const cloned = [...getFieldValue(supplementaryKey)]
+
+      cloned[index] = {
+        ...cloned[index],
+        [subcompetenceStatementKey]: null,
+      }
+
+      setFieldsValue({
+        [supplementaryKey]: cloned,
+      })
+    } else {
+      setFieldsValue({
+        [subcompetenceStatementKey]: null,
+      })
+    }
+  }
+
+  const filterCoreConceptsOptions = () => {
+    return conceptsAndCompetencies.coreConcepts.map(c => ({
+      label: c.label,
+      value: c.value,
+    }))
+  }
+
+  const filterSubdisciplineOptions = () => {
+    const selectedCoreConcept = getFieldValue(coreConceptField)
+
+    return selectedCoreConcept
+      ? metadataMapper(
+          conceptsAndCompetencies.subdisciplines.filter(
+            s => s.coreConcept === selectedCoreConcept,
+          ),
+        )
+      : metadataMapper(conceptsAndCompetencies.subdisciplines)
+  }
+
+  const filterSubdisciplineStatementOptions = () => {
+    const selectedCoreConcept = getFieldValue(coreConceptField)
+    const selectedSubdiscipline = getFieldValue(subdisciplineField)
+
+    if (selectedCoreConcept && !selectedSubdiscipline) {
+      return metadataMapper(
+        conceptsAndCompetencies.subdisciplineStatements.filter(
+          s => s.coreConcept === selectedCoreConcept,
+        ),
+      )
+    }
+
+    if (!selectedCoreConcept && selectedSubdiscipline) {
+      return metadataMapper(
+        conceptsAndCompetencies.subdisciplineStatements.filter(
+          s => s.subdiscipline === selectedSubdiscipline,
+        ),
+      )
+    }
+
+    if (selectedCoreConcept && selectedSubdiscipline) {
+      return metadataMapper(
+        conceptsAndCompetencies.subdisciplineStatements.filter(
+          s =>
+            s.subdiscipline === selectedSubdiscipline &&
+            s.coreConcept === selectedCoreConcept,
+        ),
+      )
+    }
+
+    return conceptsAndCompetencies.subdisciplineStatements?.map(s => ({
+      label: s.label,
+      value: s.value,
+    }))
+  }
+
+  const filterCoreCompetenceOptions = () => {
+    return conceptsAndCompetencies.coreCompetencies.map(c => ({
+      label: c.label,
+      value: c.value,
+    }))
+  }
+
+  const filterSubcompetenceOptions = () => {
+    const selectedCoreCompetence = getFieldValue(coreCompetenceField)
+
+    if (selectedCoreCompetence) {
+      return conceptsAndCompetencies.subcompetencies
+        .filter(s => s.coreCompetence === selectedCoreCompetence)
+        .map(s => ({
+          label: s.label,
+          value: s.value,
+        }))
+    }
+
+    return conceptsAndCompetencies.subcompetencies?.map(s => ({
+      label: s.label,
+      value: s.value,
+    }))
+  }
+
+  const filterSubcompetenceStatementOptions = () => {
+    const selectedCoreCompetence = getFieldValue(coreCompetenceField)
+    const selectedSubcompetence = getFieldValue(subcompetenceField)
+
+    if (selectedSubcompetence) {
+      return conceptsAndCompetencies.subcompetenceStatements
+        .filter(s => s.subcompetence === selectedSubcompetence)
+        .map(s => ({
+          label: s.label,
+          value: s.value,
+        }))
+    }
+
+    if (selectedCoreCompetence) {
+      return conceptsAndCompetencies.subcompetenceStatements
+        .filter(s => s.coreCompetence === selectedCoreCompetence)
+        .map(s => ({
+          label: s.label,
+          value: s.value,
+        }))
+    }
+
+    return conceptsAndCompetencies.subcompetenceStatements?.map(s => ({
+      label: s.label,
+      value: s.value,
+    }))
+  }
+
+  const displaySubcompetenceExplanation = () => {
+    return conceptsAndCompetencies.subcompetencies.find(
+      c => c.value === getFieldValue(subcompetenceField),
+    ).explanation
+  }
+
+  return (
+    <>
+      <p>Vision and Change Framework</p>
+      <Form.Item
+        label="Core Concept"
+        name={coreConceptName}
+        rules={[
+          isRequired
+            ? { required: true, message: 'Core concept is required' }
+            : {},
+        ]}
+      >
+        <Select
+          allowClear
+          disabled={readOnly}
+          onChange={handleCoreConceptChange}
+          optionFilterProp="label"
+          options={filterCoreConceptsOptions()}
+          showSearch
+          wrapOptionText
+        />
+      </Form.Item>
+      <Form.Item dependencies={[coreConceptField]} noStyle>
+        {() => (
+          <>
+            {getFieldValue(coreConceptField) && (
+              <div>
+                <h4>Overarching Principles</h4>
+                <ul>
+                  {conceptsAndCompetencies.coreConcepts
+                    .find(c => c.value === getFieldValue(coreConceptField))
+                    .explanatoryItems.map(item => (
+                      <li key={uuid()}>{item}</li>
+                    ))}
+                </ul>
+              </div>
+            )}
+            <Form.Item
+              label="Subdiscipline"
+              name={subdisciplineName}
+              rules={[
+                isRequired
+                  ? { required: true, message: 'Subdiscipline is required' }
+                  : {},
+              ]}
+            >
+              <Select
+                allowClear
+                disabled={
+                  readOnly || (!filterMode && !getFieldValue(coreConceptField))
+                }
+                onChange={handleSubdisciplineChange}
+                optionFilterProp="label"
+                options={filterSubdisciplineOptions()}
+                showSearch
+                wrapOptionText
+              />
+            </Form.Item>
+          </>
+        )}
+      </Form.Item>
+      <Form.Item dependencies={[coreConceptField, subdisciplineField]} noStyle>
+        {() => (
+          <Form.Item
+            label="Subdiscipline Statement"
+            name={subdisciplineStatementName}
+            rules={[
+              isRequired
+                ? {
+                    required: true,
+                    message: 'Subdiscipline Statement is required',
+                  }
+                : {},
+            ]}
+          >
+            <Select
+              allowClear
+              disabled={
+                readOnly || (!filterMode && !getFieldValue(subdisciplineField))
+              }
+              optionFilterProp="label"
+              options={filterSubdisciplineStatementOptions()}
+              showSearch
+              wrapOptionText
+            />
+          </Form.Item>
+        )}
+      </Form.Item>
+      <Form.Item
+        label="Core Competence"
+        name={coreCompetenceName}
+        rules={[
+          isRequired
+            ? {
+                required: true,
+                message: 'Core competence is required',
+              }
+            : {},
+        ]}
+      >
+        <Select
+          allowClear
+          disabled={readOnly}
+          onChange={handleCoreCompetenceChange}
+          optionFilterProp="label"
+          options={filterCoreCompetenceOptions()}
+          showSearch
+          wrapOptionText
+        />
+      </Form.Item>
+      <Form.Item dependencies={[coreCompetenceField]} noStyle>
+        {() => (
+          <Form.Item
+            label="Subcompetence"
+            name={subcompetenceName}
+            rules={[
+              isRequired
+                ? {
+                    required: true,
+                    message: 'Subcompetence is required',
+                  }
+                : {},
+            ]}
+          >
+            <Select
+              allowClear
+              disabled={
+                readOnly || (!filterMode && !getFieldValue(coreCompetenceField))
+              }
+              onChange={handleSubcompetenceChange}
+              optionFilterProp="label"
+              options={filterSubcompetenceOptions()}
+              showSearch
+              wrapOptionText
+            />
+          </Form.Item>
+        )}
+      </Form.Item>
+      <Form.Item
+        dependencies={[coreCompetenceField, subcompetenceField]}
+        noStyle
+      >
+        {() => (
+          <>
+            {getFieldValue(subcompetenceField) && (
+              <p>{displaySubcompetenceExplanation()}</p>
+            )}
+            <Form.Item
+              label="Subcompetence Statement"
+              name={subcompetenceStatementName}
+              rules={[
+                isRequired
+                  ? {
+                      required: true,
+                      message: 'Subcompetence Statement is required',
+                    }
+                  : {},
+              ]}
+            >
+              <Select
+                allowClear
+                disabled={
+                  readOnly ||
+                  (!filterMode && !getFieldValue(subcompetenceField))
+                }
+                optionFilterProp="label"
+                options={filterSubcompetenceStatementOptions()}
+                showSearch
+                wrapOptionText
+              />
+            </Form.Item>
+          </>
+        )}
+      </Form.Item>
+    </>
+  )
+}
+
+VisionAndChangeMetadata.propTypes = {
+  conceptsAndCompetencies: PropTypes.shape().isRequired,
+  filterMode: PropTypes.bool,
+  getFieldValue: PropTypes.func.isRequired,
+  isRequired: PropTypes.bool,
+  readOnly: PropTypes.bool,
+  setFieldsValue: PropTypes.func.isRequired,
+  coreConceptKey: PropTypes.string,
+  subdisciplineKey: PropTypes.string,
+  subdisciplineStatementKey: PropTypes.string,
+  coreCompetenceKey: PropTypes.string,
+  subcompetenceKey: PropTypes.string,
+  subcompetenceStatementKey: PropTypes.string,
+  supplementaryKey: PropTypes.string,
+  index: PropTypes.number,
+}
+
+VisionAndChangeMetadata.defaultProps = {
+  readOnly: false,
+  isRequired: false,
+  filterMode: false,
+  coreConceptKey: 'coreConcept',
+  subdisciplineKey: 'subdiscipline',
+  subdisciplineStatementKey: 'subdisciplineStatement',
+  coreCompetenceKey: 'coreCompetence',
+  subcompetenceKey: 'subcompetence',
+  subcompetenceStatementKey: 'subcompetenceStatement',
+  supplementaryKey: '',
+  index: 0,
+}
+
+export default VisionAndChangeMetadata

@@ -2,7 +2,7 @@
 
 const { name, internet } = require('faker')
 
-const Identity = require('@coko/server/src/models/identity/identity.model')
+const Identity = require('@coko/server/dist/models/identity/identity.model')
 const User = require('../../user/user.model')
 
 const createUser = async => {

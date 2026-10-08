@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "packageManager": "yarn@4.9.2",
-  "author": "Yannis Barlas",
+  "author": "Grigor Malo <grigormalo@pm.me>",
   "main": "index.js",
   "scripts": {
     "clean": "sh clean.sh",

@@ -51,4 +51,4 @@ export {
   Ribbon,
   Switch,
   VisuallyHiddenElement,
-} from '@coko/client/dist/ui'
+} from '@coko/client'
