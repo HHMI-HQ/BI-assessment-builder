@@ -1,19 +1,21 @@
+/* eslint-disable promise/catch-or-return */
 const {
   BaseModel,
   modelJsonSchemaTypes: { boolean, stringNullable },
   ChatChannel,
+  config,
+  db,
+  logger,
 } = require('@coko/server')
-
-// eslint-disable-next-line import/no-extraneous-dependencies
-const { db } = require('@coko/server')
-const config = require('config')
 
 const QuestionVersion = require('../questionVersion/questionVersion.model')
 const User = require('../user/user.model')
 const { applyListQueryOptions, hasRoleHelper } = require('../helpers')
 const { REVIEWER_STATUSES } = require('../../controllers/constants')
 
-const REVIEWER_TEAM = config.teams.nonGlobal.find(t => t.role === 'reviewer')
+const REVIEWER_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'reviewer')
 
 class Question extends BaseModel {
   static get tableName() {
@@ -68,7 +70,7 @@ class Question extends BaseModel {
         .select('questions.*')
         .findOne('questions.id', questionId)
     } catch (err) {
-      console.error(err)
+      logger.error(err)
       throw new Error(err)
     }
   }
@@ -372,9 +374,7 @@ class Question extends BaseModel {
           applyListQueryOptions(parentQuery, {
             orderBy: options.orderBy,
             ascending: options.ascending,
-          }).then(result => {
-            resolve(result.result.map(q => q.id))
-          })
+          }).then(result => resolve(result.result.map(q => q.id)))
         }),
       ])
 
@@ -383,7 +383,7 @@ class Question extends BaseModel {
         relatedQuestionsIds: response[1],
       }
     } catch (e) {
-      console.error('Question model: filter failed', e)
+      logger.error('Question model: filter failed', e)
       throw new Error(e)
     }
   }
@@ -417,7 +417,7 @@ class Question extends BaseModel {
 
       return questions.result.map(q => q.id)
     } catch (e) {
-      console.error('Question model: getPublishedQuestionsIds failed', e)
+      logger.error('Question model: getPublishedQuestionsIds failed', e)
       throw new Error(e)
     }
   }
@@ -982,7 +982,7 @@ class Question extends BaseModel {
         },
       ]
     } catch (e) {
-      console.error('Question model: getAuthor failed', e)
+      logger.error('Question model: getAuthor failed', e)
       // throw new Error(e)
       // return null to show question even when user does not exist
       return null
@@ -999,7 +999,7 @@ class Question extends BaseModel {
         .select('users.*', 'teams.object_id')
         .where({ 'teams.role': 'handlingEditor', 'teams.objectId': questionId })
     } catch (e) {
-      console.error('Question model: getHandlingEditors failed', e)
+      logger.error('Question model: getHandlingEditors failed', e)
       throw new Error(e)
     }
   }
@@ -1018,7 +1018,7 @@ class Question extends BaseModel {
 
       return chat?.id
     } catch (e) {
-      console.error('Question model: getChatThread failed', e)
+      logger.error('Question model: getChatThread failed', e)
       throw new Error(e)
     }
   }

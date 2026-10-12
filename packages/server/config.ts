@@ -1,10 +1,9 @@
-import path from 'path'
-import components from './config/components'
-
-// import permissions from './permissions'
-import productionChatActivityNotification  from './services/chatActivityNotifications'
-import emptyTempFolder from './services/emptyTemp'
-import { password } from '@coko/server/dist/models/_helpers/types'
+// import path from "path";
+const components = require('./config/components')
+// const permissions = require("./permissions.js");
+// import productionChatActivityNotification from "./services/chatActivityNotifications";
+// import emptyTempFolder from "./services/emptyTemp";
+// import { password } from "@coko/server/dist/models/_helpers/types";
 
 export default {
   // passwordReset: {
@@ -30,13 +29,15 @@ export default {
   port: 3000,
   // useFileStorage: true,
   useGraphQLServer: true,
-  adminUser: {
-    username: "admin",
-    email: "admin0@hhmi.org",
-    password: "Password@123"
-  },
+  adminUser: false,
+  // adminUser: {
+  //   username: "admin",
+  //   email: "admin0@hhmi.org",
+  //   password: "Password@123",
+  // },
   mailer: false,
   sentry: false,
+  serverUrl: 'localhost:3000',
   // protocol: 'http',
   // externalServerURL: undefined,
   // onStartup: [
@@ -49,48 +50,48 @@ export default {
   //     },
   //   },
   // ],
-  // teams: {
-  //   global: [
-  //     {
-  //       displayName: 'Managing Editor',
-  //       role: 'editor',
-  //     },
-  //     {
-  //       displayName: 'Handling Editor',
-  //       role: 'handlingEditor',
-  //     },
-  //     {
-  //       displayName: 'Reviewer',
-  //       role: 'reviewer',
-  //     },
-  //     {
-  //       displayName: 'Production',
-  //       role: 'production',
-  //     },
-  //     {
-  //       displayName: 'Admin',
-  //       role: 'admin',
-  //     },
-  //   ],
-  //   nonGlobal: [
-  //     {
-  //       displayName: 'Managing Editor',
-  //       role: 'editor',
-  //     },
-  //     {
-  //       displayName: 'Handling Editor',
-  //       role: 'handlingEditor',
-  //     },
-  //     {
-  //       displayName: 'Author',
-  //       role: 'author',
-  //     },
-  //     {
-  //       displayName: 'Reviewer',
-  //       role: 'reviewer',
-  //     },
-  //   ],
-  // },
+  teams: {
+    global: [
+      {
+        displayName: 'Managing Editor',
+        role: 'editor',
+      },
+      {
+        displayName: 'Handling Editor',
+        role: 'handlingEditor',
+      },
+      {
+        displayName: 'Reviewer',
+        role: 'reviewer',
+      },
+      {
+        displayName: 'Production',
+        role: 'production',
+      },
+      // {
+      //   displayName: "Admin",
+      //   role: "admin",
+      // },
+    ],
+    nonGlobal: [
+      {
+        displayName: 'Managing Editor',
+        role: 'editor',
+      },
+      {
+        displayName: 'Handling Editor',
+        role: 'handlingEditor',
+      },
+      {
+        displayName: 'Author',
+        role: 'author',
+      },
+      {
+        displayName: 'Reviewer',
+        role: 'reviewer',
+      },
+    ],
+  },
   // jobQueues: [
   //   {
   //     name: 'notify-production-chat-activity',

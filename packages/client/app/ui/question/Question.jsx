@@ -594,8 +594,6 @@ const Question = props => {
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [currentReviewResponses, setCurrentReviewResponses] = useState({})
   const [reviewerIndex, setReviewerIndex] = useState(0)
-  // const [showFeedbackModal, setShowFeedbackModal] = useState(false)
-  // const [nodeContent, setNodeContent] = useState({})
 
   useEffect(() => {
     const submittedReviews = reviewerPool.filter(r => r.reviewSubmitted)

@@ -14,7 +14,9 @@ const {
 const config = require('config')
 const { applyListQueryOptions } = require('../helpers')
 
-const REVIEWER_TEAM = config.teams.nonGlobal.find(t => t.role === 'reviewer')
+const REVIEWER_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'reviewer')
 
 class User extends UserModel {
   static get schema() {
