@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th } from '@coko/client'
-import { List, H1 } from '../common'
-import TeamManagerBlock from './TeamManagerBlock'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th } from "@coko/client";
+import { List, H1 } from "../common";
+import TeamManagerBlock from "./TeamManagerBlock";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -17,40 +17,38 @@ const Wrapper = styled.div`
       flex-grow: 1;
     }
   }
-`
+`;
 
 const PageHeader = styled(H1)`
   margin: 0 auto;
   text-align: center;
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     margin: ${grid(2)} auto;
   }
-`
+`;
 
 const StyledSection = styled.section`
-  background: ${th('colorBackground')};
+  background: ${th("colorBackground")};
   padding: ${grid(4)};
-`
+`;
 
-const TeamManagerList = props => {
-  const {
-    className,
-    loading,
-    locale,
-    teams,
-    onAdd,
-    onRemove,
-    onRowSelectionChange,
-    onSearch,
-    searchLoading,
-    searchOptions,
-  } = props
-
+const TeamManagerList = ({
+  className,
+  loading = false,
+  locale = null,
+  teams = [],
+  onAdd = () => {},
+  onRemove = () => {},
+  onRowSelectionChange = () => {},
+  onSearch = () => {},
+  searchLoading = false,
+  searchOptions = [],
+}) => {
   const mergedLocale = {
     emptyText: <div role="status">Loading</div>,
     ...locale,
-  }
+  };
 
   return (
     <Wrapper className={className}>
@@ -64,7 +62,7 @@ const TeamManagerList = props => {
           loading={loading}
           locale={mergedLocale}
           onSearch={onSearch}
-          renderItem={item => (
+          renderItem={(item) => (
             <TeamManagerBlock
               className={className}
               displayName={item.displayName}
@@ -82,8 +80,8 @@ const TeamManagerList = props => {
         />
       </StyledSection>
     </Wrapper>
-  )
-}
+  );
+};
 
 TeamManagerList.propTypes = {
   loading: PropTypes.bool,
@@ -112,18 +110,8 @@ TeamManagerList.propTypes = {
       value: PropTypes.string,
     }),
   ),
-}
+};
 
-TeamManagerList.defaultProps = {
-  loading: false,
-  locale: null,
-  teams: [],
-  onAdd: () => {},
-  onRemove: () => {},
-  onRowSelectionChange: () => {},
-  onSearch: () => {},
-  searchLoading: false,
-  searchOptions: [],
-}
+TeamManagerList.defaultProps = {};
 
-export default TeamManagerList
+export default TeamManagerList;
