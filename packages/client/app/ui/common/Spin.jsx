@@ -118,9 +118,6 @@ const SpinOld = (props) => {
 };
 
 const Spin = ({ size = "medium", fullscreen = true, ...rest }) => {
-  console.log(th("colorPrimary"));
-  console.log(th);
-
   const stylesObject = {
     root: {
       backgroundColor: "#aaa5",

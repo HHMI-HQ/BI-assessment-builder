@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client/react'
-import { serverUrl } from '@coko/client'
-import { MyLists, Link } from 'ui'
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { serverUrl } from "@coko/client";
+import { MyLists, Link } from "ui";
 import {
   GET_LISTS,
   CREATE_LIST,
@@ -9,18 +9,18 @@ import {
   DELETE_LISTS,
   EXPORT_LIST,
   EXPORT_LIST_QTI,
-} from '../graphql'
+} from "../graphql";
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 10;
 
 const ListsPage = () => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [order, setOrder] = useState({
-    orderBy: 'created',
+    orderBy: "created",
     ascending: true,
-  })
+  });
 
   const {
     data: { myLists: { result: lists, totalCount } = {} } = {},
@@ -33,32 +33,32 @@ const ListsPage = () => {
       orderBy: order.orderBy,
       ascending: order.ascending,
     },
-  })
+  });
 
   const [createNewList] = useMutation(CREATE_LIST, {
     refetchQueries: [GET_LISTS],
-  })
+  });
 
   const [renameList] = useMutation(EDIT_LIST, {
     refetchQueries: [GET_LISTS],
-  })
+  });
 
   const [deleteLists] = useMutation(DELETE_LISTS, {
     refetchQueries: [GET_LISTS],
-  })
+  });
 
-  const [exportListMutation] = useMutation(EXPORT_LIST)
-  const [exportListToQTIMutation] = useMutation(EXPORT_LIST_QTI)
+  const [exportListMutation] = useMutation(EXPORT_LIST);
+  const [exportListToQTIMutation] = useMutation(EXPORT_LIST_QTI);
 
-  const handleCreateList = title => {
+  const handleCreateList = (title) => {
     const mutationData = {
       variables: {
         title,
       },
-    }
+    };
 
-    return createNewList(mutationData)
-  }
+    return createNewList(mutationData);
+  };
 
   const handleRenameList = (listId, title) => {
     const mutationData = {
@@ -66,77 +66,77 @@ const ListsPage = () => {
         listId,
         title,
       },
-    }
+    };
 
-    return renameList(mutationData)
-  }
+    return renameList(mutationData);
+  };
 
-  const handleDelete = selectedLits => {
+  const handleDelete = (selectedLits) => {
     const mutationData = {
       variables: {
         ids: selectedLits,
       },
-    }
+    };
 
-    deleteLists(mutationData)
-  }
+    deleteLists(mutationData);
+  };
 
   const handleSort = (orderBy, ascending) => {
-    setOrder({ orderBy, ascending })
-  }
+    setOrder({ orderBy, ascending });
+  };
 
   const handleExport = async (listId, showFeedback, showMetadata) => {
     const mutationData = {
       variables: {
         listId,
-        orderBy: 'custom',
+        orderBy: "custom",
         options: {
           showFeedback,
           showMetadata,
         },
       },
-    }
+    };
 
     return exportListMutation(mutationData)
-      .then(res => {
-        const filename = res.data.exportList
-        const url = `${serverUrl}/api/download/${filename}`
-        window.location.assign(url)
+      .then((res) => {
+        const filename = res.data.exportList;
+        const url = `${serverUrl}/api/download/${filename}`;
+        window.location.assign(url);
       })
-      .catch(e => {
-        console.error(e)
+      .catch((e) => {
+        console.error(e);
         return new Promise((_resolve, reject) => {
-          reject(e.message)
-        })
-      })
-  }
+          reject(e.message);
+        });
+      });
+  };
 
-  const handleExportQTI = listId => {
+  const handleExportQTI = (listId) => {
     const mutationData = {
       variables: {
         listId,
-        orderBy: 'custom',
+        orderBy: "custom",
       },
-    }
+    };
 
     return exportListToQTIMutation(mutationData)
-      .then(res => {
-        const filename = res.data.exportListQTI
-        const url = `${serverUrl}/api/download/${filename}`
-        window.location.assign(url)
+      .then((res) => {
+        const filename = res.data.exportListQTI;
+        const url = `${serverUrl}/api/download/${filename}`;
+        window.location.assign(url);
       })
-      .catch(e => {
-        console.error(e)
+      .catch((e) => {
+        console.error(e);
         return new Promise((_resolve, reject) => {
-          reject(e.message)
-        })
-      })
-  }
+          reject(e.message);
+        });
+      });
+  };
 
   return (
     <MyLists
       currentPage={currentPage}
-      data={lists?.map(list => ({
+      data={lists?.map((list) => ({
         key: list.id,
         title: <Link to={`/list/${list.id}`}>{list.title}</Link>,
         created: list.created,
@@ -144,7 +144,7 @@ const ListsPage = () => {
         onRenameList: handleRenameList,
         numberOfQuestions: list.questions?.result.length,
         numberOfNumericalQuestions: list.questions?.result.filter(
-          q => q.versions[0].questionType === 'numerical',
+          (q) => q.versions[0].questionType === "numerical",
         ).length,
       }))}
       loading={loading}
@@ -159,11 +159,11 @@ const ListsPage = () => {
       pageSize={PAGE_SIZE}
       totalListCount={totalCount}
     />
-  )
-}
+  );
+};
 
-ListsPage.propTypes = {}
+ListsPage.propTypes = {};
 
-ListsPage.defaultProps = {}
+ListsPage.defaultProps = {};
 
-export default ListsPage
+export default ListsPage;

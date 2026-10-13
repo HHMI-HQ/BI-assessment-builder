@@ -1,9 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { createContext, useState } from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import { th, grid } from '@coko/client'
-import { CaretDownFilled, CaretUpFilled, EditOutlined } from '@ant-design/icons'
+import React, { createContext, useState } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { th, grid } from "@coko/client";
+import {
+  CaretDownFilled,
+  CaretUpFilled,
+  EditOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Input,
@@ -14,11 +18,11 @@ import {
   DateParser,
   Form,
   Popup,
-} from '../common'
-import ExportListToWordButton from './ExportModal'
+} from "../common";
+import ExportListToWordButton from "./ExportModal";
 
 const MyListWrapper = styled.section`
-  background: ${th('colorBackground')};
+  background: ${th("colorBackground")};
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -35,7 +39,7 @@ const MyListWrapper = styled.section`
   .ant-table-column-sorter {
     display: none;
   }
-`
+`;
 
 const ListActions = styled.div`
   display: flex;
@@ -43,14 +47,14 @@ const ListActions = styled.div`
   justify-content: space-between;
   padding: 10px;
   width: 100%;
-`
+`;
 
 const StyledForm = styled(Form)`
   align-items: baseline;
   display: flex;
   justify-content: flex-end;
   padding-block: ${grid(5)} ${grid(2)};
-`
+`;
 
 const StyledCheckBox = styled(Checkbox)`
   align-items: center;
@@ -65,21 +69,21 @@ const StyledCheckBox = styled(Checkbox)`
   &::after {
     display: none;
   }
-`
+`;
 
 const LoadingText = styled.div`
   color: transparent;
-`
+`;
 
 const InfoButton = styled(Button)`
   background-color: transparent;
   border: none;
-`
+`;
 
 const StyledPopup = styled(Popup)`
   border-radius: 0;
   padding: ${grid(3)};
-`
+`;
 
 const PopupForm = styled(Form)`
   display: flex;
@@ -96,23 +100,23 @@ const PopupForm = styled(Form)`
 
     width: 100%;
   }
-`
+`;
 
 const ExportActionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${grid(2)};
-`
+`;
 
-const ModalContext = createContext(null)
+const ModalContext = createContext(null);
 
-const ModalFooter = Modal.footer
-const ModalHeader = Modal.header
+const ModalFooter = Modal.footer;
+const ModalHeader = Modal.header;
 
 const RenderRenameColumn = (_, record) => {
-  const { key, onRenameList, titleText } = record
+  const { key, onRenameList, titleText } = record;
 
-  const popupId = `${titleText.split(' ').join('-')}-rename`
+  const popupId = `${titleText.split(" ").join("-")}-rename`;
 
   return (
     <StyledPopup
@@ -136,11 +140,11 @@ const RenderRenameColumn = (_, record) => {
               validator(__, value) {
                 return new Promise((resolve, reject) => {
                   if (!value || value === titleText) {
-                    reject(new Error('Enter a new name'))
+                    reject(new Error("Enter a new name"));
                   } else {
-                    resolve()
+                    resolve();
                   }
-                })
+                });
               },
             },
           ]}
@@ -151,7 +155,7 @@ const RenderRenameColumn = (_, record) => {
             id={`${popupId}-input`}
             name="renameList"
             placeholder="List name"
-            style={{ width: '140px' }}
+            style={{ width: "140px" }}
           />
         </Form.Item>
         <Form.Item>
@@ -161,25 +165,25 @@ const RenderRenameColumn = (_, record) => {
         </Form.Item>
       </PopupForm>
     </StyledPopup>
-  )
-}
+  );
+};
 
 const columns = [
   {
     title: ({ sortColumns }) => {
       const sortedColumn = sortColumns?.find(
-        ({ column }) => column.key === 'title',
-      )
+        ({ column }) => column.key === "title",
+      );
 
-      let icon
+      let icon;
 
       if (sortedColumn) {
         icon =
-          sortedColumn.order === 'ascend'
+          sortedColumn.order === "ascend"
             ? (icon = <CaretUpFilled aria-hidden="true" />)
-            : (icon = <CaretDownFilled aria-hidden="true" />)
+            : (icon = <CaretDownFilled aria-hidden="true" />);
       } else {
-        icon = <CaretUpFilled aria-hidden="true" />
+        icon = <CaretUpFilled aria-hidden="true" />;
       }
 
       return (
@@ -187,11 +191,11 @@ const columns = [
           Name
           {icon}
         </div>
-      )
+      );
     },
-    dataIndex: 'title',
-    key: 'title',
-    width: '60%',
+    dataIndex: "title",
+    key: "title",
+    width: "60%",
     style: {
       border: 0,
     },
@@ -200,18 +204,18 @@ const columns = [
   {
     title: ({ sortColumns }) => {
       const sortedColumn = sortColumns?.find(
-        ({ column }) => column.key === 'created',
-      )
+        ({ column }) => column.key === "created",
+      );
 
-      let icon
+      let icon;
 
       if (sortedColumn) {
         icon =
-          sortedColumn.order === 'ascend'
+          sortedColumn.order === "ascend"
             ? (icon = <CaretUpFilled aria-hidden="true" />)
-            : (icon = <CaretDownFilled aria-hidden="true" />)
+            : (icon = <CaretDownFilled aria-hidden="true" />);
       } else {
-        icon = <CaretDownFilled aria-hidden="true" />
+        icon = <CaretDownFilled aria-hidden="true" />;
       }
 
       return (
@@ -219,13 +223,13 @@ const columns = [
           Creation Date
           {icon}
         </div>
-      )
+      );
     },
-    dataIndex: 'created',
-    key: 'created',
-    render: date => (
+    dataIndex: "created",
+    key: "created",
+    render: (date) => (
       <DateParser dateFormat="MMMM DD, YYYY" timestamp={date}>
-        {timestamp => timestamp}
+        {(timestamp) => timestamp}
       </DateParser>
     ),
     style: {
@@ -234,13 +238,13 @@ const columns = [
     sorter: true,
   },
   {
-    dataIndex: 'rename',
-    key: 'rename',
+    dataIndex: "rename",
+    key: "rename",
     render: RenderRenameColumn,
   },
-]
+];
 
-const MyLists = props => {
+const MyLists = (props) => {
   const {
     currentPage,
     data,
@@ -255,28 +259,28 @@ const MyLists = props => {
     onSort,
     pageSize,
     totalListCount,
-  } = props
+  } = props;
 
-  const [selectedRows, setSelectedRows] = useState([])
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm, error, warning } = modal
-  const [newListForm] = Form.useForm()
+  const [modal, contextHolder] = Modal.useModal();
+  const { confirm, error, warning } = modal;
+  const [newListForm] = Form.useForm();
 
-  const handleSelectionChange = selectedRowKey => {
-    setSelectedRows(selectedRowKey)
-  }
+  const handleSelectionChange = (selectedRowKey) => {
+    setSelectedRows(selectedRowKey);
+  };
 
   const handleExportList = (showFeedback, showMetadata) => {
-    return onExport(selectedRows[0], showFeedback, showMetadata)
-  }
+    return onExport(selectedRows[0], showFeedback, showMetadata);
+  };
 
   const handleExportListQTI = () => {
-    const listToExport = data.find(l => l.key === selectedRows[0])
-    const { numberOfQuestions, numberOfNumericalQuestions } = listToExport
+    const listToExport = data.find((l) => l.key === selectedRows[0]);
+    const { numberOfQuestions, numberOfNumericalQuestions } = listToExport;
 
     if (numberOfNumericalQuestions > 0) {
-      const warningModal = warning()
+      const warningModal = warning();
 
       if (numberOfNumericalQuestions < numberOfQuestions) {
         warningModal.update({
@@ -295,8 +299,8 @@ const MyLists = props => {
                 autoFocus
                 key="warning-continue"
                 onClick={() => {
-                  exportToQti()
-                  warningModal.destroy()
+                  exportToQti();
+                  warningModal.destroy();
                 }}
                 type="primary"
               >
@@ -304,7 +308,7 @@ const MyLists = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
+        });
       } else {
         warningModal.update({
           title: <ModalHeader>List contains numerical answers</ModalHeader>,
@@ -321,25 +325,25 @@ const MyLists = props => {
                 autoFocus
                 key="ok-error"
                 onClick={() => {
-                  warningModal.destroy()
+                  warningModal.destroy();
                 }}
               >
                 Ok
               </Button>
             </ModalFooter>,
           ],
-        })
+        });
       }
     } else {
-      exportToQti()
+      exportToQti();
     }
-  }
+  };
 
   const exportToQti = () => {
     onExportQTI(selectedRows[0])
       .then(() => {})
-      .catch(e => {
-        const errorModal = error()
+      .catch((e) => {
+        const errorModal = error();
         errorModal.update({
           title: <ModalHeader>QTI export failed</ModalHeader>,
           content: e,
@@ -350,35 +354,35 @@ const MyLists = props => {
                 data-testid="error-export-btn"
                 key="ok-error"
                 onClick={() => {
-                  errorModal.destroy()
+                  errorModal.destroy();
                 }}
               >
                 Ok
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
-  }
+        });
+      });
+  };
 
   const handleDeleteRows = () => {
-    onDeleteRows(selectedRows)
-    setSelectedRows([])
-  }
+    onDeleteRows(selectedRows);
+    setSelectedRows([]);
+  };
 
   const handleCreateNewList = ({ newList }) =>
-    onCreateNewList(newList).then(() => newListForm.resetFields())
+    onCreateNewList(newList).then(() => newListForm.resetFields());
 
   const showConfirmDeleteModal = () => {
-    const confirmModal = confirm()
+    const confirmModal = confirm();
     confirmModal.update({
       title: (
         <ModalHeader>
-          Delete list{selectedRows.length > 1 ? 's' : ''}
+          Delete list{selectedRows.length > 1 ? "s" : ""}
         </ModalHeader>
       ),
       content: `Are you sure you want to delete the selected list${
-        selectedRows.length > 1 ? 's' : ''
+        selectedRows.length > 1 ? "s" : ""
       }?`,
       footer: [
         <ModalFooter key="footer">
@@ -390,8 +394,8 @@ const MyLists = props => {
             data-testid="confirm-delete-btn"
             key="delete"
             onClick={() => {
-              handleDeleteRows()
-              confirmModal.destroy()
+              handleDeleteRows();
+              confirmModal.destroy();
             }}
             status="danger"
           >
@@ -399,8 +403,8 @@ const MyLists = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const tableLocale = {
     emptyText: !loading ? (
@@ -413,29 +417,29 @@ const MyLists = props => {
       <LoadingText role="status">Loading</LoadingText>
     ),
     ...locale,
-  }
+  };
 
   const toggleSelectAll = () => {
-    setSelectedRows(rows =>
-      rows.length === data.length ? [] : data.map(d => d.key),
-    )
-  }
+    setSelectedRows((rows) =>
+      rows.length === data.length ? [] : data.map((d) => d.key),
+    );
+  };
 
-  const handleSearch = query => {
-    onSearch(query)
-  }
+  const handleSearch = (query) => {
+    onSearch(query);
+  };
 
-  const handlePageChange = pageNumber => {
-    setSelectedRows([])
-    onPageChange(pageNumber)
-  }
+  const handlePageChange = (pageNumber) => {
+    setSelectedRows([]);
+    onPageChange(pageNumber);
+  };
 
   const handleSort = (_, __, { column, order }) => {
-    const orderBy = column ? column.dataIndex : 'created'
-    const ascending = order !== 'descend'
+    const orderBy = column ? column.dataIndex : "created";
+    const ascending = order !== "descend";
 
-    onSort(orderBy, ascending)
-  }
+    onSort(orderBy, ascending);
+  };
 
   return (
     <ModalContext.Provider value={null}>
@@ -443,14 +447,14 @@ const MyLists = props => {
         <StyledForm
           form={newListForm}
           onFinish={handleCreateNewList}
-          onValuesChange={() => newListForm.validateFields(['newList'])}
+          onValuesChange={() => newListForm.validateFields(["newList"])}
         >
           <Form.Item
             name="newList"
             rules={[
               {
                 required: true,
-                message: 'Please provide a name',
+                message: "Please provide a name",
               },
             ]}
             validateTrigger="onSubmit"
@@ -482,13 +486,14 @@ const MyLists = props => {
             total: totalListCount,
           }}
           rowSelection={{
-            columnWidth: '10%',
+            columnWidth: "10%",
             onChange: handleSelectionChange,
             selectedRowKeys: selectedRows,
             columnTitle: (
               <StyledCheckBox
                 checked={
-                  selectedRows.length === data?.length && selectedRows.length > 0
+                  selectedRows.length === data?.length &&
+                  selectedRows.length > 0
                 }
                 indeterminate={
                   selectedRows.length > 0 && selectedRows.length < data?.length
@@ -500,8 +505,8 @@ const MyLists = props => {
             ),
             renderCell: (_, record, __, originNode) => {
               return React.cloneElement(originNode, {
-                'aria-label': `Select list ${record.title}`,
-              })
+                "aria-label": `Select list ${record.title}`,
+              });
             },
           }}
           searchPlaceholder="Search..."
@@ -525,7 +530,7 @@ const MyLists = props => {
             <ExportActionWrapper>
               <ExportListToWordButton
                 afterClose={() =>
-                  document.body.querySelector('#export-popup-toggle').focus()
+                  document.body.querySelector("#export-popup-toggle").focus()
                 }
                 disabled={selectedRows.length !== 1}
                 onExport={handleExportList}
@@ -556,8 +561,8 @@ const MyLists = props => {
       </MyListWrapper>
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 MyLists.propTypes = {
   currentPage: PropTypes.number.isRequired,
@@ -579,7 +584,7 @@ MyLists.propTypes = {
   onSort: PropTypes.func.isRequired,
   pageSize: PropTypes.number,
   totalListCount: PropTypes.number,
-}
+};
 
 MyLists.defaultProps = {
   data: [],
@@ -587,6 +592,6 @@ MyLists.defaultProps = {
   pageSize: 10,
   totalListCount: 0,
   locale: {},
-}
+};
 
-export default MyLists
+export default MyLists;
