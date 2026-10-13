@@ -2,12 +2,13 @@
  * Spinner code license here (MIT): https://github.com/tobiasahlin/SpinKit/blob/master/LICENSE
  */
 
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled, { css, keyframes } from 'styled-components'
-import { Spin as AntSpin } from 'antd'
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { css, keyframes } from "styled-components";
+import { Spin as AntSpin } from "antd";
 
-import { grid } from '@coko/client'
+import { grid, th } from "@coko/client";
+import theme from "../../theme";
 
 const StyledSpin = styled(({ isNested, renderBackground, ...rest }) => (
   <AntSpin {...rest} />
@@ -15,7 +16,7 @@ const StyledSpin = styled(({ isNested, renderBackground, ...rest }) => (
   &&& {
     max-height: unset;
   }
-  ${props =>
+  ${(props) =>
     props.isNested &&
     css`
       z-index: 4;
@@ -27,7 +28,7 @@ const StyledSpin = styled(({ isNested, renderBackground, ...rest }) => (
         margin: -20px;
       }
     `}
-`
+`;
 
 const bounce = keyframes`
   0%,
@@ -38,19 +39,19 @@ const bounce = keyframes`
   50% {
     transform: scale(1);
   }
-`
+`;
 
 const IndicatorWrapper = styled.div`
   &&& {
-    height: ${props => grid(props.size)};
+    height: ${(props) => grid(props.size)};
     position: relative;
-    width: ${props => grid(props.size)};
+    width: ${(props) => grid(props.size)};
   }
-`
+`;
 
 const BounceOne = styled.div`
   animation: ${bounce} 2s infinite ease-in-out;
-  background-color: ${props => props.theme.colorPrimary};
+  background-color: ${(props) => props.theme.colorPrimary};
   border-radius: 50%;
   height: 100%;
   left: 0;
@@ -58,11 +59,11 @@ const BounceOne = styled.div`
   position: absolute;
   top: 0;
   width: 100%;
-`
+`;
 
 const BounceTwo = styled(BounceOne)`
   animation-delay: -1s;
-`
+`;
 
 const NestedWrapper = styled.div`
   height: 100%;
@@ -78,24 +79,24 @@ const NestedWrapper = styled.div`
       }
     }
   }
-`
+`;
 
 export const Indicator = ({ size = 10, className }) => (
   <IndicatorWrapper className={className} size={size}>
     <BounceOne />
     <BounceTwo />
   </IndicatorWrapper>
-)
+);
 
 Indicator.propTypes = {
   size: PropTypes.number,
-}
+};
 
-const Spin = props => {
+const SpinOld = (props) => {
   const { className, children, renderBackground, size, spinning, ...rest } =
-    props
+    props;
 
-  const showChildren = renderBackground || (!renderBackground && !spinning)
+  const showChildren = renderBackground || (!renderBackground && !spinning);
 
   const spin = (
     <StyledSpin
@@ -108,23 +109,35 @@ const Spin = props => {
     >
       {showChildren && children}
     </StyledSpin>
-  )
+  );
 
   if (!showChildren)
-    return <NestedWrapper className={className}>{spin}</NestedWrapper>
+    return <NestedWrapper className={className}>{spin}</NestedWrapper>;
 
-  return spin
-}
+  return spin;
+};
 
-Spin.propTypes = {
-  size: PropTypes.number,
-  spinning: PropTypes.bool.isRequired,
-  renderBackground: PropTypes.bool,
-}
+const Spin = ({ size = "medium", fullscreen = true, ...rest }) => {
+  console.log(th("colorPrimary"));
+  console.log(th);
 
-Spin.defaultProps = {
-  size: 10,
-  renderBackground: true,
-}
+  const stylesObject = {
+    root: {
+      backgroundColor: "#aaa5",
+    },
+    indicator: {
+      color: theme.colorPrimary,
+    },
+  };
 
-export default Spin
+  return (
+    <AntSpin
+      fullscreen={fullscreen}
+      size={size}
+      styles={stylesObject}
+      {...rest}
+    />
+  );
+};
+
+export default Spin;

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useImperativeHandle, useRef } from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import Spin from './Spin'
+import React, { useState, useEffect, useImperativeHandle, useRef } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import Spin from "./Spin";
 
 const StyledIframe = styled.iframe`
   height: 100%;
   margin-bottom: -10px;
   width: 100%;
-`
+`;
 
 const Wrapper = styled.div`
   height: 100%;
@@ -19,41 +19,40 @@ const Wrapper = styled.div`
       height: 100%;
     }
   }
-`
+`;
 
 const Iframe = React.forwardRef((props, ref) => {
-  const { src, onLoad, ...otherProps } = props
-  const [loading, setLoading] = useState(true)
+  const { src, onLoad, ...otherProps } = props;
+  const [loading, setLoading] = useState(true);
 
-  const iframeRef = useRef(null)
+  const iframeRef = useRef(null);
 
-  useImperativeHandle(ref, () => iframeRef.current)
+  useImperativeHandle(ref, () => iframeRef.current);
 
   useEffect(() => {
     iframeRef.current.onload = () => {
       setTimeout(() => {
-        onLoad()
-        setLoading(false)
-      }, 500)
-    }
-  }, [])
+        onLoad();
+        setLoading(false);
+      }, 500);
+    };
+  }, []);
 
   return (
     <Wrapper>
-      <Spin renderBackground spinning={loading}>
-        <StyledIframe ref={iframeRef} src={src} {...otherProps} />
-      </Spin>
+      <StyledIframe ref={iframeRef} src={src} {...otherProps} />
+      <Spin renderBackground spinning={loading} size="large"></Spin>
     </Wrapper>
-  )
-})
+  );
+});
 
 Iframe.propTypes = {
   src: PropTypes.string.isRequired,
   onLoad: PropTypes.func,
-}
+};
 
 Iframe.defaultProps = {
   onLoad: () => {},
-}
+};
 
-export default Iframe
+export default Iframe;
