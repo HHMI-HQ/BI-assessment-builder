@@ -1,55 +1,53 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { mapMetadataToSelectOptions } from '../../utilities'
-import { Form, Select } from '../common'
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { mapMetadataToSelectOptions } from "../../utilities";
+import { Form, Select } from "../common";
 
-const IBCourseMetadata = props => {
-  const {
-    courseData,
-    filterMode,
-    getFieldValue,
-    isRequired,
-    readOnly,
-    setFieldsValue,
-    unitKey,
-    topicKey,
-    applicationKey,
-    skillKey,
-    understandingKey,
-    supplementaryKey,
-    index,
-    showIBoptionalFields,
-  } = props
+const IBCourseMetadata = ({
+  courseData,
+  getFieldValue,
+  setFieldsValue,
+  filterMode = false,
+  isRequired = false,
+  unitKey = "unit",
+  topicKey = "courseTopic",
+  applicationKey = "application",
+  skillKey = "skill",
+  understandingKey = "understanding",
+  readOnly = false,
+  supplementaryKey = "",
+  index = 0,
+  showIBoptionalFields = true,
+}) => {
+  const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
-  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
-
-  const unitName = supplementaryKey ? [index, unitKey] : unitKey
+  const unitName = supplementaryKey ? [index, unitKey] : unitKey;
 
   const unitField = supplementaryKey
     ? [supplementaryKey, index, unitKey]
-    : unitKey
+    : unitKey;
 
-  const topicName = supplementaryKey ? [index, topicKey] : topicKey
+  const topicName = supplementaryKey ? [index, topicKey] : topicKey;
 
   const topicField = supplementaryKey
     ? [supplementaryKey, index, topicKey]
-    : topicKey
+    : topicKey;
 
   const applicationName = supplementaryKey
     ? [index, applicationKey]
-    : applicationKey
+    : applicationKey;
 
-  const applicationField = [supplementaryKey, index, applicationKey]
+  const applicationField = [supplementaryKey, index, applicationKey];
 
-  const skillName = supplementaryKey ? [index, skillKey] : skillKey
+  const skillName = supplementaryKey ? [index, skillKey] : skillKey;
 
-  const skillField = [supplementaryKey, index, skillKey]
+  const skillField = [supplementaryKey, index, skillKey];
 
   const understandingName = supplementaryKey
     ? [index, understandingKey]
-    : understandingKey
+    : understandingKey;
 
-  const understandingField = [supplementaryKey, index, understandingKey]
+  const understandingField = [supplementaryKey, index, understandingKey];
 
   useEffect(() => {
     if (!supplementaryKey) {
@@ -59,14 +57,14 @@ const IBCourseMetadata = props => {
         [applicationKey]: null,
         [skillKey]: null,
         [understandingKey]: null,
-      })
+      });
     }
-  }, [courseData])
+  }, [courseData]);
 
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(topicField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
 
         cloned[index] = {
           ...cloned[index],
@@ -74,11 +72,11 @@ const IBCourseMetadata = props => {
           [applicationKey]: null,
           [skillKey]: null,
           [understandingKey]: null,
-        }
+        };
 
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
@@ -86,9 +84,9 @@ const IBCourseMetadata = props => {
         [applicationKey]: null,
         [skillKey]: null,
         [understandingKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleFrameworkTopicChange = () => {
     if (supplementaryKey) {
@@ -97,100 +95,100 @@ const IBCourseMetadata = props => {
         getFieldValue(skillField) ||
         getFieldValue(understandingField)
       ) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
 
         cloned[index] = {
           ...cloned[index],
           [applicationKey]: null,
           [skillKey]: null,
           [understandingKey]: null,
-        }
+        };
 
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
         [applicationKey]: null,
         [skillKey]: null,
         [understandingKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const filterCourseUnitOptions = () => {
-    return metadataMapper(courseData.units)
-  }
+    return metadataMapper(courseData.units);
+  };
 
   const filterCourseTopicOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
+    const selectedUnit = getFieldValue(unitField);
 
     if (selectedUnit) {
       return metadataMapper(
-        courseData.topics.filter(a => a.unit === selectedUnit),
-      )
+        courseData.topics.filter((a) => a.unit === selectedUnit),
+      );
     }
 
-    return metadataMapper(courseData.topics)
-  }
+    return metadataMapper(courseData.topics);
+  };
 
   const filterApplicationOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
-    const selectedTopic = getFieldValue(topicField)
+    const selectedUnit = getFieldValue(unitField);
+    const selectedTopic = getFieldValue(topicField);
 
     if (selectedTopic) {
       return metadataMapper(
-        courseData.applications.filter(a => a.topic === selectedTopic),
-      )
+        courseData.applications.filter((a) => a.topic === selectedTopic),
+      );
     }
 
     if (selectedUnit) {
       return metadataMapper(
-        courseData.applications.filter(a => a.unit === selectedUnit),
-      )
+        courseData.applications.filter((a) => a.unit === selectedUnit),
+      );
     }
 
-    return metadataMapper(courseData.applications)
-  }
+    return metadataMapper(courseData.applications);
+  };
 
   const filterUnderstandingOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
-    const selectedTopic = getFieldValue(topicField)
+    const selectedUnit = getFieldValue(unitField);
+    const selectedTopic = getFieldValue(topicField);
 
     if (selectedTopic) {
       return metadataMapper(
-        courseData.understandings.filter(a => a.topic === selectedTopic),
-      )
+        courseData.understandings.filter((a) => a.topic === selectedTopic),
+      );
     }
 
     if (selectedUnit) {
       return metadataMapper(
-        courseData.understandings.filter(a => a.unit === selectedUnit),
-      )
+        courseData.understandings.filter((a) => a.unit === selectedUnit),
+      );
     }
 
-    return metadataMapper(courseData.understandings)
-  }
+    return metadataMapper(courseData.understandings);
+  };
 
   const filterSkillOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
-    const selectedTopic = getFieldValue(topicField)
+    const selectedUnit = getFieldValue(unitField);
+    const selectedTopic = getFieldValue(topicField);
 
     if (selectedTopic) {
       return metadataMapper(
-        courseData.skills.filter(a => a.topic === selectedTopic),
-      )
+        courseData.skills.filter((a) => a.topic === selectedTopic),
+      );
     }
 
     if (selectedUnit) {
       return metadataMapper(
-        courseData.skills.filter(a => a.unit === selectedUnit),
-      )
+        courseData.skills.filter((a) => a.unit === selectedUnit),
+      );
     }
 
-    return metadataMapper(courseData.skills)
-  }
+    return metadataMapper(courseData.skills);
+  };
 
   return (
     <>
@@ -200,7 +198,7 @@ const IBCourseMetadata = props => {
         name={unitName}
         rules={[
           isRequired
-            ? { required: true, message: 'Course Unit is required' }
+            ? { required: true, message: "Course Unit is required" }
             : {},
         ]}
       >
@@ -221,7 +219,7 @@ const IBCourseMetadata = props => {
             name={topicName}
             rules={[
               isRequired
-                ? { required: true, message: 'Course Topic is required' }
+                ? { required: true, message: "Course Topic is required" }
                 : {},
             ]}
           >
@@ -245,9 +243,9 @@ const IBCourseMetadata = props => {
               (filterMode || !!getFieldValue(topicField)) ? null : (
                 <Form.Item
                   label={
-                    courseData.value === 'biEnvironmentalScience'
-                      ? 'Application and Skill'
-                      : 'Course Subtopic'
+                    courseData.value === "biEnvironmentalScience"
+                      ? "Application and Skill"
+                      : "Course Subtopic"
                   }
                   name={applicationName}
                 >
@@ -267,7 +265,7 @@ const IBCourseMetadata = props => {
           </Form.Item>
           <Form.Item dependencies={[unitField, topicField]} noStyle>
             {() =>
-              courseData.value === 'biEnvironmentalScience' ||
+              courseData.value === "biEnvironmentalScience" ||
               (!filterSkillOptions()?.length &&
                 (filterMode || !!getFieldValue(topicField))) ? null : (
                 <Form.Item label="Content Statement" name={skillName}>
@@ -304,8 +302,8 @@ const IBCourseMetadata = props => {
         </>
       )}
     </>
-  )
-}
+  );
+};
 
 IBCourseMetadata.propTypes = {
   filterMode: PropTypes.bool,
@@ -322,20 +320,20 @@ IBCourseMetadata.propTypes = {
   supplementaryKey: PropTypes.string,
   index: PropTypes.number,
   showIBoptionalFields: PropTypes.bool,
-}
+};
 
 IBCourseMetadata.defaultProps = {
   filterMode: false,
   isRequired: false,
-  unitKey: 'unit',
-  topicKey: 'courseTopic',
-  applicationKey: 'application',
-  skillKey: 'skill',
-  understandingKey: 'understanding',
+  unitKey: "unit",
+  topicKey: "courseTopic",
+  applicationKey: "application",
+  skillKey: "skill",
+  understandingKey: "understanding",
   readOnly: false,
-  supplementaryKey: '',
+  supplementaryKey: "",
   index: 0,
   showIBoptionalFields: true,
-}
+};
 
-export default IBCourseMetadata
+export default IBCourseMetadata;

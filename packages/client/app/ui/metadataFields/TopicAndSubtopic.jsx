@@ -1,53 +1,63 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Form, Select } from '../common'
+import React from "react";
+import PropTypes from "prop-types";
+import { Form, Select } from "../common";
 
-const TopicAndSubtopic = ({ filterMode = false, getFieldValue, isRequired = false, index = 1, readOnly = false, setFieldsValue, subtopicKey = 'subtopic', supplementaryKey = '', topicKey = 'topic', topicsMetadata }) => {
-
-  const topicName = supplementaryKey ? [index, topicKey] : topicKey
+const TopicAndSubtopic = ({
+  filterMode = false,
+  getFieldValue,
+  isRequired = false,
+  index = 1,
+  readOnly = false,
+  setFieldsValue,
+  subtopicKey = "subtopic",
+  supplementaryKey = "",
+  topicKey = "topic",
+  topicsMetadata,
+}) => {
+  const topicName = supplementaryKey ? [index, topicKey] : topicKey;
 
   const topicField = supplementaryKey
     ? [supplementaryKey, index, topicKey]
-    : topicKey
+    : topicKey;
 
-  const subtopicName = supplementaryKey ? [index, subtopicKey] : subtopicKey
+  const subtopicName = supplementaryKey ? [index, subtopicKey] : subtopicKey;
 
   const handleTopicChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      const cloned = [...getFieldValue(supplementaryKey)];
 
       cloned[index] = {
         ...cloned[index],
         [subtopicKey]: null,
-      }
+      };
 
       setFieldsValue({
         [supplementaryKey]: cloned,
-      })
+      });
     } else {
       setFieldsValue({
         [subtopicKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const filterSubtopicOptions = () => {
-    const selectedTopic = getFieldValue(topicField)
+    const selectedTopic = getFieldValue(topicField);
 
     if (selectedTopic) {
-      return topicsMetadata.find(t => t.value === selectedTopic)?.subtopics
+      return topicsMetadata.find((t) => t.value === selectedTopic)?.subtopics;
     }
 
     const allSubtopics = topicsMetadata
-      .map(t => t.subtopics)
+      .map((t) => t.subtopics)
       .flat()
-      .map(s => ({
+      .map((s) => ({
         label: s.label,
         value: s.value,
-      }))
+      }));
 
-    return allSubtopics
-  }
+    return allSubtopics;
+  };
 
   return (
     <>
@@ -55,7 +65,7 @@ const TopicAndSubtopic = ({ filterMode = false, getFieldValue, isRequired = fals
         label="Topic"
         name={topicName}
         rules={[
-          isRequired ? { required: true, message: 'Topic is required' } : {},
+          isRequired ? { required: true, message: "Topic is required" } : {},
         ]}
       >
         <Select
@@ -64,7 +74,7 @@ const TopicAndSubtopic = ({ filterMode = false, getFieldValue, isRequired = fals
           disabled={readOnly}
           onChange={handleTopicChange}
           optionFilterProp="label"
-          options={topicsMetadata.map(t => ({
+          options={topicsMetadata.map((t) => ({
             label: t.label,
             value: t.value,
           }))}
@@ -78,7 +88,7 @@ const TopicAndSubtopic = ({ filterMode = false, getFieldValue, isRequired = fals
             name={subtopicName}
             rules={[
               isRequired
-                ? { required: true, message: 'Subtopic is required' }
+                ? { required: true, message: "Subtopic is required" }
                 : {},
             ]}
           >
@@ -94,8 +104,8 @@ const TopicAndSubtopic = ({ filterMode = false, getFieldValue, isRequired = fals
         )}
       </Form.Item>
     </>
-  )
-}
+  );
+};
 
 TopicAndSubtopic.propTypes = {
   filterMode: PropTypes.bool,
@@ -108,8 +118,6 @@ TopicAndSubtopic.propTypes = {
   supplementaryKey: PropTypes.string,
   topicKey: PropTypes.string,
   topicsMetadata: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-}
+};
 
-
-
-export default TopicAndSubtopic
+export default TopicAndSubtopic;

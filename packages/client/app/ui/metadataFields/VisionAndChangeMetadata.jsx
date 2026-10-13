@@ -1,261 +1,260 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { uuid } from '@coko/client/dist'
-import { Form, Select } from '../common'
-import { mapMetadataToSelectOptions } from '../../utilities'
+import React from "react";
+import PropTypes from "prop-types";
+import { uuid } from "@coko/client/dist";
+import { Form, Select } from "../common";
+import { mapMetadataToSelectOptions } from "../../utilities";
 
 const VisionAndChangeMetadata = ({
-    conceptsAndCompetencies,
-    filterMode,
-    isRequired,
-    getFieldValue,
-    readOnly,
-    setFieldsValue,
-    coreConceptKey,
-    subdisciplineKey,
-    subdisciplineStatementKey,
-    coreCompetenceKey,
-    subcompetenceKey,
-    subcompetenceStatementKey,
-    supplementaryKey,
-    index,
-  }) => {
-
-  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
+  conceptsAndCompetencies,
+  getFieldValue,
+  setFieldsValue,
+  readOnly = false,
+  isRequired = false,
+  filterMode = false,
+  coreConceptKey = "coreConcept",
+  subdisciplineKey = "subdiscipline",
+  subdisciplineStatementKey = "subdisciplineStatement",
+  coreCompetenceKey = "coreCompetence",
+  subcompetenceKey = "subcompetence",
+  subcompetenceStatementKey = "subcompetenceStatement",
+  supplementaryKey = "",
+  index = 0,
+}) => {
+  const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
   const coreConceptName = supplementaryKey
     ? [index, coreConceptKey]
-    : coreConceptKey
+    : coreConceptKey;
 
   const coreConceptField = supplementaryKey
     ? [supplementaryKey, index, coreConceptKey]
-    : coreConceptKey
+    : coreConceptKey;
 
   const subdisciplineName = supplementaryKey
     ? [index, subdisciplineKey]
-    : subdisciplineKey
+    : subdisciplineKey;
 
   const subdisciplineField = supplementaryKey
     ? [supplementaryKey, index, subdisciplineKey]
-    : subdisciplineKey
+    : subdisciplineKey;
 
   const subdisciplineStatementName = supplementaryKey
     ? [index, subdisciplineStatementKey]
-    : subdisciplineStatementKey
+    : subdisciplineStatementKey;
 
   const coreCompetenceName = supplementaryKey
     ? [index, coreCompetenceKey]
-    : coreCompetenceKey
+    : coreCompetenceKey;
 
   const coreCompetenceField = supplementaryKey
     ? [supplementaryKey, index, coreCompetenceKey]
-    : coreCompetenceKey
+    : coreCompetenceKey;
 
   const subcompetenceName = supplementaryKey
     ? [index, subcompetenceKey]
-    : subcompetenceKey
+    : subcompetenceKey;
 
   const subcompetenceField = supplementaryKey
     ? [supplementaryKey, index, subcompetenceKey]
-    : subcompetenceKey
+    : subcompetenceKey;
 
   const subcompetenceStatementName = supplementaryKey
     ? [index, subcompetenceStatementKey]
-    : subcompetenceStatementKey
+    : subcompetenceStatementKey;
 
   const handleCoreConceptChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      const cloned = [...getFieldValue(supplementaryKey)];
 
       cloned[index] = {
         ...cloned[index],
         [subdisciplineKey]: null,
         [subdisciplineStatementKey]: null,
-      }
+      };
 
       setFieldsValue({
         [supplementaryKey]: cloned,
-      })
+      });
     } else {
       setFieldsValue({
         [subdisciplineKey]: null,
         [subdisciplineStatementKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleSubdisciplineChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      const cloned = [...getFieldValue(supplementaryKey)];
 
       cloned[index] = {
         ...cloned[index],
         [subdisciplineStatementKey]: null,
-      }
+      };
 
       setFieldsValue({
         [supplementaryKey]: cloned,
-      })
+      });
     } else {
       setFieldsValue({
         [subdisciplineStatementKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleCoreCompetenceChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      const cloned = [...getFieldValue(supplementaryKey)];
 
       cloned[index] = {
         ...cloned[index],
         [subcompetenceKey]: null,
         [subcompetenceStatementKey]: null,
-      }
+      };
 
       setFieldsValue({
         [supplementaryKey]: cloned,
-      })
+      });
     } else {
       setFieldsValue({
         [subcompetenceKey]: null,
         [subcompetenceStatementKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleSubcompetenceChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      const cloned = [...getFieldValue(supplementaryKey)];
 
       cloned[index] = {
         ...cloned[index],
         [subcompetenceStatementKey]: null,
-      }
+      };
 
       setFieldsValue({
         [supplementaryKey]: cloned,
-      })
+      });
     } else {
       setFieldsValue({
         [subcompetenceStatementKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const filterCoreConceptsOptions = () => {
-    return conceptsAndCompetencies.coreConcepts.map(c => ({
+    return conceptsAndCompetencies.coreConcepts.map((c) => ({
       label: c.label,
       value: c.value,
-    }))
-  }
+    }));
+  };
 
   const filterSubdisciplineOptions = () => {
-    const selectedCoreConcept = getFieldValue(coreConceptField)
+    const selectedCoreConcept = getFieldValue(coreConceptField);
 
     return selectedCoreConcept
       ? metadataMapper(
           conceptsAndCompetencies.subdisciplines.filter(
-            s => s.coreConcept === selectedCoreConcept,
+            (s) => s.coreConcept === selectedCoreConcept,
           ),
         )
-      : metadataMapper(conceptsAndCompetencies.subdisciplines)
-  }
+      : metadataMapper(conceptsAndCompetencies.subdisciplines);
+  };
 
   const filterSubdisciplineStatementOptions = () => {
-    const selectedCoreConcept = getFieldValue(coreConceptField)
-    const selectedSubdiscipline = getFieldValue(subdisciplineField)
+    const selectedCoreConcept = getFieldValue(coreConceptField);
+    const selectedSubdiscipline = getFieldValue(subdisciplineField);
 
     if (selectedCoreConcept && !selectedSubdiscipline) {
       return metadataMapper(
         conceptsAndCompetencies.subdisciplineStatements.filter(
-          s => s.coreConcept === selectedCoreConcept,
+          (s) => s.coreConcept === selectedCoreConcept,
         ),
-      )
+      );
     }
 
     if (!selectedCoreConcept && selectedSubdiscipline) {
       return metadataMapper(
         conceptsAndCompetencies.subdisciplineStatements.filter(
-          s => s.subdiscipline === selectedSubdiscipline,
+          (s) => s.subdiscipline === selectedSubdiscipline,
         ),
-      )
+      );
     }
 
     if (selectedCoreConcept && selectedSubdiscipline) {
       return metadataMapper(
         conceptsAndCompetencies.subdisciplineStatements.filter(
-          s =>
+          (s) =>
             s.subdiscipline === selectedSubdiscipline &&
             s.coreConcept === selectedCoreConcept,
         ),
-      )
+      );
     }
 
-    return conceptsAndCompetencies.subdisciplineStatements?.map(s => ({
+    return conceptsAndCompetencies.subdisciplineStatements?.map((s) => ({
       label: s.label,
       value: s.value,
-    }))
-  }
+    }));
+  };
 
   const filterCoreCompetenceOptions = () => {
-    return conceptsAndCompetencies.coreCompetencies.map(c => ({
+    return conceptsAndCompetencies.coreCompetencies.map((c) => ({
       label: c.label,
       value: c.value,
-    }))
-  }
+    }));
+  };
 
   const filterSubcompetenceOptions = () => {
-    const selectedCoreCompetence = getFieldValue(coreCompetenceField)
+    const selectedCoreCompetence = getFieldValue(coreCompetenceField);
 
     if (selectedCoreCompetence) {
       return conceptsAndCompetencies.subcompetencies
-        .filter(s => s.coreCompetence === selectedCoreCompetence)
-        .map(s => ({
+        .filter((s) => s.coreCompetence === selectedCoreCompetence)
+        .map((s) => ({
           label: s.label,
           value: s.value,
-        }))
+        }));
     }
 
-    return conceptsAndCompetencies.subcompetencies?.map(s => ({
+    return conceptsAndCompetencies.subcompetencies?.map((s) => ({
       label: s.label,
       value: s.value,
-    }))
-  }
+    }));
+  };
 
   const filterSubcompetenceStatementOptions = () => {
-    const selectedCoreCompetence = getFieldValue(coreCompetenceField)
-    const selectedSubcompetence = getFieldValue(subcompetenceField)
+    const selectedCoreCompetence = getFieldValue(coreCompetenceField);
+    const selectedSubcompetence = getFieldValue(subcompetenceField);
 
     if (selectedSubcompetence) {
       return conceptsAndCompetencies.subcompetenceStatements
-        .filter(s => s.subcompetence === selectedSubcompetence)
-        .map(s => ({
+        .filter((s) => s.subcompetence === selectedSubcompetence)
+        .map((s) => ({
           label: s.label,
           value: s.value,
-        }))
+        }));
     }
 
     if (selectedCoreCompetence) {
       return conceptsAndCompetencies.subcompetenceStatements
-        .filter(s => s.coreCompetence === selectedCoreCompetence)
-        .map(s => ({
+        .filter((s) => s.coreCompetence === selectedCoreCompetence)
+        .map((s) => ({
           label: s.label,
           value: s.value,
-        }))
+        }));
     }
 
-    return conceptsAndCompetencies.subcompetenceStatements?.map(s => ({
+    return conceptsAndCompetencies.subcompetenceStatements?.map((s) => ({
       label: s.label,
       value: s.value,
-    }))
-  }
+    }));
+  };
 
   const displaySubcompetenceExplanation = () => {
     return conceptsAndCompetencies.subcompetencies.find(
-      c => c.value === getFieldValue(subcompetenceField),
-    ).explanation
-  }
+      (c) => c.value === getFieldValue(subcompetenceField),
+    ).explanation;
+  };
 
   return (
     <>
@@ -265,7 +264,7 @@ const VisionAndChangeMetadata = ({
         name={coreConceptName}
         rules={[
           isRequired
-            ? { required: true, message: 'Core concept is required' }
+            ? { required: true, message: "Core concept is required" }
             : {},
         ]}
       >
@@ -287,8 +286,8 @@ const VisionAndChangeMetadata = ({
                 <h4>Overarching Principles</h4>
                 <ul>
                   {conceptsAndCompetencies.coreConcepts
-                    .find(c => c.value === getFieldValue(coreConceptField))
-                    .explanatoryItems.map(item => (
+                    .find((c) => c.value === getFieldValue(coreConceptField))
+                    .explanatoryItems.map((item) => (
                       <li key={uuid()}>{item}</li>
                     ))}
                 </ul>
@@ -299,7 +298,7 @@ const VisionAndChangeMetadata = ({
               name={subdisciplineName}
               rules={[
                 isRequired
-                  ? { required: true, message: 'Subdiscipline is required' }
+                  ? { required: true, message: "Subdiscipline is required" }
                   : {},
               ]}
             >
@@ -327,7 +326,7 @@ const VisionAndChangeMetadata = ({
               isRequired
                 ? {
                     required: true,
-                    message: 'Subdiscipline Statement is required',
+                    message: "Subdiscipline Statement is required",
                   }
                 : {},
             ]}
@@ -352,7 +351,7 @@ const VisionAndChangeMetadata = ({
           isRequired
             ? {
                 required: true,
-                message: 'Core competence is required',
+                message: "Core competence is required",
               }
             : {},
         ]}
@@ -376,7 +375,7 @@ const VisionAndChangeMetadata = ({
               isRequired
                 ? {
                     required: true,
-                    message: 'Subcompetence is required',
+                    message: "Subcompetence is required",
                   }
                 : {},
             ]}
@@ -411,7 +410,7 @@ const VisionAndChangeMetadata = ({
                 isRequired
                   ? {
                       required: true,
-                      message: 'Subcompetence Statement is required',
+                      message: "Subcompetence Statement is required",
                     }
                   : {},
               ]}
@@ -432,8 +431,8 @@ const VisionAndChangeMetadata = ({
         )}
       </Form.Item>
     </>
-  )
-}
+  );
+};
 
 VisionAndChangeMetadata.propTypes = {
   conceptsAndCompetencies: PropTypes.shape().isRequired,
@@ -450,20 +449,6 @@ VisionAndChangeMetadata.propTypes = {
   subcompetenceStatementKey: PropTypes.string,
   supplementaryKey: PropTypes.string,
   index: PropTypes.number,
-}
+};
 
-VisionAndChangeMetadata.defaultProps = {
-  readOnly: false,
-  isRequired: false,
-  filterMode: false,
-  coreConceptKey: 'coreConcept',
-  subdisciplineKey: 'subdiscipline',
-  subdisciplineStatementKey: 'subdisciplineStatement',
-  coreCompetenceKey: 'coreCompetence',
-  subcompetenceKey: 'subcompetence',
-  subcompetenceStatementKey: 'subcompetenceStatement',
-  supplementaryKey: '',
-  index: 0,
-}
-
-export default VisionAndChangeMetadata
+export default VisionAndChangeMetadata;

@@ -1,29 +1,27 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { mapMetadataToSelectOptions } from '../../utilities'
-import { Form, Select } from '../common'
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { mapMetadataToSelectOptions } from "../../utilities";
+import { Form, Select } from "../common";
 
-const NGSSCourseMetadata = props => {
-  const {
-    courseData,
-    filterMode,
-    isRequired,
-    readOnly,
-    setFieldsValue,
-    practiceKey,
-    conceptKey,
-    ideaKey,
-    supplementaryKey,
-    index,
-  } = props
+const NGSSCourseMetadata = ({
+  courseData,
+  setFieldsValue,
+  filterMode = false,
+  isRequired = false,
+  practiceKey = "practice",
+  conceptKey = "crosscuttingConcept",
+  ideaKey = "coreIdea",
+  readOnly = false,
+  supplementaryKey = "",
+  index = 0,
+}) => {
+  const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
-  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
+  const practiceName = supplementaryKey ? [index, practiceKey] : practiceKey;
 
-  const practiceName = supplementaryKey ? [index, practiceKey] : practiceKey
+  const conceptName = supplementaryKey ? [index, conceptKey] : conceptKey;
 
-  const conceptName = supplementaryKey ? [index, conceptKey] : conceptKey
-
-  const ideaName = supplementaryKey ? [index, ideaKey] : ideaKey
+  const ideaName = supplementaryKey ? [index, ideaKey] : ideaKey;
 
   useEffect(() => {
     if (!supplementaryKey) {
@@ -31,21 +29,21 @@ const NGSSCourseMetadata = props => {
         [practiceKey]: null,
         [conceptKey]: null,
         [ideaKey]: null,
-      })
+      });
     }
-  }, [courseData])
+  }, [courseData]);
 
   const filterCoursePracticeOptions = () => {
-    return metadataMapper(courseData.practices)
-  }
+    return metadataMapper(courseData.practices);
+  };
 
   const filterCourseConceptOptions = () => {
-    return metadataMapper(courseData.crosscuttingConcepts)
-  }
+    return metadataMapper(courseData.crosscuttingConcepts);
+  };
 
   const filterCourseIdeaOptions = () => {
-    return metadataMapper(courseData.disciplinaryCoreIdeas)
-  }
+    return metadataMapper(courseData.disciplinaryCoreIdeas);
+  };
 
   return (
     <>
@@ -53,7 +51,7 @@ const NGSSCourseMetadata = props => {
         label="By Practice"
         name={practiceName}
         rules={[
-          isRequired ? { required: true, message: 'Practice is required' } : {},
+          isRequired ? { required: true, message: "Practice is required" } : {},
         ]}
       >
         <Select
@@ -70,7 +68,7 @@ const NGSSCourseMetadata = props => {
         name={conceptName}
         rules={[
           isRequired
-            ? { required: true, message: 'Crosscutting Concept is required' }
+            ? { required: true, message: "Crosscutting Concept is required" }
             : {},
         ]}
       >
@@ -88,7 +86,7 @@ const NGSSCourseMetadata = props => {
         name={ideaName}
         rules={[
           isRequired
-            ? { required: true, message: 'Disciplinary Core Idea is required' }
+            ? { required: true, message: "Disciplinary Core Idea is required" }
             : {},
         ]}
       >
@@ -102,8 +100,8 @@ const NGSSCourseMetadata = props => {
         />
       </Form.Item>
     </>
-  )
-}
+  );
+};
 
 NGSSCourseMetadata.propTypes = {
   filterMode: PropTypes.bool,
@@ -116,17 +114,6 @@ NGSSCourseMetadata.propTypes = {
   ideaKey: PropTypes.string,
   supplementaryKey: PropTypes.string,
   index: PropTypes.number,
-}
+};
 
-NGSSCourseMetadata.defaultProps = {
-  filterMode: false,
-  isRequired: false,
-  practiceKey: 'practice',
-  conceptKey: 'crosscuttingConcept',
-  ideaKey: 'coreIdea',
-  readOnly: false,
-  supplementaryKey: '',
-  index: 0,
-}
-
-export default NGSSCourseMetadata
+export default NGSSCourseMetadata;

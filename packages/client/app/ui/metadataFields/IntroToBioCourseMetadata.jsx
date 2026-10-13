@@ -1,48 +1,46 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { uniqBy } from 'lodash'
-import { mapMetadataToSelectOptions } from '../../utilities'
-import { Form, Select } from '../common'
-import VisionAndChangeMetadata from './VisionAndChangeMetadata'
-import AAMCFuturePhysiciansMetadata from './AAMCFuturePhysiciansMetadata'
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { uniqBy } from "lodash";
+import { mapMetadataToSelectOptions } from "../../utilities";
+import { Form, Select } from "../common";
+import VisionAndChangeMetadata from "./VisionAndChangeMetadata";
+import AAMCFuturePhysiciansMetadata from "./AAMCFuturePhysiciansMetadata";
 
-const IntroToBioCourseMetadata = props => {
-  const {
-    courseData,
-    introToBioMeta,
-    getFieldValue,
-    filterMode,
-    isRequired,
-    index,
-    readOnly,
-    unitKey,
-    topicKey,
-    learningObjectiveKey,
-    supplementaryKey,
-    setFieldsValue,
-  } = props
+const IntroToBioCourseMetadata = ({
+  courseData,
+  introToBioMeta,
+  getFieldValue,
+  setFieldsValue,
+  filterMode = false,
+  index = 0,
+  isRequired = false,
+  readOnly = false,
+  unitKey = "unit",
+  topicKey = "courseTopic",
+  learningObjectiveKey = "learningObjective",
+  supplementaryKey = "",
+}) => {
+  const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
-  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
-
-  const unitName = supplementaryKey ? [index, unitKey] : unitKey
+  const unitName = supplementaryKey ? [index, unitKey] : unitKey;
 
   const unitField = supplementaryKey
     ? [supplementaryKey, index, unitKey]
-    : unitKey
+    : unitKey;
 
-  const topicName = supplementaryKey ? [index, topicKey] : topicKey
+  const topicName = supplementaryKey ? [index, topicKey] : topicKey;
 
   const topicField = supplementaryKey
     ? [supplementaryKey, index, topicKey]
-    : topicKey
+    : topicKey;
 
   const learningObjectiveName = supplementaryKey
     ? [index, learningObjectiveKey]
-    : learningObjectiveKey
+    : learningObjectiveKey;
 
   const learningObjectiveField = supplementaryKey
     ? [supplementaryKey, index, learningObjectiveKey]
-    : learningObjectiveKey
+    : learningObjectiveKey;
 
   useEffect(() => {
     if (!supplementaryKey) {
@@ -50,86 +48,88 @@ const IntroToBioCourseMetadata = props => {
         [unitKey]: null,
         [topicKey]: null,
         [learningObjectiveKey]: null,
-      })
+      });
     }
-  }, [courseData])
+  }, [courseData]);
 
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(topicField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
         cloned[index] = {
           ...cloned[index],
           [topicKey]: null,
           [learningObjectiveKey]: null,
-        }
+        };
 
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
         [topicKey]: null,
         [learningObjectiveKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleFrameworkTopicChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(learningObjectiveField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
         cloned[index] = {
           ...cloned[index],
           [learningObjectiveKey]: null,
-        }
+        };
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
         [learningObjectiveKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const filterCourseUnitOptions = () => {
-    return metadataMapper(courseData.units)
-  }
+    return metadataMapper(courseData.units);
+  };
 
   const filterCourseTopicOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
+    const selectedUnit = getFieldValue(unitField);
     return selectedUnit
-      ? metadataMapper(courseData.topics.filter(t => t.unit === selectedUnit))
-      : metadataMapper(courseData.topics)
-  }
+      ? metadataMapper(courseData.topics.filter((t) => t.unit === selectedUnit))
+      : metadataMapper(courseData.topics);
+  };
 
   const filterLearningObjectiveOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
-    const selectedTopic = getFieldValue(topicField)
+    const selectedUnit = getFieldValue(unitField);
+    const selectedTopic = getFieldValue(topicField);
 
     if (selectedTopic) {
       return metadataMapper(
         uniqBy(
-          courseData.learningObjectives.filter(l => l.topic === selectedTopic),
-          'value',
+          courseData.learningObjectives.filter(
+            (l) => l.topic === selectedTopic,
+          ),
+          "value",
         ),
-      )
+      );
     }
 
     if (selectedUnit) {
       return metadataMapper(
         uniqBy(
-          courseData.learningObjectives.filter(l => l.unit === selectedUnit),
-          'value',
+          courseData.learningObjectives.filter((l) => l.unit === selectedUnit),
+          "value",
         ),
-      )
+      );
     }
 
-    return metadataMapper(uniqBy(courseData.learningObjectives, 'value'))
-  }
+    return metadataMapper(uniqBy(courseData.learningObjectives, "value"));
+  };
 
   return (
     <>
@@ -139,7 +139,7 @@ const IntroToBioCourseMetadata = props => {
         name={unitName}
         rules={[
           isRequired
-            ? { required: true, message: 'Course Unit is required' }
+            ? { required: true, message: "Course Unit is required" }
             : {},
         ]}
       >
@@ -161,7 +161,7 @@ const IntroToBioCourseMetadata = props => {
             name={topicName}
             rules={[
               isRequired && filterCourseTopicOptions()?.length
-                ? { required: true, message: 'Course Topic is required' }
+                ? { required: true, message: "Course Topic is required" }
                 : {},
             ]}
           >
@@ -201,7 +201,7 @@ const IntroToBioCourseMetadata = props => {
       </Form.Item>
       <VisionAndChangeMetadata
         conceptsAndCompetencies={introToBioMeta.find(
-          f => f.textValue === 'visionAndChange',
+          (f) => f.textValue === "visionAndChange",
         )}
         filterMode={filterMode}
         getFieldValue={getFieldValue}
@@ -210,10 +210,10 @@ const IntroToBioCourseMetadata = props => {
         setFieldsValue={setFieldsValue}
         supplementaryKey={supplementaryKey}
       />
-      {courseData.textValue === 'introBioForMajors' && (
+      {courseData.textValue === "introBioForMajors" && (
         <AAMCFuturePhysiciansMetadata
           aamcMetadata={introToBioMeta.find(
-            f => f.textValue === 'aamcFuturePhysicians',
+            (f) => f.textValue === "aamcFuturePhysicians",
           )}
           filterMode={filterMode}
           getFieldValue={getFieldValue}
@@ -224,8 +224,8 @@ const IntroToBioCourseMetadata = props => {
         />
       )}
     </>
-  )
-}
+  );
+};
 
 IntroToBioCourseMetadata.propTypes = {
   filterMode: PropTypes.bool,
@@ -240,17 +240,8 @@ IntroToBioCourseMetadata.propTypes = {
   topicKey: PropTypes.string,
   learningObjectiveKey: PropTypes.string,
   supplementaryKey: PropTypes.string,
-}
+};
 
-IntroToBioCourseMetadata.defaultProps = {
-  filterMode: false,
-  index: 0,
-  isRequired: false,
-  readOnly: false,
-  unitKey: 'unit',
-  topicKey: 'courseTopic',
-  learningObjectiveKey: 'learningObjective',
-  supplementaryKey: '',
-}
+IntroToBioCourseMetadata.defaultProps = {};
 
-export default IntroToBioCourseMetadata
+export default IntroToBioCourseMetadata;

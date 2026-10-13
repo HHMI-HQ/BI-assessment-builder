@@ -1,59 +1,57 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { uniqBy } from 'lodash'
-import { mapMetadataToSelectOptions } from '../../utilities'
-import { Form, Select } from '../common'
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { uniqBy } from "lodash";
+import { mapMetadataToSelectOptions } from "../../utilities";
+import { Form, Select } from "../common";
 
-const APCourseMetadata = props => {
-  const {
-    courseData,
-    getFieldValue,
-    filterMode,
-    isRequired,
-    index,
-    readOnly,
-    unitKey,
-    topicKey,
-    learningObjectiveKey,
-    essentialKnowledgeKey,
-    sciencePracticeKey,
-    supplementaryKey,
-    setFieldsValue,
-  } = props
+const APCourseMetadata = ({
+  courseData,
+  getFieldValue,
+  setFieldsValue,
+  filterMode = false,
+  index = 0,
+  isRequired = false,
+  readOnly = false,
+  unitKey = "unit",
+  topicKey = "courseTopic",
+  learningObjectiveKey = "learningObjective",
+  essentialKnowledgeKey = "essentialKnowledge",
+  sciencePracticeKey = "sciencePractice",
+  supplementaryKey = "",
+}) => {
+  const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
-  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
-
-  const unitName = supplementaryKey ? [index, unitKey] : unitKey
+  const unitName = supplementaryKey ? [index, unitKey] : unitKey;
 
   const unitField = supplementaryKey
     ? [supplementaryKey, index, unitKey]
-    : unitKey
+    : unitKey;
 
-  const topicName = supplementaryKey ? [index, topicKey] : topicKey
+  const topicName = supplementaryKey ? [index, topicKey] : topicKey;
 
   const topicField = supplementaryKey
     ? [supplementaryKey, index, topicKey]
-    : topicKey
+    : topicKey;
 
   const learningObjectiveName = supplementaryKey
     ? [index, learningObjectiveKey]
-    : learningObjectiveKey
+    : learningObjectiveKey;
 
   const learningObjectiveField = supplementaryKey
     ? [supplementaryKey, index, learningObjectiveKey]
-    : learningObjectiveKey
+    : learningObjectiveKey;
 
   const essentialKnowledgeName = supplementaryKey
     ? [index, essentialKnowledgeKey]
-    : essentialKnowledgeKey
+    : essentialKnowledgeKey;
 
   const essentialKnowledgeField = supplementaryKey
     ? [supplementaryKey, index, essentialKnowledgeKey]
-    : essentialKnowledgeKey
+    : essentialKnowledgeKey;
 
   const sciencePracticeName = supplementaryKey
     ? [index, sciencePracticeKey]
-    : sciencePracticeKey
+    : sciencePracticeKey;
 
   useEffect(() => {
     if (!supplementaryKey) {
@@ -62,143 +60,146 @@ const APCourseMetadata = props => {
         [topicKey]: null,
         [learningObjectiveKey]: null,
         [essentialKnowledgeKey]: null,
-      })
+      });
     }
-  }, [courseData])
+  }, [courseData]);
 
   const handleFrameworkUnitChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(topicField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
         cloned[index] = {
           ...cloned[index],
           [topicKey]: null,
           [learningObjectiveKey]: null,
           [essentialKnowledgeKey]: null,
-        }
+        };
 
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
         [topicKey]: null,
         [learningObjectiveKey]: null,
         [essentialKnowledgeKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleFrameworkTopicChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(learningObjectiveField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
         cloned[index] = {
           ...cloned[index],
           [learningObjectiveKey]: null,
           [essentialKnowledgeKey]: null,
-        }
+        };
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
         [learningObjectiveKey]: null,
         [essentialKnowledgeKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const handleFrameworkLearningObjectiveChange = () => {
     if (supplementaryKey) {
       if (getFieldValue(essentialKnowledgeField)) {
-        const cloned = [...getFieldValue(supplementaryKey)]
+        const cloned = [...getFieldValue(supplementaryKey)];
 
         cloned[index] = {
           ...cloned[index],
           [essentialKnowledgeKey]: null,
-        }
+        };
 
         setFieldsValue({
           [supplementaryKey]: cloned,
-        })
+        });
       }
     } else {
       setFieldsValue({
         [essentialKnowledgeKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const filterCourseUnitOptions = () => {
-    return metadataMapper(courseData.units)
-  }
+    return metadataMapper(courseData.units);
+  };
 
   const filterCourseTopicOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
+    const selectedUnit = getFieldValue(unitField);
+
     return selectedUnit
-      ? metadataMapper(courseData.topics.filter(t => t.unit === selectedUnit))
-      : metadataMapper(courseData.topics)
-  }
+      ? metadataMapper(courseData.topics.filter((t) => t.unit === selectedUnit))
+      : metadataMapper(courseData.topics);
+  };
 
   const filterLearningObjectiveOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
-    const selectedTopic = getFieldValue(topicField)
+    const selectedUnit = getFieldValue(unitField);
+    const selectedTopic = getFieldValue(topicField);
 
     if (selectedTopic) {
       return metadataMapper(
         uniqBy(
-          courseData.learningObjectives.filter(l => l.topic === selectedTopic),
-          'value',
+          courseData.learningObjectives.filter(
+            (l) => l.topic === selectedTopic,
+          ),
+          "value",
         ),
-      )
+      );
     }
 
     if (selectedUnit) {
       return metadataMapper(
         uniqBy(
-          courseData.learningObjectives.filter(l => l.unit === selectedUnit),
-          'value',
+          courseData.learningObjectives.filter((l) => l.unit === selectedUnit),
+          "value",
         ),
-      )
+      );
     }
 
-    return metadataMapper(uniqBy(courseData.learningObjectives, 'value'))
-  }
+    return metadataMapper(uniqBy(courseData.learningObjectives, "value"));
+  };
 
   const filterEssentialKnowledgeOptions = () => {
-    const selectedUnit = getFieldValue(unitField)
-    const selectedTopic = getFieldValue(topicField)
-    const selectedLearningObjective = getFieldValue(learningObjectiveField)
+    const selectedUnit = getFieldValue(unitField);
+    const selectedTopic = getFieldValue(topicField);
+    const selectedLearningObjective = getFieldValue(learningObjectiveField);
 
     if (selectedLearningObjective) {
       return metadataMapper(
         courseData.essentialKnowledge.filter(
-          l => l.learningObjective === selectedLearningObjective,
+          (l) => l.learningObjective === selectedLearningObjective,
         ),
-      )
+      );
     }
 
     if (selectedTopic) {
       return metadataMapper(
-        courseData.essentialKnowledge.filter(l => l.topic === selectedTopic),
-      )
+        courseData.essentialKnowledge.filter((l) => l.topic === selectedTopic),
+      );
     }
 
     if (selectedUnit) {
       return metadataMapper(
-        courseData.essentialKnowledge.filter(l => l.unit === selectedUnit),
-      )
+        courseData.essentialKnowledge.filter((l) => l.unit === selectedUnit),
+      );
     }
 
-    return metadataMapper(courseData.essentialKnowledge)
-  }
+    return metadataMapper(courseData.essentialKnowledge);
+  };
 
   const filterCourseSciencePracticeOptions = () => {
-    return metadataMapper(courseData.sciencePractices)
-  }
+    return metadataMapper(courseData.sciencePractices);
+  };
 
   return (
     <>
@@ -208,7 +209,7 @@ const APCourseMetadata = props => {
         name={unitName}
         rules={[
           isRequired
-            ? { required: true, message: 'Course Unit is required' }
+            ? { required: true, message: "Course Unit is required" }
             : {},
         ]}
       >
@@ -230,7 +231,7 @@ const APCourseMetadata = props => {
             name={topicName}
             rules={[
               isRequired
-                ? { required: true, message: 'Course Topic is required' }
+                ? { required: true, message: "Course Topic is required" }
                 : {},
             ]}
           >
@@ -315,8 +316,8 @@ const APCourseMetadata = props => {
         />
       </Form.Item>
     </>
-  )
-}
+  );
+};
 
 APCourseMetadata.propTypes = {
   filterMode: PropTypes.bool,
@@ -332,18 +333,6 @@ APCourseMetadata.propTypes = {
   essentialKnowledgeKey: PropTypes.string,
   sciencePracticeKey: PropTypes.string,
   supplementaryKey: PropTypes.string,
-}
+};
 
-APCourseMetadata.defaultProps = {
-  filterMode: false,
-  index: 0,
-  isRequired: false,
-  readOnly: false,
-  unitKey: 'unit',
-  topicKey: 'courseTopic',
-  learningObjectiveKey: 'learningObjective',
-  essentialKnowledgeKey: 'essentialKnowledge',
-  sciencePracticeKey: 'sciencePractice',
-  supplementaryKey: '',
-}
-export default APCourseMetadata
+export default APCourseMetadata;

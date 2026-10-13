@@ -1,82 +1,80 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Form, Select } from '../common'
+import React from "react";
+import PropTypes from "prop-types";
+import { Form, Select } from "../common";
 
-const AAMCFuturePhysiciansMetadata = props => {
-  const {
-    aamcMetadata,
-    filterMode,
-    getFieldValue,
-    isRequired,
-    readOnly,
-    setFieldsValue,
-    conceptKey,
-    categoryKey,
-    supplementaryKey,
-    index,
-  } = props
-
-  const conceptName = supplementaryKey ? [index, conceptKey] : conceptKey
+const AAMCFuturePhysiciansMetadata = ({
+  aamcMetadata,
+  getFieldValue,
+  setFieldsValue,
+  filterMode = false,
+  isRequired = false,
+  readOnly = false,
+  conceptKey = "concept",
+  categoryKey = "category",
+  supplementaryKey = "",
+  index = 0,
+}) => {
+  const conceptName = supplementaryKey ? [index, conceptKey] : conceptKey;
 
   const conceptField = supplementaryKey
     ? [supplementaryKey, index, conceptKey]
-    : conceptKey
+    : conceptKey;
 
-  const categoryName = supplementaryKey ? [index, categoryKey] : categoryKey
+  const categoryName = supplementaryKey ? [index, categoryKey] : categoryKey;
 
   const categoryField = supplementaryKey
     ? [supplementaryKey, index, categoryKey]
-    : categoryKey
+    : categoryKey;
 
   const handleConceptChange = () => {
     if (supplementaryKey) {
-      const cloned = [...getFieldValue(supplementaryKey)]
+      const cloned = [...getFieldValue(supplementaryKey)];
 
       cloned[index] = {
         ...cloned[index],
         [categoryKey]: null,
-      }
+      };
 
       setFieldsValue({
         [supplementaryKey]: cloned,
-      })
+      });
     } else {
       setFieldsValue({
         [categoryKey]: null,
-      })
+      });
     }
-  }
+  };
 
   const filterConceptOptions = () => {
-    return aamcMetadata.concepts.map(c => ({
+    return aamcMetadata.concepts.map((c) => ({
       label: c.label,
       value: c.value,
-    }))
-  }
+    }));
+  };
 
   const filterCategoryOptions = () => {
-    const selectedConcept = getFieldValue(conceptField)
+    const selectedConcept = getFieldValue(conceptField);
 
     return aamcMetadata.categories
-      .filter(c => (selectedConcept ? c.concept === selectedConcept : true))
-      .map(c => ({
+      .filter((c) => (selectedConcept ? c.concept === selectedConcept : true))
+      .map((c) => ({
         label: c.label,
         value: c.value,
-      }))
-  }
+      }));
+  };
 
   const displayCategoryExplanation = () => {
     // if (filterMode) {
     return aamcMetadata.categories.find(
-      c => c.value === getFieldValue(categoryField),
-    ).explanation
+      (c) => c.value === getFieldValue(categoryField),
+    ).explanation;
     // }
 
     // return aamcMetadata.concepts
     //   .find(c => c.value === getFieldValue(conceptField))
     //   ?.categories.find(c => c.value === getFieldValue(categoryField))
     //   ?.explanation
-  }
+  };
 
   return (
     <>
@@ -85,7 +83,7 @@ const AAMCFuturePhysiciansMetadata = props => {
         label="Concept"
         name={conceptName}
         rules={[
-          isRequired ? { required: true, message: 'Concept is required' } : {},
+          isRequired ? { required: true, message: "Concept is required" } : {},
         ]}
       >
         <Select
@@ -105,7 +103,7 @@ const AAMCFuturePhysiciansMetadata = props => {
             name={categoryName}
             rules={[
               isRequired
-                ? { required: true, message: 'Category is required' }
+                ? { required: true, message: "Category is required" }
                 : {},
             ]}
           >
@@ -128,8 +126,8 @@ const AAMCFuturePhysiciansMetadata = props => {
         )}
       </Form.Item>
     </>
-  )
-}
+  );
+};
 
 AAMCFuturePhysiciansMetadata.propTypes = {
   aamcMetadata: PropTypes.shape().isRequired,
@@ -142,16 +140,6 @@ AAMCFuturePhysiciansMetadata.propTypes = {
   categoryKey: PropTypes.string,
   supplementaryKey: PropTypes.string,
   index: PropTypes.number,
-}
+};
 
-AAMCFuturePhysiciansMetadata.defaultProps = {
-  filterMode: false,
-  isRequired: false,
-  readOnly: false,
-  conceptKey: 'concept',
-  categoryKey: 'category',
-  supplementaryKey: '',
-  index: 0,
-}
-
-export default AAMCFuturePhysiciansMetadata
+export default AAMCFuturePhysiciansMetadata;
