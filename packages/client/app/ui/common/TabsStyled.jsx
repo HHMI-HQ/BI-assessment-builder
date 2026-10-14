@@ -1,8 +1,8 @@
 /* stylelint-disable string-quotes */
-import React from 'react'
-import styled from 'styled-components'
-import { grid, th, darken } from '@coko/client'
-import { Tabs as AntTabs } from 'antd'
+import React from "react";
+import styled from "styled-components";
+import { grid, th, darken } from "@coko/client";
+import { Tabs as AntTabs } from "antd";
 
 // const TabsWrapper = styled.div`
 //   height: 100%;
@@ -50,24 +50,24 @@ import { Tabs as AntTabs } from 'antd'
 // `
 const TabsStyled = styled(AntTabs)`
   /* the colors will be based on $activebg prop by default */
-  --bg-active: ${p => p.activebg || th('colorBackgroundHue')};
-  --bg-inactive: ${p =>
-    p.inactiveBgColor || darken(p.activeBg || 'colorBackgroundHue', 0.5)};
-  --color-active: ${p => p.activecolor || '#666'};
-  --color-inactive: ${p => p.inactivecolor || p.activecolor || '#777'};
-  --border: ${p => p.border || '1px solid #777'};
+  --bg-active: ${(p) => p.activebg || th("colorBackgroundHue")};
+  --bg-inactive: ${(p) =>
+    p.inactiveBgColor || darken(p.activeBg || "colorBackgroundHue", 0.5)};
+  --color-active: ${(p) => p.activecolor || "#666"};
+  --color-inactive: ${(p) => p.inactivecolor || p.activecolor || "#777"};
+  --border: ${(p) => p.border || "1px solid #777"};
   height: 100%;
   width: 100%;
 
   .ant-tabs-nav {
-    background-color: ${th('colorBackground')};
+    background-color: ${th("colorBackground")};
     display: flex;
     margin: 0;
     padding: 0 ${grid(3)};
     text-transform: uppercase;
 
-    ::before {
-      border-bottom: var(--border);
+    &::before {
+      border-bottom: 1px solid #777;
     }
 
     > .ant-tabs-nav-wrap {
@@ -76,7 +76,7 @@ const TabsStyled = styled(AntTabs)`
   }
 
   .ant-tabs-nav-list .ant-tabs-tab,
-  .ant-tabs-nav-list .ant-tabs-tab [role='tab'] {
+  .ant-tabs-nav-list .ant-tabs-tab [role="tab"] {
     border-radius: 0.2rem 0.2rem 0 0;
     margin: 0 0.1rem;
     padding: 0.3rem 1rem 0.2rem;
@@ -88,11 +88,11 @@ const TabsStyled = styled(AntTabs)`
       outline: 1px dashed #0002;
     }
 
-    &[aria-selected='false'] {
+    &[aria-selected="false"] {
       color: var(--color-inactive);
     }
 
-    &[aria-selected='true'] {
+    &[aria-selected="true"] {
       color: var(--color-active);
     }
 
@@ -105,7 +105,7 @@ const TabsStyled = styled(AntTabs)`
       /* opacity: 1; */
     }
 
-    &:not([role='tab']) {
+    &:not([role="tab"]) {
       background-color: var(--bg-active);
       border: var(--border);
       /* background-color: var(--bg-inactive); */
@@ -141,15 +141,15 @@ const TabsStyled = styled(AntTabs)`
       }
 
       .ant-tabs-nav-list .ant-tabs-tab,
-      .ant-tabs-nav-list .ant-tabs-tab [role='tab'] {
-        font-size: ${th('fontSizeBaseSmall')};
+      .ant-tabs-nav-list .ant-tabs-tab [role="tab"] {
+        font-size: ${th("fontSizeBaseSmall")};
         padding: 0.1rem 0.3rem;
       }
     }
   }
-`
+`;
 
-const Tabs = props => {
+const Tabs = (props) => {
   // const { className, ...rest } = props
 
   // const ref = useRef()
@@ -192,7 +192,7 @@ const Tabs = props => {
   //   })
   // }, [])
 
-  return <TabsStyled {...props} />
-}
+  return <TabsStyled {...props} />;
+};
 
-export default Tabs
+export default Tabs;

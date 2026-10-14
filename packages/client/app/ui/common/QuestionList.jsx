@@ -1,10 +1,10 @@
-import React from 'react'
-import PropTypes, { oneOfType } from 'prop-types'
-import styled from 'styled-components'
-import { th, grid } from '@coko/client'
+import React from "react";
+import PropTypes, { oneOfType } from "prop-types";
+import styled from "styled-components";
+import { th, grid } from "@coko/client";
 
-import List from './List'
-import QuestionItem from './QuestionItem'
+import List from "./List";
+import QuestionItem from "./QuestionItem";
 
 const RenderItem = ({ item }) => {
   return (
@@ -19,40 +19,33 @@ const RenderItem = ({ item }) => {
       status={item.status}
       statusLabel={item.statusLabel}
     />
-  )
-}
+  );
+};
 
 RenderItem.propTypes = {
   item: PropTypes.shape().isRequired,
-}
+};
 
 const StyledList = styled(List)`
   /* padding-top: ${grid(4)}; */
 
   .ant-list {
-    box-shadow: inset 0 0 4px ${th('colorBorder')};
+    box-shadow: inset 0 0 4px ${th("colorBorder")};
   }
 
-  .ant-list-items {
-    > li {
-      border-left: 5px solid transparent;
-      transition: border-left-color 0.15s ease-in-out,
-        background-color 0.15s ease-in-out;
+  .ant-listy-item {
+    border-left: 5px solid transparent;
+    transition: border-left-color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out;
 
-      &:hover,
-      &:focus-within {
-        background-color: ${th('colorBackgroundHue')};
-        border-left-color: ${th('colorPrimary')};
-      }
+    &:hover,
+    &:focus-within {
+      background-color: ${th("colorBackgroundHue")};
+      border-left-color: ${th("colorPrimary")};
+    }
 
-      &:not(:last-child) {
-        border-bottom: 1px solid ${th('colorSecondary')};
-      }
-
-      label,
-      label > span:nth-child(2) {
-        width: 100%;
-      }
+    &:not(:last-child) {
+      border-bottom: 1px solid ${th("colorSecondary")};
     }
 
     .ant-checkbox {
@@ -62,75 +55,82 @@ const StyledList = styled(List)`
       margin-block-start: ${grid(4)};
     }
   }
-`
 
-const QuestionList = props => {
-  const {
-    autoFocusSearch,
-    bulkAction,
-    currentPage,
-    className,
-    isArchivedItems,
-    listKey,
-    loading,
-    locale,
-    questions,
-    onSearch,
-    onPageChange,
-    showArchiveOption,
-    showRowCheckboxes,
-    onArchiveChange,
-    onSortOptionChange,
-    questionsPerPage,
-    sortOptions,
-    showSearch,
-    showSort,
-    showTotalCount,
-    totalCount,
-    onQuestionSelected,
-    onClickRow,
-    draggable,
-    onDragEnd,
-    selectedQuestions,
-    withFilters,
-    filters,
-    defaultSearch,
-    showSizeChanger,
-  } = props
+  .ant-list-items {
+    > li {
+      label,
+      label > span:nth-child(2) {
+        width: 100%;
+      }
+    }
+  }
+`;
 
+const QuestionList = ({
+  className,
+  autoFocusSearch = false,
+  bulkAction = null,
+  listKey = null,
+  loading = false,
+  locale = {},
+  currentPage = 1,
+  isArchivedItems = false,
+  onArchiveChange = null,
+  onPageChange = () => {},
+  onSearch = () => {},
+  onSortOptionChange = () => {},
+  questions = [],
+  questionsPerPage = 10,
+  sortOptions = [],
+  onQuestionSelected = () => {},
+  onClickRow = () => {},
+  showArchiveOption = false,
+  showRowCheckboxes = false,
+  showSearch = true,
+  showSort = true,
+  showTotalCount = true,
+  totalCount = 0,
+  draggable = false,
+  onDragEnd = () => {},
+  selectedQuestions = [],
+  filters = [],
+  withFilters = false,
+  defaultSearch = "",
+  showSizeChanger = false,
+}) => {
   const itemSelection = showRowCheckboxes
     ? {
-        onChange: id => onQuestionSelected(id),
+        onChange: (id) => onQuestionSelected(id),
       }
-    : null
+    : null;
 
   const calculateSizeOptions = () => {
-    const defaultSizes = [10, 20, 50]
+    const defaultSizes = [10, 20, 50];
 
-    const options = defaultSizes.filter(threshold => totalCount >= threshold)
+    const options = defaultSizes.filter((threshold) => totalCount >= threshold);
 
     if (totalCount > 10 && !options.includes(totalCount)) {
-      options.push(totalCount)
+      options.push(totalCount);
     }
 
-    return options
-  }
+    return options;
+  };
 
   const pagination = () => {
-    const paginationConfig = {}
-    paginationConfig.pageSize = questionsPerPage
-    const pageSizeOptions = calculateSizeOptions()
-    paginationConfig.pageSizeOptions = pageSizeOptions
+    const paginationConfig = {};
+    paginationConfig.pageSize = questionsPerPage;
+    const pageSizeOptions = calculateSizeOptions();
+    paginationConfig.pageSizeOptions = pageSizeOptions;
 
     if (totalCount > questions.length) {
-      paginationConfig.onChange = onPageChange
+      paginationConfig.onChange = onPageChange;
     }
 
-    paginationConfig.current = currentPage
-    paginationConfig.showSizeChanger = showSizeChanger
+    paginationConfig.current = currentPage;
+    paginationConfig.showSizeChanger = showSizeChanger;
 
-    return paginationConfig
-  }
+    return paginationConfig;
+  };
 
   return (
     <StyledList
@@ -151,7 +151,7 @@ const QuestionList = props => {
       onSearch={onSearch}
       onSortOptionChange={onSortOptionChange}
       pagination={pagination()}
-      renderItem={item => <RenderItem item={item} onClickRow={onClickRow} />}
+      renderItem={(item) => <RenderItem item={item} onClickRow={onClickRow} />}
       searchPlaceholder="Search..."
       selectedItems={selectedQuestions}
       showArchiveOption={showArchiveOption}
@@ -162,8 +162,8 @@ const QuestionList = props => {
       totalCount={totalCount}
       withFilters={withFilters}
     />
-  )
-}
+  );
+};
 
 QuestionList.propTypes = {
   autoFocusSearch: PropTypes.bool,
@@ -234,7 +234,7 @@ QuestionList.propTypes = {
   withFilters: PropTypes.bool,
   defaultSearch: PropTypes.string,
   showSizeChanger: PropTypes.bool,
-}
+};
 
 QuestionList.defaultProps = {
   autoFocusSearch: false,
@@ -264,8 +264,8 @@ QuestionList.defaultProps = {
   selectedQuestions: [],
   filters: [],
   withFilters: false,
-  defaultSearch: '',
+  defaultSearch: "",
   showSizeChanger: false,
-}
+};
 
-export default QuestionList
+export default QuestionList;

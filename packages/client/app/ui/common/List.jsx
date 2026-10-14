@@ -668,8 +668,6 @@ List.propTypes = {
   defaultSearch: PropTypes.string,
 };
 
-List.defaultProps = {};
-
 List.Item = AntList.Item;
 
 export default List;
