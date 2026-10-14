@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
-import { useLocation, Navigate } from 'react-router'
-import { useMutation, useQuery } from '@apollo/client/react'
-import { useCurrentUser, uuid } from '@coko/client'
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { useCurrentUser, uuid } from "@coko/client";
 
-import { Login } from 'ui'
-import { GET_LOGIN_CONFIG, EMAIL_LOGIN } from '../graphql'
+import { Login } from "ui";
+import { GET_LOGIN_CONFIG, EMAIL_LOGIN } from "../graphql";
 
 const LoginPage = () => {
-  const { search } = useLocation()
-
-  const { currentUser, setCurrentUser } = useCurrentUser()
+  const { search } = useLocation();
+  const { currentUser, refetch } = useCurrentUser();
+  const navigate = useNavigate();
 
   const {
     data: {
@@ -20,68 +20,65 @@ const LoginPage = () => {
       } = {},
     } = {},
     loading: loadingConfig,
-  } = useQuery(GET_LOGIN_CONFIG)
+  } = useQuery(GET_LOGIN_CONFIG);
 
   const [emailLoginMutation, { data, loading, error }] =
-    useMutation(EMAIL_LOGIN)
+    useMutation(EMAIL_LOGIN);
 
-  const [bioInteractiveLoading, setBioInteractiveLoading] = useState(false)
+  const [bioInteractiveLoading, setBioInteractiveLoading] = useState(false);
 
-  const redirectUrl = new URLSearchParams(search).get('next') || '/dashboard'
+  const redirectUrl = new URLSearchParams(search).get("next") || "/dashboard";
 
-  const login = formData => {
+  const login = (formData) => {
     const mutationData = {
       variables: {
         input: { ...formData, email: formData.email.toLowerCase() },
       },
-    }
+    };
 
-    emailLoginMutation(mutationData).catch(e => console.error(e))
-  }
+    emailLoginMutation(mutationData);
+  };
 
   const handleBioInteractiveClick = () => {
     if (!biointeractiveOathClientId || !biointeractiveOathRedirectUri) {
       // eslint-disable-next-line no-alert
-      alert('Biointeractive SSO is disabled for this site')
-      return
+      alert("Biointeractive SSO is disabled for this site");
+      return;
     }
 
-    setBioInteractiveLoading(true)
+    setBioInteractiveLoading(true);
 
-    const oauthState = uuid()
-    const clientId = biointeractiveOathClientId
-    const redirectUri = biointeractiveOathRedirectUri
+    const oauthState = uuid();
+    const clientId = biointeractiveOathClientId;
+    const redirectUri = biointeractiveOathRedirectUri;
 
     if (window.location.search?.length) {
-      localStorage.setItem('redirectTo', window.location.search)
+      localStorage.setItem("redirectTo", window.location.search);
     }
 
-    localStorage.setItem('oauthState', oauthState)
+    localStorage.setItem("oauthState", oauthState);
 
     window.location.assign(
       `https://www.biointeractive.org/oauth2/authorize/?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=openid&state=${oauthState}`,
-    )
-  }
+    );
+  };
 
-  if (currentUser) return <Navigate to={redirectUrl} />
-  if (currentUser === null) localStorage.removeItem('profileSubmitted')
+  if (currentUser === null) localStorage.removeItem("profileSubmitted");
 
-  let errorMessage = 'Something went wrong!'
+  let errorMessage = "Something went wrong!";
 
-  if (error?.message.includes('username or password'))
-    errorMessage = 'Invalid credentials'
+  if (error?.message.includes("username or password"))
+    errorMessage = "Invalid credentials";
 
   if (data) {
-    const token = data.login?.token
-
-    // setCurrentUser(data.login?.user)
+    const token = data.login?.token;
 
     if (token) {
-      localStorage.setItem('token', token)
-      return <Navigate to={redirectUrl} />
+      localStorage.setItem("token", token);
+      refetch().then(() => {
+        navigate(redirectUrl, { replace: true });
+      });
     }
-
-    console.error('No token returned from mutation!')
   }
 
   return (
@@ -95,11 +92,11 @@ const LoginPage = () => {
       onSubmit={login}
       showEmailOption={showEmailLogin}
     />
-  )
-}
+  );
+};
 
-LoginPage.propTypes = {}
+LoginPage.propTypes = {};
 
-LoginPage.defaultProps = {}
+LoginPage.defaultProps = {};
 
-export default LoginPage
+export default LoginPage;

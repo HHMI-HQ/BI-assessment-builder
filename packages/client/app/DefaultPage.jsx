@@ -1,20 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { useApolloClient, useSubscription } from '@apollo/client/react'
-// import {
-//   Route,
-//   Routes,
-//   Redirect,
-//   useLocation,
-//   useHistory,
-// } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { useApolloClient, useSubscription } from "@apollo/client/react";
+import { useLocation, useNavigate } from "react-router";
+import styled from "styled-components";
 
-import { Route, Routes, useLocation, useNavigate, Navigate } from 'react-router'
-import styled from 'styled-components'
-
-import {
-  PageLayout as Page,
-  useCurrentUser,
-} from '@coko/client'
+import { PageLayout as Page, useCurrentUser } from "@coko/client";
 
 import {
   Header,
@@ -23,35 +12,28 @@ import {
   Spin,
   ToastNotification,
   LayoutWrapper,
-} from './ui'
+} from "./ui";
 
-import GlobalStyles from './globalStyles' 
+import GlobalStyles from "./globalStyles";
 import {
   hasGlobalRole,
   MetadataProvider,
   NotificationsProvider,
   FiltersProvider,
   useNotifications,
-} from './utilities'
+} from "./utilities";
 
-import Router from './Router'
+import Router from "./Router";
 
-import { DELETED_SUBSCRIPTION } from './graphql'
-
+import { DELETED_SUBSCRIPTION } from "./graphql";
 
 const StyledPage = styled(Page)`
   height: calc(100% - 60px - 50px);
-`
-
-const StyledSpin = styled(Spin)`
-  display: grid;
-  height: 100vh;
-  place-content: center;
-`
+`;
 
 const StyledMain = styled.main`
   height: 100%;
-`
+`;
 
 const regexPaths = [
   // {
@@ -64,108 +46,105 @@ const regexPaths = [
   // },
   {
     path: /^\/discover$/,
-    name: 'Browse Questions',
+    name: "Browse Questions",
   },
   {
     path: /^\/dashboard$/,
-    name: 'Dashboard',
+    name: "Dashboard",
   },
   {
     path: /^\/sets$/,
-    name: 'Context-Dependent Item Sets',
+    name: "Context-Dependent Item Sets",
   },
   {
     path: /^\/lists$/,
-    name: 'Lists',
+    name: "Lists",
   },
   {
     path: /^\/manage-users$/,
-    name: 'User Manager',
+    name: "User Manager",
   },
   {
     path: /^\/manage-teams$/,
-    name: 'Team Manager',
+    name: "Team Manager",
   },
   {
     path: /^\/manage-metadata$/,
-    name: 'Metadata manager',
+    name: "Metadata manager",
   },
   {
     path: /^\/notifications$/,
-    name: 'Notifications',
+    name: "Notifications",
   },
   {
     path: /^\/profile$/,
-    name: 'User Profile',
+    name: "User Profile",
   },
   {
     path: /^\/login+/,
-    name: 'Login',
+    name: "Login",
   },
   {
     path: /^\/signup$/,
-    name: 'Signup',
+    name: "Signup",
   },
   {
     path: /^\/signup-profile$/,
-    name: 'Signup Questionnaire',
+    name: "Signup Questionnaire",
   },
   {
     path: /^\/email-verification\/[A-Za-z0-9-]+$/,
-    name: 'Verify email',
+    name: "Verify email",
   },
   {
     path: /^\/request-password-reset$/,
-    name: 'Request Password Reset',
+    name: "Request Password Reset",
   },
   {
     path: /^\/password-reset\/[A-Za-z0-9-]+$/,
-    name: 'Reset Password',
+    name: "Reset Password",
   },
   {
     path: /^\/ensure-verified-login$/,
-    name: 'Email Not Verified',
+    name: "Email Not Verified",
   },
   {
     path: /^\/biointeractive-oauth+/,
-    name: 'BioInteractive login',
+    name: "BioInteractive login",
   },
   {
     path: /^\/$/,
-    name: 'Homepage',
+    name: "Homepage",
   },
   {
     path: /^\/about$/,
-    name: 'About',
+    name: "About",
   },
   {
     path: /^\/learning$/,
-    name: 'Professional Learning',
+    name: "Professional Learning",
   },
-]
+];
 
-const Wrapper = props => {
-  const { children } = props
+const Wrapper = (props) => {
+  const { children } = props;
 
-  const { currentUser } = useCurrentUser()
-  const location = useLocation()
+  const { currentUser } = useCurrentUser();
+  const location = useLocation();
 
   // const [refetchCurrentUser] = useLazyQuery(CURRENT_USER, {
   //   fetchPolicy: 'network-only',
   // })
 
   useEffect(() => {
-    const path = location.pathname
-    const title = regexPaths.find(p => p.path.test(path))
+    const path = location.pathname;
+    const title = regexPaths.find((p) => p.path.test(path));
 
     if (title) {
-      document.title = `${title?.name} - HHMI Assessment Builder`
-      document
-          .getElementById('page-announcement')
-          .replaceChildren(title?.name)
+      document.title = `${title?.name} - HHMI Assessment Builder`;
+      document.getElementById("page-announcement").replaceChildren(title?.name);
     }
-
-  }, [location])
+  }, [location]);
 
   // useEffect(() => {
   //   const path = history.location.pathname
@@ -194,60 +173,60 @@ const Wrapper = props => {
 
   useEffect(() => {
     const keyDownListener = (e) => {
-      if (e.key === 'Tab') {
+      if (e.key === "Tab") {
         // select only visible antd modal dialog
         const dialog = document.querySelector(
           ':not([style="display: none;"]) > .ant-modal[role="dialog"]',
-        )
+        );
 
         if (dialog) {
           const focusableElements = dialog.querySelectorAll(
             [
-              'a[href]',
-              'area[href]',
-              'input:not([disabled]):not([type=hidden])',
-              'select:not([disabled])',
-              'textarea:not([disabled])',
-              'button:not([disabled])',
-              'object',
-              'embed',
+              "a[href]",
+              "area[href]",
+              "input:not([disabled]):not([type=hidden])",
+              "select:not([disabled])",
+              "textarea:not([disabled])",
+              "button:not([disabled])",
+              "object",
+              "embed",
               '[tabindex]:not([tabindex="-1"]):not([aria-hidden="true"])',
-              'audio[controls]',
-              'video[controls]',
+              "audio[controls]",
+              "video[controls]",
               '[contenteditable]:not([contenteditable="false"])',
-            ].join(', '),
-          )
+            ].join(", "),
+          );
 
-          const firstFocusableElement = focusableElements[0]
+          const firstFocusableElement = focusableElements[0];
 
           const lastFocusableElement =
-            focusableElements[focusableElements.length - 1]
+            focusableElements[focusableElements.length - 1];
 
           if (e.shiftKey) {
             if (document.activeElement === firstFocusableElement) {
-              lastFocusableElement.focus()
-              e.preventDefault()
+              lastFocusableElement.focus();
+              e.preventDefault();
             }
           } else if (document.activeElement === lastFocusableElement) {
-            firstFocusableElement.focus()
-            e.preventDefault()
+            firstFocusableElement.focus();
+            e.preventDefault();
           }
         }
       }
-    }
+    };
 
-    document.addEventListener('keydown', keyDownListener)
+    document.addEventListener("keydown", keyDownListener);
 
-    return document.removeEventListener('kaydown', keyDownListener)
-  }, [])
+    return document.removeEventListener("kaydown", keyDownListener);
+  }, []);
 
   useEffect(() => {
     if (
       // temporary, create a wrapper hook that extends the User type
-      (currentUser)?.profileSubmitted &&
-      !localStorage.getItem('profileSubmitted')
+      currentUser?.profileSubmitted &&
+      !localStorage.getItem("profileSubmitted")
     ) {
-      localStorage.setItem('profileSubmitted', 'true')
+      localStorage.setItem("profileSubmitted", "true");
     }
 
     // if (
@@ -258,7 +237,7 @@ const Wrapper = props => {
     //     setCurrentUser(data.currentUser)
     //   })
     // }
-  }, [currentUser])
+  }, [currentUser]);
 
   // interface DeletedSubscriptionResult {
   //   userDeleted: string;
@@ -269,10 +248,10 @@ const Wrapper = props => {
       data: {
         data: { userDeleted },
       },
-    }) => {      
-      if (userDeleted === currentUser.id) window.location.href = '/'
+    }) => {
+      if (userDeleted === currentUser.id) window.location.href = "/";
     },
-  })
+  });
 
   return (
     <LayoutWrapper>
@@ -284,48 +263,37 @@ const Wrapper = props => {
         role="status"
       />
     </LayoutWrapper>
-  )
-}
-
-const Loader = props => {
-  const { pathname } = useLocation()
-
-  return (
-    <StyledSpin
-      {...props}
-      // render background to avoid rendering biointeractive login component twice
-      renderBackground={pathname === '/biointeractive-oauth'}
-    />
-  )
-}
+  );
+};
 
 const SiteHeader = () => {
   const headerLinks = {
-    homepage: '/',
-    questions: '/discover',
-    dashboard: '/dashboard',
-    sets: '/sets',
-    lists: '/lists',
-    about: '/about',
-    learning: '/learning',
-    manageUsers: '/manage-users',
-    manageTeams: '/manage-teams',
-    manageMetadata: '/manage-metadata',
+    homepage: "/",
+    questions: "/discover",
+    dashboard: "/dashboard",
+    sets: "/sets",
+    lists: "/lists",
+    about: "/about",
+    learning: "/learning",
+    manageUsers: "/manage-users",
+    manageTeams: "/manage-teams",
+    manageMetadata: "/manage-metadata",
     // tasks: '/notifications/tasks',
-    messages: '/notifications/messages',
-    profile: '/profile',
-    login: '/login',
-  }
+    messages: "/notifications/messages",
+    profile: "/profile",
+    login: "/login",
+  };
 
-  const { currentUser } = useCurrentUser()
-  const { unreadMentionsCount } = useNotifications()
-  const client = useApolloClient()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [currentPath, setCurrentPath] = useState(location.pathname)
+  const { currentUser } = useCurrentUser();
+
+  const { unreadMentionsCount } = useNotifications();
+  const client = useApolloClient();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [currentPath, setCurrentPath] = useState(location.pathname);
 
   useEffect(() => {
-    setCurrentPath(location.pathname)
+    setCurrentPath(location.pathname);
   }, [location]);
 
   // useEffect(() => {
@@ -336,48 +304,48 @@ const SiteHeader = () => {
 
   // inject GTM script
   useEffect(() => {
-    let headScript
-    let noscript
+    let headScript;
+    let noscript;
 
-    if (window.location.origin === 'https://assessment.biointeractive.org') {
-      headScript = document.createElement('script')
+    if (window.location.origin === "https://assessment.biointeractive.org") {
+      headScript = document.createElement("script");
       headScript.replaceChildren(`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-MR7JX6C');`)
+  })(window,document,'script','dataLayer','GTM-MR7JX6C');`);
 
-      noscript = document.createElement('noscript')
+      noscript = document.createElement("noscript");
       noscript.replaceChildren(`
         <iframe
           height="0"
           src="https://www.googletagmanager.com/ns.html?id=GTM-MR7JX6C"
           style="display:none;visibility:hidden"
           width="0"
-        />`)
+        />`);
 
-      document.head.prepend(headScript)
-      document.body.prepend(noscript)
+      document.head.prepend(headScript);
+      document.body.prepend(noscript);
     }
 
     return () => {
-      noscript && document.body.removeChild(noscript)
-      headScript && document.head.removeChild(headScript)
-    }
-  }, [])
+      noscript && document.body.removeChild(noscript);
+      headScript && document.head.removeChild(headScript);
+    };
+  }, []);
 
   const logout = () => {
     // setCurrentUser(null)
-    client.cache.reset()
+    client.cache.reset();
 
-    localStorage.removeItem('token')
-    localStorage.removeItem('dashboardLastUsedTab')
-    localStorage.removeItem('profileSubmitted')
+    localStorage.removeItem("token");
+    localStorage.removeItem("dashboardLastUsedTab");
+    localStorage.removeItem("profileSubmitted");
 
-    navigate('/login')
-  }
+    navigate("/login");
+  };
 
-  const isAdmin = hasGlobalRole(currentUser, 'admin')
+  const isAdmin = hasGlobalRole(currentUser, "admin");
 
   return (
     <Header
@@ -391,35 +359,14 @@ const SiteHeader = () => {
       onLogout={logout}
       unreadMentionsCount={unreadMentionsCount}
     />
-  )
-}
+  );
+};
 
 const ToastNotifications = () => {
-  const { newNotification } = useNotifications()
+  const { newNotification } = useNotifications();
 
-  return <ToastNotification notification={newNotification} />
-}
-
-// const RequireProfile = ({ children }) => {
-//   const { pathname } = useLocation()
-//   const { currentUser } = useCurrentUser()
-
-//   if (!currentUser) return null
-
-//   if (!currentUser.isActive && pathname !== '/deactivated-user') {
-//     return <Navigate replace to="/deactivated-user" />
-//   }
-
-//   if (
-//     pathname !== '/signup-profile' &&
-//     !(currentUser as any).profileSubmitted &&
-//     !localStorage.getItem('profileSubmitted')
-//   ) {
-//     return <Navigate replace to="/signup-profile" />
-//   }
-
-//   return children
-// }
+  return <ToastNotification notification={newNotification} />;
+};
 
 const routes = (
   <Wrapper>
@@ -430,8 +377,8 @@ const routes = (
         <FiltersProvider>
           <StyledPage fadeInPages={false} padPages={false}>
             <StyledMain id="main-content" tabIndex={-1}>
-                <Router />                
-                <ToastNotifications />
+              <Router />
+              <ToastNotifications />
             </StyledMain>
           </StyledPage>
         </FiltersProvider>
@@ -440,12 +387,12 @@ const routes = (
 
     <Footer
       links={{
-        termsOfUse: 'https://www.hhmi.org/terms-of-use',
-        privacyPolicy: 'https://www.hhmi.org/privacy-policy',
-        homepage: '/',
+        termsOfUse: "https://www.hhmi.org/terms-of-use",
+        privacyPolicy: "https://www.hhmi.org/privacy-policy",
+        homepage: "/",
       }}
     />
-    </Wrapper>
-)
+  </Wrapper>
+);
 
-export default routes
+export default routes;
