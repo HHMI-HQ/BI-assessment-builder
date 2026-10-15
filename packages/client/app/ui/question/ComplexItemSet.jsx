@@ -28,6 +28,10 @@ const ModalContext = React.createContext(null);
 const StyledTabs = styled(Tabs)`
   height: 100%;
 
+  .ant-tabs-body {
+    height: 100%;
+  }
+
   .ant-tabs-content {
     height: 100%;
 
@@ -130,40 +134,40 @@ const PopupContentWrapper = styled.div`
 
 const ComplexItemSet = (props) => {
   const {
-    activeTab,
-    canEdit,
-    canCreate,
-    editWarning,
-    currentQuestionsPage,
-    id,
-    questions,
-    title,
-    leadingContent,
-    loadingData,
-    loadingSave,
-    onCreateQuestion,
-    onQuestionsPageChange,
-    onSave,
-    onImageUpload,
-    submissionMessage,
-    submissionStatus,
-    totalQuestions,
-    onSortOptionChange,
-    sortOptions,
-    onAssignAuthor,
-    canAssignAuthor,
-    authors,
-    loadAuthors,
-    refetchUser,
-    currentAuthor,
-    onWordExport,
-    onQTIExport,
-    onAddToList,
-    onAddToNewList,
-    onDeleteSet,
-    existingLists,
-    loadingAddToList,
-    loadingCreateList,
+    canEdit = false,
+    canCreate = false,
+    id = null,
+    questions = [],
+    title = "",
+    leadingContent = null,
+    loadingData = false,
+    loadingSave = false,
+    onCreateQuestion = () => {},
+    onSave = () => {},
+    onQuestionsPageChange = () => {},
+    currentQuestionsPage = 1,
+    onImageUpload = () => {},
+    submissionMessage = null,
+    submissionStatus = null,
+    totalQuestions = 0,
+    activeTab = "content",
+    editWarning = false,
+    onSortOptionChange = null,
+    sortOptions = [],
+    onAssignAuthor = () => {},
+    canAssignAuthor = true,
+    authors = [],
+    loadAuthors = () => {},
+    refetchUser = () => {},
+    currentAuthor = [],
+    onWordExport = () => {},
+    onQTIExport = () => {},
+    onAddToList = () => {},
+    onAddToNewList = () => {},
+    onDeleteSet = () => {},
+    existingLists = [],
+    loadingAddToList = false,
+    loadingCreateList = false,
   } = props;
 
   const [activeKey, setActiveKey] = useState(activeTab);
@@ -423,7 +427,7 @@ const ComplexItemSet = (props) => {
       <StyledTabs
         activeKey={activeKey}
         destroyOnHidden
-        items={tabItems}
+        items={tabItems.filter((t) => !!t)}
         onChange={setActiveKey}
         tabBarExtraContent={
           id ? (
@@ -510,41 +514,6 @@ ComplexItemSet.propTypes = {
   loadingCreateList: PropTypes.bool,
 };
 
-ComplexItemSet.defaultProps = {
-  canEdit: false,
-  canCreate: false,
-  id: null,
-  questions: [],
-  title: "",
-  leadingContent: null,
-  loadingData: false,
-  loadingSave: false,
-  onCreateQuestion: () => {},
-  onSave: () => {},
-  onQuestionsPageChange: () => {},
-  currentQuestionsPage: 1,
-  onImageUpload: () => {},
-  submissionMessage: null,
-  submissionStatus: null,
-  totalQuestions: 0,
-  activeTab: "content",
-  editWarning: false,
-  onSortOptionChange: null,
-  sortOptions: [],
-  onAssignAuthor: () => {},
-  canAssignAuthor: true,
-  authors: [],
-  loadAuthors: () => {},
-  refetchUser: () => {},
-  currentAuthor: [],
-  onWordExport: () => {},
-  onQTIExport: () => {},
-  onAddToList: () => {},
-  onAddToNewList: () => {},
-  onDeleteSet: () => {},
-  existingLists: [],
-  loadingAddToList: false,
-  loadingCreateList: false,
-};
+ComplexItemSet.defaultProps = {};
 
 export default ComplexItemSet;
