@@ -1,24 +1,24 @@
 /* stylelint-disable string-quotes */
-import React, { useEffect, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
+import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
 import {
   LeftOutlined,
   RightOutlined,
   EllipsisOutlined,
-} from '@ant-design/icons'
+} from "@ant-design/icons";
 
-import { grid, th } from '@coko/client'
-import { HhmiLayout, TestModeLayout } from '../wax/layout'
+import { grid, th } from "@coko/client";
+import { HhmiLayout, TestModeLayout } from "../wax/layout";
 
-import Metadata from './Metadata'
-import QuestionEditor from './QuestionEditor'
-import { ChatThread } from '../chat'
+import Metadata from "./Metadata";
+import QuestionEditor from "./QuestionEditor";
+import { ChatThread } from "../chat";
 
-import ExportToWordButton from './ExportToWordButton'
-import AssignHEButton from './AssignHEButton'
-import ExportToScormButton from './ExportToScormButton'
-import AutoSaving from './AutoSaveIndicator'
+import ExportToWordButton from "./ExportToWordButton";
+// import AssignHEButton from "./AssignHEButton";
+import ExportToScormButton from "./ExportToScormButton";
+import AutoSaving from "./AutoSaveIndicator";
 import {
   Button,
   Checkbox,
@@ -33,30 +33,30 @@ import {
   TabsStyled as Tabs,
   VisuallyHiddenElement,
   AddToListPopup,
-} from '../common'
+} from "../common";
 import {
   REVIEWER_STATUSES,
   emptyEditorContent,
   extractDocumentText,
   // extractNode,
   // applyNodeFeedback,
-} from '../../utilities'
-import AssignAuthorButton from './AssignAuthorButton'
+} from "../../utilities";
+import AssignAuthorButton from "./AssignAuthorButton";
 // import FeedbackModal from './FeedbackModal'
 import {
   ReviewerRejectButton,
   ReviewerAcceptButton,
   ReviewFormToggle,
   ReviewerForm,
-} from '../review'
+} from "../review";
 
-import ReviewerChats from './ReviewerChats'
-import { AssignReviewers } from '../assignReviewers'
-import SubmitTestBar from './SubmitTestBar'
+import ReviewerChats from "./ReviewerChats";
+import { AssignReviewers } from "../assignReviewers";
+import SubmitTestBar from "./SubmitTestBar";
 
-const ModalContext = React.createContext({ agree: false, setAgree: () => {} })
-const ModalFooter = Modal.footer
-const ModalHeader = Modal.header
+const ModalContext = React.createContext({ agree: false, setAgree: () => {} });
+const ModalFooter = Modal.footer;
+const ModalHeader = Modal.header;
 
 // #region styled
 const Wrapper = styled.div`
@@ -65,7 +65,7 @@ const Wrapper = styled.div`
 
   .ant-spin-nested-loading,
   .ant-spin-container {
-    background-color: ${th('colorBackground')};
+    background-color: ${th("colorBackground")};
     height: 100%;
   }
 
@@ -82,7 +82,7 @@ const Wrapper = styled.div`
     padding: 0 !important;
   }
 
-  div[role='tabpanel'] > .ant-row {
+  div[role="tabpanel"] > .ant-row {
     margin: 0 !important;
   }
   /* stylelint-enable declaration-no-important */
@@ -96,21 +96,21 @@ const Wrapper = styled.div`
     display: none;
   }
 
-  @media (min-width: ${th('mediaQueries.medium')}) {
+  @media (min-width: ${th("mediaQueries.medium")}) {
     .ant-tabs-content-holder {
-      /* border-top: 1px solid ${th('colorBorder')}; */
+      /* border-top: 1px solid ${th("colorBorder")}; */
     }
   }
-`
+`;
 
 const StyledButton = styled(Button)`
   margin-right: ${grid(2)};
   width: 100%;
 
-  @media (min-width: ${th('mediaQueries.mediumPlus')}) {
+  @media (min-width: ${th("mediaQueries.mediumPlus")}) {
     width: auto;
   }
-`
+`;
 
 const Details = styled.details`
   cursor: pointer;
@@ -119,72 +119,72 @@ const Details = styled.details`
   & .tnc-content {
     padding: ${grid(2)};
   }
-`
+`;
 
 const StyledAssignAuthorButton = styled(AssignAuthorButton)`
   margin-right: ${grid(2)};
   width: 100%;
-`
+`;
 
 const SubmitButton = styled(StyledButton)`
   width: auto;
-`
+`;
 
 const StyledPrevNextButton = styled(StyledButton)`
   > span:not(.ant-btn-icon) {
     display: none;
   }
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     > span:not(.ant-btn-icon) {
       display: inline-block;
     }
   }
-`
+`;
 
 const StyledWordExportButton = styled(ExportToWordButton)`
   margin-right: ${grid(2)};
   width: auto;
-`
+`;
 
 const StyledScormExportButton = styled(ExportToScormButton)`
   margin-right: ${grid(2)};
   width: 100%;
-`
+`;
 
-const StyledAssignHEButton = styled(AssignHEButton)`
-  margin-right: ${grid(2)};
-  width: 100%;
-`
+// const StyledAssignHEButton = styled(AssignHEButton)`
+//   margin-right: ${grid(2)};
+//   width: 100%;
+// `;
 
 const StyledReviewerRejectInviteButton = styled(ReviewerRejectButton)`
   margin-right: ${grid(2)};
   width: 100%;
-`
+`;
 
 const StyledReviewerAcceptInviteButton = styled(ReviewerAcceptButton)`
   width: 100%;
-`
+`;
 
 const StyledReviewFormToggle = styled(ReviewFormToggle)`
   width: 100%;
-`
+`;
 
 const RightAreaWrapper = styled.div`
   align-items: center;
   display: flex;
   text-transform: initial;
-`
+`;
 
 const StyledCheckbox = styled(Checkbox)`
   margin-right: ${grid(2)};
-`
+`;
 
 const ReviewerActionsWrapper = styled.div`
   align-items: center;
   display: flex;
   width: 100%;
-`
+`;
 
 const PopupContentWrapper = styled.div`
   align-items: stretch;
@@ -207,11 +207,11 @@ const PopupContentWrapper = styled.div`
       margin: 0;
     }
   }
-`
+`;
 
 const FacultyHeaderWrapper = styled.div`
   align-items: center;
-  background-color: ${th('colorBackgroundHue')};
+  background-color: ${th("colorBackgroundHue")};
   display: flex;
   flex: none;
   height: 46px;
@@ -223,19 +223,19 @@ const FacultyHeaderWrapper = styled.div`
     align-items: center;
     display: flex;
   }
-`
+`;
 
 const StyledTabItem = styled.div`
   padding: 0 ${grid(3)};
-`
+`;
 
 const QuestionWrapper = styled.div`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   display: grid;
   grid-template-rows: 1fr auto;
   height: ${({ hasRibbon }) => (hasRibbon ? `calc(100% - 26px)` : `100%`)};
-  ${props => {
-    const { showMetadata, showReviewForm } = props
+  ${(props) => {
+    const { showMetadata, showReviewForm } = props;
 
     if (!showMetadata) {
       return showReviewForm
@@ -244,7 +244,7 @@ const QuestionWrapper = styled.div`
           `
         : css`
             grid-template-columns: 1fr;
-          `
+          `;
     }
 
     return showReviewForm
@@ -253,34 +253,40 @@ const QuestionWrapper = styled.div`
         `
       : css`
           grid-template-columns: 2fr 1fr;
-        `
+        `;
   }}
-`
+`;
 
 const StyledTabs = styled(Tabs)`
+  .ant-tabs-body {
+    height: 100%;
+    [role="tabpanel"] {
+      height: 100%;
+    }
+  }
   .ant-tabs-tabpane {
     flex: 1;
     overflow: auto;
   }
-`
+`;
 
 const StyledMetadata = styled(Metadata)`
-  background-color: ${th('colorBackground')};
-  border-left: 1px solid ${th('colorBorder')};
+  background-color: ${th("colorBackground")};
+  border-left: 1px solid ${th("colorBorder")};
   height: 100%;
   min-width: 0;
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
-`
+`;
 
 const ActionsWrapper = styled.div`
   display: none;
 
-  @media (min-width: ${th('mediaQueries.mediumPlus')}) {
+  @media (min-width: ${th("mediaQueries.mediumPlus")}) {
     display: flex;
   }
-`
+`;
 
 const PopupToggle = styled(Button)`
   height: 32px;
@@ -289,28 +295,28 @@ const PopupToggle = styled(Button)`
   transform: rotate(90deg);
   width: 32px;
 
-  @media (min-width: ${th('mediaQueries.mediumPlus')}) {
+  @media (min-width: ${th("mediaQueries.mediumPlus")}) {
     display: none;
   }
-`
+`;
 
 const ViewAsWrapper = styled.div`
   align-items: center;
   display: inline-flex;
-`
+`;
 
 const ViewAsLabel = styled.label`
   width: 100%;
-`
+`;
 
 const StyledSelect = styled(Select)`
   margin: 0 ${grid(2)};
-`
+`;
 
 const SkipToTop = styled.a`
-  background-color: ${th('colorTextDark')};
+  background-color: ${th("colorTextDark")};
   border-radius: ${grid(1)} 0 0 ${grid(1)};
-  color: ${th('colorTextReverse')};
+  color: ${th("colorTextReverse")};
   height: 30px;
   padding: ${grid(1)} ${grid(2)};
   position: absolute;
@@ -321,7 +327,7 @@ const SkipToTop = styled.a`
   &:focus {
     right: 0;
   }
-`
+`;
 // #endregion styled
 
 // #region Question Panel
@@ -329,7 +335,7 @@ const CollapseWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`
+`;
 
 const StyledCollapse = styled(Collapse)`
   display: flex;
@@ -339,7 +345,7 @@ const StyledCollapse = styled(Collapse)`
   // overwrite background and padding inherited from role="tablist"
   // (might also remove role="tablist" itself be removing accordion prop and reimplementing its functionality)
   && {
-    background-color: ${th('colorBackground')};
+    background-color: ${th("colorBackground")};
     padding: 0;
   }
 
@@ -361,7 +367,7 @@ const StyledCollapse = styled(Collapse)`
       }
     }
   }
-`
+`;
 
 const PanelWrapper = ({
   editor,
@@ -374,16 +380,16 @@ const PanelWrapper = ({
   reviewerForm,
   hasRibbon,
 }) => {
-  const showSubmitBar = isPublished || (!isPublished && !showMetadata)
-  const [activePanel, setActivePanel] = useState('editor')
+  const showSubmitBar = isPublished || (!isPublished && !showMetadata);
+  const [activePanel, setActivePanel] = useState("editor");
 
-  const onPanelClick = val => {
-    if (val[0]) setActivePanel(val[0])
-  }
+  const onPanelClick = (val) => {
+    if (val[0]) setActivePanel(val[0]);
+  };
 
   useEffect(() => {
-    if (showReviewForm) setActivePanel('review')
-  }, [showReviewForm])
+    if (showReviewForm) setActivePanel("review");
+  }, [showReviewForm]);
 
   // if it's desktop or mobile without metadata (student view) no need for collapsable panels
   if (!isMobile || (!showMetadata && !showReviewForm)) {
@@ -398,33 +404,33 @@ const PanelWrapper = ({
         {showReviewForm ? reviewerForm : null}
         {showSubmitBar && submitTestBar}
       </QuestionWrapper>
-    )
+    );
   }
 
   const items = [
     {
-      key: 'editor',
-      label: 'Editor',
+      key: "editor",
+      label: "Editor",
       children: editor,
       forceRender: true,
     },
-  ]
+  ];
 
   if (showMetadata)
     items.push({
-      key: 'metadata',
-      label: 'Metadata',
+      key: "metadata",
+      label: "Metadata",
       children: metadata,
       forceRender: true,
-    })
+    });
 
   if (showReviewForm)
     items.push({
-      key: 'review',
-      label: 'Reviewer Form',
+      key: "review",
+      label: "Reviewer Form",
       children: reviewerForm,
       forceRender: true,
-    })
+    });
 
   return (
     <CollapseWrapper>
@@ -436,8 +442,8 @@ const PanelWrapper = ({
       />
       {!showReviewForm && submitTestBar}
     </CollapseWrapper>
-  )
-}
+  );
+};
 
 PanelWrapper.propTypes = {
   editor: PropTypes.shape().isRequired,
@@ -449,249 +455,251 @@ PanelWrapper.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
   hasRibbon: PropTypes.bool.isRequired,
-}
+};
 // #endregion Question Panel
 
 // QUESTION submit button here seems to be outside the form
 // submit also refers to wax
 // does all this pose an accessibility problem?
 
-const Question = props => {
-  const {
-    amountOfReviewers,
-    authors,
-    automateReviewerInvites,
-    complexItemSetOptions,
-    announcementText,
-    defaultActiveKey,
-    authorChatMessages,
-    productionChatMessages,
-    reviewerChatMessages,
-    editorContent,
-    leadingContent,
-    complexSetEditLink,
-    complexItemSetId,
-    editorView,
-    facultyView,
-    hasMoreMessages,
-    onClickExportToWord,
-    onFetchMoreMessages,
-    onClickExportToQti,
-    onSubmitReport,
-    initialMetadataValues,
-    isAccepted,
-    isArchived,
-    isUserLoggedIn,
-    isPublished,
-    isRejected,
-    isSubmitted,
-    isUnderReview,
-    isInProduction,
-    isUnpublished,
-    canUnpublish,
-    canPublish,
-    loading,
-    loadAuthors,
-    metadata,
-    onAcceptQuestion,
-    onAddReviewers,
-    onAssignAuthor,
-    onAutomateReviewerChange,
-    onChangeAmountOfReviewers,
-    onClickAssignHE,
-    onClickNextButton,
-    onClickPreviousButton,
-    onEditorContentAutoSave,
-    onImageUpload,
-    onInviteReviewer,
-    onMetadataAutoSave,
-    onMoveToProduction,
-    onMoveToReview,
-    onPublish,
-    onRemoveReviewerRow,
-    onRevokeReviewerInvitation,
-    onUnpublish,
-    onCreateNewVersion,
-    onQuestionSubmit,
-    onReject,
-    onReviewerSearch,
-    onReviewerTableChange,
-    onSendAuthorChatMessage,
-    onSendProductionChatMessage,
-    onSendReviewerChatMessage,
-    onSubmitReview,
-    authorChatParticipants,
-    productionChatParticipants,
-    reviewerChatParticipants,
-    onReviewerAcceptInvite,
-    onReviewerRejectInvite,
-    questionAgreedTc,
-    refetchUser,
-    resources,
-    reviewInviteStatus,
-    reviewSubmitted,
-    reviewerPool,
-    reviewerView,
-    qtiZipLoading,
-    showAssignHEButton,
-    showPreviewButton,
-    canAssignAuthor,
-    showNextQuestionLink,
-    submitting,
-    updated,
-    wordFileLoading,
-    canCreateNewVersion,
-    handlingEditors,
-    onSearchHE,
-    searchHELoading,
-    assignHELoading,
-    currentHandlingEditors,
-    loadAssignedHEs,
-    onUnassignHandlingEditor,
-    selectedQuestionType,
-    onChangeTab,
-    showAuthorChatTab,
-    showProductionChatTab,
-    showReviewerChatTab,
-    showAssignReviewers,
-    hasDeletedAuthor,
-    onSelectReviewer,
-    hasGeneralReviewerChatId,
-    reviewerId,
-    authorsCurrent,
-    onAuthorEdit,
-    isEditing,
-    onAddToList,
-    onAddToNewList,
-    existingLists,
-    loadingAddToList,
-    loadingCreateList,
-    dependencyOptions,
-    unreadMentions,
-    onMarkAsRead,
-    isMobile,
-    preview,
-    setPreview,
-    reviewResponses,
-    saveReview,
-    enhancedEditor,
-    upgradeEditor,
-  } = props
+const Question = ({
+  loading,
+  metadata,
+  onQuestionSubmit,
+  amountOfReviewers = 0,
+  authors = [],
+  automateReviewerInvites = false,
+  complexItemSetOptions = [],
+  defaultActiveKey = "editor",
+  announcementText = "",
+  hasMoreMessages = false,
+  authorChatMessages = [],
+  productionChatMessages = [],
+  reviewerChatMessages = [],
+  onAcceptQuestion = () => {},
+  onAddReviewers = () => {},
+  onAutomateReviewerChange = () => {},
+  onChangeAmountOfReviewers = () => {},
+  onChangeAnnouncement = () => {},
+  onFetchMoreMessages = () => {},
+  onInviteReviewer = () => {},
+  onMoveToReview = () => {},
+  onMoveToProduction = () => {},
+  onPublish = () => {},
+  onUnpublish = () => {},
+  onCreateNewVersion = () => {},
+  onReject = () => {},
+  onRemoveReviewerRow = () => {},
+  onReviewerSearch = () => {},
+  onReviewerTableChange = () => {},
+  onRevokeReviewerInvitation = () => {},
+  onSendAuthorChatMessage = () => {},
+  onSendProductionChatMessage = () => {},
+  onSendReviewerChatMessage = () => {},
+  onSubmitReport = () => {},
+  onClickAssignHE = () => {},
+  editorContent = {},
+  leadingContent = null,
+  initialMetadataValues = {},
+  onClickExportToQti = null,
+  onClickExportToWord = null,
+  onClickPreviousButton = () => {},
+  onClickNextButton = () => {},
+  onEditorContentAutoSave = () => {},
+  onImageUpload = () => {},
+  onMetadataAutoSave = () => {},
+  onAssignAuthor = () => {},
+  onReviewerAcceptInvite = () => {},
+  onReviewerRejectInvite = () => {},
+  onSubmitReview = () => {},
+  loadAuthors = () => {},
+  submitting = false,
+  isAccepted = false,
+  isArchived = false,
+  isPublished = false,
+  isRejected = false,
+  isSubmitted = false,
+  isUnderReview = false,
+  isInProduction = false,
+  isUnpublished = false,
+  canUnpublish = false,
+  canPublish = false,
+  editorView = false,
+  questionAgreedTc = false,
+  canAssignAuthor = false,
+  showAssignHEButton = true,
+  showPreviewButton = false,
+  showNextQuestionLink = false,
+  facultyView = false,
+  refetchUser = () => {},
+  resources = [],
+  reviewInviteStatus = null,
+  reviewSubmitted = false,
+  reviewerPool = [],
+  reviewerView = false,
+  updated = "",
+  isUserLoggedIn = true,
+  canCreateNewVersion = false,
+  wordFileLoading = false,
+  authorChatParticipants = [],
+  productionChatParticipants = [],
+  reviewerChatParticipants = [],
+  qtiZipLoading = false,
+  complexSetEditLink = null,
+  complexItemSetId = null,
+  handlingEditors = [],
+  onSearchHE = () => {},
+  searchHELoading = false,
+  assignHELoading = false,
+  currentHandlingEditors = [],
+  loadAssignedHEs = () => {},
+  onUnassignHandlingEditor = () => {},
+  chatLoading = false,
+  selectedQuestionType = null,
 
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm, success, error } = modal
+  onChangeTab = () => {},
+  showAuthorChatTab = null,
+  showProductionChatTab = null,
+  showReviewerChatTab = null,
+  showAssignReviewers = null,
 
-  const formRef = useRef()
-  const waxRef = useRef()
+  hasDeletedAuthor = false,
+  onSelectReviewer = null,
+  hasGeneralReviewerChatId = false,
+  reviewerId = null,
+  authorsCurrent = [],
+  onAuthorEdit = null,
+  isEditing = false,
+  onAddToList = null,
+  onAddToNewList = null,
+  existingLists = [],
+  loadingAddToList = false,
+  loadingCreateList = false,
+  dependencyOptions = [],
+  unreadMentions = [],
+  onMarkAsRead = null,
+  isMobile = false,
+  preview = false,
+  setPreview = null,
+  reviewResponses = {},
+  saveReview = null,
+  enhancedEditor = null,
+  upgradeEditor = null,
+}) => {
+  const [modal, contextHolder] = Modal.useModal();
+  const { confirm, success, error } = modal;
 
-  const [agreedTc, setAgreedTc] = useState(questionAgreedTc)
-  const [autoSaving, setAutoSaving] = useState(false)
+  const formRef = useRef();
+  const waxRef = useRef();
 
-  const [showMetadata, setShowMetadata] = useState(isUserLoggedIn)
+  const [agreedTc, setAgreedTc] = useState(questionAgreedTc);
+  const [autoSaving, setAutoSaving] = useState(false);
 
-  const [activeKey, setActiveKey] = useState(defaultActiveKey)
-  const [refreshEditorContent, setRefreshEditorContent] = useState(false)
-  const [showReviewForm, setShowReviewForm] = useState(false)
-  const [currentReviewResponses, setCurrentReviewResponses] = useState({})
-  const [reviewerIndex, setReviewerIndex] = useState(0)
+  const [showMetadata, setShowMetadata] = useState(isUserLoggedIn);
+
+  const [activeKey, setActiveKey] = useState(defaultActiveKey);
+  const [refreshEditorContent, setRefreshEditorContent] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [currentReviewResponses, setCurrentReviewResponses] = useState({});
+  const [reviewerIndex, setReviewerIndex] = useState(0);
 
   useEffect(() => {
-    const submittedReviews = reviewerPool.filter(r => r.reviewSubmitted)
+    const submittedReviews = reviewerPool.filter((r) => r.reviewSubmitted);
 
     if (isInProduction && submittedReviews.length) {
       let currentReview = {
         reviewerName: submittedReviews[reviewerIndex].displayName,
         reviewerEmail: submittedReviews[reviewerIndex].email,
-      }
+      };
 
       if (submittedReviews[reviewerIndex].attachments.length) {
         currentReview = {
           ...currentReview,
           attachments: submittedReviews[reviewerIndex].attachments,
-        }
+        };
       } else {
         currentReview = {
           ...currentReview,
           ...JSON.parse(submittedReviews[reviewerIndex].submitted),
-        }
+        };
       }
 
-      setCurrentReviewResponses(currentReview)
+      setCurrentReviewResponses(currentReview);
     } else if (isUnderReview) {
-      setCurrentReviewResponses(reviewResponses)
+      setCurrentReviewResponses(reviewResponses);
     }
-  }, [reviewerPool, isUnderReview, reviewerIndex, reviewResponses])
+  }, [reviewerPool, isUnderReview, reviewerIndex, reviewResponses]);
 
-  const [imageLongDescs, setImageLongDescs] = useState([])
+  const [imageLongDescs, setImageLongDescs] = useState([]);
 
   const readOnly =
     (editorView && isSubmitted && !isInProduction && !isAccepted) /* &&
       (isUnderReview || isPublished || isUnpublished) */ ||
     (editorView && (isUnderReview || isPublished || isUnpublished)) ||
     (!editorView && isSubmitted && !isEditing) ||
-    isRejected
+    isRejected;
 
   // need to reset showMetadata, in case user loads after the page is rendered
   useEffect(() => {
-    setShowMetadata(isUserLoggedIn && !reviewerView)
-  }, [isUserLoggedIn, reviewerView])
+    setShowMetadata(isUserLoggedIn && !reviewerView);
+  }, [isUserLoggedIn, reviewerView]);
 
   useEffect(() => {
     setTimeout(() => {
-      const images = [...document.querySelectorAll('.ProseMirror img')]
-      const parsedImages = []
+      const images = [...document.querySelectorAll(".ProseMirror img")];
+      const parsedImages = [];
 
-      images.forEach(image => {
-        const describedBy = image.getAttribute('aria-describedby')
-        const { ariaDescription } = image
+      images.forEach((image) => {
+        const describedBy = image.getAttribute("aria-describedby");
+        const { ariaDescription } = image;
 
         if (describedBy && ariaDescription) {
-          parsedImages.push({ id: describedBy, content: ariaDescription })
+          parsedImages.push({ id: describedBy, content: ariaDescription });
         }
-      })
+      });
 
-      setImageLongDescs(parsedImages)
-    }, 500)
-  }, [editorContent])
+      setImageLongDescs(parsedImages);
+    }, 500);
+  }, [editorContent]);
 
   // #region handlers
-  const handleQuestionContentChange = content => {
+  const handleQuestionContentChange = (content) => {
     if (onEditorContentAutoSave) {
-      setAutoSaving(true)
+      setAutoSaving(true);
       onEditorContentAutoSave(content).then(({ update }) => {
-        setRefreshEditorContent(update)
-        setAutoSaving(false)
-      })
+        setRefreshEditorContent(update);
+        setAutoSaving(false);
+      });
     }
-  }
+  };
 
-  const handleMetadataAutoSave = data => {
-    setAutoSaving(true)
+  const handleMetadataAutoSave = (data) => {
+    setAutoSaving(true);
     onMetadataAutoSave(data).then(() => {
-      setAutoSaving(false)
-    })
-  }
+      setAutoSaving(false);
+    });
+  };
 
   const isEmptyEditor = () => {
     const questionText = extractDocumentText(
       JSON.stringify(waxRef.current.getContent()),
-    )
+    );
 
-    const isEditorEmpty = questionText === '(empty)'
+    const isEditorEmpty = questionText === "(empty)";
 
     if (isEditorEmpty) {
-      const emptyEditorErrorModal = error()
+      const emptyEditorErrorModal = error();
       emptyEditorErrorModal.update({
         title: <ModalHeader>Item text cannot be empty</ModalHeader>,
-        content: 'Please provide some content for your item',
+        content: "Please provide some content for your item",
         footer: [
           <ModalFooter key="footer">
             <Button
               autoFocus
               onClick={() => {
-                emptyEditorErrorModal.destroy()
+                emptyEditorErrorModal.destroy();
                 /* focus the editor */
-                document.querySelector('.ProseMirror').focus()
+                document.querySelector(".ProseMirror").focus();
               }}
               type="primary"
             >
@@ -699,31 +707,31 @@ const Question = props => {
             </Button>
           </ModalFooter>,
         ],
-      })
+      });
 
-      return true
+      return true;
     }
 
-    return false
-  }
+    return false;
+  };
 
   const handleContentReset = () => {
-    return new Promise(resolve => {
-      setAutoSaving(true)
+    return new Promise((resolve) => {
+      setAutoSaving(true);
       onEditorContentAutoSave(emptyEditorContent).then(({ update }) => {
-        setRefreshEditorContent(update)
-        setAutoSaving(false)
-        resolve()
-      })
-    })
-  }
+        setRefreshEditorContent(update);
+        setAutoSaving(false);
+        resolve();
+      });
+    });
+  };
 
   const TermsAndConditions = (
     <Details>
       <summary>Read terms and conditions</summary>
       <Paragraph className="tnc-content">
         By submitting information via the form below (the “Item Information”),
-        and clicking the “Submit” button, you agree to{' '}
+        and clicking the “Submit” button, you agree to{" "}
         <Link
           as="a"
           href="https://www.hhmi.org/terms-of-use"
@@ -731,7 +739,7 @@ const Question = props => {
           target="_blank"
         >
           HHMI’s Terms of Use
-        </Link>{' '}
+        </Link>{" "}
         and you grant to the Howard Hughes Medical Institute (“HHMI”) and our
         affiliates (referred to collectively with HHMI as, “we,” “us,” or “our”)
         a royalty-free, perpetual, irrevocable, non-exclusive right and license
@@ -749,12 +757,12 @@ const Question = props => {
         or publicity, or other common law right of any third party.
       </Paragraph>
     </Details>
-  )
+  );
 
   const handleSubmit = () => {
-    if (isEmptyEditor()) return
+    if (isEmptyEditor()) return;
 
-    const confirmSubmitModal = confirm()
+    const confirmSubmitModal = confirm();
     confirmSubmitModal.update({
       title: (
         <ModalHeader>Are you sure you want to submit this item?</ModalHeader>
@@ -789,8 +797,8 @@ const Question = props => {
                 autoFocus
                 disabled={!agree}
                 onClick={() => {
-                  formRef?.current?.submit()
-                  confirmSubmitModal.destroy()
+                  formRef?.current?.submit();
+                  confirmSubmitModal.destroy();
                 }}
                 type="primary"
               >
@@ -800,13 +808,13 @@ const Question = props => {
           </ModalContext.Consumer>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const handleEdit = () => {
-    onAuthorEdit().catch(e => {
-      if (e.message.indexOf('Not Authorised!') > -1) {
-        const errorModal = error()
+    onAuthorEdit().catch((e) => {
+      if (e.message.indexOf("Not Authorised!") > -1) {
+        const errorModal = error();
         errorModal.update({
           title: <ModalHeader>This item has already been accepted</ModalHeader>,
           content: (
@@ -815,41 +823,41 @@ const Question = props => {
               accepted by the editors.
             </Paragraph>
           ),
-        })
+        });
       }
-    })
-  }
+    });
+  };
 
   const handleMoveToReview = () => {
-    const confirmMoveToReview = confirm()
+    const confirmMoveToReview = confirm();
     confirmMoveToReview.update({
       title: (
         <ModalHeader>You are about to move this item to review</ModalHeader>
       ),
       content:
-        'This item will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?',
+        "This item will be passed to a reviewer and will not be editable until they provide their feedback. Are you sure you want to proceed?",
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmMoveToReview.destroy()}>Cancel</Button>
           <Button
             autoFocus
             onClick={() => {
-              confirmMoveToReview.destroy()
+              confirmMoveToReview.destroy();
               onMoveToReview()
                 .then(() => {
                   showDialog(
-                    'success',
-                    'Item moved to review',
-                    'Item was moved to review successfully',
-                  )
+                    "success",
+                    "Item moved to review",
+                    "Item was moved to review successfully",
+                  );
                 })
                 .catch(() => {
                   showDialog(
-                    'error',
-                    'Problem moving this item to review',
-                    'There was an error while moving this item to review. Please try again!',
-                  )
-                })
+                    "error",
+                    "Problem moving this item to review",
+                    "There was an error while moving this item to review. Please try again!",
+                  );
+                });
             }}
             type="primary"
           >
@@ -857,24 +865,24 @@ const Question = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const handleMoveToProduction = () => {
-    const confirmMoveToProduction = confirm()
+    const confirmMoveToProduction = confirm();
 
     const pendingReviews = reviewerPool.filter(
-      r =>
+      (r) =>
         r.invited &&
         !r.invitationRevoked &&
         !r.rejectedInvitation &&
         !r.reviewSubmitted,
-    )
+    );
 
     const content =
       pendingReviews.length > 0
         ? `Some of the invited reviewers have not yet submitted their review, and they won't be able to do so after you move the item to production. Do you want to continue?`
-        : "This item will become editable so that editors and the production team can apply the reviewers' feedback. Are you sure?"
+        : "This item will become editable so that editors and the production team can apply the reviewers' feedback. Are you sure?";
 
     confirmMoveToProduction.update({
       title: (
@@ -882,29 +890,29 @@ const Question = props => {
       ),
       content,
       footer: [
-        <ModalFooter key="footer" style={{ marginTop: '20px' }}>
+        <ModalFooter key="footer" style={{ marginTop: "20px" }}>
           <Button onClick={() => confirmMoveToProduction.destroy()}>
             Cancel
           </Button>
           <Button
             autoFocus
             onClick={() => {
-              confirmMoveToProduction.destroy()
+              confirmMoveToProduction.destroy();
               onMoveToProduction()
                 .then(() => {
                   showDialog(
-                    'success',
-                    'Item moved to production',
-                    'Item was moved to production successfully',
-                  )
+                    "success",
+                    "Item moved to production",
+                    "Item was moved to production successfully",
+                  );
                 })
                 .catch(() => {
                   showDialog(
-                    'error',
-                    'Problem moving this item to produciton',
-                    'There was an error while moving this item to production. Please try again!',
-                  )
-                })
+                    "error",
+                    "Problem moving this item to produciton",
+                    "There was an error while moving this item to production. Please try again!",
+                  );
+                });
             }}
             type="primary"
           >
@@ -912,17 +920,17 @@ const Question = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const handlePublish = () => {
-    if (isEmptyEditor()) return
+    if (isEmptyEditor()) return;
 
     // validate form fields
     formRef?.current
       ?.validateFields()
       .then(() => {
-        const confirmPublish = confirm()
+        const confirmPublish = confirm();
         confirmPublish.update({
           title: (
             <ModalHeader>
@@ -949,22 +957,22 @@ const Question = props => {
               <Button
                 autoFocus
                 onClick={() => {
-                  confirmPublish.destroy()
+                  confirmPublish.destroy();
                   onPublish()
                     .then(() => {
                       showDialog(
-                        'success',
-                        'Item published successfully',
-                        'Item was published and is now available in the Browse Items page',
-                      )
+                        "success",
+                        "Item published successfully",
+                        "Item was published and is now available in the Browse Items page",
+                      );
                     })
                     .catch(() => {
                       showDialog(
-                        'error',
-                        'Problem publishing this item',
-                        'There was an error while publishing this item. Please try again',
-                      )
-                    })
+                        "error",
+                        "Problem publishing this item",
+                        "There was an error while publishing this item. Please try again",
+                      );
+                    });
                 }}
                 type="primary"
               >
@@ -972,48 +980,48 @@ const Question = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
+        });
       })
-      .catch(data => {
-        const { errorFields } = data
+      .catch((data) => {
+        const { errorFields } = data;
 
         const firstErrorField = document.getElementById(
-          errorFields[0].name.join('_'),
-        )
+          errorFields[0].name.join("_"),
+        );
 
-        firstErrorField.focus()
-      })
-  }
+        firstErrorField.focus();
+      });
+  };
 
   const handleReject = () => {
-    const confirmReject = confirm()
+    const confirmReject = confirm();
     confirmReject.update({
       title: (
         <ModalHeader>Are you sure you want to reject this item?</ModalHeader>
       ),
-      content: 'By rejecting, this item will not be reviewed or published.',
+      content: "By rejecting, this item will not be reviewed or published.",
       footer: [
         <ModalFooter key="footer">
           <Button onClick={() => confirmReject.destroy()}>Cancel</Button>
           <Button
             autoFocus
             onClick={() => {
-              confirmReject.destroy()
+              confirmReject.destroy();
               onReject()
                 .then(() => {
                   showDialog(
-                    'success',
-                    'Item rejected',
-                    'This item was rejected',
-                  )
+                    "success",
+                    "Item rejected",
+                    "This item was rejected",
+                  );
                 })
                 .catch(() => {
                   showDialog(
-                    'error',
-                    'Problem rejecting the items',
-                    'There was an error while rejecting this item. Please try again!',
-                  )
-                })
+                    "error",
+                    "Problem rejecting the items",
+                    "There was an error while rejecting this item. Please try again!",
+                  );
+                });
             }}
             type="primary"
           >
@@ -1021,53 +1029,53 @@ const Question = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
-  const isReviewerActive = r =>
-    r.invited && !r.invitationRevoked && !r.rejectedInvitation
+  const isReviewerActive = (r) =>
+    r.invited && !r.invitationRevoked && !r.rejectedInvitation;
 
-  const isReviewerAvailable = r => !r.invited
+  const isReviewerAvailable = (r) => !r.invited;
 
   const findAvailableReviewerSlots = () => {
-    const active = reviewerPool.filter(r => isReviewerActive(r))
-    const reviewerSlotsLeft = amountOfReviewers - active.length
+    const active = reviewerPool.filter((r) => isReviewerActive(r));
+    const reviewerSlotsLeft = amountOfReviewers - active.length;
 
-    if (reviewerSlotsLeft < 0) return 0
-    return reviewerSlotsLeft
-  }
+    if (reviewerSlotsLeft < 0) return 0;
+    return reviewerSlotsLeft;
+  };
 
   const runAutomateInviteReviewers = async () => {
-    const reviewerSlotsLeft = findAvailableReviewerSlots()
-    const notInvited = reviewerPool.filter(r => isReviewerAvailable(r))
+    const reviewerSlotsLeft = findAvailableReviewerSlots();
+    const notInvited = reviewerPool.filter((r) => isReviewerAvailable(r));
 
     const reviewerIdsToInvite = notInvited
       .slice(0, reviewerSlotsLeft)
-      .map(r => r.id)
+      .map((r) => r.id);
 
-    await Promise.all(reviewerIdsToInvite.map(id => onInviteReviewer(id)))
-  }
+    await Promise.all(reviewerIdsToInvite.map((id) => onInviteReviewer(id)));
+  };
 
-  const handleReviewerInviteAutomationChange = async toAutomate => {
-    await onAutomateReviewerChange(toAutomate)
+  const handleReviewerInviteAutomationChange = async (toAutomate) => {
+    await onAutomateReviewerChange(toAutomate);
 
-    if (toAutomate) runAutomateInviteReviewers()
-  }
+    if (toAutomate) runAutomateInviteReviewers();
+  };
 
-  const handleClickInviteReviewer = async invitedReviewerId => {
-    if (!findAvailableReviewerSlots()) return Promise.resolve()
+  const handleClickInviteReviewer = async (invitedReviewerId) => {
+    if (!findAvailableReviewerSlots()) return Promise.resolve();
 
-    return onInviteReviewer(invitedReviewerId)
-  }
+    return onInviteReviewer(invitedReviewerId);
+  };
 
-  const handleRevokeReviewerInvite = async uninvitedReviewerId => {
-    await onRevokeReviewerInvitation(uninvitedReviewerId)
+  const handleRevokeReviewerInvite = async (uninvitedReviewerId) => {
+    await onRevokeReviewerInvitation(uninvitedReviewerId);
 
-    if (automateReviewerInvites) await runAutomateInviteReviewers()
-  }
+    if (automateReviewerInvites) await runAutomateInviteReviewers();
+  };
 
   const showDialog = (type, title, content) => {
-    const dialogType = type === 'success' ? success() : error()
+    const dialogType = type === "success" ? success() : error();
 
     dialogType.update({
       title: <ModalHeader>{title}</ModalHeader>,
@@ -1080,10 +1088,10 @@ const Question = props => {
         </ModalFooter>,
       ],
       maskClosable: true,
-    })
-  }
+    });
+  };
 
-  const onFormFinish = values => {
+  const onFormFinish = (values) => {
     onQuestionSubmit({
       agreedTc,
       metadata: values,
@@ -1091,22 +1099,22 @@ const Question = props => {
     })
       .then(() => {
         showDialog(
-          'success',
-          'Item submitted successfully',
-          'Item was submitted successfully',
-        )
+          "success",
+          "Item submitted successfully",
+          "Item was submitted successfully",
+        );
       })
       .catch(() => {
         showDialog(
-          'error',
-          'Problem submitting this item',
-          'There was an error while submitting your item. Please try again!',
-        )
-      })
-  }
+          "error",
+          "Problem submitting this item",
+          "There was an error while submitting your item. Please try again!",
+        );
+      });
+  };
 
   const showUnpublishModal = () => {
-    const confirmUnpublish = confirm()
+    const confirmUnpublish = confirm();
     confirmUnpublish.update({
       title: <ModalHeader>Unpublish item</ModalHeader>,
       content: (
@@ -1131,23 +1139,23 @@ const Question = props => {
           <Button
             autoFocus
             onClick={() => {
-              confirmUnpublish.destroy()
+              confirmUnpublish.destroy();
               onUnpublish()
                 .then(() => {
                   showDialog(
-                    'success',
-                    'Item unpublished successfully',
-                    'Item was unpublished and removed from Browse Items page.',
-                  )
-                  setPreview(false)
+                    "success",
+                    "Item unpublished successfully",
+                    "Item was unpublished and removed from Browse Items page.",
+                  );
+                  setPreview(false);
                 })
                 .catch(() =>
                   showDialog(
-                    'error',
-                    'Problem unpublishing this item',
-                    'There was an error while unpublishing this item. Please try again!',
+                    "error",
+                    "Problem unpublishing this item",
+                    "There was an error while unpublishing this item. Please try again!",
                   ),
-                )
+                );
             }}
             status="danger"
           >
@@ -1155,11 +1163,11 @@ const Question = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const showNewVersionModal = () => {
-    const confirmNewVersion = confirm()
+    const confirmNewVersion = confirm();
     confirmNewVersion.update({
       title: <ModalHeader>Edit unpublished item</ModalHeader>,
       content: `This item is unpublished. You will need to publish this item again 
@@ -1172,16 +1180,16 @@ const Question = props => {
           <Button
             autoFocus
             onClick={() => {
-              confirmNewVersion.destroy()
+              confirmNewVersion.destroy();
               onCreateNewVersion()
                 .then()
                 .catch(() =>
                   showDialog(
-                    'error',
-                    'Problem updating this item',
-                    'Item cannot be updated',
+                    "error",
+                    "Problem updating this item",
+                    "Item cannot be updated",
                   ),
-                )
+                );
             }}
             status="danger"
           >
@@ -1189,26 +1197,26 @@ const Question = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const toggleReviewForm = () => {
-    setActiveKey('editor')
-    setShowReviewForm(prev => !prev)
-  }
+    setActiveKey("editor");
+    setShowReviewForm((prev) => !prev);
+  };
   // #endregion handlers
 
   // #region components
-  const QuestionTab = <StyledTabItem>Item</StyledTabItem>
-  const AuthorChatTab = <StyledTabItem>Author chat</StyledTabItem>
+  const QuestionTab = <StyledTabItem>Item</StyledTabItem>;
+  const AuthorChatTab = <StyledTabItem>Author chat</StyledTabItem>;
 
-  const ReviewerChatTab = <StyledTabItem>Reviewer chat</StyledTabItem>
+  const ReviewerChatTab = <StyledTabItem>Reviewer chat</StyledTabItem>;
 
-  const AssignReviewersTab = <StyledTabItem>Invite reviewers</StyledTabItem>
+  const AssignReviewersTab = <StyledTabItem>Invite reviewers</StyledTabItem>;
 
   const ProductionAssignmentsTab = (
     <StyledTabItem>Production chat</StyledTabItem>
-  )
+  );
 
   const PreviousQuestion = (
     <StyledPrevNextButton
@@ -1218,10 +1226,10 @@ const Question = props => {
         onClickPreviousButton()
           .then()
           .catch(() => {
-            const infoModal = modal.info()
+            const infoModal = modal.info();
             infoModal.update({
               title: <ModalHeader>No previous item</ModalHeader>,
-              content: 'There are no more items in this direction',
+              content: "There are no more items in this direction",
               footer: [
                 <ModalFooter key="footer">
                   <Button autoFocus onClick={infoModal.destroy} type="primary">
@@ -1229,7 +1237,7 @@ const Question = props => {
                   </Button>
                 </ModalFooter>,
               ],
-            })
+            });
           })
       }
       title="Previous Item"
@@ -1237,7 +1245,7 @@ const Question = props => {
     >
       Previous Item
     </StyledPrevNextButton>
-  )
+  );
 
   const NextQuestion = (
     <StyledPrevNextButton
@@ -1248,10 +1256,10 @@ const Question = props => {
         onClickNextButton()
           .then()
           .catch(() => {
-            const infoModal = modal.info()
+            const infoModal = modal.info();
             infoModal.update({
               title: <ModalHeader>No next item</ModalHeader>,
-              content: 'There are no more items in this direction',
+              content: "There are no more items in this direction",
               footer: [
                 <ModalFooter key="footer">
                   <Button autoFocus onClick={infoModal.destroy} type="primary">
@@ -1259,7 +1267,7 @@ const Question = props => {
                   </Button>
                 </ModalFooter>,
               ],
-            })
+            });
           })
       }
       title="Next Item"
@@ -1267,7 +1275,7 @@ const Question = props => {
     >
       Next Item
     </StyledPrevNextButton>
-  )
+  );
 
   const RightAreaAuthor =
     // eslint-disable-next-line no-nested-ternary
@@ -1339,7 +1347,7 @@ const Question = props => {
           Submit
         </SubmitButton>
       </>
-    )
+    );
 
   const editorActionsDropdownMenu = (
     <>
@@ -1422,26 +1430,27 @@ const Question = props => {
           </>
         )}
       {showAssignHEButton && (
-        <StyledAssignHEButton
-          currentHandlingEditors={currentHandlingEditors}
-          handlingEditors={handlingEditors}
-          loadAssignedHEs={loadAssignedHEs}
-          loading={assignHELoading}
-          onAssign={onClickAssignHE}
-          onSearchHE={onSearchHE}
-          onUnassign={onUnassignHandlingEditor}
-          searchLoading={searchHELoading}
-        />
+        <span>Assign HE Button</span>
+        // <StyledAssignHEButton
+        //   currentHandlingEditors={currentHandlingEditors}
+        //   handlingEditors={handlingEditors}
+        //   loadAssignedHEs={loadAssignedHEs}
+        //   loading={assignHELoading}
+        //   onAssign={onClickAssignHE}
+        //   onSearchHE={onSearchHE}
+        //   onUnassign={onUnassignHandlingEditor}
+        //   searchLoading={searchHELoading}
+        // />
       )}
       {isInProduction &&
         showProductionChatTab &&
-        reviewerPool.filter(r => !!r.submitted).length > 0 && (
+        reviewerPool.filter((r) => !!r.submitted).length > 0 && (
           <StyledButton
             data-testid="publish-question-btn"
             onClick={toggleReviewForm}
             type="primary"
           >
-            {showReviewForm ? 'Hide' : 'Show'} reviews
+            {showReviewForm ? "Hide" : "Show"} reviews
           </StyledButton>
         )}
       {canPublish && isInProduction && !isPublished && (
@@ -1465,12 +1474,12 @@ const Question = props => {
       )}
       {showNextQuestionLink && NextQuestion}
     </>
-  )
+  );
 
   const viewAsOptions = [
-    { value: true, label: 'Educator' },
-    { value: false, label: 'Learner' },
-  ]
+    { value: true, label: "Educator" },
+    { value: false, label: "Learner" },
+  ];
 
   const RightAreaEditor = (
     <>
@@ -1561,26 +1570,27 @@ const Question = props => {
             </>
           )}
         {showAssignHEButton && (
-          <StyledAssignHEButton
-            currentHandlingEditors={currentHandlingEditors}
-            handlingEditors={handlingEditors}
-            loadAssignedHEs={loadAssignedHEs}
-            loading={assignHELoading}
-            onAssign={onClickAssignHE}
-            onSearchHE={onSearchHE}
-            onUnassign={onUnassignHandlingEditor}
-            searchLoading={searchHELoading}
-          />
+          <span>Assign HE Button</span>
+          // <StyledAssignHEButton
+          //   currentHandlingEditors={currentHandlingEditors}
+          //   handlingEditors={handlingEditors}
+          //   loadAssignedHEs={loadAssignedHEs}
+          //   loading={assignHELoading}
+          //   onAssign={onClickAssignHE}
+          //   onSearchHE={onSearchHE}
+          //   onUnassign={onUnassignHandlingEditor}
+          //   searchLoading={searchHELoading}
+          // />
         )}
         {isInProduction &&
           showProductionChatTab &&
-          reviewerPool.filter(r => !!r.submitted).length > 0 && (
+          reviewerPool.filter((r) => !!r.submitted).length > 0 && (
             <StyledButton
               data-testid="publish-question-btn"
               onClick={toggleReviewForm}
               type="primary"
             >
-              {showReviewForm ? 'Hide' : 'Show'} reviews
+              {showReviewForm ? "Hide" : "Show"} reviews
             </StyledButton>
           )}
         {canPublish && isInProduction && !isPublished && (
@@ -1621,7 +1631,7 @@ const Question = props => {
         <PopupContentWrapper>{editorActionsDropdownMenu}</PopupContentWrapper>
       </Popup>
     </>
-  )
+  );
 
   const ViewAsContent = (
     <>
@@ -1634,7 +1644,7 @@ const Question = props => {
         value={showMetadata}
       />
     </>
-  )
+  );
 
   const reviewerInviteActions = (
     <ReviewerActionsWrapper>
@@ -1664,7 +1674,7 @@ const Question = props => {
         />
       )}
     </ReviewerActionsWrapper>
-  )
+  );
 
   const RightAreaReviewer = (
     <>
@@ -1685,7 +1695,7 @@ const Question = props => {
         <PopupContentWrapper>{reviewerInviteActions}</PopupContentWrapper>
       </Popup>
     </>
-  )
+  );
 
   const RightArea = (
     <RightAreaWrapper id="question-actions" tabIndex="-1">
@@ -1696,17 +1706,17 @@ const Question = props => {
         />
       )}
       {showPreviewButton && (
-        <StyledButton onClick={() => setPreview(prev => !prev)}>
-          {!preview ? 'Preview' : 'Continue editing'}
+        <StyledButton onClick={() => setPreview((prev) => !prev)}>
+          {!preview ? "Preview" : "Continue editing"}
         </StyledButton>
       )}
       {!readOnly && !enhancedEditor && (
         <StyledButton
           onClick={() => {
-            setRefreshEditorContent(false)
+            setRefreshEditorContent(false);
             upgradeEditor().then(() => {
-              setRefreshEditorContent(true)
-            })
+              setRefreshEditorContent(true);
+            });
           }}
         >
           New editor
@@ -1721,7 +1731,7 @@ const Question = props => {
           reviewInviteStatus === REVIEWER_STATUSES.accepted) &&
         RightAreaReviewer}
     </RightAreaWrapper>
-  )
+  );
 
   const publishedQuestionActions = (
     <>
@@ -1757,7 +1767,7 @@ const Question = props => {
         </StyledButton>
       )}
     </>
-  )
+  );
 
   const FacultyHeader = (
     <FacultyHeaderWrapper id="question-actions" tabIndex="-1">
@@ -1768,7 +1778,7 @@ const Question = props => {
 
       <div>
         {isUserLoggedIn && <ViewAsWrapper>{ViewAsContent}</ViewAsWrapper>}
-        <span style={{ marginInlineEnd: '8px' }}>
+        <span style={{ marginInlineEnd: "8px" }}>
           <AddToListPopup
             alignment="end"
             existingListsOptions={existingLists}
@@ -1788,7 +1798,7 @@ const Question = props => {
               <Button
                 data-testid="export-btn"
                 id="export-popup-toggle"
-                style={{ marginInlineEnd: '8px' }}
+                style={{ marginInlineEnd: "8px" }}
                 type="primary"
               >
                 Export
@@ -1849,28 +1859,28 @@ const Question = props => {
         <span>{NextQuestion}</span>
       </div>
     </FacultyHeaderWrapper>
-  )
+  );
   // #endregion components
 
   const contextValue = React.useMemo(
     () => ({ agree: agreedTc, setAgree: setAgreedTc }),
     [agreedTc],
-  )
+  );
 
   const skipButtonText = () => {
     if (!isSubmitted) {
-      return 'Jump to submit'
+      return "Jump to submit";
     }
 
-    return 'Jump to action buttons'
-  }
+    return "Jump to action buttons";
+  };
 
-  const handleTabChange = activeTab => {
+  const handleTabChange = (activeTab) => {
     if (activeTab) {
-      setActiveKey(activeTab)
-      onChangeTab(activeTab)
+      setActiveKey(activeTab);
+      onChangeTab(activeTab);
     }
-  }
+  };
 
   // const insertUpdatedFeedback = (nodeId, newFeedback) => {
   //   const fullContent = waxRef.current.getContent()
@@ -1914,54 +1924,54 @@ const Question = props => {
 
   // #region test submission controls
   const withFeedback =
-    !(preview || reviewerView) || (showMetadata && facultyView)
+    !(preview || reviewerView) || (showMetadata && facultyView);
 
-  const [showFeedBack, setShowFeedBack] = useState(false)
-  const [testContent, setTestContent] = useState(editorContent)
+  const [showFeedBack, setShowFeedBack] = useState(false);
+  const [testContent, setTestContent] = useState(editorContent);
 
   useEffect(() => {
-    setTestContent(editorContent)
-  }, [editorContent])
+    setTestContent(editorContent);
+  }, [editorContent]);
 
   useEffect(() => {
     if (withFeedback) {
-      setShowFeedBack(false)
-      setTestMode(false)
+      setShowFeedBack(false);
+      setTestMode(false);
     } else {
-      setShowFeedBack(false)
-      setTestMode(true)
+      setShowFeedBack(false);
+      setTestMode(true);
     }
 
     // reset original content after switching views
-    setTestContent(editorContent)
-  }, [withFeedback])
+    setTestContent(editorContent);
+  }, [withFeedback]);
 
   const [testMode, setTestMode] = useState(
     isPublished && !showFeedBack && !withFeedback,
-  )
+  );
 
   const submitTest = () => {
-    setShowFeedBack(true)
-    setTestMode(false)
+    setShowFeedBack(true);
+    setTestMode(false);
 
     const contentFeedback = JSON.parse(
       JSON.stringify(waxRef?.current?.getContent()),
-    )
+    );
 
-    setTestContent(contentFeedback)
-  }
+    setTestContent(contentFeedback);
+  };
 
   const resetTest = () => {
-    setShowFeedBack(false)
-    setTestMode(true)
-    setTestContent(editorContent)
-  }
+    setShowFeedBack(false);
+    setTestMode(true);
+    setTestContent(editorContent);
+  };
   // #endregion test submission controls
 
   const tabItems = [
     {
       label: QuestionTab,
-      key: 'editor',
+      key: "editor",
       children: (
         <>
           {isRejected && (
@@ -2048,9 +2058,9 @@ const Question = props => {
                 />
                 <SkipToTop
                   href="#question-actions"
-                  onClick={e => {
-                    e.preventDefault()
-                    document.getElementById('question-actions').focus()
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById("question-actions").focus();
                   }}
                 >
                   {skipButtonText()}
@@ -2062,7 +2072,7 @@ const Question = props => {
                 numberOfResponses={
                   isUnderReview
                     ? 1
-                    : reviewerPool.filter(r => !!r.reviewSubmitted).length
+                    : reviewerPool.filter((r) => !!r.reviewSubmitted).length
                 }
                 questionType={selectedQuestionType}
                 responses={currentReviewResponses}
@@ -2088,7 +2098,7 @@ const Question = props => {
             }
           />
           <VisuallyHiddenElement as="div">
-            {imageLongDescs.map(longDesc => (
+            {imageLongDescs.map((longDesc) => (
               <p id={longDesc.id}>{longDesc.content}</p>
             ))}
           </VisuallyHiddenElement>
@@ -2097,12 +2107,12 @@ const Question = props => {
     },
     showAuthorChatTab && {
       label: AuthorChatTab,
-      key: 'authorChat',
+      key: "authorChat",
       children: (
         <ChatThread
           announcementText={announcementText}
           hasMore={hasMoreMessages}
-          isActive={activeKey === 'authorChat'}
+          isActive={activeKey === "authorChat"}
           messages={authorChatMessages}
           onFetchMore={onFetchMoreMessages}
           onSendMessage={onSendAuthorChatMessage}
@@ -2112,10 +2122,10 @@ const Question = props => {
     },
     showProductionChatTab && {
       label: ProductionAssignmentsTab,
-      key: 'productionChat',
+      key: "productionChat",
       children: (
         <ChatThread
-          isActive={activeKey === 'productionChat'}
+          isActive={activeKey === "productionChat"}
           messages={productionChatMessages}
           onSendMessage={onSendProductionChatMessage}
           participants={productionChatParticipants}
@@ -2124,12 +2134,12 @@ const Question = props => {
     },
     showReviewerChatTab && {
       label: ReviewerChatTab,
-      key: 'reviewerChat',
+      key: "reviewerChat",
       children:
         reviewerView || hasGeneralReviewerChatId ? (
           <ChatThread
             hasMore={hasMoreMessages}
-            isActive={activeKey === 'reviewerChat'}
+            isActive={activeKey === "reviewerChat"}
             messages={reviewerChatMessages}
             onFetchMore={onFetchMoreMessages}
             onSendMessage={onSendReviewerChatMessage}
@@ -2138,20 +2148,20 @@ const Question = props => {
         ) : (
           <ReviewerChats
             hasMore={hasMoreMessages}
-            isActive={activeKey === 'reviewerChat'}
+            isActive={activeKey === "reviewerChat"}
             messages={reviewerChatMessages}
             onFetchMore={onFetchMoreMessages}
             onSelectReviewer={onSelectReviewer}
             onSendMessage={onSendReviewerChatMessage}
             participants={reviewerChatParticipants}
             reviewerId={reviewerId}
-            reviewers={reviewerPool.filter(r => r.acceptedInvitation)}
+            reviewers={reviewerPool.filter((r) => r.acceptedInvitation)}
           />
         ),
     },
     showAssignReviewers && {
       label: AssignReviewersTab,
-      key: 'assignReviewers',
+      key: "assignReviewers",
       children: (
         <AssignReviewers
           amountOfReviewers={amountOfReviewers}
@@ -2171,7 +2181,7 @@ const Question = props => {
         />
       ),
     },
-  ]
+  ];
 
   useEffect(() => {
     if (
@@ -2181,21 +2191,21 @@ const Question = props => {
       showAssignReviewers !== null
     ) {
       switch (activeKey) {
-        case 'authorChat':
-          !showAuthorChatTab && handleTabChange('editor')
-          break
-        case 'reviewerChat':
-          !showReviewerChatTab && handleTabChange('editor')
-          break
-        case 'productionChat':
-          !showProductionChatTab && handleTabChange('editor')
-          break
-        case 'assignReviewers':
-          !showAssignReviewers && handleTabChange('editor')
-          break
+        case "authorChat":
+          !showAuthorChatTab && handleTabChange("editor");
+          break;
+        case "reviewerChat":
+          !showReviewerChatTab && handleTabChange("editor");
+          break;
+        case "productionChat":
+          !showProductionChatTab && handleTabChange("editor");
+          break;
+        case "assignReviewers":
+          !showAssignReviewers && handleTabChange("editor");
+          break;
         default:
-          handleTabChange('editor')
-          break
+          handleTabChange("editor");
+          break;
       }
     }
   }, [
@@ -2203,53 +2213,55 @@ const Question = props => {
     showProductionChatTab,
     showReviewerChatTab,
     showAssignReviewers,
-  ])
+  ]);
 
   useEffect(() => {
-    let toMarkAsRead
+    let toMarkAsRead;
 
     switch (activeKey) {
-      case 'authorChat':
-      case 'productionChat':
-      case 'reviewerChat':
+      case "authorChat":
+      case "productionChat":
+      case "reviewerChat":
         toMarkAsRead = unreadMentions
           .filter(({ content }) => content.chatType === activeKey)
-          .map(({ id }) => id)
+          .map(({ id }) => id);
 
-        onMarkAsRead(toMarkAsRead)
-        break
+        onMarkAsRead(toMarkAsRead);
+        break;
       default:
-        break
+        break;
     }
-  }, [activeKey])
+  }, [activeKey]);
 
   return (
     <ModalContext.Provider value={contextValue}>
       <Wrapper>
-        <Spin renderBackground={false} spinning={loading}>
+        {Object.keys(metadata).length ? (
           <StyledTabs
             $activebg="#fff"
             activeKey={activeKey}
-            items={tabItems}
+            items={tabItems.filter((t) => !!t)}
             onChange={handleTabChange}
             renderTabBar={(tabProps, DefaultTabBar) => {
               return facultyView && !reviewerView ? (
                 FacultyHeader
               ) : (
                 <DefaultTabBar {...tabProps} />
-              )
+              );
             }}
             tabBarExtraContent={{
               // left: BackButton,
               right: RightArea,
             }}
           />
-        </Spin>
+        ) : (
+          <Spin spinning={loading} />
+        )}
       </Wrapper>
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 Question.propTypes = {
   amountOfReviewers: PropTypes.number,
@@ -2665,128 +2677,6 @@ Question.propTypes = {
   saveReview: PropTypes.func,
   enhancedEditor: PropTypes.bool,
   upgradeEditor: PropTypes.func,
-}
+};
 
-Question.defaultProps = {
-  amountOfReviewers: 0,
-  authors: [],
-  automateReviewerInvites: false,
-  complexItemSetOptions: [],
-  defaultActiveKey: 'editor',
-  announcementText: '',
-  hasMoreMessages: false,
-  authorChatMessages: [],
-  productionChatMessages: [],
-  reviewerChatMessages: [],
-  onAcceptQuestion: () => {},
-  onAddReviewers: () => {},
-  onAutomateReviewerChange: () => {},
-  onChangeAmountOfReviewers: () => {},
-  onChangeAnnouncement: () => {},
-  onFetchMoreMessages: () => {},
-  onInviteReviewer: () => {},
-  onMoveToReview: () => {},
-  onMoveToProduction: () => {},
-  onPublish: () => {},
-  onUnpublish: () => {},
-  onCreateNewVersion: () => {},
-  onReject: () => {},
-  onRemoveReviewerRow: () => {},
-  onReviewerSearch: () => {},
-  onReviewerTableChange: () => {},
-  onRevokeReviewerInvitation: () => {},
-  onSendAuthorChatMessage: () => {},
-  onSendProductionChatMessage: () => {},
-  onSendReviewerChatMessage: () => {},
-  onSubmitReport: () => {},
-  onClickAssignHE: () => {},
-  editorContent: {},
-  leadingContent: null,
-  initialMetadataValues: {},
-  onClickExportToQti: null,
-  onClickExportToWord: null,
-  onClickPreviousButton: () => {},
-  onClickNextButton: () => {},
-  onEditorContentAutoSave: () => {},
-  onImageUpload: () => {},
-  onMetadataAutoSave: () => {},
-  onAssignAuthor: () => {},
-  onReviewerAcceptInvite: () => {},
-  onReviewerRejectInvite: () => {},
-  onSubmitReview: () => {},
-  loadAuthors: () => {},
-  submitting: false,
-  isAccepted: false,
-  isArchived: false,
-  isPublished: false,
-  isRejected: false,
-  isSubmitted: false,
-  isUnderReview: false,
-  isInProduction: false,
-  isUnpublished: false,
-  canUnpublish: false,
-  canPublish: false,
-  editorView: false,
-  questionAgreedTc: false,
-  canAssignAuthor: false,
-  showAssignHEButton: true,
-  showPreviewButton: false,
-  showNextQuestionLink: false,
-  facultyView: false,
-  refetchUser: () => {},
-  resources: [],
-  reviewInviteStatus: null,
-  reviewSubmitted: false,
-  reviewerPool: [],
-  reviewerView: false,
-  updated: '',
-  isUserLoggedIn: true,
-  canCreateNewVersion: false,
-  wordFileLoading: false,
-  authorChatParticipants: [],
-  productionChatParticipants: [],
-  reviewerChatParticipants: [],
-  qtiZipLoading: false,
-  complexSetEditLink: null,
-  complexItemSetId: null,
-  handlingEditors: [],
-  onSearchHE: () => {},
-  searchHELoading: false,
-  assignHELoading: false,
-  currentHandlingEditors: [],
-  loadAssignedHEs: () => {},
-  onUnassignHandlingEditor: () => {},
-  chatLoading: false,
-  selectedQuestionType: null,
-
-  onChangeTab: () => {},
-  showAuthorChatTab: null,
-  showProductionChatTab: null,
-  showReviewerChatTab: null,
-  showAssignReviewers: null,
-
-  hasDeletedAuthor: false,
-  onSelectReviewer: null,
-  hasGeneralReviewerChatId: false,
-  reviewerId: null,
-  authorsCurrent: [],
-  onAuthorEdit: null,
-  isEditing: false,
-  onAddToList: null,
-  onAddToNewList: null,
-  existingLists: [],
-  loadingAddToList: false,
-  loadingCreateList: false,
-  dependencyOptions: [],
-  unreadMentions: [],
-  onMarkAsRead: null,
-  isMobile: false,
-  preview: false,
-  setPreview: null,
-  reviewResponses: {},
-  saveReview: null,
-  enhancedEditor: null,
-  upgradeEditor: null,
-}
-
-export default Question
+export default Question;

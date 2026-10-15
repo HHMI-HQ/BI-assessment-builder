@@ -1,9 +1,9 @@
 /* stylelint-disable string-quotes */
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th } from '@coko/client'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th } from "@coko/client";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   QuestionList,
   TabsStyled as Tabs,
@@ -13,17 +13,17 @@ import {
   AddToListPopup,
   Popup,
   Modal,
-} from '../common'
-import AssignAuthorButton from './AssignAuthorButton'
-import ComplexItemSetForm from './ComplexItemSetForm'
-import Wax from '../wax/Wax'
-import { simpleConfig } from '../wax/config'
-import { LeadingContentLayout } from '../wax/layout'
-import ExportListToWordButton from '../myList/ExportModal'
+} from "../common";
+import AssignAuthorButton from "./AssignAuthorButton";
+import ComplexItemSetForm from "./ComplexItemSetForm";
+import Wax from "../wax/Wax";
+import { simpleConfig } from "../wax/config";
+import { LeadingContentLayout } from "../wax/layout";
+import ExportListToWordButton from "../myList/ExportModal";
 
-const ModalHeader = Modal.header
-const ModalFooter = Modal.footer
-const ModalContext = React.createContext(null)
+const ModalHeader = Modal.header;
+const ModalFooter = Modal.footer;
+const ModalContext = React.createContext(null);
 
 const StyledTabs = styled(Tabs)`
   height: 100%;
@@ -31,7 +31,7 @@ const StyledTabs = styled(Tabs)`
   .ant-tabs-content {
     height: 100%;
 
-    [role='tabpanel'][aria-hidden='false'] {
+    [role="tabpanel"][aria-hidden="false"] {
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -39,8 +39,8 @@ const StyledTabs = styled(Tabs)`
     }
   }
 
-  @media (max-width: ${th('mediaQueries.medium')}) {
-    .ant-tabs-content [role='tabpanel'][aria-hidden='false'] {
+  @media (max-width: ${th("mediaQueries.medium")}) {
+    .ant-tabs-content [role="tabpanel"][aria-hidden="false"] {
       height: unset;
       min-height: 100%;
 
@@ -53,10 +53,10 @@ const StyledTabs = styled(Tabs)`
       }
     }
   }
-`
+`;
 
 const Wrapper = styled.div`
-  --threshold: ${th('mediaQueries.medium')};
+  --threshold: ${th("mediaQueries.medium")};
   display: flex;
   flex-wrap: wrap;
   height: 100%;
@@ -67,7 +67,7 @@ const Wrapper = styled.div`
     flex-basis: calc((var(--threshold) - 100%) * 999);
     flex-grow: 1;
   }
-`
+`;
 
 const InfoWrapper = styled.div`
   display: flex;
@@ -79,21 +79,21 @@ const InfoWrapper = styled.div`
   .ProseMirror {
     padding: 0;
   }
-`
+`;
 
 const StyledQuestionList = styled(QuestionList)`
   flex-grow: 1;
   overflow: hidden;
-`
+`;
 
 const SetTitle = styled.h2`
   margin-block-end: 0;
-`
+`;
 
 const StyledWaxLayout = styled(LeadingContentLayout)`
   height: 100%;
   overflow: auto;
-`
+`;
 
 const StyledButton = styled(Button)`
   > span:not(.ant-btn-icon) {
@@ -105,7 +105,7 @@ const StyledButton = styled(Button)`
     margin-inline-end: 0 !important;
   }
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     > span:not(.ant-btn-icon) {
       display: inline-block;
       margin-inline-start: 0;
@@ -115,20 +115,20 @@ const StyledButton = styled(Button)`
       display: none;
     }
   }
-`
+`;
 
 const BulkActionWrapper = styled.div`
   display: flex;
   gap: ${grid(2)};
-`
+`;
 
 const PopupContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${grid(2)};
-`
+`;
 
-const ComplexItemSet = props => {
+const ComplexItemSet = (props) => {
   const {
     activeTab,
     canEdit,
@@ -164,47 +164,47 @@ const ComplexItemSet = props => {
     existingLists,
     loadingAddToList,
     loadingCreateList,
-  } = props
+  } = props;
 
-  const [activeKey, setActiveKey] = useState(activeTab)
-  const [selectedQuestions, setSelectedQuestions] = useState([])
-  const [modal, contextHolder] = Modal.useModal()
+  const [activeKey, setActiveKey] = useState(activeTab);
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [modal, contextHolder] = Modal.useModal();
 
   useEffect(() => {
-    if (id && activeTab !== 'edit') setActiveKey('content')
-    else setActiveKey('edit')
-  }, [id, activeTab])
+    if (id && activeTab !== "edit") setActiveKey("content");
+    else setActiveKey("edit");
+  }, [id, activeTab]);
 
-  const handleQuestionsSelected = ids => {
-    setSelectedQuestions(ids)
-  }
+  const handleQuestionsSelected = (ids) => {
+    setSelectedQuestions(ids);
+  };
 
   const checkForMissingDependencies = () => {
     return selectedQuestions
-      .map(qid => {
-        const question = questions.find(q => q.id === qid)
+      .map((qid) => {
+        const question = questions.find((q) => q.id === qid);
 
         if (question.dependsOn?.length > 0) {
           const missing = question.dependsOn.some(
-            d => !selectedQuestions.includes(d),
-          )
+            (d) => !selectedQuestions.includes(d),
+          );
 
-          return missing
+          return missing;
         }
 
-        return false
+        return false;
       })
-      .some(result => {
-        return !!result
-      })
-  }
+      .some((result) => {
+        return !!result;
+      });
+  };
 
   const handleWordExport = (showFeedback, showMetadata) => {
-    const missingDependencies = checkForMissingDependencies()
+    const missingDependencies = checkForMissingDependencies();
 
     if (missingDependencies) {
-      return new Promise(resolve => {
-        const warningModal = modal.warning()
+      return new Promise((resolve) => {
+        const warningModal = modal.warning();
 
         warningModal.update({
           title: <ModalHeader>Missing dependencies</ModalHeader>,
@@ -220,9 +220,9 @@ const ComplexItemSet = props => {
               <Button onClick={warningModal.destroy}>Cancel</Button>
               <Button
                 onClick={() => {
-                  onWordExport(selectedQuestions, showFeedback, showMetadata)
-                  resolve()
-                  warningModal.destroy()
+                  onWordExport(selectedQuestions, showFeedback, showMetadata);
+                  resolve();
+                  warningModal.destroy();
                 }}
                 type="primary"
               >
@@ -230,19 +230,19 @@ const ComplexItemSet = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
+        });
+      });
     }
 
-    return onWordExport(selectedQuestions, showFeedback, showMetadata)
-  }
+    return onWordExport(selectedQuestions, showFeedback, showMetadata);
+  };
 
   const handleQTIExport = () => {
-    const missingDependencies = checkForMissingDependencies()
+    const missingDependencies = checkForMissingDependencies();
 
     if (missingDependencies) {
-      return new Promise(resolve => {
-        const warningModal = modal.warning()
+      return new Promise((resolve) => {
+        const warningModal = modal.warning();
 
         warningModal.update({
           title: <ModalHeader>Missing dependencies</ModalHeader>,
@@ -258,9 +258,9 @@ const ComplexItemSet = props => {
               <Button onClick={warningModal.destroy}>Cancel</Button>
               <Button
                 onClick={() => {
-                  onQTIExport(selectedQuestions)
-                  resolve()
-                  warningModal.destroy()
+                  onQTIExport(selectedQuestions);
+                  resolve();
+                  warningModal.destroy();
                 }}
                 type="primary"
               >
@@ -268,23 +268,23 @@ const ComplexItemSet = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
+        });
+      });
     }
 
-    return onQTIExport(selectedQuestions)
-  }
+    return onQTIExport(selectedQuestions);
+  };
 
-  const handleAddToList = existingList => {
-    return onAddToList(existingList, selectedQuestions)
-  }
+  const handleAddToList = (existingList) => {
+    return onAddToList(existingList, selectedQuestions);
+  };
 
-  const handleAddNewToList = listName => {
-    return onAddToNewList(listName, selectedQuestions)
-  }
+  const handleAddNewToList = (listName) => {
+    return onAddToNewList(listName, selectedQuestions);
+  };
 
   const handleDeleteSet = () => {
-    const warningModal = modal.warning()
+    const warningModal = modal.warning();
     warningModal.update({
       title: <ModalHeader>Delete set</ModalHeader>,
       content: (
@@ -300,8 +300,8 @@ const ComplexItemSet = props => {
           <Button onClick={warningModal.destroy}>Cancel</Button>
           <Button
             onClick={() => {
-              onDeleteSet()
-              warningModal.destroy()
+              onDeleteSet();
+              warningModal.destroy();
             }}
             status="danger"
             type="primary"
@@ -310,14 +310,14 @@ const ComplexItemSet = props => {
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const tabItems = [
     // show Content tab with list of questions if complex item set exists
     id && {
-      label: 'Content',
-      key: 'content',
+      label: "Content",
+      key: "content",
       children: (
         <Wrapper>
           <InfoWrapper>
@@ -398,8 +398,8 @@ const ComplexItemSet = props => {
     },
     // show Edit tab if user can edit a context-dependent item set or can create new ones
     (canEdit || (!id && canCreate)) && {
-      label: id ? 'Edit' : 'Create',
-      key: 'edit',
+      label: id ? "Edit" : "Create",
+      key: "edit",
       forceRender: true,
       children: (
         <ComplexItemSetForm
@@ -416,13 +416,13 @@ const ComplexItemSet = props => {
         />
       ),
     },
-  ]
+  ];
 
   return (
     <ModalContext.Provider value={null}>
       <StyledTabs
         activeKey={activeKey}
-        destroyInactiveTabPane
+        destroyOnHidden
         items={tabItems}
         onChange={setActiveKey}
         tabBarExtraContent={
@@ -465,8 +465,8 @@ const ComplexItemSet = props => {
       />
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 ComplexItemSet.propTypes = {
   canEdit: PropTypes.bool,
@@ -508,14 +508,14 @@ ComplexItemSet.propTypes = {
   existingLists: PropTypes.arrayOf(PropTypes.shape()),
   loadingAddToList: PropTypes.bool,
   loadingCreateList: PropTypes.bool,
-}
+};
 
 ComplexItemSet.defaultProps = {
   canEdit: false,
   canCreate: false,
   id: null,
   questions: [],
-  title: '',
+  title: "",
   leadingContent: null,
   loadingData: false,
   loadingSave: false,
@@ -527,7 +527,7 @@ ComplexItemSet.defaultProps = {
   submissionMessage: null,
   submissionStatus: null,
   totalQuestions: 0,
-  activeTab: 'content',
+  activeTab: "content",
   editWarning: false,
   onSortOptionChange: null,
   sortOptions: [],
@@ -545,6 +545,6 @@ ComplexItemSet.defaultProps = {
   existingLists: [],
   loadingAddToList: false,
   loadingCreateList: false,
-}
+};
 
-export default ComplexItemSet
+export default ComplexItemSet;

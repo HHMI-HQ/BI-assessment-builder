@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
-import { Link, useNavigate, useParams, useLocation } from 'react-router'
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Link, useNavigate, useParams, useLocation } from "react-router";
 import {
   useQuery,
   useMutation,
   useLazyQuery,
   useSubscription,
-} from '@apollo/client/react'
-import debounce from 'lodash/debounce'
+} from "@apollo/client/react";
+import debounce from "lodash/debounce";
 
-import { serverUrl, uuid } from '@coko/client'
-import { Question, Result, VisuallyHiddenElement } from 'ui'
+import { serverUrl, uuid } from "@coko/client";
+import { Question, Result, VisuallyHiddenElement } from "ui";
 
 import {
   CURRENT_USER,
@@ -63,7 +63,7 @@ import {
   GET_LISTS_OPTIONS,
   GET_COMPLEX_ITEM_SET,
   UPGRADE_EDITOR,
-} from '../graphql'
+} from "../graphql";
 import {
   useMetadata,
   hasRole,
@@ -77,37 +77,37 @@ import {
   notificationsMapper,
   waitForTextareaAndSetValue,
   extractDocumentText,
-} from '../utilities'
-import useBreakpoint from '../ui/_helpers/useBreakpoint'
+} from "../utilities";
+import useBreakpoint from "../ui/_helpers/useBreakpoint";
 
-const AUTOSAVE_DELAY = 500
-const REVIEWER_SEARCH_DELAY = 500
+const AUTOSAVE_DELAY = 500;
+const REVIEWER_SEARCH_DELAY = 500;
 
 // #region transformations
 const metadataApiToUi = (values, testMode) => {
-  if (!values) return {}
+  if (!values) return {};
 
-  if (testMode) return values
+  if (testMode) return values;
 
-  const courseData = [...values.courses]
+  const courseData = [...values.courses];
 
-  const transformedCoursesData = []
+  const transformedCoursesData = [];
 
   courseData.forEach(({ course, units }) => {
     if (units.length > 1) {
-      units.forEach(unit => {
+      units.forEach((unit) => {
         transformedCoursesData.push({
           course,
           ...unit,
-        })
-      })
+        });
+      });
     } else {
       transformedCoursesData.push({
         course,
         ...units[0],
-      })
+      });
     }
-  })
+  });
 
   return {
     ...values,
@@ -115,51 +115,51 @@ const metadataApiToUi = (values, testMode) => {
     belongsToComplexItemSet: !!values.complexItemSetId,
     content: null,
     leadingContent: null,
-  }
-}
+  };
+};
 
-const metadataUiToApi = values => {
+const metadataUiToApi = (values) => {
   // filter empty topics
-  const topicFields = t => {
-    if (!t?.topic) return null
-    return t
-  }
+  const topicFields = (t) => {
+    if (!t?.topic) return null;
+    return t;
+  };
 
-  const topics = values.topics?.map(t => topicFields(t)).filter(Boolean)
+  const topics = values.topics?.map((t) => topicFields(t)).filter(Boolean);
 
   // transform courses structure
-  const transformedCoursesData = []
+  const transformedCoursesData = [];
 
   values.courses
-    .filter(c => !!c)
+    .filter((c) => !!c)
     .forEach(({ course, ...units }) => {
       const prevIndex = transformedCoursesData.findIndex(
-        c => c.course === course,
-      )
+        (c) => c.course === course,
+      );
 
       if (prevIndex < 0) {
         transformedCoursesData.push({
           course,
           units: [units],
-        })
+        });
       } else {
-        transformedCoursesData[prevIndex].units.push(units)
+        transformedCoursesData[prevIndex].units.push(units);
       }
-    })
+    });
 
   // filter empty courses
-  const coursesFields = course => {
-    if (!course.course) return null
-    return course
-  }
+  const coursesFields = (course) => {
+    if (!course.course) return null;
+    return course;
+  };
 
   const courses = transformedCoursesData
-    .map(course => coursesFields(course))
-    .filter(Boolean)
+    .map((course) => coursesFields(course))
+    .filter(Boolean);
 
   const complexItemSetId = values.belongsToComplexItemSet
     ? values.complexItemSetId
-    : null
+    : null;
 
   const metadataToSave = {
     topics,
@@ -174,10 +174,10 @@ const metadataUiToApi = values => {
     questionType: values.questionType || null,
     complexItemSetId,
     dependsOn: values.dependsOn,
-  }
+  };
 
-  return metadataToSave
-}
+  return metadataToSave;
+};
 
 const messagesApiToUi = (messages, currentUser = null) => {
   return messages
@@ -196,59 +196,59 @@ const messagesApiToUi = (messages, currentUser = null) => {
             own: userId === currentUser,
             user: displayName,
             attachments,
-          }
+          };
         },
       )
-    : []
-}
+    : [];
+};
 // #endregion transformations
 
-const scanContentForQuestionType = content => {
+const scanContentForQuestionType = (content) => {
   return content
-    ? questionTypes.find(type => content.indexOf(type.waxValue) > -1)
-    : null
-}
+    ? questionTypes.find((type) => content.indexOf(type.waxValue) > -1)
+    : null;
+};
 
-const clearPublishedQuestionsCache = cache => {
+const clearPublishedQuestionsCache = (cache) => {
   const cachedPublishedQuestionsQueries = Object.keys(
     cache.data.data.ROOT_QUERY,
   )
-    .filter(key => key.startsWith('getPublishedQuestions'))
+    .filter((key) => key.startsWith("getPublishedQuestions"))
     .reduce(
       (cur, key) =>
         Object.assign(cur, { [key]: cache.data.data.ROOT_QUERY[key] }),
       {},
-    )
+    );
 
-  Object.keys(cachedPublishedQuestionsQueries).forEach(cachedField => {
+  Object.keys(cachedPublishedQuestionsQueries).forEach((cachedField) => {
     cache.modify({
       fields: {
         [cachedField](_, { DELETE }) {
-          return DELETE
+          return DELETE;
         },
       },
-    })
-  })
-}
+    });
+  });
+};
 
-const QuestionPage = props => {
-  const { testMode } = props
+const QuestionPage = (props) => {
+  const { testMode } = props;
 
   // #region hooks
   // check if url fragment has been included in id param; if so, remove it
-  const { id: rawId } = useParams()
-  const hasIndex = rawId.indexOf('#')
-  const id = hasIndex > -1 ? rawId.substring(0, hasIndex) : rawId
-  const [firstRender, setFirstRender] = useState(true)
-  const navigate = useNavigate()
-  const { metadata } = useMetadata()
-  const { unreadMentions, markAsRead } = useNotifications()
-  const unread = notificationsMapper(unreadMentions, id)
+  const { id: rawId } = useParams();
+  const hasIndex = rawId.indexOf("#");
+  const id = hasIndex > -1 ? rawId.substring(0, hasIndex) : rawId;
+  const [firstRender, setFirstRender] = useState(true);
+  const navigate = useNavigate();
+  const { metadata } = useMetadata();
+  const { unreadMentions, markAsRead } = useNotifications();
+  const unread = notificationsMapper(unreadMentions, id);
 
-  const requestedTab = window.location.hash.substring(1)
-  const [selectedReviewerId, setSelectedReviewerId] = useState(uuid())
-  const [reviewerChatThread, setReviewerChatThread] = useState()
-  const isMobile = useBreakpoint('(max-width: 992px)')
+  const requestedTab = window.location.hash.substring(1);
+  const [selectedReviewerId, setSelectedReviewerId] = useState(uuid());
+  const [reviewerChatThread, setReviewerChatThread] = useState();
+  const isMobile = useBreakpoint("(max-width: 992px)");
 
   const {
     data: { question } = {},
@@ -259,9 +259,9 @@ const QuestionPage = props => {
     variables: {
       id,
     },
-  })
+  });
 
-  const { data: { currentUser } = {} } = useQuery(CURRENT_USER)
+  const { data: { currentUser } = {} } = useQuery(CURRENT_USER);
 
   const { data: { getAuthorChatParticipants: authorChatParticipants } = {} } =
     useQuery(GET_AUTHOR_CHAT_PARTICIPANTS, {
@@ -269,7 +269,7 @@ const QuestionPage = props => {
       variables: {
         id,
       },
-    })
+    });
 
   const {
     data: { getProductionChatParticipants: productionChatParticipants } = {},
@@ -278,7 +278,7 @@ const QuestionPage = props => {
     variables: {
       id,
     },
-  })
+  });
 
   const {
     data: { getReviewerChatParticipants: reviewerChatParticipants } = {},
@@ -289,46 +289,46 @@ const QuestionPage = props => {
       questionId: id,
       reviewerId: selectedReviewerId,
     },
-  })
+  });
 
   const { data: { getAvailableSets: complexItemSetOptions } = {} } = useQuery(
     GET_COMPLEX_ITEM_SETS_OPTIONS,
     {
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
     },
-  )
+  );
 
-  const { data: { getResources } = {} } = useQuery(GET_RESOURCES)
+  const { data: { getResources } = {} } = useQuery(GET_RESOURCES);
 
-  const [updateQuestionMutation] = useMutation(UPDATE_QUESTION)
+  const [updateQuestionMutation] = useMutation(UPDATE_QUESTION);
 
   const [submitQuestionMutation] = useMutation(SUBMIT_QUESTION, {
     refetchQueries: [{ query: QUESTION, variables: { id } }],
-  })
+  });
 
-  const [createChatThreadMutation] = useMutation(CREATE_CHAT_THREAD)
+  const [createChatThreadMutation] = useMutation(CREATE_CHAT_THREAD);
 
   const [rejectQuestionMutation] = useMutation(REJECT_QUESTION, {
     variables: { questionId: id },
-  })
+  });
 
   const [acceptQuestionVersion] = useMutation(ACCEPT_QUESTION, {
-    onError: e => {
-      if (e.message === 'Not Authorised!') {
-        refetchQuestion()
+    onError: (e) => {
+      if (e.message === "Not Authorised!") {
+        refetchQuestion();
       }
     },
-  })
+  });
 
-  const [editQuestionVersion] = useMutation(EDIT_QUESTION)
+  const [editQuestionVersion] = useMutation(EDIT_QUESTION);
 
   const [moveQuestionVersionToReviewMutation] = useMutation(
     MOVE_QUESTION_VERSION_TO_REVIEW,
-  )
+  );
 
   const [moveQuestionVersionToProductionMutation] = useMutation(
     MOVE_QUESTION_VERSION_TO_PRODUCTION,
-  )
+  );
 
   const [publishQuestionVersionMutation] = useMutation(
     PUBLISH_QUESTION_VERSION,
@@ -336,27 +336,27 @@ const QuestionPage = props => {
       refetchQueries: [{ query: QUESTION, variables: { id, published: true } }],
       update: clearPublishedQuestionsCache,
     },
-  )
+  );
 
   const [unpublishQuestionVersionMutation] = useMutation(
     UNPUBLISH_QUESTION_VERSION,
     {
       onCompleted: () => {
-        navigate(`/question/${id}/`)
+        navigate(`/question/${id}/`);
       },
       update: clearPublishedQuestionsCache,
     },
-  )
+  );
 
   const [createNewQuestionVersionMutation] = useMutation(CREATE_NEW_VERSION, {
     variables: { questionId: id },
     refetchQueries: [{ query: QUESTION, variables: { id } }],
-  })
+  });
 
-  const [cancelEmailNotification] = useMutation(CANCEL_EMAIL_NOTIFICATION)
+  const [cancelEmailNotification] = useMutation(CANCEL_EMAIL_NOTIFICATION);
 
   const [addToExistingListMutation, { loading: loadingAddToList }] =
-    useMutation(ADD_TO_LIST)
+    useMutation(ADD_TO_LIST);
 
   const [addToNewListMutation, { loading: loadingCreateList }] = useMutation(
     CREATE_LIST,
@@ -367,8 +367,8 @@ const QuestionPage = props => {
           variables: {
             page: 0,
             pageSize: 10,
-            searchQuery: '',
-            orderBy: 'created',
+            searchQuery: "",
+            orderBy: "created",
             ascending: true,
           },
         },
@@ -377,14 +377,14 @@ const QuestionPage = props => {
         },
       ],
     },
-  )
+  );
 
   const { data: { myLists: { result: existingLists } = {} } = {} } = useQuery(
     GET_LISTS_OPTIONS,
     {
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
     },
-  )
+  );
 
   const [
     filterGlobalTeamMembers,
@@ -392,7 +392,7 @@ const QuestionPage = props => {
       loading: loadingSearchHE,
       data: { filterGlobalTeamMembers: handlingEditors } = {},
     },
-  ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS)
+  ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS);
 
   const [
     getQuestionsHandlingEditors,
@@ -401,10 +401,10 @@ const QuestionPage = props => {
     variables: {
       questionId: id,
     },
-    fetchPolicy: 'network-only',
-  })
+    fetchPolicy: "network-only",
+  });
 
-  const [searchForReviewers] = useLazyQuery(SEARCH_FOR_REVIEWERS)
+  const [searchForReviewers] = useLazyQuery(SEARCH_FOR_REVIEWERS);
 
   const { data: { chatChannel: authorChatThread } = {}, loading: chatLoading } =
     useQuery(GET_CHAT_THREAD, {
@@ -412,8 +412,8 @@ const QuestionPage = props => {
       variables: {
         id: question?.authorChatThreadId,
       },
-      fetchPolicy: 'network-only',
-    })
+      fetchPolicy: "network-only",
+    });
 
   const { data: { chatChannel: productionChatThread } = {} } = useQuery(
     GET_CHAT_THREAD,
@@ -422,9 +422,9 @@ const QuestionPage = props => {
       variables: {
         id: question?.productionChatThreadId,
       },
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
     },
-  )
+  );
 
   useQuery(GET_CHAT_THREAD, {
     skip:
@@ -434,17 +434,17 @@ const QuestionPage = props => {
     variables: {
       id: question?.reviewerChatThreadId,
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: "network-only",
     onCompleted: ({ chatThread: reviewerChat }) => {
-      setSelectedReviewerId(currentUser.id)
-      setReviewerChatMessages(reviewerChat?.messages)
-      setReviewerChatThread(reviewerChat)
+      setSelectedReviewerId(currentUser.id);
+      setReviewerChatMessages(reviewerChat?.messages);
+      setReviewerChatThread(reviewerChat);
     },
-  })
+  });
 
   const [getReviewerChatThread] = useLazyQuery(FILTER_CHAT_THREADS, {
-    fetchPolicy: 'network-only',
-  })
+    fetchPolicy: "network-only",
+  });
 
   useSubscription(MESSAGE_CREATED_SUBSCRIPTION, {
     skip: !authorChatThread?.id || testMode,
@@ -455,24 +455,24 @@ const QuestionPage = props => {
       },
     }) => {
       if (messageCreated) {
-        setAuthorChatMessages(previousMessages => [
+        setAuthorChatMessages((previousMessages) => [
           ...previousMessages,
           messageCreated,
-        ])
+        ]);
 
         if (
           messageCreated.mentions.includes(currentUser.id) &&
-          localStorage.getItem(question?.id) === 'authorChat'
+          localStorage.getItem(question?.id) === "authorChat"
         ) {
           cancelEmailNotification({
             variables: {
               chatThreadId: authorChatThread?.id,
             },
-          })
+          });
         }
       }
     },
-  })
+  });
 
   useSubscription(MESSAGE_CREATED_SUBSCRIPTION, {
     skip: !productionChatThread?.id || testMode,
@@ -483,24 +483,24 @@ const QuestionPage = props => {
       },
     }) => {
       if (messageCreated) {
-        setProductionChatMessages(previousMessages => [
+        setProductionChatMessages((previousMessages) => [
           ...previousMessages,
           messageCreated,
-        ])
+        ]);
       }
 
       if (
         messageCreated.mentions.includes(currentUser.id) &&
-        localStorage.getItem(question?.id) === 'productionChat'
+        localStorage.getItem(question?.id) === "productionChat"
       ) {
         cancelEmailNotification({
           variables: {
             chatThreadId: productionChatThread?.id,
           },
-        })
+        });
       }
     },
-  })
+  });
 
   useSubscription(MESSAGE_CREATED_SUBSCRIPTION, {
     skip: !reviewerChatThread?.id || testMode,
@@ -511,31 +511,31 @@ const QuestionPage = props => {
       },
     }) => {
       if (messageCreated) {
-        setReviewerChatMessages(previousMessages => [
+        setReviewerChatMessages((previousMessages) => [
           ...previousMessages,
           messageCreated,
-        ])
+        ]);
       }
 
       if (
         messageCreated.mentions.includes(currentUser.id) &&
-        localStorage.getItem(question?.id) === 'reviewerChat'
+        localStorage.getItem(question?.id) === "reviewerChat"
       ) {
         cancelEmailNotification({
           variables: {
             chatThreadId: reviewerChatThread?.id,
           },
-        })
+        });
       }
     },
-  })
+  });
 
   /**
    *
    * @param {string} chatType - type of the chat thread
    * @returns
    */
-  const createChat = chatType => {
+  const createChat = (chatType) => {
     const chatThreadMutationData = {
       variables: {
         input: {
@@ -543,35 +543,35 @@ const QuestionPage = props => {
           relatedObjectId: id,
         },
       },
-    }
+    };
 
     return new Promise((resolve, reject) => {
       createChatThreadMutation(chatThreadMutationData)
-        .then(data => {
-          refetchQuestion()
-          resolve(data)
+        .then((data) => {
+          refetchQuestion();
+          resolve(data);
         })
-        .catch(err => {
-          reject(err)
-        })
-    })
-  }
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  };
 
   // maintaining messages in a state
-  const [authorChatMessages, setAuthorChatMessages] = useState([])
-  const [productionChatMessages, setProductionChatMessages] = useState([])
-  const [reviewerChatMessages, setReviewerChatMessages] = useState([])
+  const [authorChatMessages, setAuthorChatMessages] = useState([]);
+  const [productionChatMessages, setProductionChatMessages] = useState([]);
+  const [reviewerChatMessages, setReviewerChatMessages] = useState([]);
 
   useEffect(() => {
     if (authorChatThread?.messages) {
-      setAuthorChatMessages(authorChatThread.messages)
+      setAuthorChatMessages(authorChatThread.messages);
     }
-  }, [authorChatThread])
+  }, [authorChatThread]);
   useEffect(() => {
     if (productionChatThread?.messages) {
-      setProductionChatMessages(productionChatThread.messages)
+      setProductionChatMessages(productionChatThread.messages);
     }
-  }, [productionChatThread])
+  }, [productionChatThread]);
   // useEffect(() => {
   //   if (reviewerChatThread?.messages) {
   //     setReviewerChatMessages(reviewerChatThread.messages)
@@ -585,10 +585,10 @@ const QuestionPage = props => {
   // const { state: { relatedQuestionIds } = {} } = location
 
   // keep a reactive copy of page title have an updated h1
-  const [pageTitle, setPageTitle] = useState('')
+  const [pageTitle, setPageTitle] = useState("");
 
-  const version = question?.versions[0]
-  const selectedQuestionType = scanContentForQuestionType(version?.content)
+  const version = question?.versions[0];
+  const selectedQuestionType = scanContentForQuestionType(version?.content);
 
   const {
     data: {
@@ -601,96 +601,96 @@ const QuestionPage = props => {
       questionsOptions: {
         page: 0,
         pageSize: 100, // needs discussion
-        orderBy: 'publication_date',
+        orderBy: "publication_date",
         ascending: false,
       },
     },
-    fetchPolicy: 'network-only',
-  })
+    fetchPolicy: "network-only",
+  });
 
   const { data: { getReview } = {} } = useQuery(GET_REVIEW, {
     skip:
       !currentUser ||
       !version?.underReview ||
-      !hasRole(currentUser, 'reviewer', version?.id),
+      !hasRole(currentUser, "reviewer", version?.id),
     variables: {
       questionVersionId: version?.id,
       reviewerId: currentUser?.id,
     },
-  })
+  });
 
   useEffect(() => {
     if (version && metadata) {
-      const contentText = extractDocumentText(version.content).substring(0, 50)
+      const contentText = extractDocumentText(version.content).substring(0, 50);
 
       // udpate title for published questions
       if (testMode) {
         const questionType = metadata?.questionTypes
-          .map(e => e.options)
+          .map((e) => e.options)
           .flat()
-          .find(type => type.value === version.questionType)
+          .find((type) => type.value === version.questionType);
 
-        const title = `${questionType?.label} - ${contentText}...`
+        const title = `${questionType?.label} - ${contentText}...`;
 
-        setPageTitle(title)
-        document.title = title
-        document.getElementById('page-announcement').replaceChildren(title)
+        setPageTitle(title);
+        document.title = title;
+        document.getElementById("page-announcement").replaceChildren(title);
       }
 
       // update title dashboard questions
       if (!testMode) {
-        let title
+        let title;
 
         if (question.rejected) {
-          title = `Rejected - ${contentText}...`
+          title = `Rejected - ${contentText}...`;
         } else if (version.published) {
-          title = `Published - ${contentText}...`
+          title = `Published - ${contentText}...`;
         } else if (version.inProduction) {
-          title = `In production - ${contentText}...`
+          title = `In production - ${contentText}...`;
         } else if (version.underReview) {
-          title = `Under review - ${contentText}...`
+          title = `Under review - ${contentText}...`;
         } else if (version.unpublished) {
-          title = `Unpublished - ${contentText}...`
+          title = `Unpublished - ${contentText}...`;
         } else if (version.submitted) {
-          title = `Submitted - ${contentText}...`
+          title = `Submitted - ${contentText}...`;
         } else {
-          title = `Not submitted - ${contentText}...`
+          title = `Not submitted - ${contentText}...`;
         }
 
-        setPageTitle(title)
-        document.title = title
-        document.getElementById('page-announcement').replaceChildren(title)
+        setPageTitle(title);
+        document.title = title;
+        document.getElementById("page-announcement").replaceChildren(title);
       }
     }
-  }, [version, metadata])
+  }, [version, metadata]);
 
   useEffect(() => {
     if (version?.submitted && !question?.authorChatThreadId) {
-      createChat('authorChat')
+      createChat("authorChat");
     }
 
     if (version?.inProduction && !question?.productionChatThreadId) {
-      createChat('productionChat')
+      createChat("productionChat");
     }
-  }, [question, version])
+  }, [question, version]);
 
   useEffect(() => {
     const currentChat =
-      localStorage.getItem(id) === 'reviewerChat'
+      localStorage.getItem(id) === "reviewerChat"
         ? `${localStorage.getItem(id)}-${selectedReviewerId}`
-        : localStorage.getItem(id)
+        : localStorage.getItem(id);
 
     const currentChatActivity = unread.filter(
-      n => n.content.questionId === id && n.content.chatType === currentChat,
-    )
+      (n) => n.content.questionId === id && n.content.chatType === currentChat,
+    );
 
     if (currentChatActivity) {
-      handleMarkAsRead(currentChatActivity.map(n => n.id))
+      handleMarkAsRead(currentChatActivity.map((n) => n.id));
     }
-  }, [unread])
+  }, [unread]);
 
   // declare lazy query to be called when no `relatedQuestionsIds` from previous state
-  const [getPublishedQuestionIds] = useLazyQuery(GET_PUBLISHED_QUESTIONS_IDS)
+  const [getPublishedQuestionIds] = useLazyQuery(GET_PUBLISHED_QUESTIONS_IDS);
 
   const [
     getUsers,
@@ -699,28 +699,28 @@ const QuestionPage = props => {
     variables: {
       params: {
         isActive: true,
-        search: '',
+        search: "",
       },
     },
-  })
+  });
 
   const [assignAuthorship] = useMutation(ASSIGN_QUESTION_AUTHOR, {
     refetchQueries: [{ query: QUESTION, variables: { id } }],
-  })
+  });
 
   // need to refetch user after assigning author, but also show confirmation modal to the user
   // refetchQuery won't work, because it would delete the AssignAuthor component
   const [refetchCurrentUser] = useLazyQuery(CURRENT_USER, {
-    fetchPolicy: 'network-only',
-  })
+    fetchPolicy: "network-only",
+  });
 
   const [generateWordFileMutation, { loading: generateWordFileLoading }] =
-    useMutation(GENERATE_WORD_FILE)
+    useMutation(GENERATE_WORD_FILE);
 
   const [generateQtiZipMutation, { loading: generateQtiZipLoading }] =
-    useMutation(GENERATE_QTI_ZIP)
+    useMutation(GENERATE_QTI_ZIP);
 
-  const [upload] = useMutation(UPLOAD_FILES)
+  const [upload] = useMutation(UPLOAD_FILES);
 
   const [assignHandlingEditor, { loading: assignHELoading }] = useMutation(
     ASSING_HANDLING_EDITORS,
@@ -731,7 +731,7 @@ const QuestionPage = props => {
           variables: {
             questionId: id,
           },
-          fetchPolicy: 'network-only',
+          fetchPolicy: "network-only",
         },
         {
           query: GET_AUTHOR_CHAT_PARTICIPANTS,
@@ -759,7 +759,7 @@ const QuestionPage = props => {
         },
       ],
     },
-  )
+  );
 
   const [unassignHandlingEditor] = useMutation(UNASSING_HANDLING_EDITOR, {
     refetchQueries: [
@@ -768,7 +768,7 @@ const QuestionPage = props => {
         variables: {
           questionId: id,
         },
-        fetchPolicy: 'network-only',
+        fetchPolicy: "network-only",
       },
       {
         query: GET_AUTHOR_CHAT_PARTICIPANTS,
@@ -795,9 +795,9 @@ const QuestionPage = props => {
         },
       },
     ],
-  })
+  });
 
-  const [sendMessage] = useMutation(SEND_MESSAGE)
+  const [sendMessage] = useMutation(SEND_MESSAGE);
 
   const refetchQuestionVariables = [
     {
@@ -806,7 +806,7 @@ const QuestionPage = props => {
         id,
       },
     },
-  ]
+  ];
 
   const [acceptOrRejectInvitation] = useMutation(
     ACCEPT_OR_REJECT_REVIEW_INVITATION,
@@ -828,36 +828,36 @@ const QuestionPage = props => {
         },
       ],
     },
-  )
+  );
 
   const [submitReview] = useMutation(SUBMIT_REVIEW, {
     refetchQueries: refetchQuestionVariables,
-  })
+  });
 
   const [inviteReviewer] = useMutation(INVITE_REVIEWER, {
     refetchQueries: refetchQuestionVariables,
-  })
+  });
 
   const [updateReviewerPool] = useMutation(UPDATE_REVIEWER_POOL, {
     refetchQueries: refetchQuestionVariables,
-  })
+  });
 
   const [revokeReviewerInvitation] = useMutation(REVOKE_REVIEWER_INVITATION, {
     refetchQueries: refetchQuestionVariables,
-  })
+  });
 
   const [changeAmountOfReviewers] = useMutation(CHANGE_AMOUNT_OF_REVIEWERS, {
     refetchQueries: refetchQuestionVariables,
-  })
+  });
 
   const [changeReviewerAutomationStatus] = useMutation(
     CHANGE_REVIEWER_AUTOMATION_STATUS,
     {
       refetchQueries: refetchQuestionVariables,
     },
-  )
+  );
 
-  const [submitReport] = useMutation(SUBMIT_REPORT)
+  const [submitReport] = useMutation(SUBMIT_REPORT);
 
   const [saveReview] = useMutation(SAVE_REVIEW, {
     skip: !getReview,
@@ -870,7 +870,7 @@ const QuestionPage = props => {
         },
       },
     ],
-  })
+  });
 
   const [upgradeEditorMutation] = useMutation(UPGRADE_EDITOR, {
     refetchQueries: [
@@ -881,16 +881,16 @@ const QuestionPage = props => {
         },
       },
     ],
-  })
+  });
   // #endregion hooks
 
   // #region user roles
-  const isEditor = hasGlobalRole(currentUser, 'editor')
-  const isHandlingEditor = hasGlobalRole(currentUser, 'handlingEditor')
-  const isProductionMember = hasGlobalRole(currentUser, 'production')
-  const isAuthor = hasRole(currentUser, 'author', id)
-  const isAdmin = hasGlobalRole(currentUser, 'admin')
-  const isReviewer = hasRole(currentUser, 'reviewer', version?.id)
+  const isEditor = hasGlobalRole(currentUser, "editor");
+  const isHandlingEditor = hasGlobalRole(currentUser, "handlingEditor");
+  const isProductionMember = hasGlobalRole(currentUser, "production");
+  const isAuthor = hasRole(currentUser, "author", id);
+  const isAdmin = hasGlobalRole(currentUser, "admin");
+  const isReviewer = hasRole(currentUser, "reviewer", version?.id);
 
   const canViewUnpublished =
     isEditor ||
@@ -898,26 +898,26 @@ const QuestionPage = props => {
     isProductionMember ||
     isAuthor ||
     isReviewer ||
-    isAdmin
+    isAdmin;
 
-  const isSubmitted = version?.submitted || (isAdmin && isAuthor)
-  const isEditing = version?.editing
-  const isUnderReview = version?.underReview
-  const isInProduction = version?.inProduction || (isAdmin && isAuthor)
-  const isAccepted = version?.accepted
-  const isPublished = version?.published
+  const isSubmitted = version?.submitted || (isAdmin && isAuthor);
+  const isEditing = version?.editing;
+  const isUnderReview = version?.underReview;
+  const isInProduction = version?.inProduction || (isAdmin && isAuthor);
+  const isAccepted = version?.accepted;
+  const isPublished = version?.published;
 
-  const isArchived = question?.isArchived && !testMode
+  const isArchived = question?.isArchived && !testMode;
   // condition for faculty view when in test mode or reviewer view
-  const facultyView = testMode || (isReviewer && isUnderReview)
-  const [preview, setPreview] = useState(facultyView)
+  const facultyView = testMode || (isReviewer && isUnderReview);
+  const [preview, setPreview] = useState(facultyView);
 
-  const reviewerInviteStatus = isReviewer ? version?.reviewerStatus : null
+  const reviewerInviteStatus = isReviewer ? version?.reviewerStatus : null;
 
-  let initialTabKey = localStorage.getItem(id) || 'editor'
+  let initialTabKey = localStorage.getItem(id) || "editor";
 
   if (requestedTab && requestedTab !== initialTabKey) {
-    initialTabKey = requestedTab
+    initialTabKey = requestedTab;
   }
 
   const showAuthorChatTab =
@@ -925,14 +925,14 @@ const QuestionPage = props => {
     !version?.published &&
     !version?.unpublished &&
     !question?.rejected &&
-    (isEditor || isHandlingEditor || isAuthor || isAdmin)
+    (isEditor || isHandlingEditor || isAuthor || isAdmin);
 
   const showProductionChatTab =
     version?.submitted &&
     isInProduction &&
     (isEditor || isHandlingEditor || isProductionMember || isAdmin) &&
     !isPublished &&
-    !version?.unpublished
+    !version?.unpublished;
 
   const showReviewerChatTab =
     version?.underReview &&
@@ -940,34 +940,35 @@ const QuestionPage = props => {
     (isEditor ||
       isHandlingEditor ||
       (isReviewer && reviewerInviteStatus === REVIEWER_STATUSES.accepted) ||
-      isAdmin)
+      isAdmin);
 
-  const reviews = version?.reviews || []
-  const amountOfReviewers = version?.amountOfReviewers || 100 // practically as many as you want
-  const automateReviewerInvites = version?.isReviewerAutomationOn
+  const reviews = version?.reviews || [];
+  const amountOfReviewers = version?.amountOfReviewers || 100; // practically as many as you want
+  const automateReviewerInvites = version?.isReviewerAutomationOn;
 
   const reviewSubmitted = !!reviews.find(
-    review => review.reviewerId === currentUser?.id && review.status.submitted,
-  )
+    (review) =>
+      review.reviewerId === currentUser?.id && review.status.submitted,
+  );
 
   const reviewerPool = flattenReviewerPool(version?.reviewerPool || []).map(
-    rev => {
-      const submittedReview = reviews.find(r => r.reviewerId === rev.id)
+    (rev) => {
+      const submittedReview = reviews.find((r) => r.reviewerId === rev.id);
 
       if (submittedReview) {
         return {
           ...rev,
           submitted: rev.reviewSubmitted ? submittedReview.responses : null,
           attachments: submittedReview.attachments,
-        }
+        };
       }
 
-      return rev
+      return rev;
     },
-  )
+  );
 
   const showAssignReviewersTab =
-    isUnderReview && !isAuthor && (isEditor || isHandlingEditor)
+    isUnderReview && !isAuthor && (isEditor || isHandlingEditor);
   // #endregion user roles
 
   // #region handlers
@@ -980,40 +981,40 @@ const QuestionPage = props => {
           content: JSON.stringify(content),
         },
       },
-    }
+    };
 
     updateQuestionMutation(mutationData).then(
       ({ data: { updateQuestion } = {} }) => {
-        let update = false
+        let update = false;
 
         const inputFigureCount = (
           JSON.stringify(content).match(/figure/g) || []
-        ).length
+        ).length;
 
         if (inputFigureCount > 0) {
           const updatedFigureCount = (
             updateQuestion.versions[0].content.match(/figure/g) || []
-          ).length
+          ).length;
 
           if (updatedFigureCount !== inputFigureCount) {
-            update = true
+            update = true;
           }
         }
 
-        resolve({ update })
+        resolve({ update });
       },
-    )
-  }, AUTOSAVE_DELAY)
+    );
+  }, AUTOSAVE_DELAY);
 
   const handleEditorContentAutoSave = (content, updateMetadata = true) => {
-    return new Promise(resolve => {
-      debouncedEditorAutoSave(content, resolve)
-    })
-  }
+    return new Promise((resolve) => {
+      debouncedEditorAutoSave(content, resolve);
+    });
+  };
 
-  const handleMetadataAutoSave = values => {
+  const handleMetadataAutoSave = (values) => {
     if (values) {
-      const metadataToSave = metadataUiToApi(values)
+      const metadataToSave = metadataUiToApi(values);
 
       if (
         values.questionType &&
@@ -1022,39 +1023,41 @@ const QuestionPage = props => {
         // warn that current content will be deleted
         // apply new question type starting data
         const selectedType = version?.enhancedEditor
-          ? newQuestionTypes.find(t => t.metadataValue === values.questionType)
-          : questionTypes.find(t => t.metadataValue === values.questionType)
+          ? newQuestionTypes.find(
+              (t) => t.metadataValue === values.questionType,
+            )
+          : questionTypes.find((t) => t.metadataValue === values.questionType);
 
-        handleEditorContentAutoSave(selectedType.startingData, false)
+        handleEditorContentAutoSave(selectedType.startingData, false);
       }
 
       const mutationData = {
         variables: {
           questionId: id,
-          questionVersionId: version.id,
+          questionVersionId: version?.id,
           input: {
             ...metadataToSave,
           },
         },
-      }
+      };
 
-      return updateQuestionMutation(mutationData)
+      return updateQuestionMutation(mutationData);
     }
 
-    return new Promise()
-  }
+    return new Promise();
+  };
 
   const handleClickBackButton = () => {
     if (testMode) {
       // quetions in testMode are found in discovery, and all questions in discovery are in testMode, so back == discover page
-      navigate('/discover')
+      navigate("/discover");
     } else {
-      navigate('/dashboard')
+      navigate("/dashboard");
     }
-  }
+  };
 
-  const handleQuestionSubmit = questionData => {
-    const { editorContent: latestContent } = questionData
+  const handleQuestionSubmit = (questionData) => {
+    const { editorContent: latestContent } = questionData;
 
     const mutationData = {
       variables: {
@@ -1065,34 +1068,34 @@ const QuestionPage = props => {
           content: JSON.stringify(latestContent),
         },
       },
-    }
+    };
 
-    return submitQuestionMutation(mutationData)
-  }
+    return submitQuestionMutation(mutationData);
+  };
 
-  const handleClickAssignHE = users => {
+  const handleClickAssignHE = (users) => {
     const mutationData = {
       variables: {
         questionIds: id,
-        userIds: users.map(user => user.value),
+        userIds: users.map((user) => user.value),
       },
-    }
+    };
 
-    return assignHandlingEditor(mutationData)
-  }
+    return assignHandlingEditor(mutationData);
+  };
 
-  const handleUnassignHE = userId => {
+  const handleUnassignHE = (userId) => {
     const mutationData = {
       variables: {
         questionId: id,
         userId,
       },
-    }
+    };
 
-    return unassignHandlingEditor(mutationData)
-  }
+    return unassignHandlingEditor(mutationData);
+  };
 
-  const handleGetQuestionButton = which => {
+  const handleGetQuestionButton = (which) => {
     // if (relatedQuestionIds) {
     //   const hasNextQuestion = navigateToNextQuestion(which, relatedQuestionIds)
     //   return new Promise((resolve, reject) => {
@@ -1113,20 +1116,20 @@ const QuestionPage = props => {
     //     })
     //   },
     // )
-  }
+  };
 
-  const handleMarkAsRead = async notificationIds => {
+  const handleMarkAsRead = async (notificationIds) => {
     if (notificationIds.length) {
       const mutationData = {
         variables: {
           read: true,
           notificationIds,
         },
-      }
+      };
 
-      await markAsRead(mutationData)
+      await markAsRead(mutationData);
     }
-  }
+  };
 
   // const navigateToNextQuestion = (which, idsList) => {
   //   if (idsList?.length) {
@@ -1169,10 +1172,10 @@ const QuestionPage = props => {
       variables: {
         questionVersionId: version.id,
       },
-    }
+    };
 
-    return acceptQuestionVersion(mutationData)
-  }
+    return acceptQuestionVersion(mutationData);
+  };
 
   const handleEditQuestion = () => {
     const mutationData = {
@@ -1180,79 +1183,79 @@ const QuestionPage = props => {
         questionId: question.id,
         questionVersionId: version.id,
       },
-    }
+    };
 
-    return editQuestionVersion(mutationData).catch(e => {
-      refetchQuestion()
-      throw new Error(e)
-    })
-  }
+    return editQuestionVersion(mutationData).catch((e) => {
+      refetchQuestion();
+      throw new Error(e);
+    });
+  };
 
   const handleMoveToReview = () => {
     const mutationData = {
       variables: {
         questionVersionId: version.id,
       },
-    }
+    };
 
-    return moveQuestionVersionToReviewMutation(mutationData)
-  }
+    return moveQuestionVersionToReviewMutation(mutationData);
+  };
 
   const handleMoveToProduction = () => {
     const mutationData = {
       variables: {
         questionVersionId: version.id,
       },
-    }
+    };
 
-    return moveQuestionVersionToProductionMutation(mutationData)
-  }
+    return moveQuestionVersionToProductionMutation(mutationData);
+  };
 
   const handlePublish = () => {
     const mutationData = {
       variables: {
         questionVersionId: version.id,
       },
-    }
+    };
 
-    return publishQuestionVersionMutation(mutationData)
-  }
+    return publishQuestionVersionMutation(mutationData);
+  };
 
   const handleUnpublish = () => {
     const mutationData = {
       variables: {
         questionVersionId: version.id,
       },
-    }
+    };
 
-    return unpublishQuestionVersionMutation(mutationData)
-  }
+    return unpublishQuestionVersionMutation(mutationData);
+  };
 
   const handleReject = () => {
-    return rejectQuestionMutation()
-  }
+    return rejectQuestionMutation();
+  };
 
   const handleExportToQti = () => {
     const mutationVariables = {
       questionVersionId: version.id,
-    }
+    };
 
     return generateQtiZipMutation({ variables: mutationVariables })
-      .then(res => {
-        const filename = res.data.generateQtiZip
-        const url = `${serverUrl}/api/download/${filename}`
-        window.location.assign(url)
+      .then((res) => {
+        const filename = res.data.generateQtiZip;
+        const url = `${serverUrl}/api/download/${filename}`;
+        window.location.assign(url);
       })
-      .catch(e => {
-        console.error(e)
+      .catch((e) => {
+        console.error(e);
         return new Promise((_resolve, reject) => {
-          reject()
-        })
-      })
-  }
+          reject();
+        });
+      });
+  };
 
-  const handleExportToWord = options => {
-    const { showFeedback, showMetadata } = options
+  const handleExportToWord = (options) => {
+    const { showFeedback, showMetadata } = options;
 
     const mutationVariables = {
       questionVersionId: version.id,
@@ -1260,126 +1263,125 @@ const QuestionPage = props => {
         showFeedback,
         showMetadata,
       },
-    }
+    };
 
     return generateWordFileMutation({ variables: mutationVariables })
-      .then(res => {
-        const filename = res.data.generateWordFile
-        const url = `${serverUrl}/api/download/${filename}`
-        window.location.assign(url)
+      .then((res) => {
+        const filename = res.data.generateWordFile;
+        const url = `${serverUrl}/api/download/${filename}`;
+        window.location.assign(url);
       })
-      .catch(e => {
-        console.error(e)
+      .catch((e) => {
+        console.error(e);
         return new Promise((_resolve, reject) => {
-          reject()
-        })
-      })
-  }
+          reject();
+        });
+      });
+  };
 
   const handleCreateNewVersion = () => {
     const mutationData = {
       variables: {
         questionId: id,
       },
-    }
+    };
 
-    return createNewQuestionVersionMutation(mutationData)
-  }
+    return createNewQuestionVersionMutation(mutationData);
+  };
 
-  const handleImageUpload = async file => {
+  const handleImageUpload = async (file) => {
     const mutationVariables = {
       variables: {
         files: [file],
       },
-    }
+    };
 
-    let uploadedFile
+    let uploadedFile;
 
     await upload(mutationVariables)
-      .then(res => {
+      .then((res) => {
         /* eslint-disable-next-line prefer-destructuring */
-        uploadedFile = res.data.uploadFiles[0]
+        uploadedFile = res.data.uploadFiles[0];
       })
-      .catch(e => console.error(e))
+      .catch((e) => console.error(e));
 
     // wax expects a promise here
     return new Promise((resolve, reject) => {
       if (uploadedFile) {
-        const { id: fileId, url } = uploadedFile
+        const { id: fileId, url } = uploadedFile;
 
         resolve({
           url,
           extraData: {
             fileId,
           },
-        })
+        });
       } else {
-        reject()
+        reject();
       }
-    })
-  }
+    });
+  };
 
-  const handleAssignAuthor = authorIds => {
+  const handleAssignAuthor = (authorIds) => {
     const mutationData = {
       variables: {
         questionId: id,
         userIds: authorIds,
       },
-    }
+    };
 
-    return assignAuthorship(mutationData)
-  }
+    return assignAuthorship(mutationData);
+  };
 
-  const handleSearchHE = async query => {
+  const handleSearchHE = async (query) => {
     const variables = {
-      role: 'handlingEditor',
+      role: "handlingEditor",
       query,
       options: {
-        orderBy: 'username',
+        orderBy: "username",
         ascending: true,
       },
-    }
+    };
 
-    filterGlobalTeamMembers({ variables })
-  }
+    filterGlobalTeamMembers({ variables });
+  };
 
   const handleUpgradeEditor = async () => {
-    // eslint-disable-next-line no-console
     const variables = {
       questionVersionId: version?.id,
-    }
+    };
 
-    return upgradeEditorMutation({ variables })
-  }
+    return upgradeEditorMutation({ variables });
+  };
 
-  const persistQuestionTab = activeTab => {
+  const persistQuestionTab = (activeTab) => {
     switch (activeTab) {
-      case 'authorChat':
+      case "authorChat":
         cancelEmailNotification({
           variables: {
             chatThreadId: authorChatThread?.id,
           },
-        })
-        break
-      case 'productionChat':
+        });
+        break;
+      case "productionChat":
         cancelEmailNotification({
           variables: {
             chatThreadId: productionChatThread?.id,
           },
-        })
-        break
-      case 'reviewerChat':
+        });
+        break;
+      case "reviewerChat":
         reviewerChatThread?.id &&
           cancelEmailNotification({
             variables: { chatThreadId: reviewerChatThread?.id },
-          })
-        break
+          });
+        break;
       default:
-        break
+        break;
     }
 
-    localStorage.setItem(id, activeTab)
-  }
+    localStorage.setItem(id, activeTab);
+  };
 
   const handleSendChatMessage = async (
     content,
@@ -1387,7 +1389,9 @@ const QuestionPage = props => {
     attachments,
     chatChannelId,
   ) => {
-    const fileObjects = attachments.map(attachment => attachment.originFileObj)
+    const fileObjects = attachments.map(
+      (attachment) => attachment.originFileObj,
+    );
 
     const mutationData = {
       variables: {
@@ -1399,33 +1403,33 @@ const QuestionPage = props => {
           attachments: fileObjects,
         },
       },
-    }
+    };
 
-    return sendMessage(mutationData)
-  }
+    return sendMessage(mutationData);
+  };
 
-  const handleSelectReviewer = async reviewerId => {
-    setSelectedReviewerId(reviewerId)
+  const handleSelectReviewer = async (reviewerId) => {
+    setSelectedReviewerId(reviewerId);
 
     const variables = {
       where: {
         relatedObjectId: question?.id,
         chatType: `reviewerChat-${reviewerId}`,
       },
-    }
+    };
 
     // this query doesn't work as expected, needs to be fixed in coko server
-    const threads = await getReviewerChatThread({ variables })
+    const threads = await getReviewerChatThread({ variables });
 
     const reviewerChat = threads?.data.chatChannels.result.find(
-      c =>
+      (c) =>
         c.chatType === `reviewerChat-${reviewerId}` &&
         c.relatedObjectId === question?.id,
-    )
+    );
 
-    setReviewerChatMessages(reviewerChat?.messages)
-    setReviewerChatThread(reviewerChat)
-  }
+    setReviewerChatMessages(reviewerChat?.messages);
+    setReviewerChatThread(reviewerChat);
+  };
 
   const onSendAuthorChatMessage = async (content, mentions, attachments) => {
     return handleSendChatMessage(
@@ -1433,8 +1437,8 @@ const QuestionPage = props => {
       mentions,
       attachments,
       question?.authorChatThreadId,
-    )
-  }
+    );
+  };
 
   const onSendProductionChatMessage = async (
     content,
@@ -1446,8 +1450,8 @@ const QuestionPage = props => {
       mentions,
       attachments,
       question?.productionChatThreadId,
-    )
-  }
+    );
+  };
 
   const onSendReviewerChatMessage = async (content, mentions, attachments) => {
     return handleSendChatMessage(
@@ -1455,8 +1459,8 @@ const QuestionPage = props => {
       mentions,
       attachments,
       reviewerChatThread?.id,
-    )
-  }
+    );
+  };
 
   const handleAcceptReviewInvite = async () => {
     const mutationData = {
@@ -1464,22 +1468,22 @@ const QuestionPage = props => {
         questionVersionId: version?.id,
         accepted: true,
       },
-    }
+    };
 
-    return acceptOrRejectInvitation(mutationData)
-  }
+    return acceptOrRejectInvitation(mutationData);
+  };
 
-  const handleRejectReviewInvite = async reason => {
+  const handleRejectReviewInvite = async (reason) => {
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         accepted: false,
         reason,
       },
-    }
+    };
 
-    return acceptOrRejectInvitation(mutationData)
-  }
+    return acceptOrRejectInvitation(mutationData);
+  };
 
   const handleSubmitReview = async () => {
     const mutationData = {
@@ -1489,14 +1493,14 @@ const QuestionPage = props => {
           // reviewerId: isReviewer ? null : reviewerId,
         },
       },
-    }
+    };
 
-    return submitReview(mutationData)
-  }
+    return submitReview(mutationData);
+  };
 
   const handleSubmitReport = async ({ attachments, reportContent }) => {
     const fileObjects =
-      attachments?.map(attachment => attachment.originFileObj) || []
+      attachments?.map((attachment) => attachment.originFileObj) || [];
 
     const mutationData = {
       variables: {
@@ -1504,49 +1508,49 @@ const QuestionPage = props => {
         attachments: fileObjects,
         content: reportContent,
       },
-    }
+    };
 
-    return submitReport(mutationData)
-  }
+    return submitReport(mutationData);
+  };
 
-  const handleInviteReviewer = async reviewerId => {
+  const handleInviteReviewer = async (reviewerId) => {
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         reviewerId,
       },
-    }
+    };
 
-    return inviteReviewer(mutationData)
-  }
+    return inviteReviewer(mutationData);
+  };
 
-  const handleAddReviewers = async newReviewerIds => {
-    const currentReviewerIds = reviewerPool.map(r => r.id)
+  const handleAddReviewers = async (newReviewerIds) => {
+    const currentReviewerIds = reviewerPool.map((r) => r.id);
 
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         reviewerIds: [...currentReviewerIds, ...newReviewerIds],
       },
-    }
+    };
 
-    return updateReviewerPool(mutationData)
-  }
+    return updateReviewerPool(mutationData);
+  };
 
-  const handleRemoveReviewerRow = async reviewerId => {
+  const handleRemoveReviewerRow = async (reviewerId) => {
     const reviewerIds = reviewerPool
-      .filter(r => r.id !== reviewerId)
-      .map(i => i.id)
+      .filter((r) => r.id !== reviewerId)
+      .map((i) => i.id);
 
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         reviewerIds,
       },
-    }
+    };
 
-    return updateReviewerPool(mutationData)
-  }
+    return updateReviewerPool(mutationData);
+  };
 
   const debouncedReviewerSearch = debounce(
     (searchTerm, questionVersionId, resolve) => {
@@ -1555,115 +1559,115 @@ const QuestionPage = props => {
           searchTerm,
           questionVersionId,
         },
-      }
+      };
 
       searchForReviewers(queryData).then(({ data }) => {
-        resolve(flattenReviewerSearchResults(data.searchForReviewers))
-      })
+        resolve(flattenReviewerSearchResults(data.searchForReviewers));
+      });
     },
     REVIEWER_SEARCH_DELAY,
-  )
+  );
 
-  const handleReviewerSearch = async searchTerm => {
+  const handleReviewerSearch = async (searchTerm) => {
     if (!searchTerm) {
-      debouncedReviewerSearch.cancel()
-      return Promise.resolve([])
+      debouncedReviewerSearch.cancel();
+      return Promise.resolve([]);
     }
 
-    return new Promise(resolve => {
-      debouncedReviewerSearch(searchTerm, version?.id, resolve)
-    })
-  }
+    return new Promise((resolve) => {
+      debouncedReviewerSearch(searchTerm, version?.id, resolve);
+    });
+  };
 
-  const handleReviewerTableChange = async tableData => {
-    const reviewerIds = tableData.map(d => d.id)
+  const handleReviewerTableChange = async (tableData) => {
+    const reviewerIds = tableData.map((d) => d.id);
 
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         reviewerIds,
       },
-    }
+    };
 
-    return updateReviewerPool(mutationData)
-  }
+    return updateReviewerPool(mutationData);
+  };
 
-  const handleRevokeReviewerInvitation = async reviewerId => {
+  const handleRevokeReviewerInvitation = async (reviewerId) => {
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         reviewerId,
       },
-    }
+    };
 
-    return revokeReviewerInvitation(mutationData)
-  }
+    return revokeReviewerInvitation(mutationData);
+  };
 
-  const handleChangeAmountOfReviewers = async amount => {
+  const handleChangeAmountOfReviewers = async (amount) => {
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         amount,
       },
-    }
+    };
 
-    return changeAmountOfReviewers(mutationData)
-  }
+    return changeAmountOfReviewers(mutationData);
+  };
 
-  const handleReviewerInviteAutomationChange = async value => {
+  const handleReviewerInviteAutomationChange = async (value) => {
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         value,
       },
-    }
+    };
 
-    return changeReviewerAutomationStatus(mutationData)
-  }
+    return changeReviewerAutomationStatus(mutationData);
+  };
 
-  const handleAddToList = async existingList => {
+  const handleAddToList = async (existingList) => {
     const mutationData = {
       variables: {
         listId: existingList,
         questionIds: [id],
       },
-    }
+    };
 
-    return addToExistingListMutation(mutationData).then(response => {
+    return addToExistingListMutation(mutationData).then((response) => {
       return new Promise((resolve, reject) => {
-        if (response?.data?.addToList) resolve()
-        else reject()
-      })
-    })
-  }
+        if (response?.data?.addToList) resolve();
+        else reject();
+      });
+    });
+  };
 
-  const handleCreateList = async title => {
+  const handleCreateList = async (title) => {
     const mutationData = {
       variables: {
         title,
         questions: [id],
       },
-    }
+    };
 
-    return addToNewListMutation(mutationData).then(response => {
+    return addToNewListMutation(mutationData).then((response) => {
       return new Promise((resolve, reject) => {
-        if (response?.data?.createList?.id) resolve()
-        else reject()
-      })
-    })
-  }
+        if (response?.data?.createList?.id) resolve();
+        else reject();
+      });
+    });
+  };
 
-  const handleSaveReview = values => {
+  const handleSaveReview = (values) => {
     const mutationData = {
       variables: {
         questionVersionId: version?.id,
         reviewerId: currentUser?.id,
         responses: JSON.stringify(values),
       },
-    }
+    };
 
-    saveReview(mutationData)
-  }
+    saveReview(mutationData);
+  };
   // #endregion handlers
 
   useEffect(() => {
@@ -1674,13 +1678,13 @@ const QuestionPage = props => {
       isUnderReview &&
       version?.reviewerStatus === REVIEWER_STATUSES.accepted
     ) {
-      handleSelectReviewer(currentUser.id)
+      handleSelectReviewer(currentUser.id);
     }
-  }, [isReviewer, isUnderReview, question, version?.reviewerStatus])
+  }, [isReviewer, isUnderReview, question, version?.reviewerStatus]);
 
-  useEffect(async () => {
-    setFirstRender(true)
-  }, [isMobile, preview])
+  useEffect(() => {
+    setFirstRender(true);
+  }, [isMobile, preview]);
 
   if (error) {
     return (
@@ -1697,7 +1701,7 @@ const QuestionPage = props => {
         subTitle="There was an error on our server. Please try again later or contact the administrators"
         title="Sorry, something went wrong"
       />
-    )
+    );
   }
 
   // when no published version was found
@@ -1714,43 +1718,43 @@ const QuestionPage = props => {
         subTitle="Sorry, this item hasn't been published yet."
         title="Item Not Ready"
       />
-    )
+    );
   }
 
-  const parseContent = content => {
+  const parseContent = (content) => {
     if (
-      selectedQuestionType?.metadataValue === 'multipleChoiceSingleCorrect' &&
+      selectedQuestionType?.metadataValue === "multipleChoiceSingleCorrect" &&
       firstRender
     ) {
       setTimeout(() => {
-        setFirstRender(false)
-      }, 3000)
+        setFirstRender(false);
+      }, 3000);
 
       // return modified data
-      const modified = JSON.parse(content)
+      const modified = JSON.parse(content);
 
       modified.content
-        .find(c => c.type === 'multiple_choice_single_correct_container')
+        .find((c) => c.type === "multiple_choice_single_correct_container")
         .content.forEach((el, i) => {
           // get feedback for all answers
           if (i > 0) {
             waitForTextareaAndSetValue(
               `[data-textarea-id="feedback-${el.attrs.id}"]`,
               el.attrs.feedback,
-            )
+            );
             // eslint-disable-next-line no-param-reassign
-            el.attrs.feedback = '' // set initial feedbacks to empty string
+            el.attrs.feedback = ""; // set initial feedbacks to empty string
           }
-        })
+        });
 
-      return modified
+      return modified;
     }
 
     setTimeout(() => {
-      setFirstRender(false)
-    }, 3000)
-    return JSON.parse(content)
-  }
+      setFirstRender(false);
+    }, 3000);
+    return JSON.parse(content);
+  };
 
   if (
     question &&
@@ -1765,7 +1769,7 @@ const QuestionPage = props => {
         subTitle="Sorry, this item is being edited by the author."
         title="Item Not Ready"
       />
-    )
+    );
   }
 
   return (
@@ -1790,13 +1794,13 @@ const QuestionPage = props => {
         complexItemSetId={version?.complexItemSetId}
         complexItemSetOptions={complexItemSetOptions}
         complexSetEditLink={
-          isInProduction ? `/set/${version?.complexItemSetId}` : ''
+          isInProduction ? `/set/${version?.complexItemSetId}` : ""
         }
         currentHandlingEditors={currentHandlingEditors}
         defaultActiveKey={initialTabKey}
         dependencyOptions={setQuestions
-          ?.filter(q => q.id !== id)
-          .map(q => ({ value: q.id, label: q.versions[0]?.contentText }))}
+          ?.filter((q) => q.id !== id)
+          .map((q) => ({ value: q.id, label: q.versions[0]?.contentText }))}
         editorContent={version && parseContent(version.content)}
         // admins have editorial rights (publishing rights) on their own questions
         editorView={
@@ -1865,8 +1869,8 @@ const QuestionPage = props => {
         onClickBackButton={handleClickBackButton}
         onClickExportToQti={testMode ? handleExportToQti : null}
         onClickExportToWord={handleExportToWord}
-        onClickNextButton={() => handleGetQuestionButton('NEXT')}
-        onClickPreviousButton={() => handleGetQuestionButton('PREV')}
+        onClickNextButton={() => handleGetQuestionButton("NEXT")}
+        onClickPreviousButton={() => handleGetQuestionButton("PREV")}
         onCreateNewVersion={handleCreateNewVersion}
         onEditorContentAutoSave={!testMode ? handleEditorContentAutoSave : null}
         onImageUpload={handleImageUpload}
@@ -1936,15 +1940,15 @@ const QuestionPage = props => {
         wordFileLoading={generateWordFileLoading}
       />
     </>
-  )
-}
+  );
+};
 
 QuestionPage.propTypes = {
   testMode: PropTypes.bool,
-}
+};
 
 QuestionPage.defaultProps = {
   testMode: false,
-}
+};
 
-export default QuestionPage
+export default QuestionPage;

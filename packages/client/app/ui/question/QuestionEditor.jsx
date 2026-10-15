@@ -1,10 +1,10 @@
-import React, { useEffect, useState, createContext, useRef } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th } from '@coko/client'
-import Wax from '../wax/Wax'
-import { config, hhmiConfig } from '../wax/config'
-import ErrorBoundary from './ErrorBoundary'
+import React, { useEffect, useState, createContext, useRef } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th } from "@coko/client";
+import Wax from "../wax/Wax";
+import { config, hhmiConfig } from "../wax/config";
+import ErrorBoundary from "./ErrorBoundary";
 
 // # region styled
 const EditorWrapper = styled.section`
@@ -16,12 +16,12 @@ const EditorWrapper = styled.section`
   overflow: auto;
   position: relative;
   width: 100%;
-`
+`;
 
 const EditorScrollContainer = styled.div`
   flex-grow: 1;
   overflow: auto;
-`
+`;
 
 const MissingQuestionTypeAlert = styled.div`
   background-color: rgba(200 200 200 / 25%);
@@ -29,20 +29,20 @@ const MissingQuestionTypeAlert = styled.div`
   position: absolute;
 
   > span {
-    background-color: ${th('colorBackground')};
-    border: 1px solid ${th('colorBorder')};
+    background-color: ${th("colorBackground")};
+    border: 1px solid ${th("colorBorder")};
     inset-block-start: 40%;
     inset-inline-start: 50%;
     padding: ${grid(4)};
     position: absolute;
     transform: translate(-50%, -50%);
   }
-`
+`;
 // #endregion styled
 
-export const ComplexItemSetContext = createContext({})
+export const ComplexItemSetContext = createContext({});
 
-const QuestionEditor = props => {
+const QuestionEditor = (props) => {
   const {
     content,
     innerRef,
@@ -60,24 +60,27 @@ const QuestionEditor = props => {
     testMode,
     enhancedEditor,
     onContentReset,
-  } = props
+  } = props;
 
-  const updateKey = useRef(0)
-  const [customValues, setCustomValues] = useState({ showFeedBack, testMode })
+  const updateKey = useRef(0);
+  const [customValues, setCustomValues] = useState({ showFeedBack, testMode });
 
-  const [waxConfig, setWaxConfig] = useState(
-    enhancedEditor ? hhmiConfig : config,
-  )
+  const [waxConfig, setWaxConfig] = useState(null);
+  // const [waxConfig, setWaxConfig] = useState(
+  //   enhancedEditor ? hhmiConfig : config,
+  // )
 
   useEffect(() => {
-    enhancedEditor ? setWaxConfig(hhmiConfig) : setWaxConfig(config)
-  }, [enhancedEditor])
+    if (enhancedEditor !== null && enhancedEditor !== undefined) {
+      enhancedEditor ? setWaxConfig(hhmiConfig) : setWaxConfig(config);
+    }
+  }, [enhancedEditor]);
 
   useEffect(() => {
     if (refreshEditorContent) {
-      updateKey.current += 1
+      updateKey.current += 1;
     }
-  }, [refreshEditorContent])
+  }, [refreshEditorContent]);
 
   // changing customValues will rerender the editor
   // avoid rerendering if testMode or showFeedBack don't change
@@ -88,9 +91,9 @@ const QuestionEditor = props => {
       showFeedBack !== customValues.showFeedBack ||
       published
     ) {
-      setCustomValues({ testMode, showFeedBack })
+      setCustomValues({ testMode, showFeedBack });
     }
-  }, [testMode, showFeedBack, published, content])
+  }, [testMode, showFeedBack, published, content]);
 
   const contextValue = React.useMemo(
     () => ({
@@ -99,7 +102,7 @@ const QuestionEditor = props => {
       complexItemSetId,
     }),
     [leadingContent],
-  )
+  );
 
   return (
     <EditorWrapper aria-label="Question editor">
@@ -111,20 +114,22 @@ const QuestionEditor = props => {
               onError={(error, info) => console.error(error, info)}
               onReset={onContentReset}
             >
-              <Wax
-                config={waxConfig}
-                // content={preserveLocalState ? editorContent : content}
-                content={
-                  content && Object.keys(content).length ? content : null
-                }
-                customValues={customValues}
-                innerRef={innerRef}
-                key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
-                layout={layout}
-                onContentChange={!testMode ? onContentChange : () => {}}
-                onImageUpload={onImageUpload}
-                readOnly={readOnly}
-              />
+              {waxConfig && (
+                <Wax
+                  config={waxConfig}
+                  // content={preserveLocalState ? editorContent : content}
+                  content={
+                    content && Object.keys(content).length ? content : null
+                  }
+                  customValues={customValues}
+                  innerRef={innerRef}
+                  key={`${selectedQuestionType?.waxValue}-${updateKey.current}-${readOnly}`}
+                  layout={layout}
+                  onContentChange={!testMode ? onContentChange : () => {}}
+                  onImageUpload={onImageUpload}
+                  readOnly={readOnly}
+                />
+              )}
             </ErrorBoundary>
           ) : (
             <span>LOADING...............</span>
@@ -140,8 +145,8 @@ const QuestionEditor = props => {
         </MissingQuestionTypeAlert>
       )}
     </EditorWrapper>
-  )
-}
+  );
+};
 
 QuestionEditor.propTypes = {
   content: PropTypes.shape(),
@@ -167,7 +172,7 @@ QuestionEditor.propTypes = {
   testMode: PropTypes.bool,
   enhancedEditor: PropTypes.bool,
   onContentReset: PropTypes.func,
-}
+};
 
 QuestionEditor.defaultProps = {
   content: {},
@@ -184,6 +189,6 @@ QuestionEditor.defaultProps = {
   testMode: false,
   enhancedEditor: null,
   onContentReset: () => {},
-}
+};
 
-export default QuestionEditor
+export default QuestionEditor;

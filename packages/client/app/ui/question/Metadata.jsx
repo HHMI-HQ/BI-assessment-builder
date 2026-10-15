@@ -1,9 +1,9 @@
-import React, { useState, useImperativeHandle, useEffect } from 'react'
-import { dropRight } from 'lodash'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th } from '@coko/client'
-import { mapMetadataToSelectOptions } from '../../utilities'
+import React, { useState, useImperativeHandle, useEffect } from "react";
+import { dropRight } from "lodash";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th } from "@coko/client";
+import { mapMetadataToSelectOptions } from "../../utilities";
 import {
   Select,
   Form,
@@ -12,67 +12,67 @@ import {
   Checkbox,
   Modal,
   TextArea,
-} from '../common'
+} from "../common";
 import {
   TopicAndSubtopic,
   APCourseMetadata,
   IBCourseMetadata,
   IntroToBioCourseMetadata,
-} from '../metadataFields'
-import Resources from './Resources'
-import MetadataInfo from './MetadataInfo'
-import NGSSCourseMetadata from '../metadataFields/NGSSCourseMetadata'
+} from "../metadataFields";
+import Resources from "./Resources";
+import MetadataInfo from "./MetadataInfo";
+import NGSSCourseMetadata from "../metadataFields/NGSSCourseMetadata";
 
 const Wrapper = styled.section`
   padding: ${grid(4)};
-`
+`;
 
 const StyledSupplementaryFieldsContainer = styled.div`
   margin-bottom: ${grid(6)};
 
   > div:not(:last-of-type) {
-    border-block-end: 1px solid ${th('colorBorder')};
+    border-block-end: 1px solid ${th("colorBorder")};
   }
 
   > div:not(:first-of-type) {
     margin-block-start: ${grid(3)};
   }
-`
+`;
 
 const RemoveButton = styled(Button)`
   margin-block-end: ${grid(3)};
-`
+`;
 
-const apCourses = ['apBiology', 'apEnvironmentalScience']
-const ibCourses = ['biBiology', 'biEnvironmentalScience']
-const introBioCourses = ['introBioForNonMajors', 'introBioForMajors']
-const ngss = 'ngss'
+const apCourses = ["apBiology", "apEnvironmentalScience"];
+const ibCourses = ["biBiology", "biEnvironmentalScience"];
+const introBioCourses = ["introBioForNonMajors", "introBioForMajors"];
+const ngss = "ngss";
 
-const ModalContext = React.createContext(null)
-const { footer: ModalFooter, header: ModalHeader } = Modal
+const ModalContext = React.createContext(null);
+const { footer: ModalFooter, header: ModalHeader } = Modal;
 
 const Metadata = React.forwardRef((props, ref) => {
   const {
     className,
-    onAutoSave,
-    initialValues,
     onFormFinish,
-    readOnly,
     metadata,
-    editorView,
-    resources,
-    presentationMode,
-    complexItemSetOptions,
     /* eslint-disable-next-line react/prop-types */
     innerRef,
-    selectedQuestionType,
-    showTopicAndSubtopicFields,
-    showIBoptionalFields,
-    dependencyOptions,
-  } = props
+    editorView = false,
+    onAutoSave = null,
+    initialValues = {},
+    readOnly = false,
+    resources = [],
+    presentationMode = false,
+    complexItemSetOptions = [],
+    selectedQuestionType = null,
+    showTopicAndSubtopicFields = false,
+    showIBoptionalFields = false,
+    dependencyOptions = [],
+  } = props;
 
-  const [formValues] = useState(initialValues)
-  const metadataMapper = data => mapMetadataToSelectOptions(data, readOnly)
+  const [formValues] = useState(initialValues);
+  const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
   if (presentationMode) {
     return (
@@ -82,33 +82,33 @@ const Metadata = React.forwardRef((props, ref) => {
         resources={resources}
         values={initialValues}
       />
-    )
+    );
   }
 
-  const [form] = Form.useForm()
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm } = modal
+  const [form] = Form.useForm();
+  const [modal, contextHolder] = Modal.useModal();
+  const { confirm } = modal;
 
   useImperativeHandle(innerRef, () => ({
     getFormValues: () => form.getFieldsValue(),
     submit: () => form.submit(),
-    isFieldsTouched: val => form.isFieldsTouched(val),
+    isFieldsTouched: (val) => form.isFieldsTouched(val),
     getFieldsError: () => form.getFieldsError(),
     validateFields: () => form.validateFields(),
-  }))
+  }));
 
-  const topicsKey = 'topics'
-  const coursesKey = 'courses'
+  const topicsKey = "topics";
+  const coursesKey = "courses";
 
-  const [topicsIndexes, setTopicsIndexes] = useState([])
-  const [coursesIndexes, setCoursesIndexes] = useState([])
+  const [topicsIndexes, setTopicsIndexes] = useState([]);
+  const [coursesIndexes, setCoursesIndexes] = useState([]);
 
-  const renderFrameworkFields = (getFieldValue, index = -1, key = '') => {
-    const selectedCourse = getFieldValue([key, index, 'course'])
+  const renderFrameworkFields = (getFieldValue, index = -1, key = "") => {
+    const selectedCourse = getFieldValue([key, index, "course"]);
 
     const courseMetadata = metadata.frameworks.find(
-      f => f.value === selectedCourse,
-    )
+      (f) => f.value === selectedCourse,
+    );
 
     if (apCourses.includes(courseMetadata?.textValue)) {
       return (
@@ -121,7 +121,7 @@ const Metadata = React.forwardRef((props, ref) => {
           setFieldsValue={form.setFieldsValue}
           supplementaryKey={key}
         />
-      )
+      );
     }
 
     if (ibCourses.includes(courseMetadata?.textValue)) {
@@ -136,7 +136,7 @@ const Metadata = React.forwardRef((props, ref) => {
           showIBoptionalFields={showIBoptionalFields}
           supplementaryKey={key}
         />
-      )
+      );
     }
 
     if (introBioCourses.includes(courseMetadata?.textValue)) {
@@ -151,7 +151,7 @@ const Metadata = React.forwardRef((props, ref) => {
           setFieldsValue={form.setFieldsValue}
           supplementaryKey={key}
         />
-      )
+      );
     }
 
     if (courseMetadata?.textValue === ngss) {
@@ -163,83 +163,83 @@ const Metadata = React.forwardRef((props, ref) => {
           setFieldsValue={form.setFieldsValue}
           supplementaryKey={key}
         />
-      )
+      );
     }
 
-    return null
-  }
+    return null;
+  };
 
   const handleSupplementaryAdd = (add, key) => {
-    const addFunction = supIndexes => {
-      const clone = [...supIndexes]
+    const addFunction = (supIndexes) => {
+      const clone = [...supIndexes];
 
       if (clone.length === 0) {
-        clone.push(0)
-        return clone
+        clone.push(0);
+        return clone;
       }
 
-      clone.push(clone.length)
-      return clone
-    }
+      clone.push(clone.length);
+      return clone;
+    };
 
     if (key === topicsKey) {
-      setTopicsIndexes(addFunction)
+      setTopicsIndexes(addFunction);
     } else if (key === coursesKey) {
-      setCoursesIndexes(addFunction)
+      setCoursesIndexes(addFunction);
     }
 
-    add()
-  }
+    add();
+  };
 
   const handleSupplementaryRemove = (remove, key, index) => {
     if (key === topicsKey) {
-      const last = topicsIndexes.length - 1
-      remove(last)
-      setTopicsIndexes(dropRight([...topicsIndexes]))
+      const last = topicsIndexes.length - 1;
+      remove(last);
+      setTopicsIndexes(dropRight([...topicsIndexes]));
     } else if (key === coursesKey) {
-      remove(index)
-      setCoursesIndexes(dropRight([...coursesIndexes]))
+      remove(index);
+      setCoursesIndexes(dropRight([...coursesIndexes]));
     }
-  }
+  };
 
-  const canAddAnotherCourse = courses => {
+  const canAddAnotherCourse = (courses) => {
     // editors can add indefinite curricula references, authors max 2 (of the same course)
-    return editorView ? true : courses.length < 2
-  }
+    return editorView ? true : courses.length < 2;
+  };
 
   // need to reset fields when course choice changes, because it enter a recursive loop when done inside metadata components
   const resetCourseFields = (value, index, key, remove) => {
-    const cloned = [...form.getFieldValue(key)]
+    const cloned = [...form.getFieldValue(key)];
     cloned[index] = {
       course: value,
-    }
+    };
 
     form.setFieldsValue({
       [key]: cloned,
-    })
+    });
 
     // remove 2nd set of fields if author
     if (!editorView && coursesIndexes.length > 1) {
-      handleSupplementaryRemove(remove, key)
+      handleSupplementaryRemove(remove, key);
     }
-  }
+  };
 
-  const handleAutoSave = formData => {
+  const handleAutoSave = (formData) => {
     if (
       selectedQuestionType &&
       selectedQuestionType !== formData.questionType
     ) {
-      const confirmUpdateQuestionType = confirm()
+      const confirmUpdateQuestionType = confirm();
 
       const cancelUpdate = () => {
-        confirmUpdateQuestionType.destroy()
-        form.setFieldsValue({ questionType: selectedQuestionType })
-      }
+        confirmUpdateQuestionType.destroy();
+        form.setFieldsValue({ questionType: selectedQuestionType });
+      };
 
       const continueUpdate = () => {
-        confirmUpdateQuestionType.destroy()
-        onAutoSave(formData)
-      }
+        confirmUpdateQuestionType.destroy();
+        onAutoSave(formData);
+      };
 
       confirmUpdateQuestionType.update({
         title: <ModalHeader>Are you sure?</ModalHeader>,
@@ -252,71 +252,75 @@ const Metadata = React.forwardRef((props, ref) => {
             </Button>
           </ModalFooter>,
         ],
-      })
+      });
     } else {
-      onAutoSave(formData)
+      onAutoSave(formData);
     }
-  }
+  };
 
   const resetDependencies = () => {
-    form.setFieldValue('dependsOn', [])
-  }
+    form.setFieldValue("dependsOn", []);
+  };
 
   useEffect(() => {
-    let sIndexes = [0]
-    const formValuesClone = structuredClone(formValues)
+    let sIndexes = [0];
+    const formValuesClone = structuredClone(formValues);
 
     if (formValuesClone[topicsKey]?.length) {
-      sIndexes = formValuesClone[topicsKey]?.map((_, index) => index)
+      sIndexes = formValuesClone[topicsKey]?.map((_, index) => index);
     }
 
-    setTopicsIndexes(sIndexes)
+    setTopicsIndexes(sIndexes);
 
     // reset to use for calculating existing supplementary curricula
-    sIndexes = [0]
+    sIndexes = [0];
 
     if (formValuesClone[coursesKey]?.length) {
       sIndexes = formValuesClone[coursesKey]?.map((c, index) => {
-        return metadata.frameworks.find(f => f.value === c.course) !== undefined
+        return metadata.frameworks.find((f) => f.value === c.course) !==
+          undefined
           ? index
-          : -1
-      })
+          : -1;
+      });
     }
 
-    // filter out non-existent resources
-    formValuesClone.biointeractiveResources =
-      formValuesClone.biointeractiveResources
-        .map(resource => resources.find(r => r.value === resource)?.value)
-        .filter(r => !!r)
+    if (Object.keys(formValuesClone).length) {
+      // filter out non-existent resources
+      formValuesClone.biointeractiveResources =
+        formValuesClone.biointeractiveResources
+          .map((resource) => resources.find((r) => r.value === resource)?.value)
+          .filter((r) => !!r);
+    }
 
-    setCoursesIndexes(sIndexes)
-    formValuesClone.dependsOn = formValuesClone.dependsOn || []
+    setCoursesIndexes(sIndexes);
+    formValuesClone.dependsOn = formValuesClone.dependsOn || [];
 
-    form.setFieldsValue(formValuesClone)
-  }, [formValues])
+    form.setFieldsValue(formValuesClone);
+  }, [formValues]);
 
   // TODO: find a better solution (assigning the initialValue directly confilcts with form.setFieldsValues)
   // initialValue for 2nd course metadata for author
-  const initialValueSecondCourse = index => {
+  const initialValueSecondCourse = (index) => {
     if (index === 1 && !editorView) {
       return {
-        initialValue: form.getFieldValue([coursesKey, 0, 'course']),
-      }
+        initialValue: form.getFieldValue([coursesKey, 0, "course"]),
+      };
     }
 
-    return null
-  }
+    return null;
+  };
 
   useEffect(() => {
     // only fire when new question type comes from editor content
     if (
-      selectedQuestionType !== form.getFieldValue('questionType') &&
+      selectedQuestionType &&
+      selectedQuestionType !== form.getFieldValue("questionType") &&
       !readOnly
     ) {
-      form.setFieldsValue({ questionType: selectedQuestionType })
-      onAutoSave(form.getFieldsValue())
+      form.setFieldsValue({ questionType: selectedQuestionType });
+      onAutoSave(form.getFieldsValue());
     }
-  }, [selectedQuestionType])
+  }, [selectedQuestionType]);
 
   /**
    * RENDER
@@ -336,13 +340,13 @@ const Metadata = React.forwardRef((props, ref) => {
         >
           <Form.Item name="belongsToComplexItemSet" valuePropName="checked">
             <Checkbox data-testid="belongs-to-set-checkbox" disabled={readOnly}>
-              This item belongs to a Context-Dependent Item Set{' '}
+              This item belongs to a Context-Dependent Item Set{" "}
             </Checkbox>
           </Form.Item>
 
-          <Form.Item dependencies={['belongsToComplexItemSet']} noStyle>
+          <Form.Item dependencies={["belongsToComplexItemSet"]} noStyle>
             {({ getFieldValue }) => {
-              if (getFieldValue('belongsToComplexItemSet')) {
+              if (getFieldValue("belongsToComplexItemSet")) {
                 return (
                   <Form.Item
                     label="Select Context-Dependent Item Set"
@@ -350,7 +354,7 @@ const Metadata = React.forwardRef((props, ref) => {
                     rules={[
                       {
                         required: true,
-                        message: 'Context-dependent item set is required',
+                        message: "Context-dependent item set is required",
                       },
                     ]}
                   >
@@ -363,21 +367,21 @@ const Metadata = React.forwardRef((props, ref) => {
                       showSearch
                     />
                   </Form.Item>
-                )
+                );
               }
 
-              return null
+              return null;
             }}
           </Form.Item>
 
           <Form.Item
-            dependencies={['belongsToComplexItemSet, complexItemSetId']}
+            dependencies={["belongsToComplexItemSet, complexItemSetId"]}
             noStyle
           >
             {({ getFieldValue }) => {
               if (
-                getFieldValue('complexItemSetId') &&
-                getFieldValue('belongsToComplexItemSet')
+                getFieldValue("complexItemSetId") &&
+                getFieldValue("belongsToComplexItemSet")
               ) {
                 return (
                   <Form.Item label="Depends on" name="dependsOn">
@@ -394,17 +398,17 @@ const Metadata = React.forwardRef((props, ref) => {
                       dependency for this item.
                     </span> */}
                   </Form.Item>
-                )
+                );
               }
 
-              return null
+              return null;
             }}
           </Form.Item>
 
           <Form.Item
             label="Item Type"
             name="questionType"
-            rules={[{ required: true, message: 'Item type is required' }]}
+            rules={[{ required: true, message: "Item type is required" }]}
           >
             <Select
               // allowClear
@@ -428,14 +432,14 @@ const Metadata = React.forwardRef((props, ref) => {
             <Select
               data-testid="cognitive-select"
               disabled={readOnly}
-              options={metadata.blooms.cognitive}
+              options={metadata.blooms?.cognitive}
             />
           </Form.Item>
 
           <Form.List name={coursesKey} noStyle>
             {(_, { add, remove }) => (
               <StyledSupplementaryFieldsContainer>
-                {coursesIndexes.map(index =>
+                {coursesIndexes.map((index) =>
                   index !== -1 ? (
                     <div key={`supplementaryFields-${index}`}>
                       {index === 1 && !editorView && <p>Second reference</p>}
@@ -443,15 +447,15 @@ const Metadata = React.forwardRef((props, ref) => {
                         hidden={index > 0 && !editorView}
                         {...initialValueSecondCourse(index)}
                         label="Course"
-                        name={[index, 'course']}
+                        name={[index, "course"]}
                         rules={[
-                          { required: true, message: 'Course is required' },
+                          { required: true, message: "Course is required" },
                         ]}
                       >
                         <Select
                           data-testid="course-select"
                           disabled={readOnly}
-                          onChange={value =>
+                          onChange={(value) =>
                             resetCourseFields(value, index, coursesKey, remove)
                           }
                           options={metadataMapper(metadata.frameworks)}
@@ -459,7 +463,7 @@ const Metadata = React.forwardRef((props, ref) => {
                       </Form.Item>
 
                       <Form.Item
-                        dependencies={[[coursesKey, 0, 'course']]}
+                        dependencies={[[coursesKey, 0, "course"]]}
                         noStyle
                       >
                         {({ getFieldValue }) =>
@@ -474,7 +478,11 @@ const Metadata = React.forwardRef((props, ref) => {
                         <RemoveButton
                           disabled={readOnly}
                           onClick={() => {
-                            handleSupplementaryRemove(remove, coursesKey, index)
+                            handleSupplementaryRemove(
+                              remove,
+                              coursesKey,
+                              index,
+                            );
                           }}
                           status="danger"
                           type="primary"
@@ -494,7 +502,7 @@ const Metadata = React.forwardRef((props, ref) => {
                   <Button
                     disabled={readOnly}
                     onClick={() => {
-                      handleSupplementaryAdd(add, coursesKey)
+                      handleSupplementaryAdd(add, coursesKey);
                     }}
                     type="primary"
                   >
@@ -518,7 +526,7 @@ const Metadata = React.forwardRef((props, ref) => {
             <Form.List name={topicsKey} noStyle>
               {(_, { add, remove }) => (
                 <StyledSupplementaryFieldsContainer>
-                  {topicsIndexes.map(index => (
+                  {topicsIndexes.map((index) => (
                     <div key={`supplementaryTopic-${index}`}>
                       <TopicAndSubtopic
                         getFieldValue={form.getFieldValue}
@@ -537,7 +545,7 @@ const Metadata = React.forwardRef((props, ref) => {
                         <Button
                           disabled={readOnly}
                           onClick={() => {
-                            handleSupplementaryAdd(add, topicsKey)
+                            handleSupplementaryAdd(add, topicsKey);
                           }}
                           type="primary"
                         >
@@ -549,7 +557,7 @@ const Metadata = React.forwardRef((props, ref) => {
                           data-testid="remove-second-topic"
                           disabled={readOnly}
                           onClick={() => {
-                            handleSupplementaryRemove(remove, topicsKey)
+                            handleSupplementaryRemove(remove, topicsKey);
                           }}
                           status="danger"
                           type="primary"
@@ -578,8 +586,8 @@ const Metadata = React.forwardRef((props, ref) => {
       </Wrapper>
       {contextHolder}
     </ModalContext.Provider>
-  )
-})
+  );
+});
 
 Metadata.propTypes = {
   onAutoSave: PropTypes.func,
@@ -849,20 +857,6 @@ Metadata.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
     }),
   ),
-}
+};
 
-Metadata.defaultProps = {
-  editorView: false,
-  onAutoSave: null,
-  initialValues: {},
-  readOnly: false,
-  resources: [],
-  presentationMode: false,
-  complexItemSetOptions: [],
-  selectedQuestionType: null,
-  showTopicAndSubtopicFields: false,
-  showIBoptionalFields: false,
-  dependencyOptions: [],
-}
-
-export default Metadata
+export default Metadata;
