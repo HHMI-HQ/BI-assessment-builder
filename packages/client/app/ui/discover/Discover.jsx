@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th , Divider } from '@coko/client'
-import { CheckOutlined } from '@ant-design/icons'
+import React, { createContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th, Divider } from "@coko/client";
+import { CheckOutlined } from "@ant-design/icons";
 
-import Sidebar from './Sidebar'
+import Sidebar from "./Sidebar";
 import {
   Collapse,
   Input,
@@ -16,8 +16,8 @@ import {
   Modal,
   Popup,
   Select,
-} from '../common'
-import useBreakpoint from '../_helpers/useBreakpoint'
+} from "../common";
+import useBreakpoint from "../_helpers/useBreakpoint";
 
 const Wrapper = styled.div`
   display: grid;
@@ -26,11 +26,11 @@ const Wrapper = styled.div`
   height: 100%;
 
   > aside {
-    border-right: 1px solid ${th('colorSecondary')};
+    border-right: 1px solid ${th("colorSecondary")};
   }
 
   /* stylelint-disable-next-line string-quotes */
-  div[class^='List__FooterWrapper'] {
+  div[class^="List__FooterWrapper"] {
     @media screen and (min-width: 600px) {
       flex-direction: row;
     }
@@ -44,26 +44,26 @@ const Wrapper = styled.div`
       flex-grow: 1;
     }
   }
-`
+`;
 
 const StyledPopup = styled(Popup)`
   border-radius: 0;
   inline-size: 300px;
   margin-block-end: ${grid(2)};
-`
+`;
 
 const PopupContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`
+`;
 
 const ActionWrapper = styled.div`
   align-items: flex-start;
   column-gap: 10px;
   display: flex;
   flex-direction: row;
-`
+`;
 
 const StyledForm = styled(Form)`
   display: grid;
@@ -91,7 +91,7 @@ const StyledForm = styled(Form)`
   }
 
   /* stylelint-disable-next-line string-quotes */
-  > button[type='submit'] {
+  > button[type="submit"] {
     align-self: end;
     grid-area: 2 /2;
     padding-inline: unset;
@@ -100,140 +100,147 @@ const StyledForm = styled(Form)`
 
   > span {
     align-self: end;
-    color: ${th('colorSuccess')};
+    color: ${th("colorSuccess")};
     direction: rtl;
     overflow: visible;
     padding-block-end: ${grid(2)};
     text-align: end;
     white-space: nowrap;
   }
-`
+`;
 
 const StyledDivider = styled(Divider)`
-  border-block-start-color: ${th('colorBorder')};
+  border-block-start-color: ${th("colorBorder")};
   margin-block: ${grid(4)};
-`
+`;
 
-const ModalContext = createContext(null)
-const ModalHeader = Modal.header
-const ModalFooter = Modal.footer
+const ModalContext = createContext(null);
+const ModalHeader = Modal.header;
+const ModalFooter = Modal.footer;
 
-export const Discover = props => {
+export const Discover = (props) => {
   const {
     className,
-    existingListsOptions,
-    isUserLoggedIn,
-    loading,
-    loadingAddToList,
-    loadingCreateList,
-    loadingDuplicateQuestion,
-    locale,
-    questions,
-    sidebarText,
     onAddToList,
     onCreateList,
     onDuplicate,
     onSearch,
-    defaultPageSize,
-    sidebarMetadata,
-    complexItemSetOptions,
-    biointeractiveResources,
-    totalCount,
-    showSort,
-    sortOptions,
-    globalFilters,
-  } = props
+    existingListsOptions = [],
+    isUserLoggedIn = false,
+    loading = false,
+    loadingAddToList = false,
+    loadingCreateList = false,
+    loadingDuplicateQuestion = false,
+    locale = null,
+    defaultPageSize = 10,
+    questions = [],
+    complexItemSetOptions = [],
+    sidebarMetadata = null,
+    sidebarText = "",
+    totalCount = 0,
+    sortOptions = [],
+    showSort = false,
+    globalFilters = {
+      query: "",
+      page: 1,
+      pageSize: 10,
+      filters: {},
+      orderBy: "publication_date",
+      ascending: false,
+    },
+    biointeractiveResources = [],
+  } = props;
 
   // key to force list to rerender and empty search box when filters change
-  const [listKey, setListKey] = useState(0)
+  const [listKey, setListKey] = useState(0);
   // form control instance for Sidebar filters, here to preserve its state between Sidebar rerenders
-  const [filtersForm] = Form.useForm()
-  const [selectedRows, setSelectedRows] = useState([])
+  const [filtersForm] = Form.useForm();
+  const [selectedRows, setSelectedRows] = useState([]);
 
   // form instances for add to list/create new list popup operations
-  const [existingListForm] = Form.useForm()
-  const [newListForm] = Form.useForm()
-  const [showListUpdateSuccess, setShowListUpdateSuccess] = useState(false)
-  const [showListCreatedSuccess, setShowListCreatedSuccess] = useState(false)
+  const [existingListForm] = Form.useForm();
+  const [newListForm] = Form.useForm();
+  const [showListUpdateSuccess, setShowListUpdateSuccess] = useState(false);
+  const [showListCreatedSuccess, setShowListCreatedSuccess] = useState(false);
 
   // modal instances
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm } = modal
+  const [modal, contextHolder] = Modal.useModal();
+  const { confirm } = modal;
 
   useEffect(() => {
     if (!loadingAddToList) {
-      setShowListUpdateSuccess(true)
+      setShowListUpdateSuccess(true);
       setTimeout(() => {
-        setShowListUpdateSuccess(false)
-      }, 3000)
+        setShowListUpdateSuccess(false);
+      }, 3000);
     }
-  }, [loadingAddToList])
+  }, [loadingAddToList]);
 
   useEffect(() => {
     if (!loadingCreateList) {
-      setShowListCreatedSuccess(true)
+      setShowListCreatedSuccess(true);
       setTimeout(() => {
-        setShowListCreatedSuccess(false)
-      }, 3000)
+        setShowListCreatedSuccess(false);
+      }, 3000);
     }
-  }, [loadingCreateList])
+  }, [loadingCreateList]);
 
   useEffect(() => {
     if (globalFilters?.filters) {
-      const hasKeys = !!Object.keys(globalFilters?.filters).length
-      hasKeys && filtersForm.setFieldsValue(globalFilters.filters)
+      const hasKeys = !!Object.keys(globalFilters?.filters).length;
+      hasKeys && filtersForm.setFieldsValue(globalFilters.filters);
     }
-  }, [])
+  }, []);
 
   const [searchParams, setSearchParams] = useState({
-    query: globalFilters?.query || '',
+    query: globalFilters?.query || "",
     page: globalFilters?.page || 1,
     pageSize: globalFilters?.pageSize || defaultPageSize,
     filters: globalFilters?.filters || {},
-    orderBy: globalFilters?.orderBy || 'date-desc',
+    orderBy: globalFilters?.orderBy || "date-desc",
     ascending: false,
-  })
+  });
 
   const setSearchPage = (page, pageSize) => {
-    setSearchParams({ ...searchParams, page, pageSize })
-  }
+    setSearchParams({ ...searchParams, page, pageSize });
+  };
 
-  const setSearchQuery = query => {
-    setSearchParams({ ...searchParams, query, page: 1 })
-  }
+  const setSearchQuery = (query) => {
+    setSearchParams({ ...searchParams, query, page: 1 });
+  };
 
-  const setFilters = filters => {
-    setListKey(listKey + 1)
+  const setFilters = (filters) => {
+    setListKey(listKey + 1);
     setSearchParams({
       filters,
       page: 1,
       pageSize: globalFilters?.pageSize || defaultPageSize,
-      query: '',
+      query: "",
       orderBy: searchParams.orderBy,
-    })
-  }
+    });
+  };
 
-  const setSortOption = orderBy => {
-    sortOptions.filter(opt => opt.isDefault)[0].isDefault = false
-    sortOptions.filter(opt => opt.value === orderBy)[0].isDefault = true
+  const setSortOption = (orderBy) => {
+    sortOptions.filter((opt) => opt.isDefault)[0].isDefault = false;
+    sortOptions.filter((opt) => opt.value === orderBy)[0].isDefault = true;
 
-    setSearchParams({ ...searchParams, orderBy, page: 1 })
-  }
+    setSearchParams({ ...searchParams, orderBy, page: 1 });
+  };
 
-  const [collapseKey, setCollapseKey] = useState(null)
+  const [collapseKey, setCollapseKey] = useState(null);
 
   useEffect(() => {
-    onSearch(searchParams)
-    setCollapseKey(null)
-  }, [searchParams])
+    onSearch(searchParams);
+    setCollapseKey(null);
+  }, [searchParams]);
 
-  const wrapFilters = filters => {
-    const isMobile = useBreakpoint('(max-width: 900px)')
+  const wrapFilters = (filters) => {
+    const isMobile = useBreakpoint("(max-width: 900px)");
 
     const toggleCollapse = () => {
-      if (collapseKey === 'filters') setCollapseKey(null)
-      else setCollapseKey('filters')
-    }
+      if (collapseKey === "filters") setCollapseKey(null);
+      else setCollapseKey("filters");
+    };
 
     return isMobile ? (
       <Collapse activeKey={collapseKey} onChange={toggleCollapse}>
@@ -248,8 +255,8 @@ export const Discover = props => {
       </Collapse>
     ) : (
       filters
-    )
-  }
+    );
+  };
 
   const mergedLocale = {
     emptyText: !loading ? (
@@ -261,10 +268,10 @@ export const Discover = props => {
       <div role="status">Loading</div>
     ),
     ...locale,
-  }
+  };
 
   const confirmDuplication = () => {
-    const confirmDialog = confirm()
+    const confirmDialog = confirm();
     confirmDialog.update({
       title: <ModalHeader>Duplicate Item</ModalHeader>,
       content:
@@ -275,8 +282,8 @@ export const Discover = props => {
           <Button
             autoFocus
             onClick={() => {
-              confirmDialog.destroy()
-              handleDuplicateQuestion()
+              confirmDialog.destroy();
+              handleDuplicateQuestion();
             }}
             status="danger"
           >
@@ -284,21 +291,21 @@ export const Discover = props => {
           </Button>
         </ModalFooter>
       ),
-    })
-  }
+    });
+  };
 
   const handleAddToList = ({ existingList }) => {
     onAddToList(existingList, selectedRows).then(() =>
       existingListForm.resetFields(),
-    )
-  }
+    );
+  };
 
   const handleDuplicateQuestion = () => {
-    onDuplicate(selectedRows[0])
-  }
+    onDuplicate(selectedRows[0]);
+  };
 
   const handleCreateNewList = ({ newList }) =>
-    onCreateList(newList, selectedRows).then(() => newListForm.resetFields())
+    onCreateList(newList, selectedRows).then(() => newListForm.resetFields());
 
   const BulkAction = (
     <ActionWrapper>
@@ -321,7 +328,7 @@ export const Discover = props => {
             layout="vertical"
             onFinish={handleAddToList}
             onValuesChange={() =>
-              existingListForm.validateFields(['existingList'])
+              existingListForm.validateFields(["existingList"])
             }
           >
             <Form.Item
@@ -330,7 +337,7 @@ export const Discover = props => {
               rules={[
                 {
                   required: true,
-                  message: 'Please select a list',
+                  message: "Please select a list",
                 },
               ]}
               validateTrigger="onSubmit"
@@ -354,7 +361,7 @@ export const Discover = props => {
               loading={loadingAddToList}
               type="primary"
             >
-              {loadingAddToList ? null : 'Add'}
+              {loadingAddToList ? null : "Add"}
             </Button>
           </StyledForm>
           <StyledDivider />
@@ -362,7 +369,7 @@ export const Discover = props => {
             form={newListForm}
             layout="vertical"
             onFinish={handleCreateNewList}
-            onValuesChange={() => newListForm.validateFields(['newList'])}
+            onValuesChange={() => newListForm.validateFields(["newList"])}
           >
             <Form.Item
               label="New list"
@@ -370,7 +377,7 @@ export const Discover = props => {
               rules={[
                 {
                   required: true,
-                  message: 'List name is required',
+                  message: "List name is required",
                 },
               ]}
               validateTrigger="onSubmit"
@@ -388,7 +395,7 @@ export const Discover = props => {
               loading={loadingCreateList}
               type="primary"
             >
-              {loadingCreateList ? null : 'Create'}
+              {loadingCreateList ? null : "Create"}
             </Button>
           </StyledForm>
         </PopupContentWrapper>
@@ -400,12 +407,10 @@ export const Discover = props => {
         onClick={confirmDuplication}
         type="primary"
       >
-        {loadingDuplicateQuestion ? null : 'Duplicate'}
+        {loadingDuplicateQuestion ? null : "Duplicate"}
       </Button>
     </ActionWrapper>
-  )
-
-  const onQuestionSelected = rows => setSelectedRows(rows)
+  );
 
   return (
     <ModalContext.Provider value={null}>
@@ -433,11 +438,13 @@ export const Discover = props => {
             loading={loading}
             locale={mergedLocale}
             onPageChange={setSearchPage}
-            onQuestionSelected={onQuestionSelected}
+            // onQuestionSelected={onQuestionSelected}
+            onQuestionSelected={setSelectedRows}
             onSearch={setSearchQuery}
             onSortOptionChange={setSortOption}
             questions={questions}
             questionsPerPage={searchParams.pageSize}
+            selectedQuestions={selectedRows}
             showRowCheckboxes={isUserLoggedIn}
             showSizeChanger
             showSort={showSort}
@@ -448,8 +455,8 @@ export const Discover = props => {
       </Wrapper>
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 Discover.propTypes = {
   existingListsOptions: PropTypes.arrayOf(
@@ -702,33 +709,6 @@ Discover.propTypes = {
     orderBy: PropTypes.string,
     ascending: PropTypes.bool,
   }),
-}
+};
 
-Discover.defaultProps = {
-  existingListsOptions: [],
-  isUserLoggedIn: false,
-  loading: false,
-  loadingAddToList: false,
-  loadingCreateList: false,
-  loadingDuplicateQuestion: false,
-  locale: null,
-  defaultPageSize: 10,
-  questions: [],
-  complexItemSetOptions: [],
-  sidebarMetadata: null,
-  sidebarText: '',
-  totalCount: 0,
-  sortOptions: [],
-  showSort: false,
-  globalFilters: {
-    query: '',
-    page: 1,
-    pageSize: 10,
-    filters: {},
-    orderBy: 'publication_date',
-    ascending: false,
-  },
-  biointeractiveResources: [],
-}
-
-export default Discover
+export default Discover;

@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import { grid } from '@coko/client'
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { grid } from "@coko/client";
 import {
   TabsStyled as Tabs,
   QuestionList,
@@ -12,17 +12,28 @@ import {
   Input,
   Modal,
   Popup,
-} from '../common'
-import ExportListToWordButton from './ExportModal'
+} from "../common";
+import ExportListToWordButton from "./ExportModal";
 
 const StyledTabs = styled(Tabs)`
   height: 100%;
+
+  .ant-tabs-body-holder {
+    .ant-tabs-body {
+      height: 100%;
+
+      [role="tabpanel"] {
+        height: 100%;
+        margin: auto;
+      }
+    }
+  }
 
   .ant-tabs-content {
     height: 100%;
 
     /* stylelint-disable-next-line string-quotes */
-    [role='tabpanel'][aria-hidden='false'] {
+    [role="tabpanel"][aria-hidden="false"] {
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -31,16 +42,16 @@ const StyledTabs = styled(Tabs)`
   }
 
   /* stylelint-disable-next-line string-quotes */
-  div[class^='List__FooterWrapper'] {
+  div[class^="List__FooterWrapper"] {
     @media screen and (min-width: 600px) {
       flex-direction: row;
     }
   }
-`
+`;
 
 const TabItem = styled.span`
   padding-inline: ${grid(3)};
-`
+`;
 
 const BulkActionWrapper = styled.div`
   align-items: center;
@@ -55,85 +66,101 @@ const BulkActionWrapper = styled.div`
       width: 100%;
     }
   }
-`
+`;
 
 const PopupContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${grid(2)};
-`
+`;
 
 const SelectionIndicator = styled.span`
   font-weight: bold;
-`
+`;
 
 const sortOptions = [
   {
-    label: 'Custom',
-    value: 'custom',
+    label: "Custom",
+    value: "custom",
     isDefault: true,
   },
   {
-    label: 'Date (descending)',
-    value: 'date-desc',
+    label: "Date (descending)",
+    value: "date-desc",
     isDefault: false,
   },
   {
-    label: 'Date (ascending)',
-    value: 'date-asc',
+    label: "Date (ascending)",
+    value: "date-asc",
     isDefault: false,
   },
-]
+];
 
-const ModalContext = React.createContext(null)
-const ModalHeader = Modal.header
-const ModalFooter = Modal.footer
+const ModalContext = React.createContext(null);
+const ModalHeader = Modal.header;
+const ModalFooter = Modal.footer;
 
-const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, onExport = () => {}, onExportQTI = () => {}, onSearch = () => {}, onRemoveFromList = () => {}, questions = [], totalCount = 0, questionsPerPage = 10, showRowCheckboxes = true, locale = null, isAuthor = false, onCopyList = () => {}, ...rest }) => {
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm, error, warning } = modal
-  const [copyListForm] = Form.useForm()
+const ListContent = ({
+  title = "List",
+  loading = false,
+  onDragEnd = () => {},
+  onExport = () => {},
+  onExportQTI = () => {},
+  onSearch = () => {},
+  onRemoveFromList = () => {},
+  questions = [],
+  totalCount = 0,
+  questionsPerPage = 10,
+  showRowCheckboxes = true,
+  locale = null,
+  isAuthor = false,
+  onCopyList = () => {},
+  ...rest
+}) => {
+  const [modal, contextHolder] = Modal.useModal();
+  const { confirm, error, warning } = modal;
+  const [copyListForm] = Form.useForm();
 
-  const [selectedQuestions, setSelectedQuestions] = useState([])
-  const [draggable, setDraggable] = useState()
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [draggable, setDraggable] = useState(true);
 
   useEffect(() => {
-    setDraggable(isAuthor)
-  }, [isAuthor])
+    setDraggable(isAuthor);
+  }, [isAuthor]);
 
   const [searchParams, setSearchParams] = useState({
     page: 1,
-    orderBy: 'custom',
+    orderBy: "custom",
     pageSize: 1000, // initially at 1000 for custom order
-    query: '',
-  })
+    query: "",
+  });
 
   const checkForMissingDependencies = () => {
     return selectedQuestions
-      .map(qid => {
-        const question = questions.find(q => q.id === qid)
+      .map((qid) => {
+        const question = questions.find((q) => q.id === qid);
 
         if (question.dependsOn?.length > 0) {
           const missing = question.dependsOn.some(
-            d => !selectedQuestions.includes(d),
-          )
+            (d) => !selectedQuestions.includes(d),
+          );
 
-          return missing
+          return missing;
         }
 
-        return false
+        return false;
       })
-      .some(result => {
-        return !!result
-      })
-  }
+      .some((result) => {
+        return !!result;
+      });
+  };
 
   const handleExport = (showFeedback, showMetadata) => {
-    const missingDependencies = checkForMissingDependencies()
+    const missingDependencies = checkForMissingDependencies();
 
     if (missingDependencies) {
-      return new Promise(resolve => {
-        const warningModal = modal.warning()
+      return new Promise((resolve) => {
+        const warningModal = modal.warning();
 
         warningModal.update({
           title: <ModalHeader>Missing dependencies</ModalHeader>,
@@ -154,9 +181,9 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
                     selectedQuestions,
                     searchParams.orderBy,
                     showFeedback,
-                  )
-                  resolve()
-                  warningModal.destroy()
+                  );
+                  resolve();
+                  warningModal.destroy();
                 }}
                 type="primary"
               >
@@ -164,27 +191,27 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
+        });
+      });
     }
 
     return onExport(selectedQuestions, searchParams.orderBy, {
       showFeedback,
       showMetadata,
-    })
-  }
+    });
+  };
 
   const handleExportQTI = () => {
     const nonNumericalQuestionIds = selectedQuestions.filter(
-      qid => questions.find(q => q.id === qid)?.type !== 'numerical',
-    )
+      (qid) => questions.find((q) => q.id === qid)?.type !== "numerical",
+    );
 
-    let warningModal
+    let warningModal;
 
     switch (true) {
       // when trying to export a list with only 'numerical answer' type items
       case selectedQuestions.length > 1 && nonNumericalQuestionIds.length === 0:
-        warningModal = warning()
+        warningModal = warning();
         warningModal.update({
           title: <ModalHeader>List contains numerical answers</ModalHeader>,
           content: (
@@ -200,19 +227,19 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
                 autoFocus
                 key="ok-error"
                 onClick={() => {
-                  warningModal.destroy()
+                  warningModal.destroy();
                 }}
               >
                 Ok
               </Button>
             </ModalFooter>,
           ],
-        })
-        break
+        });
+        break;
       // when trying to export a list with some 'numerical answer' type items
       case selectedQuestions.length > 1 &&
         nonNumericalQuestionIds.length < selectedQuestions.length:
-        warningModal = warning()
+        warningModal = warning();
         warningModal.update({
           title: <ModalHeader>List contains numerical answers</ModalHeader>,
           content: (
@@ -229,8 +256,8 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
                 autoFocus
                 key="continue"
                 onClick={() => {
-                  exportToQTI(nonNumericalQuestionIds)
-                  warningModal.destroy()
+                  exportToQTI(nonNumericalQuestionIds);
+                  warningModal.destroy();
                 }}
                 type="primary"
               >
@@ -238,19 +265,19 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
               </Button>
             </ModalFooter>,
           ],
-        })
-        break
+        });
+        break;
       default:
-        onExportQTI(selectedQuestions)
-        break
+        onExportQTI(selectedQuestions);
+        break;
     }
-  }
+  };
 
-  const exportToQTI = questionIds => {
+  const exportToQTI = (questionIds) => {
     onExportQTI(questionIds, searchParams.orderBy)
       .then(() => {})
-      .catch(e => {
-        const errorModal = error()
+      .catch((e) => {
+        const errorModal = error();
         errorModal.update({
           title: <ModalHeader>QTI export failed</ModalHeader>,
           content: e,
@@ -261,23 +288,23 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
                 data-testid="error-export-btn"
                 key="ok-error"
                 onClick={() => {
-                  errorModal.destroy()
+                  errorModal.destroy();
                 }}
               >
                 Ok
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
-  }
+        });
+      });
+  };
 
   const confirmDelete = () => {
-    const confirmDialog = confirm()
+    const confirmDialog = confirm();
     confirmDialog.update({
-      title: 'Remove questions from list',
+      title: "Remove questions from list",
       content: `Are you sure you want to remove the selected question${
-        selectedQuestions.length > 1 ? 's' : ''
+        selectedQuestions.length > 1 ? "s" : ""
       } from this list?`,
       footer: [
         <ModalFooter key="footer">
@@ -290,9 +317,9 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
             key="delete"
             onClick={() => {
               onRemoveFromList(selectedQuestions).then(() => {
-                setSelectedQuestions([])
-              })
-              confirmDialog.destroy()
+                setSelectedQuestions([]);
+              });
+              confirmDialog.destroy();
             }}
             status="danger"
           >
@@ -300,8 +327,8 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const BulkAction = (
     <BulkActionWrapper>
@@ -322,9 +349,9 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
         <PopupContentWrapper>
           <ExportListToWordButton
             afterClose={() =>
-              document.body.querySelector('#export-popup-toggle').focus()
+              document.body.querySelector("#export-popup-toggle").focus()
             }
-            customOrder={searchParams.orderBy === 'custom'}
+            customOrder={searchParams.orderBy === "custom"}
             disabled={selectedQuestions.length === 0}
             onExport={handleExport}
             text="Question will be exported in the order they are currently displayed in the list. Proceed?"
@@ -357,41 +384,41 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
         </SelectionIndicator>
       ) : null}
     </BulkActionWrapper>
-  )
+  );
 
-  const handleSortOptionChange = op => {
-    if (op === 'custom') {
-      setDraggable(isAuthor && true)
+  const handleSortOptionChange = (op) => {
+    if (op === "custom") {
+      setDraggable(isAuthor && true);
       setSearchParams({
         page: 1,
         orderBy: op,
         pageSize: 1000, // request all questions
-      })
+      });
     } else {
-      setDraggable(false)
+      setDraggable(false);
       setSearchParams({
         page: 1,
         orderBy: op,
         pageSize: questionsPerPage,
-      })
+      });
     }
-  }
+  };
 
-  const setSearchPage = page => {
-    setSearchParams({ ...searchParams, page })
-  }
+  const setSearchPage = (page) => {
+    setSearchParams({ ...searchParams, page });
+  };
 
-  const setSearchQuery = query => {
-    setSearchParams({ ...searchParams, query, page: 1 })
-  }
+  const setSearchQuery = (query) => {
+    setSearchParams({ ...searchParams, query, page: 1 });
+  };
 
-  const handleDragEnd = data => {
-    const result = onDragEnd(data)
+  const handleDragEnd = (data) => {
+    const result = onDragEnd(data);
 
     if (result.hasErrors) {
-      const errorDialog = error()
+      const errorDialog = error();
       errorDialog.update({
-        title: 'Error during reorder',
+        title: "Error during reorder",
         content: `Make sure to not separate questions that belong to one context-dependent item set from one another. You can change their position, but they must always be grouped together.`,
         footer: [
           <ModalFooter key="footer">
@@ -400,12 +427,12 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
             </Button>
           </ModalFooter>,
         ],
-      })
+      });
     }
-  }
+  };
 
   const handleCopyList = () => {
-    const confirmDialog = confirm()
+    const confirmDialog = confirm();
     confirmDialog.update({
       title: 'Copy list into "My Lists"',
       content: (
@@ -420,8 +447,8 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
             layout="vertical"
             onFinish={({ listTitle }) => {
               onCopyList(listTitle).then(() => {
-                confirmDialog.destroy()
-              })
+                confirmDialog.destroy();
+              });
             }}
           >
             <Form.Item
@@ -449,7 +476,7 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
             data-testid="confirm-delete-btn"
             key="delete"
             onClick={() => {
-              copyListForm.submit()
+              copyListForm.submit();
             }}
             type="primary"
           >
@@ -457,12 +484,12 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    onSearch(searchParams)
-  }, [searchParams])
+    onSearch(searchParams);
+  }, [searchParams]);
 
   const mergedLocale = {
     emptyText: !loading ? (
@@ -475,7 +502,7 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
       <div role="status">Loading</div>
     ),
     ...locale,
-  }
+  };
 
   return (
     <ModalContext.Provider value={null}>
@@ -517,8 +544,8 @@ const ListContent = ({ title = 'List', loading = false, onDragEnd = () => {}, on
       />
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 ListContent.propTypes = {
   title: PropTypes.string,
@@ -535,8 +562,6 @@ ListContent.propTypes = {
   locale: PropTypes.shape(),
   isAuthor: PropTypes.bool,
   onCopyList: PropTypes.func,
-}
+};
 
-
-
-export default ListContent
+export default ListContent;

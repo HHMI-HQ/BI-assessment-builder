@@ -5,6 +5,7 @@ import { grid, th } from "@coko/client";
 import Wax from "../wax/Wax";
 import { config, hhmiConfig } from "../wax/config";
 import ErrorBoundary from "./ErrorBoundary";
+import { Spin } from "../common";
 
 // # region styled
 const EditorWrapper = styled.section`
@@ -36,6 +37,14 @@ const MissingQuestionTypeAlert = styled.div`
     padding: ${grid(4)};
     position: absolute;
     transform: translate(-50%, -50%);
+  }
+`;
+
+const StyledSpin = styled(Spin)`
+  &&& {
+    display: grid;
+    height: 100%;
+    place-content: center;
   }
 `;
 // #endregion styled
@@ -132,7 +141,7 @@ const QuestionEditor = (props) => {
               )}
             </ErrorBoundary>
           ) : (
-            <span>LOADING...............</span>
+            <StyledSpin spinning fullscreen={false} />
           )}
         </ComplexItemSetContext.Provider>
       </EditorScrollContainer>
