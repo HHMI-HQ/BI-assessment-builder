@@ -14148,7 +14148,7 @@ const frameworks = [
   },
 ]
 
-exports.up = knex => {
+export const up = knex => {
   try {
     return useTransaction(async trx => {
       await Promise.all(
@@ -14345,4 +14345,4 @@ exports.up = knex => {
   }
 }
 
-exports.down = () => {}
+export const down = () => {}

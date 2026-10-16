@@ -28,7 +28,9 @@ const {
   ComplexItemSet,
 } = require('../models')
 
-const REVIEWER_TEAM = config.teams.nonGlobal.find(t => t.role === 'reviewer')
+const REVIEWER_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'reviewer')
 
 const submitQuestionnaire = async (userId, profileData) => {
   const data = {
@@ -444,7 +446,6 @@ const downloadUsersCSV = async userIds => {
 
   const dataCSV = users.reduce(
     (accu, user, index) => {
-      // eslint-disable-next-line no-param-reassign
       accu += `${index + 1}, ${user.displayName}, ${user.email}, ${
         user.roles
       }, ${user.expertise}, ${user.reviewerRecord}\n`
@@ -525,7 +526,7 @@ const deactivateUsers = async (ids, options = {}) => {
   }
 }
 
-const deleteUsers = async (ids, options = {}) => {
+const deleteUsers = async ids => {
   return User.deleteByIds(ids)
 }
 
@@ -563,7 +564,6 @@ const getCountriesForUserProfile = async () => {
     )
 
     if (response.status !== 200) {
-      console.error(response)
       return null
     }
 
