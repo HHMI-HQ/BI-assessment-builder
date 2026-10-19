@@ -471,7 +471,12 @@ const List = ({
   const ListToRender = draggable ? (
     <DragDropContext onDragEnd={onDragEnd}>
       <DroppableWrapper>
-        <Droppable droppableId="dropable-list">
+        <Droppable
+          droppableId="dropable-list"
+          isDropDisabled={false}
+          isCombineEnabled={false}
+          ignoreContainerClipping={true}
+        >
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {infiniteScroll.enabled ? (
@@ -492,14 +497,14 @@ const List = ({
                 </StyledScrollWrapper>
               ) : (
                 <AntList
-                  dataSource={splitDataSource}
+                  items={splitDataSource}
                   loading={
                     loading
                       ? { spinning: true, indicator: <StyledLoader /> }
                       : { spinning: false, indicator: <StyledLoader /> }
                   }
                   locale={mergedLocale}
-                  renderItem={listItemToRender}
+                  itemRender={listItemToRender}
                   {...rest}
                 />
               )}

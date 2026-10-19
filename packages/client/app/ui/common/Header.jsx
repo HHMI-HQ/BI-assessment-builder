@@ -1,27 +1,27 @@
 /* stylelint-disable string-quotes */
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th, darken } from '@coko/client'
-import { EditOutlined, LogoutOutlined, TagsFilled } from '@ant-design/icons'
-import logoMobile from '../assets/hhmi-logo-white-sm.svg'
-import manageTeamIcon from '../assets/team.svg'
-import manageUserIcon from '../assets/manageuser.svg'
-import userIcon from '../assets/user-icon.svg'
-import logo from '../assets/hhmi-ab-logo-sm.svg'
-import menuOpen from '../assets/waffle-white.svg'
-import menuClose from '../assets/close-white.svg'
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th, darken } from "@coko/client";
+import { EditOutlined, LogoutOutlined, TagsFilled } from "@ant-design/icons";
+import logoMobile from "../assets/hhmi-logo-white-sm.svg";
+import manageTeamIcon from "../assets/team.svg";
+import manageUserIcon from "../assets/manageuser.svg";
+import userIcon from "../assets/user-icon.svg";
+import logo from "../assets/hhmi-ab-logo-sm.svg";
+import menuOpen from "../assets/waffle-white.svg";
+import menuClose from "../assets/close-white.svg";
 
-import Button from './Button'
-import useWindowSize from '../_helpers/useWindowSize'
-import { CounterBadge } from '../notifications/NotificationIcon'
-import { UserNotificationsUI } from '../notifications/UserNotificationsUI'
+import Button from "./Button";
+import useWindowSize from "../_helpers/useWindowSize";
+import { CounterBadge } from "../notifications/NotificationIcon";
+import { UserNotificationsUI } from "../notifications/UserNotificationsUI";
 
 // #region styleds
 const StyledHeader = styled.header`
   align-items: center;
-  background-color: ${th('colorBody')};
+  background-color: ${th("colorBody")};
   box-shadow: 0 0 15px 2px #00000045, inset 0 0 12px #ffffff28;
   display: flex;
   height: 64px;
@@ -30,21 +30,21 @@ const StyledHeader = styled.header`
   width: 100%;
   z-index: 99;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     justify-content: unset;
     padding-left: ${grid(5)};
   }
 
-  @media screen and (min-width: ${th('mediaQueries.small')}) {
+  @media screen and (min-width: ${th("mediaQueries.small")}) {
     flex-direction: row;
     padding-left: ${grid(3)};
   }
-`
+`;
 
 const SkipLink = styled.a`
-  background-color: ${th('colorTextDark')};
+  background-color: ${th("colorTextDark")};
   border-radius: 0 0 ${grid(1)} ${grid(1)};
-  color: ${th('colorTextReverse')};
+  color: ${th("colorTextReverse")};
   height: 30px;
   left: 50%;
   padding: ${grid(1)} ${grid(2)};
@@ -58,18 +58,18 @@ const SkipLink = styled.a`
   &:focus {
     top: 0;
   }
-`
+`;
 
 const Branding = styled(Link)`
   background: #0000 url(${logoMobile}) no-repeat center / contain;
   display: block;
   filter: drop-shadow(0 0 12px #ff00);
-  height: ${th('mobileLogoHeight')};
+  height: ${th("mobileLogoHeight")};
   margin-inline-end: 1.5rem;
   overflow: hidden;
   width: 95px;
 
-  @media screen and (min-width: ${th('mediaQueries.small')}) {
+  @media screen and (min-width: ${th("mediaQueries.small")}) {
     background-image: url(${logo});
     background-size: contain;
     width: 340px;
@@ -85,26 +85,26 @@ const Branding = styled(Link)`
   &:focus-visible {
     filter: drop-shadow(0 0 5px #0ffb);
   }
-`
+`;
 
 const Navigation = styled.nav`
   align-items: center;
   background-color: #0000;
   display: flex;
   flex-basis: 40px;
-  height: ${th('mobileLogoHeight')};
+  height: ${th("mobileLogoHeight")};
   justify-content: center;
   overflow: visible;
   z-index: 9999;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     background-color: #0000;
     flex-grow: 1;
     justify-content: space-between;
     margin: 0;
     padding: 0;
   }
-`
+`;
 
 const MainNav = styled.div`
   align-items: center;
@@ -112,16 +112,16 @@ const MainNav = styled.div`
   color: #000;
   display: flex;
   height: calc(
-    100vh - (${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')})
+    100vh - (${th("mobileLogoHeight")} + 2 * ${th("headerPaddingVertical")})
   );
   justify-content: flex-end;
   overflow: visible;
   position: absolute;
   right: 0;
-  top: calc(${th('mobileLogoHeight')} + 2 * ${th('headerPaddingVertical')});
+  top: calc(${th("mobileLogoHeight")} + 2 * ${th("headerPaddingVertical")});
   transition: width 0.3s, padding 0.3s, background-color 0.5s, visibility 0.3s;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     background-color: #0000;
     flex-direction: row;
     height: auto;
@@ -131,7 +131,7 @@ const MainNav = styled.div`
     top: 0;
     width: 100%;
   }
-`
+`;
 
 /* To achieve vertical scrolling if the menu is open on small height devices */
 const NavWrapper = styled.div`
@@ -139,11 +139,11 @@ const NavWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   margin: 0;
-  overflow: hidden ${p => (p.show ? 'auto' : 'hidden')};
+  overflow: hidden ${(p) => (p.show ? "auto" : "hidden")};
   padding: 1rem 0.5rem;
   width: 100%;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     > ul:nth-of-type(1) {
       &:has(*) {
         border-left: 1px solid #ffffff34;
@@ -153,7 +153,7 @@ const NavWrapper = styled.div`
     display: contents;
     overflow: hidden;
   }
-`
+`;
 
 const RightNavContainer = styled.div`
   display: flex;
@@ -161,13 +161,13 @@ const RightNavContainer = styled.div`
   height: 100%;
   justify-content: space-between;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     align-items: center;
     flex-direction: row;
     height: unset;
     justify-content: unset;
   }
-`
+`;
 
 const StyledList = styled.ul`
   align-items: flex-start;
@@ -181,8 +181,8 @@ const StyledList = styled.ul`
   width: 270px;
 
   > li {
-    color: ${th('colorTextDark')};
-    font-size: ${th('fontSizeBase')};
+    color: ${th("colorTextDark")};
+    font-size: ${th("fontSizeBase")};
     line-height: 2.5rem;
     padding-left: 1rem;
 
@@ -192,7 +192,7 @@ const StyledList = styled.ul`
     }
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     align-items: center;
     background-color: #0000;
     display: flex;
@@ -203,7 +203,7 @@ const StyledList = styled.ul`
 
     > li {
       align-items: center;
-      color: ${th('colorTextReverse')};
+      color: ${th("colorTextReverse")};
       display: flex;
       line-height: inherit;
       padding-left: 0;
@@ -213,12 +213,12 @@ const StyledList = styled.ul`
       }
     }
   }
-`
+`;
 
 const StyledLink = styled(Link)`
   color: black;
   display: inline-block;
-  font-size: ${th('fontSizeBase')};
+  font-size: ${th("fontSizeBase")};
   font-weight: 900;
   line-height: 1.25;
   overflow-x: hidden;
@@ -228,7 +228,7 @@ const StyledLink = styled(Link)`
 
   &.info {
     color: #000;
-    font-size: ${th('fontSizeBaseSmall')};
+    font-size: ${th("fontSizeBaseSmall")};
     font-weight: 300;
 
     &:hover {
@@ -242,8 +242,8 @@ const StyledLink = styled(Link)`
 
   /* stylelint-disable-next-line no-descending-specificity */
   span::after {
-    background-color: ${th('colorTertiary')};
-    content: '';
+    background-color: ${th("colorTertiary")};
+    content: "";
     display: block;
     height: 2px;
     margin-top: 0;
@@ -254,7 +254,7 @@ const StyledLink = styled(Link)`
 
   &:hover,
   &:focus,
-  &[aria-current='page'] {
+  &[aria-current="page"] {
     color: inherit;
 
     span::after {
@@ -262,7 +262,7 @@ const StyledLink = styled(Link)`
     }
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     color: #fff;
     padding: 0;
     width: 200px;
@@ -275,15 +275,16 @@ const StyledLink = styled(Link)`
       background-color: #eee;
     }
   }
-`
+`;
 
 const StyledButton = styled(Button)`
   background: none;
   border: none;
-  color: ${th('colorTextReverse')};
+  color: ${th("colorTextReverse")};
   display: inline-block;
   font-size: inherit;
   font-weight: 700;
+  justify-content: start;
   line-height: 1.25;
   overflow-x: hidden;
   padding: 10px 0;
@@ -293,8 +294,8 @@ const StyledButton = styled(Button)`
 
   /* stylelint-disable-next-line no-descending-specificity */
   span::after {
-    background-color: ${th('colorTertiary')};
-    content: '';
+    background-color: ${th("colorTertiary")};
+    content: "";
     display: block;
     height: 2px;
     margin-top: 0;
@@ -305,6 +306,7 @@ const StyledButton = styled(Button)`
 
   &:hover,
   &:focus {
+    border: none !important;
     top: 0;
 
     span {
@@ -314,23 +316,23 @@ const StyledButton = styled(Button)`
     }
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     line-height: 1.5;
     padding: 0;
 
     span::after {
-      background-color: ${th('colorTextReverse')};
+      background-color: ${th("colorTextReverse")};
     }
   }
-`
+`;
 
 const StyledLogin = styled(Link)`
   align-items: center;
-  background-color: ${th('colorPrimary')};
-  border-color: ${th('colorPrimary')};
-  color: ${th('colorTextReverse')};
+  background-color: ${th("colorPrimary")};
+  border-color: ${th("colorPrimary")};
+  color: ${th("colorTextReverse")};
   display: flex;
-  font-size: ${th('fontSizeBase')};
+  font-size: ${th("fontSizeBase")};
   height: 32px;
   padding: ${grid(1)} ${grid(4)};
   text-align: center;
@@ -340,20 +342,20 @@ const StyledLogin = styled(Link)`
 
   &:hover,
   &:focus {
-    background-color: ${th('colorSecondary')};
-    border-color: ${th('colorSecondary')};
-    color: ${th('colorTextReverse')};
+    background-color: ${th("colorSecondary")};
+    border-color: ${th("colorSecondary")};
+    color: ${th("colorTextReverse")};
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     height: 32px;
     margin-right: ${grid(5)};
   }
-`
+`;
 
 const MobileMenuToggle = styled.button`
   aspect-ratio: 1 / 1;
-  background-color: ${th('colorBody')};
+  background-color: ${th("colorBody")};
   background-image: url("${menuOpen}");
   background-size: cover;
 
@@ -371,38 +373,38 @@ const MobileMenuToggle = styled.button`
     outline-offset: 1px;
   }
 
-  &[aria-expanded='true'] {
+  &[aria-expanded="true"] {
     background-image: url("${menuClose}");
   }
 
-  @media screen and (max-width: ${th('mediaQueries.large')}) {
-    &[aria-expanded='true'] ~ ${MainNav} {
+  @media screen and (max-width: ${th("mediaQueries.large")}) {
+    &[aria-expanded="true"] ~ ${MainNav} {
       background-color: #efefef;
       visibility: visible;
       width: 250px;
     }
 
-    &[aria-expanded='false'] ~ ${MainNav} {
+    &[aria-expanded="false"] ~ ${MainNav} {
       background-color: #efefef;
       visibility: hidden;
       width: 0;
     }
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     display: none;
 
-    &[aria-expanded='true'] ~ ${MainNav} {
+    &[aria-expanded="true"] ~ ${MainNav} {
       background-color: #0000;
       width: 100%;
     }
 
-    &[aria-expanded='false'] ~ ${MainNav} {
+    &[aria-expanded="false"] ~ ${MainNav} {
       background-color: #0000;
       width: 100%;
     }
   }
-`
+`;
 
 const UserMenuWrapper = styled.div`
   align-items: flex-start;
@@ -415,7 +417,7 @@ const UserMenuWrapper = styled.div`
   width: 100%;
 
   > p {
-    color: ${th('colorSecondary')};
+    color: ${th("colorSecondary")};
     margin: 0;
     padding: 0 0 0 0.5rem;
     /* position: absolute; */
@@ -428,7 +430,7 @@ const UserMenuWrapper = styled.div`
     outline-color: #0000;
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     align-items: center;
     border-left: 1px solid #34f1ff62;
     flex-direction: row;
@@ -437,13 +439,13 @@ const UserMenuWrapper = styled.div`
 
     p {
       border-radius: 0.5rem;
-      color: ${th('colorSelection')};
+      color: ${th("colorSelection")};
       margin: 0;
       padding: 0 0.5rem 0 1rem;
       position: initial;
     }
   }
-`
+`;
 
 const CollapsableMenu = styled.ul`
   align-items: flex-start;
@@ -469,30 +471,30 @@ const CollapsableMenu = styled.ul`
 
     > a,
     button {
-      color: ${darken('colorPrimary', 0.25)};
+      color: ${darken("colorPrimary", 0.25)};
       font-size: 0.9rem;
       font-weight: 600;
 
       &:hover {
         > span {
-          color: ${th('colorPrimary')};
+          color: ${th("colorPrimary")};
         }
       }
 
       /* stylelint-disable-next-line no-descending-specificity */
       & span::after {
-        background-color: ${th('colorPrimary')};
+        background-color: ${th("colorPrimary")};
       }
     }
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
-    background-color: ${darken('colorPrimary', 0.3)};
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
+    background-color: ${darken("colorPrimary", 0.3)};
     border-radius: 0 0 0 0.5rem;
     box-shadow: 0 0 12px #0006, inset 0 0 25px #0004;
-    color: ${th('colorBackground')};
+    color: ${th("colorBackground")};
     /* left: calc(100% - 250px + ${grid(4)}); */
-    /* max-height: ${p => (!p.isOpen ? '0' : '1000px')}; */
+    /* max-height: ${(p) => (!p.isOpen ? "0" : "1000px")}; */
     position: absolute;
     right: -10px;
     top: 52px;
@@ -509,7 +511,7 @@ const CollapsableMenu = styled.ul`
 
       > a,
       button {
-        color: ${th('colorTextReverse')};
+        color: ${th("colorTextReverse")};
         display: inline-flex;
         height: inherit;
         margin: 0 0.5rem;
@@ -530,18 +532,14 @@ const CollapsableMenu = styled.ul`
           /* outline-color: #0000; */
         }
       }
-
-      :not(:last-child) {
-        border-bottom: 1px solid #0002;
-      }
     }
   }
-`
+`;
 
 const UserMenuButton = styled(Button)`
   display: none;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     align-items: center;
     background: #0000 url(${userIcon}) no-repeat center / contain;
     border: none;
@@ -559,17 +557,17 @@ const UserMenuButton = styled(Button)`
       transform: scale(1.05);
     }
 
-    &[aria-expanded='true'] + ${CollapsableMenu} {
+    &[aria-expanded="true"] + ${CollapsableMenu} {
       max-height: 1000px;
       visibility: visible;
     }
 
-    &[aria-expanded='false'] + ${CollapsableMenu} {
+    &[aria-expanded="false"] + ${CollapsableMenu} {
       max-height: 0;
       visibility: hidden;
     }
   }
-`
+`;
 
 const Separator = styled.hr`
   height: 2px;
@@ -581,10 +579,10 @@ const Separator = styled.hr`
     background-color: #0002;
   }
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     display: none;
   }
-`
+`;
 
 const StyledIcon = styled.img`
   filter: brightness(20%);
@@ -592,13 +590,19 @@ const StyledIcon = styled.img`
   object-fit: contain;
   width: 16px;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     filter: none;
   }
-`
+`;
 // #endregion styleds
 
-const LinksList = ({ sourceLinks, currentPath = '', ListWrapper = StyledList, wrapperProps = {}, renderCondition = true }) => {
+const LinksList = ({
+  sourceLinks,
+  currentPath = "",
+  ListWrapper = StyledList,
+  wrapperProps = {},
+  renderCondition = true,
+}) => {
   // const [Wrapper, wrapperProps = {}] = listWrapper
   return (
     renderCondition && (
@@ -611,8 +615,8 @@ const LinksList = ({ sourceLinks, currentPath = '', ListWrapper = StyledList, wr
             icon,
             renderIf = true,
             Component = StyledLink,
-            ariaCurrent = currentPath === link ? 'page' : false,
-            className = 'menu-link',
+            ariaCurrent = currentPath === link ? "page" : false,
+            className = "menu-link",
             ...remaining
           }) =>
             renderIf && (
@@ -631,8 +635,8 @@ const LinksList = ({ sourceLinks, currentPath = '', ListWrapper = StyledList, wr
         )}
       </ListWrapper>
     )
-  )
-}
+  );
+};
 
 const createHeaderLinksObject = ({
   links,
@@ -650,25 +654,25 @@ const createHeaderLinksObject = ({
     navigation: [
       {
         link: links.questions,
-        text: 'Browse Items',
+        text: "Browse Items",
         renderIf: loggedin,
         onClick,
       },
       {
         link: links.sets,
-        text: 'Sets',
+        text: "Sets",
         renderIf: loggedin,
         onClick,
       },
       {
         link: links.dashboard,
-        text: 'Dashboard',
+        text: "Dashboard",
         renderIf: loggedin,
         onClick,
       },
       {
         link: links.lists,
-        text: 'My Lists',
+        text: "My Lists",
         renderIf: loggedin,
         onClick,
       },
@@ -676,54 +680,54 @@ const createHeaderLinksObject = ({
     info: [
       {
         link: links.about,
-        text: 'About',
-        className: 'menu-link info',
+        text: "About",
+        className: "menu-link info",
         onClick,
       },
       {
         link: links.learning,
-        text: 'Professional Learning',
-        className: 'menu-link info',
+        text: "Professional Learning",
+        className: "menu-link info",
         onClick,
       },
     ],
     userLinks: [
       {
         link: links.manageUsers,
-        text: 'Manage Users',
+        text: "Manage Users",
         onClick,
         renderIf: canManageUsers,
         icon: <StyledIcon alt="manage users" src={manageUserIcon} />,
       },
       {
         link: links.manageTeams,
-        text: 'Manage Teams',
+        text: "Manage Teams",
         onClick,
         renderIf: canManageTeams,
         icon: <StyledIcon alt="manage team" src={manageTeamIcon} />,
       },
       {
         link: links.manageMetadata,
-        text: 'Manage Metadata',
+        text: "Manage Metadata",
         onClick,
         renderIf: canManageResources,
-        icon: <TagsFilled style={{ margin: '0 .5rem' }} />,
+        icon: <TagsFilled style={{ margin: "0 .5rem" }} />,
       },
       {
         link: links.profile,
-        text: 'Profile',
+        text: "Profile",
         onClick,
-        icon: <EditOutlined style={{ margin: '0 .5rem' }} />,
+        icon: <EditOutlined style={{ margin: "0 .5rem" }} />,
       },
       {
-        text: 'Logout',
+        text: "Logout",
         onClick: () => {
-          onClick(false)
-          onLogout()
+          onClick(false);
+          onLogout();
         },
-        icon: <LogoutOutlined style={{ margin: '0 .5rem' }} />,
-        Component: StyledButton,
-        'data-testid': 'logout-btn',
+        icon: <LogoutOutlined style={{ margin: "0 .5rem" }} />,
+        Component: () => <StyledButton type="link">Logout</StyledButton>,
+        "data-testid": "logout-btn",
       },
       {
         Component: UserNotificationsUI,
@@ -734,10 +738,10 @@ const createHeaderLinksObject = ({
         onClick,
       },
     ],
-  }
-}
+  };
+};
 
-const Header = props => {
+const Header = (props) => {
   const {
     loggedin,
     canManageResources,
@@ -749,102 +753,102 @@ const Header = props => {
     onLogout,
     unreadMentionsCount,
     ...rest
-  } = props
+  } = props;
 
-  const notificationsTotal = unreadMentionsCount
-  const { width: windowWidth } = useWindowSize()
+  const notificationsTotal = unreadMentionsCount;
+  const { width: windowWidth } = useWindowSize();
 
-  const [userMenuIsOpen, setUserMenuOpen] = useState(false)
-  const [mainMenuIsOpen, setMainMenuOpen] = useState(false)
+  const [userMenuIsOpen, setUserMenuOpen] = useState(false);
+  const [mainMenuIsOpen, setMainMenuOpen] = useState(false);
 
   const closeMenus = () => {
-    mainMenuIsOpen && setMainMenuOpen(false)
-    userMenuIsOpen && setUserMenuOpen(false)
-  }
+    mainMenuIsOpen && setMainMenuOpen(false);
+    userMenuIsOpen && setUserMenuOpen(false);
+  };
 
   const linksObject = createHeaderLinksObject({
     ...props,
     onClick: closeMenus,
-  })
+  });
 
   useEffect(() => {
-    const closeOnClickOutside = e => {
+    const closeOnClickOutside = (e) => {
       const userMenuButton = document.querySelector(
         'button[aria-controls="user-menu"]',
-      )
+      );
 
       const navMenuButton = document.querySelector(
         'button[aria-controls="main-nav"]',
-      )
+      );
 
       if (
-        userMenuButton?.getAttribute('aria-expanded') === 'true' &&
+        userMenuButton?.getAttribute("aria-expanded") === "true" &&
         !userMenuButton.contains(e.target) &&
-        document.querySelector('#user-menu') !== e.target &&
-        !document.querySelector('#user-menu')?.contains(e.target)
+        document.querySelector("#user-menu") !== e.target &&
+        !document.querySelector("#user-menu")?.contains(e.target)
       ) {
-        setUserMenuOpen(false)
+        setUserMenuOpen(false);
       } else if (
-        navMenuButton?.getAttribute('aria-expanded') === 'true' &&
+        navMenuButton?.getAttribute("aria-expanded") === "true" &&
         !navMenuButton.contains(e.target) &&
-        document.querySelector('#main-nav') !== e.target &&
-        !document.querySelector('#main-nav')?.contains(e.target)
+        document.querySelector("#main-nav") !== e.target &&
+        !document.querySelector("#main-nav")?.contains(e.target)
       ) {
-        setMainMenuOpen(false)
+        setMainMenuOpen(false);
       }
-    }
+    };
 
-    const closeOnEscape = e => {
+    const closeOnEscape = (e) => {
       const userMenuButton = document.querySelector(
         'button[aria-controls="user-menu"]',
-      )
+      );
 
       const navMenuButton = document.querySelector(
         'button[aria-controls="main-nav"]',
-      )
+      );
 
-      if (e.key === 'Escape' && !!userMenuButton) {
-        if (userMenuButton.getAttribute('aria-expanded') === 'true') {
-          setUserMenuOpen(false)
+      if (e.key === "Escape" && !!userMenuButton) {
+        if (userMenuButton.getAttribute("aria-expanded") === "true") {
+          setUserMenuOpen(false);
 
           if (
             document
-              .querySelector('#user-menu')
+              .querySelector("#user-menu")
               .contains(document.activeElement)
           ) {
-            userMenuButton?.focus()
+            userMenuButton?.focus();
           }
-        } else if (navMenuButton?.getAttribute('aria-expanded') === 'true') {
-          setMainMenuOpen(false)
+        } else if (navMenuButton?.getAttribute("aria-expanded") === "true") {
+          setMainMenuOpen(false);
 
           if (
-            document.querySelector('#main-nav').contains(document.activeElement)
+            document.querySelector("#main-nav").contains(document.activeElement)
           ) {
-            navMenuButton?.focus()
+            navMenuButton?.focus();
           }
         }
       }
-    }
+    };
 
-    document.addEventListener('keyup', closeOnEscape)
+    document.addEventListener("keyup", closeOnEscape);
 
-    document.addEventListener('mouseup', closeOnClickOutside)
+    document.addEventListener("mouseup", closeOnClickOutside);
 
     return () => {
-      document.removeEventListener('keyup', closeOnEscape)
-      document.removeEventListener('mouseup', closeOnClickOutside)
-    }
-  }, [])
+      document.removeEventListener("keyup", closeOnEscape);
+      document.removeEventListener("mouseup", closeOnClickOutside);
+    };
+  }, []);
 
   return (
-      // have an href to be valid link
-      // focus main element with js to avoid polluting the url with #main-content
+    // have an href to be valid link
+    // focus main element with js to avoid polluting the url with #main-content
     <StyledHeader id="main-page-header" role="banner" {...rest}>
       <SkipLink
         href="#main-content"
-        onClick={e => {
-          e.preventDefault()
-          document.getElementById('main-content').focus()
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById("main-content").focus();
         }}
       >
         Skip to main content
@@ -903,10 +907,10 @@ const Header = props => {
                     ListWrapper={CollapsableMenu}
                     sourceLinks={linksObject.userLinks}
                     wrapperProps={{
-                        'aria-label': 'User menu',
-                         id:'user-menu',
-                        isOpen: userMenuIsOpen,
-                      }}
+                      "aria-label": "User menu",
+                      id: "user-menu",
+                      isOpen: userMenuIsOpen,
+                    }}
                   />
                 </UserMenuWrapper>
               ) : (
@@ -924,8 +928,8 @@ const Header = props => {
         </MainNav>
       </Navigation>
     </StyledHeader>
-  )
-}
+  );
+};
 
 Header.propTypes = {
   loggedin: PropTypes.bool,
@@ -937,31 +941,31 @@ Header.propTypes = {
   links: PropTypes.objectOf(PropTypes.string),
   onLogout: PropTypes.func,
   unreadMentionsCount: PropTypes.number,
-}
+};
 
 Header.defaultProps = {
   loggedin: false,
   canManageResources: false,
   canManageUsers: false,
   canManageTeams: false,
-  displayName: 'User',
+  displayName: "User",
   onLogout: () => {},
   links: {
-    homepage: '#',
-    questions: '#',
-    dashboard: '#',
-    sets: '#',
-    lists: '#',
-    about: '#',
-    learning: '#',
-    manageUsers: '#',
-    manageTeams: '#',
-    manageMetadata: '#',
-    profile: '#',
-    login: '#',
+    homepage: "#",
+    questions: "#",
+    dashboard: "#",
+    sets: "#",
+    lists: "#",
+    about: "#",
+    learning: "#",
+    manageUsers: "#",
+    manageTeams: "#",
+    manageMetadata: "#",
+    profile: "#",
+    login: "#",
   },
   unreadMentionsCount: 0,
-}
+};
 
 LinksList.propTypes = {
   sourceLinks: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
@@ -969,8 +973,6 @@ LinksList.propTypes = {
   ListWrapper: PropTypes.element,
   wrapperProps: PropTypes.shape(),
   renderCondition: PropTypes.bool,
-}
+};
 
-
-
-export default Header
+export default Header;
