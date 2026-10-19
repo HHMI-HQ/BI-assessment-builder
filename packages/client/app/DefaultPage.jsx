@@ -132,10 +132,6 @@ const Wrapper = (props) => {
   const { currentUser } = useCurrentUser();
   const location = useLocation();
 
-  // const [refetchCurrentUser] = useLazyQuery(CURRENT_USER, {
-  //   fetchPolicy: 'network-only',
-  // })
-
   useEffect(() => {
     const path = location.pathname;
     const title = regexPaths.find((p) => p.path.test(path));

@@ -75,7 +75,7 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const ListItemWrapper = styled.li`
+const ListItemWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: stretch;
@@ -355,7 +355,10 @@ const List = ({
       }
     : (itemProps, i) => {
         return (
-          <customComponents.ListItemWrapper data-testid="list-item-wrapper">
+          <customComponents.ListItemWrapper
+            data-testid="list-item-wrapper"
+            key={itemProps?.id}
+          >
             {draggable ? (
               <Draggable draggableId={`draggable-${i}`} index={i}>
                 {(provided) => (
@@ -413,6 +416,8 @@ const List = ({
   };
 
   let splitDataSource = [...dataSource];
+
+  console.log(dataSource);
 
   // `totalCount` prop exists only to display the count at the top of the list,
   // but since we have the value, might as well pass it to the pagination config.
@@ -490,6 +495,7 @@ const List = ({
                     }
                     locale={mergedLocale}
                     ref={listRef}
+                    rowKey={"id"}
                     itemRender={listItemToRender}
                     {...rest}
                     pagination={false}
@@ -518,6 +524,7 @@ const List = ({
     <StyledScrollWrapper {...infiniteScroll?.props}>
       <StyledList
         items={dataSource}
+        rowKey={"id"}
         loading={
           loading
             ? { spinning: true, indicator: <StyledLoader /> }
@@ -531,6 +538,7 @@ const List = ({
   ) : (
     <StyledList
       items={splitDataSource}
+      rowKey={"id"}
       loading={
         loading
           ? { spinning: true, indicator: <StyledLoader /> }
