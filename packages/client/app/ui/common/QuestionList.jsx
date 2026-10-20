@@ -136,6 +136,7 @@ const QuestionList = ({
     <StyledList
       autoFocusSearch={autoFocusSearch}
       className={className}
+      controlled
       dataSource={questions}
       defaultSearch={defaultSearch}
       draggable={draggable}

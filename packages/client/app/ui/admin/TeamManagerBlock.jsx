@@ -36,6 +36,10 @@ const RemoveButton = styled(UIButton)``;
 const Member = styled.div``;
 
 const StyledList = styled(List)`
+  && {
+    height: unset;
+  }
+
   .ant-list-items {
     padding: ${grid(2)} 0;
 
@@ -139,7 +143,6 @@ const TeamManagerBlock = ({
           onChange: handleRowSelectionChange,
         }}
         renderItem={(member) => <Member>{member.displayName}</Member>}
-        role="group"
         showPagination={false}
       />
 

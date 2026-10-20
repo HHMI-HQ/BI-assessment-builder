@@ -1,7 +1,7 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-import { Checkbox as AntCheckbox } from 'antd'
-import { PropTypes } from 'prop-types'
+import React from "react";
+import styled, { css } from "styled-components";
+import { Checkbox as AntCheckbox } from "antd";
+import { PropTypes } from "prop-types";
 
 // define css here and export to use in CheckboxGroup as well
 export const checkboxStyles = css`
@@ -12,52 +12,61 @@ export const checkboxStyles = css`
   }
 
   &.ant-checkbox-wrapper.ant-checkbox-wrapper-disabled > span {
-    color: ${props => `${props.theme.colorText}cc`};
+    color: ${(props) => `${props.theme.colorText}cc`};
   }
-`
+`;
 
 const StyledCheckbox = styled(AntCheckbox)`
   align-items: center;
   ${checkboxStyles}
-`
+`;
 
-const Checkbox = props => {
+const Checkbox = (props) => {
   // eslint-disable-next-line react/prop-types
-  const { children, className, ...rest } = props
+  const { children, className, ...rest } = props;
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <StyledCheckbox className={className} {...rest}>
       {children}
     </StyledCheckbox>
-  )
-}
+  );
+};
 
-export const SelectAllCheckbox = ({ CustomRender = { CheckBox: Checkbox }, setItems = () => null, dataSource, items, label = 'Select All', listKey = null, onChange = () => null, ...rest }) => {
-  const { length: itemslgth } = items
-  const { length: datalgth } = dataSource
+export const SelectAllCheckbox = ({
+  CustomRender = { CheckBox: Checkbox },
+  setItems = () => null,
+  dataSource,
+  items,
+  label = "Select All",
+  listKey = null,
+  onChange = () => null,
+  ...rest
+}) => {
+  const { length: itemslgth } = items;
+  const { length: datalgth } = dataSource;
 
   const toggle = () =>
-    setItems(keys =>
-      keys.length === datalgth ? [] : [...dataSource].map(r => r.id),
-    )
+    setItems((keys) =>
+      keys.length === datalgth ? [] : [...dataSource].map((r) => r.id),
+    );
 
   const isChecked = () =>
-    itemslgth < datalgth && itemslgth !== 0 ? 'mixed' : itemslgth > 0
+    itemslgth < datalgth && itemslgth !== 0 ? "mixed" : itemslgth > 0;
 
   return (
     <CustomRender.CheckBox
       aria-checked={isChecked()}
       checked={datalgth > 0 && itemslgth === datalgth}
-      data-testid={`${listKey ?? ''}select-all-checkbox`}
-      indeterminate={isChecked() === 'mixed'}
+      data-testid={`${listKey ?? ""}select-all-checkbox`}
+      indeterminate={isChecked() === "mixed"}
       onChange={toggle}
       {...rest}
     >
       {label}
     </CustomRender.CheckBox>
-  )
-}
+  );
+};
 
 SelectAllCheckbox.propTypes = {
   CustomRender: PropTypes.oneOfType([PropTypes.object]),
@@ -67,8 +76,6 @@ SelectAllCheckbox.propTypes = {
   items: PropTypes.oneOfType([PropTypes.array]).isRequired,
   label: PropTypes.string,
   listKey: PropTypes.string,
-}
+};
 
-
-
-export default Checkbox
+export default Checkbox;

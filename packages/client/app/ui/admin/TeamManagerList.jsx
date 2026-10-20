@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { grid, th } from "@coko/client";
-import { List, H1 } from "../common";
+import { H1 } from "../common";
 import TeamManagerBlock from "./TeamManagerBlock";
 
 const Wrapper = styled.div`
@@ -35,8 +35,8 @@ const StyledSection = styled.section`
 
 const TeamManagerList = ({
   className,
-  loading = false,
-  locale = null,
+  // loading = false,
+  // locale = null,
   teams = [],
   onAdd = () => {},
   onRemove = () => {},
@@ -45,47 +45,33 @@ const TeamManagerList = ({
   searchLoading = false,
   searchOptions = [],
 }) => {
-  const mergedLocale = {
-    emptyText: <div role="status">Loading</div>,
-    ...locale,
-  };
-
   return (
     <Wrapper className={className}>
       <StyledSection>
         <PageHeader>Team Manager</PageHeader>
-
-        <List
-          className={className}
-          dataSource={teams}
-          // footerContent={bulkAction}
-          loading={loading}
-          locale={mergedLocale}
-          onSearch={onSearch}
-          renderItem={(item) => (
-            <TeamManagerBlock
-              className={className}
-              displayName={item.displayName}
-              members={item.members}
-              onAdd={onAdd}
-              onRemove={onRemove}
-              onRowSelectionChange={onRowSelectionChange}
-              onSearch={onSearch}
-              searchLoading={searchLoading}
-              searchOptions={searchOptions}
-              teamId={item.id}
-            />
-          )}
-          showPagination={false}
-        />
+        {teams.map((item) => (
+          <TeamManagerBlock
+            key={item.id}
+            className={className}
+            displayName={item.displayName}
+            members={item.members}
+            onAdd={onAdd}
+            onRemove={onRemove}
+            onRowSelectionChange={onRowSelectionChange}
+            onSearch={onSearch}
+            searchLoading={searchLoading}
+            searchOptions={searchOptions}
+            teamId={item.id}
+          />
+        ))}
       </StyledSection>
     </Wrapper>
   );
 };
 
 TeamManagerList.propTypes = {
-  loading: PropTypes.bool,
-  locale: PropTypes.shape(),
+  // loading: PropTypes.bool,
+  // locale: PropTypes.shape(),
   teams: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,

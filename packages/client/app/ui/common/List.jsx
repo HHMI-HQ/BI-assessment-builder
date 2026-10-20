@@ -276,6 +276,7 @@ const List = ({
   withFilters = false,
   infiniteScroll = { enabled: false, props: {} },
   defaultSearch = "",
+  controlled = false,
   ...rest
 }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -297,7 +298,7 @@ const List = ({
   // to preserve it, keep track of selected items in the parent component, and pass it down via this prop
 
   useEffect(() => {
-    if (!isEqual(selectedItems, controlledSelectedItems)) {
+    if (!isEqual(selectedItems, controlledSelectedItems) && controlled) {
       setSelectedItems(controlledSelectedItems);
     }
     // eslint-disable-next-line react/prop-types
@@ -417,8 +418,6 @@ const List = ({
 
   let splitDataSource = [...dataSource];
 
-  console.log(dataSource);
-
   // `totalCount` prop exists only to display the count at the top of the list,
   // but since we have the value, might as well pass it to the pagination config.
   // If the pagination config has a `total` key, then use that.
@@ -511,6 +510,7 @@ const List = ({
                   }
                   locale={mergedLocale}
                   itemRender={listItemToRender}
+                  rowKey={"id"}
                   {...rest}
                 />
               )}
@@ -612,10 +612,9 @@ const List = ({
           {subHeaderItems && subHeaderItems}
         </customComponents.Header>
       )}
-      <customComponents.ContentWrapper id="list-content-wrapper">
-        {/* {customComponents?.AsideLeft} */}
+      {/* id="list-content-wrapper" why? */}
+      <customComponents.ContentWrapper>
         {ListToRender}
-        {/* {customComponents?.AsideRight} */}
       </customComponents.ContentWrapper>
 
       {(footerContent || showPagination) && (
