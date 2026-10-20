@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid } from '@coko/client'
-import { TabsStyled as Tabs } from '../common'
-import ProfileInfo from './ProfileInfo'
-import ChangePassword from './ChangePassword'
-import theme from '../../theme'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid } from "@coko/client";
+import { TabsStyled as Tabs } from "../common";
+import ProfileInfo from "./ProfileInfo";
+import ChangePassword from "./ChangePassword";
+import theme from "../../theme";
 
-const Wrapper = styled.div``
+const Wrapper = styled.div``;
 
 const StyledTabs = styled(Tabs)`
   .ant-tabs-tabpane {
@@ -15,69 +15,68 @@ const StyledTabs = styled(Tabs)`
     max-width: 100%;
     width: 900px;
   }
-`
+`;
 
-const Profile = props => {
-  const {
-    className,
-    initialValues,
-    loading,
-    message,
-    onAutoSave,
-    onPasswordUpdate,
-    onProfileUpdate,
-    submissionStatus,
-    countries,
-    courses,
-    institutionLevels,
-    institutionalSetting,
-    states,
-    topics,
-    onCountryChange,
-    userId,
-  } = props
+const Profile = ({
+  className,
+  onPasswordUpdate,
+  onProfileUpdate,
+  onCountryChange,
+  showPasswordTab,
+  initialValues = {},
+  loading = false,
+  message = "",
+  onAutoSave = () => {},
+  submissionStatus = null,
+  countries = [],
+  courses = [],
+  institutionLevels = [],
+  institutionalSetting = [],
+  states = [],
+  topics = [],
+  userId = null,
+}) => {
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [activeKey, setActiveKey] = useState("profileInfo");
 
-  const [unsavedChanges, setUnsavedChanges] = useState(false)
-  const [activeKey, setActiveKey] = useState('profileInfo')
-
-  const checkForUnsavedChanges = newTabKey => {
+  const checkForUnsavedChanges = (newTabKey) => {
     if (newTabKey !== activeKey) {
       if (unsavedChanges) {
         // TODO: show dialog to warn user of unsaved changes and proceed accoring to their choice
         // eslint-disable-next-line no-alert, no-restricted-globals
-        const result = confirm('you have unsaved changes. continue anyway?')
-        if (!result) return false
-        setUnsavedChanges(false)
-        setActiveKey(newTabKey)
-        return true
+        const result = confirm("you have unsaved changes. continue anyway?");
+        if (!result) return false;
+        setUnsavedChanges(false);
+        setActiveKey(newTabKey);
+        return true;
       }
 
-      setActiveKey(newTabKey)
-      return true
+      setActiveKey(newTabKey);
+      return true;
     }
 
-    setActiveKey(newTabKey)
-    return true
-  }
+    setActiveKey(newTabKey);
+    return true;
+  };
 
   const handleValuesChange = () => {
-    if (!unsavedChanges) setUnsavedChanges(true)
-  }
+    if (!unsavedChanges) setUnsavedChanges(true);
+  };
 
-  const handleProfileInfoSubmit = values => {
-    setUnsavedChanges(false)
-    onProfileUpdate(values)
-  }
+  const handleProfileInfoSubmit = (values) => {
+    setUnsavedChanges(false);
+    onProfileUpdate(values);
+  };
 
-  const handleChangePasswordSubmit = values => {
-    setUnsavedChanges(false)
-    onPasswordUpdate(values)
-  }
+  const handleChangePasswordSubmit = (values) => {
+    setUnsavedChanges(false);
+    onPasswordUpdate(values);
+  };
 
   const items = [
     {
-      label: 'Profile info',
-      key: 'profileInfo',
+      label: "Profile info",
+      key: "profileInfo",
       children: (
         <ProfileInfo
           countries={countries}
@@ -101,12 +100,12 @@ const Profile = props => {
         />
       ),
     },
-  ]
+  ];
 
-  if (!userId)
+  if (!userId && showPasswordTab)
     items.push({
-      label: 'Password',
-      key: 'changePassword',
+      label: "Password",
+      key: "changePassword",
       children: (
         <ChangePassword
           loading={loading}
@@ -116,7 +115,7 @@ const Profile = props => {
           submissionStatus={submissionStatus}
         />
       ),
-    })
+    });
 
   return (
     <Wrapper className={className}>
@@ -128,8 +127,8 @@ const Profile = props => {
         onTabClick={checkForUnsavedChanges}
       />
     </Wrapper>
-  )
-}
+  );
+};
 
 Profile.propTypes = {
   initialValues: PropTypes.shape(),
@@ -147,21 +146,6 @@ Profile.propTypes = {
   topics: PropTypes.arrayOf(PropTypes.shape()),
   onCountryChange: PropTypes.func.isRequired,
   userId: PropTypes.string,
-}
+};
 
-Profile.defaultProps = {
-  initialValues: {},
-  loading: false,
-  message: '',
-  onAutoSave: () => {},
-  submissionStatus: null,
-  countries: [],
-  courses: [],
-  institutionLevels: [],
-  institutionalSetting: [],
-  states: [],
-  topics: [],
-  userId: null,
-}
-
-export default Profile
+export default Profile;

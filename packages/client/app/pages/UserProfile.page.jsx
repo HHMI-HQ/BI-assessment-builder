@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams, Navigate } from 'react-router'
-import PropTypes from 'prop-types'
-import { useMutation, useQuery } from '@apollo/client/react'
-import { useCurrentUser } from '@coko/client'
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, Navigate } from "react-router";
+import PropTypes from "prop-types";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { useCurrentUser } from "@coko/client";
 
-import { Profile, SignupQuestionnaire, VisuallyHiddenElement } from 'ui'
-import { profileOptions, hasGlobalRole } from '../utilities'
+import { Profile, SignupQuestionnaire, VisuallyHiddenElement } from "ui";
+import { profileOptions, hasGlobalRole } from "../utilities";
 import {
   SUBMIT_QUESTIONNAIRE,
   UPDATE_PROFILE,
@@ -13,12 +13,13 @@ import {
   GET_USER_DATA,
   GET_COUNTRIES_OPTIONS,
   GET_STATES_OPTIONS,
-} from '../graphql'
+  GET_LOGIN_CONFIG,
+} from "../graphql";
 
 const profileApiToUi = (user, signup) => {
-  if (!user) return null
+  if (!user) return null;
 
-  const isReviewer = hasGlobalRole(user, 'reviewer')
+  const isReviewer = hasGlobalRole(user, "reviewer");
 
   return {
     address: user.address,
@@ -26,7 +27,7 @@ const profileApiToUi = (user, signup) => {
     assessmentTraining: user.receivedTraining,
     assessmentTrainingInclusive: user.receivedInclusiveLanguageTraining,
     city: user.city,
-    country: user.country || 'US',
+    country: user.country || "US",
     courses: user.coursesTeaching || [],
     coursesReview: user.topicsReviewing || [],
     displayName: user.displayName,
@@ -47,10 +48,10 @@ const profileApiToUi = (user, signup) => {
     typeOfInstitution: user.typeOfInstitution,
     yearsOfExperience: user.teachingExperience,
     zipCode: user.zipCode,
-  }
-}
+  };
+};
 
-const profileUiToApi = formData => {
+const profileUiToApi = (formData) => {
   return {
     address: formData.address,
     apIbCourses: formData.apIbCourses || null,
@@ -78,25 +79,21 @@ const profileUiToApi = formData => {
     topicsReviewing: formData.coursesReview || [],
     typeOfInstitution: formData.typeOfInstitution,
     zipCode: formData.zipCode,
-  }
-}
+  };
+};
 
-const UserProfile = props => {
-  const { signup } = props
+const UserProfile = ({ signup = false }) => {
+  const [selectedCountry, setSelectedCountry] = useState();
+  const [message, setMessage] = useState("");
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
-  const [selectedCountry, setSelectedCountry] = useState()
-  const [message, setMessage] = useState('')
-  const [submissionStatus, setSubmissionStatus] = useState(null)
-  const [submitted, setSubmitted] = useState(false)
+  const navigate = useNavigate();
+  const { id: userId } = useParams();
 
-  const navigate = useNavigate()
-  const { id: userId } = useParams()
-
-  const { currentUser, setCurrentUser } = useCurrentUser()
+  const { currentUser, refetch } = useCurrentUser();
 
   if (currentUser.id === userId) {
-    TODO
-    // window.history.replaceState({}, '', '/profile')
     return <Navigate replace to="/profile" />;
   }
 
@@ -105,10 +102,13 @@ const UserProfile = props => {
     variables: {
       id: userId,
     },
-  })
+  });
+
+  const { data: { getLoginConfig: { showEmailLogin } = {} } = {} } =
+    useQuery(GET_LOGIN_CONFIG);
 
   const { data: { getCountriesForUserProfile: countryOptions } = {} } =
-    useQuery(GET_COUNTRIES_OPTIONS)
+    useQuery(GET_COUNTRIES_OPTIONS);
 
   const { data: { getStatesByCountryForUserProfile: statesOptions } = {} } =
     useQuery(GET_STATES_OPTIONS, {
@@ -116,41 +116,35 @@ const UserProfile = props => {
         skip: !currentUser || !selectedCountry,
         country: selectedCountry,
       },
-    })
+    });
 
   const [updateProfileMutation, { loading: updateProfileLoading }] =
     useMutation(UPDATE_PROFILE, {
-      onCompleted({ updateUserProfile }) {
-        setCurrentUser({
-          ...currentUser,
-          ...updateUserProfile,
-        })
+      onCompleted() {
+        refetch();
       },
-    })
+    });
 
   const [submitQuestionnaireMutation, { loading: submitQuestionnaireLoading }] =
     useMutation(SUBMIT_QUESTIONNAIRE, {
-      onCompleted({ submitQuestionnaire }) {
-        setCurrentUser({
-          ...currentUser,
-          ...submitQuestionnaire,
-        })
+      onCompleted() {
+        refetch();
       },
-    })
+    });
 
   const [updatePasswordMutation, { loading: updatePasswordLoading }] =
-    useMutation(UPDATE_PASSWORD)
+    useMutation(UPDATE_PASSWORD);
 
-  useEffect(async () => {
-    setSubmitted(signup && currentUser?.profileSubmitted)
-    setSelectedCountry(currentUser?.country || 'US')
-  }, [currentUser])
+  useEffect(() => {
+    setSubmitted(signup && currentUser?.profileSubmitted);
+    setSelectedCountry(currentUser?.country || "US");
+  }, [currentUser]);
 
-  const onCountryChange = async country => {
-    setSelectedCountry(country)
-  }
+  const onCountryChange = async (country) => {
+    setSelectedCountry(country);
+  };
 
-  const handleProfileSubmit = async formData => {
+  const handleProfileSubmit = async (formData) => {
     const mutationData = {
       variables: {
         input: {
@@ -158,38 +152,38 @@ const UserProfile = props => {
           id: currentUser.id,
         },
       },
-    }
+    };
 
     try {
       if (signup) {
-        await submitQuestionnaireMutation(mutationData)
-
+        await submitQuestionnaireMutation(mutationData);
         // redirect to '/' after completing the signup questionnaire
-        setSubmitted(true)
-        setTimeout(() => {
-          navigate('/')
-        }, 3000)
-      } else {
-        await updateProfileMutation(mutationData)
+        setSubmitted(true);
 
-        setMessage('Profile updated successfully')
-        setSubmissionStatus('success')
         setTimeout(() => {
-          setMessage('')
-          setSubmissionStatus(null)
-        }, 3000)
+          navigate("/");
+        }, 3000);
+      } else {
+        await updateProfileMutation(mutationData);
+
+        setMessage("Profile updated successfully");
+        setSubmissionStatus("success");
+        setTimeout(() => {
+          setMessage("");
+          setSubmissionStatus(null);
+        }, 3000);
       }
     } catch (e) {
-      setMessage(e.message)
-      setSubmissionStatus('error')
+      setMessage(e.message);
+      setSubmissionStatus("error");
       setTimeout(() => {
-        setMessage('')
-        setSubmissionStatus(null)
-      }, 3000)
+        setMessage("");
+        setSubmissionStatus(null);
+      }, 3000);
     }
-  }
+  };
 
-  const handlePasswordSubmit = async formData => {
+  const handlePasswordSubmit = async (formData) => {
     const mutationData = {
       variables: {
         input: {
@@ -198,30 +192,30 @@ const UserProfile = props => {
           newPassword: formData.newPassword,
         },
       },
-    }
+    };
 
     try {
-      await updatePasswordMutation(mutationData)
+      await updatePasswordMutation(mutationData);
 
-      setMessage('Password updated successfully')
-      setSubmissionStatus('success')
+      setMessage("Password updated successfully");
+      setSubmissionStatus("success");
       setTimeout(() => {
-        setMessage('')
-        setSubmissionStatus(null)
-      }, 3000)
+        setMessage("");
+        setSubmissionStatus(null);
+      }, 3000);
     } catch (e) {
-      setMessage(e.message)
-      setSubmissionStatus('error')
+      setMessage(e.message);
+      setSubmissionStatus("error");
       setTimeout(() => {
-        setMessage('')
-        setSubmissionStatus(null)
-      }, 3000)
+        setMessage("");
+        setSubmissionStatus(null);
+      }, 3000);
     }
-  }
+  };
 
   const initialValues = userId
     ? profileApiToUi(userData?.user)
-    : profileApiToUi(currentUser, signup)
+    : profileApiToUi(currentUser, signup);
 
   if (signup) {
     return (
@@ -243,15 +237,16 @@ const UserProfile = props => {
           topics={profileOptions.topics}
         />
       </>
-    )
+    );
   }
 
-  if (userId && userLoading) return null
+  if (userId && userLoading) return null;
 
   return (
     <>
       <VisuallyHiddenElement as="h1">User Profile</VisuallyHiddenElement>
       <Profile
+        showPasswordTab={showEmailLogin}
         countries={countryOptions}
         courses={profileOptions.courses}
         initialValues={initialValues}
@@ -269,15 +264,11 @@ const UserProfile = props => {
         userId={userId !== currentUser.id ? userId : null}
       />
     </>
-  )
-}
+  );
+};
 
 UserProfile.propTypes = {
   signup: PropTypes.bool,
-}
+};
 
-UserProfile.defaultProps = {
-  signup: false,
-}
-
-export default UserProfile
+export default UserProfile;

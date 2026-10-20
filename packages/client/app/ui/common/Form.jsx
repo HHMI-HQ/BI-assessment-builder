@@ -1,32 +1,32 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { debounce } from 'lodash'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { debounce } from "lodash";
 
-import { Form as AntForm } from 'antd'
-import { grid, th , Ribbon as UIRibbon } from '@coko/client'
+import { Form as AntForm } from "antd";
+import { grid, th, Ribbon as UIRibbon } from "@coko/client";
 
 const FormWrapper = styled.div`
   .ant-form-item-explain-error {
-    color: ${th('colorError')};
+    color: ${th("colorError")};
   }
-`
+`;
 
 const Ribbon = styled(UIRibbon)`
   margin: ${grid(2)} ${grid(4)};
-`
+`;
 
-const FormItem = props => {
+const FormItem = (props) => {
   /**
    * Disable prop types as these props will be checked in the `AntForm.Item`
    * component. Enable again if you introduce custom props.
    */
 
   /* eslint-disable-next-line react/prop-types */
-  const { children, onBlur, validateTrigger, ...rest } = props
-  const [lostFocusOnce, setLostFocusOnce] = useState(false)
+  const { children, onBlur, validateTrigger, ...rest } = props;
+  const [lostFocusOnce, setLostFocusOnce] = useState(false);
 
   /**
    * Default behaviour is that errors only appear once you have touched the
@@ -35,53 +35,52 @@ const FormItem = props => {
    * in the props will override the default behaviour. All we're doing here is
    * changing the default.
    */
-  const useDefaultTrigger = !validateTrigger
-  const defaultTrigger = !lostFocusOnce ? 'onBlur' : 'onChange'
-  const trigger = useDefaultTrigger ? defaultTrigger : validateTrigger
+  const useDefaultTrigger = !validateTrigger;
+  const defaultTrigger = !lostFocusOnce ? "onBlur" : "onChange";
+  const trigger = useDefaultTrigger ? defaultTrigger : validateTrigger;
 
   const handleBlur = () => {
-    if (useDefaultTrigger && !lostFocusOnce) setLostFocusOnce(true)
-    onBlur && onBlur()
-  }
+    if (useDefaultTrigger && !lostFocusOnce) setLostFocusOnce(true);
+    onBlur && onBlur();
+  };
 
   return (
     <AntForm.Item onBlur={handleBlur} validateTrigger={trigger} {...rest}>
       {children}
     </AntForm.Item>
-  )
-}
+  );
+};
 
 // Disable the prop types that are the same as the underlying component
-const Form = props => {
-  const {
-    autoSave,
-    autoSaveDebounceDelay,
-    children,
-    feedbackComponent: FeedbackComponent,
-    // eslint-disable-next-line react/prop-types
-    form: propsForm,
-    onAutoSave,
-    // eslint-disable-next-line react/prop-types
-    onValuesChange,
-    onFinishFailed,
-    ribbonMessage,
-    ribbonPosition,
-    submissionStatus,
-    scrollErrorIntoView,
-    ...rest
-  } = props
-
-  const showRibbon = !!submissionStatus && !!ribbonMessage
-  const [internalForm] = AntForm.useForm()
-  const form = propsForm || internalForm
+const Form = ({
+  children,
+  feedbackComponent: FeedbackComponent = Ribbon,
+  // eslint-disable-next-line react/prop-types
+  form: propsForm,
+  // eslint-disable-next-line react/prop-types
+  onValuesChange,
+  autoSave = false,
+  autoSaveDebounceDelay = 500,
+  // feedbackComponent : FeedbackComponent,
+  onAutoSave = null,
+  onFinishFailed = () => {},
+  ribbonMessage = null,
+  ribbonPosition = "top",
+  submissionStatus = null,
+  scrollErrorIntoView = true,
+  ...rest
+}) => {
+  const showRibbon = !!submissionStatus && !!ribbonMessage;
+  const [internalForm] = AntForm.useForm();
+  const form = propsForm || internalForm;
 
   // eslint-disable-next-line react/prop-types
-  const runAutoSave = debounce(() => onAutoSave(form.getFieldsValue()), 500)
+  const runAutoSave = debounce(() => onAutoSave(form.getFieldsValue()), 500);
 
   const handleValuesChange = (changedValues, allValues) => {
-    if (autoSave && onAutoSave) runAutoSave()
-    onValuesChange && onValuesChange()
-  }
+    if (autoSave && onAutoSave) runAutoSave();
+    onValuesChange && onValuesChange();
+  };
 
   const FeedbackElement = showRibbon && (
     <FeedbackComponent
@@ -91,7 +90,7 @@ const Form = props => {
     >
       {ribbonMessage}
     </FeedbackComponent>
-  )
+  );
 
   // const FeedbackElement = (
   //   <FeedbackComponent hide={!showRibbon} status={submissionStatus}>
@@ -100,68 +99,70 @@ const Form = props => {
   // )
 
   // if form validation fails, scroll to first error field (if applicable) and focus
-  const focusErrorField = errorFields => {
-    let firstErrorField = document.getElementById(errorFields[0].name.join('_'))
+  const focusErrorField = (errorFields) => {
+    let firstErrorField = document.getElementById(
+      errorFields[0].name.join("_"),
+    );
 
     // handle case when input is a radio group
     if (firstErrorField.matches('div[role="radiogroup"]')) {
       // should focus it's first radio button, since radiogroup is not focusable
-      firstErrorField = firstErrorField.querySelector('input[type="radio"]')
+      firstErrorField = firstErrorField.querySelector('input[type="radio"]');
     }
 
     // create intersection observer to to check when scroll target is in view
-    const observer = new IntersectionObserver(entries => {
-      const [entry] = entries
+    const observer = new IntersectionObserver((entries) => {
+      const [entry] = entries;
 
       if (entry.isIntersecting) {
         setTimeout(() => {
           // focus element after it becomes visible
-          entry.target.focus()
-          observer.unobserve(entry.target)
-        }, 100)
+          entry.target.focus();
+          observer.unobserve(entry.target);
+        }, 100);
       }
-    })
+    });
 
-    observer.observe(firstErrorField)
+    observer.observe(firstErrorField);
 
     // scroll to first error field
     form.scrollToField(errorFields[0].name, {
       // specify custom scrolling behavior
-      behavior: actions => {
+      behavior: (actions) => {
         if (actions.length === 0) {
           // no element to scroll to, field is visible
-          firstErrorField.focus()
+          firstErrorField.focus();
         } else {
           // check motion preferences; avoid scrolling if users prefers reduced motion
-          const motionQuery = window.matchMedia('(prefers-reduced-motion)')
+          const motionQuery = window.matchMedia("(prefers-reduced-motion)");
           // start observing for when field becomes visible
-          observer.observe(firstErrorField)
+          observer.observe(firstErrorField);
 
-          const action = actions.find(el => el.top > 0)
+          const action = actions.find((el) => el.top > 0);
 
-          const { el, top, left } = action
+          const { el, top, left } = action;
           el.scrollTo({
             top: top - 50,
             left,
-            behavior: motionQuery.matches ? 'auto' : 'smooth',
-          })
+            behavior: motionQuery.matches ? "auto" : "smooth",
+          });
         }
       },
-    })
-  }
+    });
+  };
 
-  const handleFinishFailed = data => {
+  const handleFinishFailed = (data) => {
     if (scrollErrorIntoView) {
-      const { errorFields } = data
-      focusErrorField(errorFields)
+      const { errorFields } = data;
+      focusErrorField(errorFields);
     }
 
-    onFinishFailed(data)
-  }
+    onFinishFailed(data);
+  };
 
   return (
     <FormWrapper>
-      {ribbonPosition === 'top' && FeedbackElement}
+      {ribbonPosition === "top" && FeedbackElement}
 
       <AntForm
         data-testid="form-content"
@@ -173,10 +174,10 @@ const Form = props => {
         {children}
       </AntForm>
 
-      {ribbonPosition === 'bottom' && FeedbackElement}
+      {ribbonPosition === "bottom" && FeedbackElement}
     </FormWrapper>
-  )
-}
+  );
+};
 
 Form.propTypes = {
   autoSave: PropTypes.bool,
@@ -185,33 +186,21 @@ Form.propTypes = {
   onAutoSave: PropTypes.func,
   onFinishFailed: PropTypes.func,
   ribbonMessage: PropTypes.string,
-  ribbonPosition: PropTypes.oneOf(['top', 'bottom']),
-  submissionStatus: PropTypes.oneOf(['success', 'error', 'danger']),
+  ribbonPosition: PropTypes.oneOf(["top", "bottom"]),
+  submissionStatus: PropTypes.oneOf(["success", "error", "danger"]),
   scrollErrorIntoView: PropTypes.bool,
-}
-
-Form.defaultProps = {
-  autoSave: false,
-  autoSaveDebounceDelay: 500,
-  feedbackComponent: Ribbon,
-  onAutoSave: null,
-  onFinishFailed: () => {},
-  ribbonMessage: null,
-  ribbonPosition: 'top',
-  submissionStatus: null,
-  scrollErrorIntoView: true,
-}
+};
 
 // const Form = {}
 // Object.setPrototypeOf(Form, AntForm)
 
 /* Replicate exports from https://github.com/ant-design/ant-design/blob/master/components/form/index.tsx#L24-L35 */
-Form.render = Form
-Form.Item = FormItem
-Form.List = AntForm.List
-Form.ErrorList = AntForm.ErrorList
-Form.useForm = AntForm.useForm
-Form.Provider = AntForm.FormProvider
+Form.render = Form;
+Form.Item = FormItem;
+Form.List = AntForm.List;
+Form.ErrorList = AntForm.ErrorList;
+Form.useForm = AntForm.useForm;
+Form.Provider = AntForm.FormProvider;
 
 // Form.create = () => {
 //   devWarning(
@@ -221,4 +210,4 @@ Form.Provider = AntForm.FormProvider
 //   )
 // }
 
-export default Form
+export default Form;
