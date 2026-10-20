@@ -28,10 +28,6 @@ const ModalContext = React.createContext(null);
 const StyledTabs = styled(Tabs)`
   height: 100%;
 
-  .ant-tabs-body {
-    height: 100%;
-  }
-
   .ant-tabs-content {
     height: 100%;
 

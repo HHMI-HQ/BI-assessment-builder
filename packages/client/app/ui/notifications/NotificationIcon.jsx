@@ -1,8 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import { th , VisuallyHiddenElement } from '@coko/client'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router'
+import React from "react";
+import styled from "styled-components";
+import { th, VisuallyHiddenElement } from "@coko/client";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
 
 const Wrapper = styled.div`
   align-items: center;
@@ -16,18 +16,19 @@ const Wrapper = styled.div`
   position: relative;
   width: 40px;
 
-  @media screen and (min-width: ${th('mediaQueries.large')}) {
+  @media screen and (min-width: ${th("mediaQueries.large")}) {
     border-color: #fff1;
   }
-`
+`;
 
 export const StyledCounter = styled.div`
   align-items: center;
-  background-color: ${p => (p.$show ? th('colorError') : th('colorTertiary'))};
+  background-color: ${(p) =>
+    p.$show ? th("colorError") : th("colorTertiary")};
   border-radius: 50%;
-  color: ${p => (p.$show ? '#fff' : '#fff0')};
+  color: ${(p) => (p.$show ? "#fff" : "#fff0")};
   display: flex;
-  font-size: ${th('fontSizeBaseSmallest')};
+  font-size: ${th("fontSizeBaseSmallest")};
   font-weight: 700;
   height: 18px;
   inset: ${({ $pos }) => $pos};
@@ -37,14 +38,14 @@ export const StyledCounter = styled.div`
   position: absolute;
   text-align: center;
   text-rendering: geometricPrecision;
-  transform: scale(${p => (p.$show ? 1 : p.$scale || 0.4)});
+  transform: scale(${(p) => (p.$show ? 1 : p.$scale || 0.4)});
   transition: all 0.3s;
   width: 18px;
-`
+`;
 
 const StyledNotificationIcon = styled(Link)`
   aspect-ratio: 1 / 1;
-  background: url("${p => p.$src}");
+  background: url("${(p) => p.$src}");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 80%;
@@ -56,66 +57,75 @@ const StyledNotificationIcon = styled(Link)`
   &:hover {
     transform: scale(1.05);
   }
-`
+`;
 
-export const CounterBadge = ({ counts = 0, $pos = '', ...rest }) => {
+export const CounterBadge = ({ counts = 0, $pos = "", ...rest }) => {
   return (
     <StyledCounter
       $pos={$pos}
-      $show={counts > 0 || typeof counts === 'string'}
+      $show={counts > 0 || typeof counts === "string"}
       {...rest}
       data-test="counter-badge"
     >
-      <span>{counts < 99 ? counts : '+9'}</span>
+      <span>{counts < 99 ? counts : "+9"}</span>
     </StyledCounter>
-  )
-}
+  );
+};
 
-export const CounterWrapper = ({ children = null, Component = Wrapper, counts = 0, ...rest }) => {
+export const CounterWrapper = ({
+  children = null,
+  Component = Wrapper,
+  counts = 0,
+  ...rest
+}) => {
   return (
     <Component id="COUNTER">
       {children}
       <CounterBadge {...rest} />
     </Component>
-  )
-}
+  );
+};
 
 // eslint-disable-next-line react/prop-types
-export const NotificationIcon = ({ iconSrc = '', pending = 0, onClick = () => {}, text = 'Notifications', ...rest }) => {
+export const NotificationIcon = ({
+  iconSrc = "",
+  pending = 0,
+  onClick = () => {},
+  text = "Notifications",
+  ...rest
+}) => {
   return (
     <CounterWrapper
       $pos="-3px 3px 0 0"
-      counts={pending < 99 ? pending : '+99'}
+      counts={pending < 99 ? pending : "+99"}
       onClick={onClick}
     >
       <StyledNotificationIcon
         $src={iconSrc}
         data-testid="Notifications-icon"
-        style={{ position: 'absolute' }}
+        style={{ position: "absolute" }}
         {...rest}
       >
         <VisuallyHiddenElement>{text}</VisuallyHiddenElement>
       </StyledNotificationIcon>
     </CounterWrapper>
-  )
-}
+  );
+};
 
 CounterBadge.propTypes = {
   counts: PropTypes.oneOfType([PropTypes.any]),
   $pos: PropTypes.string,
-}
+};
 
 CounterWrapper.propTypes = {
   children: PropTypes.node,
   counts: PropTypes.oneOfType([PropTypes.any]),
   Component: PropTypes.elementType,
-}
+};
 
 NotificationIcon.propTypes = {
   iconSrc: PropTypes.string,
   pending: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   onClick: PropTypes.func,
   text: PropTypes.string,
-}
-
-
+};

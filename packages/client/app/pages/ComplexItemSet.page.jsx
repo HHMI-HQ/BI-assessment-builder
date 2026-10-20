@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation, Link } from "react-router";
-import { useQuery, useMutation, useLazyQuery } from "@apollo/client/react";
+import { useQuery, useMutation } from "@apollo/client/react";
 import DOMPurify from "dompurify";
 import { serverUrl } from "@coko/client";
 import { ComplexItemSet, Result, Spin } from "ui";

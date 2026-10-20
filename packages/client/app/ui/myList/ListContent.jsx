@@ -18,17 +18,6 @@ import ExportListToWordButton from "./ExportModal";
 const StyledTabs = styled(Tabs)`
   height: 100%;
 
-  .ant-tabs-body-holder {
-    .ant-tabs-body {
-      height: 100%;
-
-      [role="tabpanel"] {
-        height: 100%;
-        margin: auto;
-      }
-    }
-  }
-
   .ant-tabs-content {
     height: 100%;
 

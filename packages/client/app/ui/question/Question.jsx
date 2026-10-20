@@ -258,12 +258,6 @@ const QuestionWrapper = styled.div`
 `;
 
 const StyledTabs = styled(Tabs)`
-  .ant-tabs-body {
-    height: 100%;
-    [role="tabpanel"] {
-      height: 100%;
-    }
-  }
   .ant-tabs-tabpane {
     flex: 1;
     overflow: auto;

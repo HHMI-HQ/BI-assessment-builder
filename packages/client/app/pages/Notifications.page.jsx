@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react'
-import { isBoolean } from 'lodash'
-import { NotificationsUI } from '../ui/notifications'
-import { VisuallyHiddenElement } from '../ui'
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { isBoolean } from "lodash";
+import { NotificationsUI } from "../ui/notifications";
+import { VisuallyHiddenElement } from "../ui";
 import {
   GET_UNREAD_NOTIFICATIONS_COUNT,
   GET_USER_NOTIFICATIONS,
   MARK_AS,
-} from '../graphql/notification.queries'
-import { boolOrNull, useNotifications } from '../utilities'
+} from "../graphql/notification.queries";
+import { boolOrNull, useNotifications } from "../utilities";
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 10;
 
 // if we pass a single item it will return the shaped item if we pass an array it will return the array of shaped items
-const mentionsShape = arr => {
-  const shapedMention = item => {
-    const parsedContent = JSON.parse(item.content)
+const mentionsShape = (arr = []) => {
+  console.log(arr);
+
+  const shapedMention = (item) => {
+    const parsedContent = JSON.parse(item.content);
 
     const {
-      date = '',
-      content = '',
-      questionId = '',
-      chatType = '',
-    } = parsedContent
+      date = "",
+      content = "",
+      questionId = "",
+      chatType = "",
+    } = parsedContent;
 
     return {
       id: item.id,
@@ -35,12 +37,12 @@ const mentionsShape = arr => {
         questionId ? `/question/${questionId}#editor` : null,
       ],
       unread: !item.read,
-    }
+    };
     /* transition: transform 0.2s; */
-  }
+  };
 
-  return Array.isArray(arr) ? arr.map(shapedMention) : shapedMention(arr)
-}
+  return Array.isArray(arr) ? arr.map(shapedMention) : shapedMention(arr);
+};
 
 const NotificationPage = () => {
   const {
@@ -49,48 +51,53 @@ const NotificationPage = () => {
     setUnreadMentionsCount,
     updatedMentions,
     setUpdatedMentions,
-  } = useNotifications()
+  } = useNotifications();
 
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
   // eslint-disable-next-line no-unused-vars
-  const [currentPage, setCurrentPage] = useState(Number('0'))
-  const [pageSize, setPageSize] = useState(PAGE_SIZE)
-  const [readState, setReadState] = useState(null)
+  const [currentPage, setCurrentPage] = useState(Number("0"));
+  const [pageSize, setPageSize] = useState(PAGE_SIZE);
+  const [readState, setReadState] = useState(null);
 
-  const mentionsQueryVariables = size => ({
-    type: 'mention',
+  const mentionsQueryVariables = (size) => ({
+    type: "mention",
     options: {
       pageSize: size || PAGE_SIZE,
       page: currentPage,
       read: boolOrNull(readState), // 'cause onSearch returns an empty sstring instead of null
-      orderBy: 'created',
+      orderBy: "created",
       ascending: false,
       includeFullListOfIds: true,
     },
-  })
+  });
 
-  const [
-    updateMentions,
-    { data: userMentions, loading: mentionsLoading, error: mentionsError },
-  ] = useLazyQuery(GET_USER_NOTIFICATIONS, {
+  const {
+    data: userMentions,
+    loading: mentionsLoading,
+    error: mentionsError,
+    refetch,
+  } = useQuery(GET_USER_NOTIFICATIONS, {
     variables: {
-      type: 'mention',
+      type: "mention",
       options: {
         pageSize: PAGE_SIZE,
         page: currentPage,
         read: readState,
-        orderBy: 'created',
+        orderBy: "created",
         ascending: false,
         includeFullListOfIds: true,
       },
     },
-    fetchPolicy: 'network-only',
-    onCompleted: ({ userNotifications: { result } }) =>
-      setUpdatedMentions(mentionsShape(result)),
-  })
+  });
 
-  const { data: unread } = useQuery(GET_UNREAD_NOTIFICATIONS_COUNT)
+  useEffect(() => {
+    if (userMentions) {
+      setUpdatedMentions(mentionsShape(userMentions.userMentions?.results));
+    }
+  }, [userMentions]);
+
+  const { data: unread } = useQuery(GET_UNREAD_NOTIFICATIONS_COUNT);
 
   const [markMentionsAs] = useMutation(MARK_AS, {
     refetchQueries: [
@@ -98,63 +105,62 @@ const NotificationPage = () => {
         query: GET_UNREAD_NOTIFICATIONS_COUNT,
       },
     ],
-    onCompleted: () =>
-      updateMentions({
-        variables: mentionsQueryVariables(pageSize),
-      }),
-  })
+    onCompleted: () => refetch({ variables: mentionsQueryVariables(pageSize) }),
+  });
 
-  const markAs = async variables => {
+  const markAs = async (variables) => {
     markMentionsAs({
       variables,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    document.title = 'Notifications page - HHMI Assessment Builder'
-    setUpdatedMentions([])
-    return setUpdatedMentions([])
-  }, [])
+    document.title = "Notifications page - HHMI Assessment Builder";
+    setUpdatedMentions([]);
+    return setUpdatedMentions([]);
+  }, []);
 
   useEffect(() => {
     unread &&
-      setUnreadMentionsCount(unread?.getUnreadNotificationsCount[0]?.count)
-  }, [unread])
+      setUnreadMentionsCount(unread?.getUnreadNotificationsCount[0]?.count);
+  }, [unread]);
 
   useEffect(() => {
-    location.pathname !== '/notifications' &&
-      location.pathname.slice(location.pathname.lastIndexOf('/') + 1) !==
+    location.pathname !== "/notifications" &&
+      location.pathname.slice(location.pathname.lastIndexOf("/") + 1) !==
         tabKey &&
-      setTabKey(location.pathname.slice(location.pathname.lastIndexOf('/') + 1))
-  }, [location])
+      setTabKey(
+        location.pathname.slice(location.pathname.lastIndexOf("/") + 1),
+      );
+  }, [location]);
 
   useEffect(() => {
-    tabKey && navigate(`/notifications/${tabKey}`)
-  }, [tabKey])
+    tabKey && navigate(`/notifications/${tabKey}`);
+  }, [tabKey]);
 
   useEffect(() => {
-    setUpdatedMentions([])
-    updateMentions({
+    setUpdatedMentions([]);
+    refetch({
       variables: mentionsQueryVariables(PAGE_SIZE),
     }).then(() => {
-      setPageSize(PAGE_SIZE)
-    })
-  }, [readState])
+      setPageSize(PAGE_SIZE);
+    });
+  }, [readState]);
 
   const handleScrollNext = () => {
-    const { totalCount } = userMentions.userNotifications
+    const { totalCount } = userMentions.userNotifications;
 
     const newSize =
-      pageSize + PAGE_SIZE <= totalCount ? pageSize + PAGE_SIZE : totalCount
+      pageSize + PAGE_SIZE <= totalCount ? pageSize + PAGE_SIZE : totalCount;
 
-    updateMentions({
+    refetch({
       variables: mentionsQueryVariables(newSize),
     }).then(() => {
-      setPageSize(newSize)
-    })
-  }
+      setPageSize(newSize);
+    });
+  };
 
-  const handleSearch = ({ status }) => setReadState(status)
+  const handleSearch = ({ status }) => setReadState(status);
 
   return (
     <>
@@ -162,12 +168,12 @@ const NotificationPage = () => {
 
       <NotificationsUI
         fullListOfIds={userMentions?.userNotifications?.fullListOfIds?.map(
-          f => ({ id: f }),
+          (f) => ({ id: f }),
         )}
         handleScrollNext={handleScrollNext}
         infiniteScrollMessage={
           isBoolean(readState)
-            ? `You dont have any ${!readState ? 'un' : ''}read mentions`
+            ? `You dont have any ${!readState ? "un" : ""}read mentions`
             : `You haven't been mentioned yet`
         }
         markMentionsAs={markAs}
@@ -180,7 +186,7 @@ const NotificationPage = () => {
         updatedMentions={updatedMentions}
       />
     </>
-  )
-}
+  );
+};
 
-export default NotificationPage
+export default NotificationPage;

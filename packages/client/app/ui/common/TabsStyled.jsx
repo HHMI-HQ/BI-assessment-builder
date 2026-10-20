@@ -54,8 +54,9 @@ const TabsStyled = styled(AntTabs)`
   --bg-inactive: ${(p) =>
     p.inactiveBgColor || darken(p.activeBg || "colorBackgroundHue", 0.5)};
   --color-active: ${(p) => p.activecolor || "#666"};
-  --color-inactive: ${(p) => p.inactivecolor || p.activecolor || "#777"};
-  --border: ${(p) => p.border || "1px solid #777"};
+  --color-inactive: ${(p) => p.inactivecolor || p.activecolor || "#999"};
+  /* --border: ${(p) => p.border || `1px solid ${th("colorBorder")}}`}; */
+  --border: ${(p) => p.border || `1px solid #999`};
   height: 100%;
   width: 100%;
 
@@ -67,7 +68,7 @@ const TabsStyled = styled(AntTabs)`
     text-transform: uppercase;
 
     &::before {
-      border-bottom: 1px solid #777;
+      border-bottom: 1px solid #999;
     }
 
     > .ant-tabs-nav-wrap {
@@ -75,9 +76,18 @@ const TabsStyled = styled(AntTabs)`
     }
   }
 
+  .ant-tabs-body {
+    height: 100%;
+
+    [role="tabpanel"] {
+      height: 100%;
+      margin: auto;
+    }
+  }
+
   .ant-tabs-nav-list .ant-tabs-tab,
   .ant-tabs-nav-list .ant-tabs-tab [role="tab"] {
-    border-radius: 0.2rem 0.2rem 0 0;
+    border-radius: ${th("borderRadius")} ${th("borderRadius")} 0 0;
     margin: 0 0.1rem;
     padding: 0.3rem 1rem 0.2rem;
     transform-origin: bottom;
@@ -85,7 +95,6 @@ const TabsStyled = styled(AntTabs)`
 
     &:focus {
       color: var(--color-active);
-      outline: 1px dashed #0002;
     }
 
     &[aria-selected="false"] {

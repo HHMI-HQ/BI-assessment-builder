@@ -2,26 +2,26 @@
 /* stylelint-disable string-quotes */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
-import React from 'react'
-import { PropTypes } from 'prop-types'
+import React from "react";
+import { PropTypes } from "prop-types";
 import {
   PlusCircleFilled,
   CloseCircleFilled,
   FilterOutlined,
-} from '@ant-design/icons'
-import { th, darken, lighten } from '@coko/client'
-import styled from 'styled-components'
-import { alpha } from '../../_helpers/themeUtils'
+} from "@ant-design/icons";
+import { th, darken, lighten } from "@coko/client";
+import styled from "styled-components";
+import { alpha } from "../../_helpers/themeUtils";
 
 const FilterIcon = styled(FilterOutlined)`
   align-items: center;
   border-right: 1px solid
-    ${p =>
+    ${(p) =>
       p.$visualfocus
-        ? alpha('colorPrimary', 0.624)
-        : alpha('colorBorder', 0.55)};
-  color: ${p =>
-    p.$visualfocus ? alpha('colorPrimary', 0.624) : alpha('colorBorder', 0.55)};
+        ? alpha("colorPrimary", 0.624)
+        : alpha("colorBorder", 0.55)};
+  color: ${(p) =>
+    p.$visualfocus ? alpha("colorPrimary", 0.624) : alpha("colorBorder", 0.55)};
   display: flex;
   font-size: 20px;
   height: 100%;
@@ -32,17 +32,17 @@ const FilterIcon = styled(FilterOutlined)`
 
   @media screen and (max-width: 800px) {
     border-right: 1px solid
-      ${p => (p.$visualfocus ? '#a5c5cf' : alpha('colorBorder', 0.55))};
+      ${(p) => (p.$visualfocus ? "#a5c5cf" : alpha("colorBorder", 0.55))};
     font-size: 15px;
   }
-`
+`;
 
 const BadgesWrapper = styled.span`
   box-shadow: inset 0 0 7px #0001;
   display: flex;
   overflow: visible;
   padding: 0;
-  scrollbar-color: ${th('colorPrimary')} #fff;
+  scrollbar-color: ${th("colorPrimary")} #fff;
   transition: background-color 0.3s;
 
   ::-webkit-scrollbar {
@@ -51,7 +51,7 @@ const BadgesWrapper = styled.span`
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: ${p => (p.$visualfocus ? th('colorPrimary') : '#bbb')};
+    background-color: ${(p) => (p.$visualfocus ? th("colorPrimary") : "#bbb")};
     border: 2px solid #0000;
     border-radius: 1px;
     box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
@@ -63,13 +63,13 @@ const BadgesWrapper = styled.span`
   }
 
   @media screen and (max-width: 800px) {
-    background-color: ${p =>
+    background-color: ${(p) =>
       p.$visualfocus
-        ? alpha('colorPrimary', 0.07)
-        : alpha('colorBorder', 0.07)};
+        ? alpha("colorPrimary", 0.07)
+        : alpha("colorBorder", 0.07)};
     border-bottom: 1px solid
-      ${p =>
-        p.$visualfocus ? th('colorPrimaryBorder') : alpha('colorBorder', 0.8)};
+      ${(p) =>
+        p.$visualfocus ? th("colorPrimaryBorder") : alpha("colorBorder", 0.8)};
     max-height: 25px;
     overflow: auto hidden;
     padding: 0.2rem;
@@ -77,75 +77,84 @@ const BadgesWrapper = styled.span`
     width: 100%;
 
     &:hover {
-      border-color: ${th('colorPrimaryBorder')};
+      border-color: ${th("colorPrimaryBorder")};
     }
   }
-`
+`;
 
 const FilterBadge = styled.div`
   align-items: center;
-  background-color: ${p =>
-    p.$visualfocus ? p.badgebg || th('colorPrimary') : th('colorBorder')};
-  border: ${p => {
-    const color = p.$visualfocus ? p.badgebg || 'colorPrimary' : 'colorBorder'
-    return p.$show && `1px solid ${alpha(color, 0.09)}`
+  background-color: ${(p) =>
+    p.$visualfocus ? p.badgebg || th("colorPrimary") : th("colorBorder")};
+  border: ${(p) => {
+    const color = p.$visualfocus ? p.badgebg || "colorPrimary" : "colorBorder";
+    return p.$show && `1px solid ${alpha(color, 0.09)}`;
   }};
-  border-radius: 0.1rem;
-  box-shadow: ${p => (p.$show ? '0 0 3px #0003, inset 0 0 4px #fff6' : 'none')};
-  color: ${p => (p.$show ? p.badgeColor || '#fffd' : '#0000')};
+  &:first-child {
+    border-radius: ${th("borderRadius")} 0 0 ${th("borderRadius")};
+  }
+  &:last-child {
+    border-radius: 0 ${th("borderRadius")} ${th("borderRadius")} 0;
+  }
+  /* border-radius: ${th("borderRadius")}; */
+  box-shadow: ${(p) =>
+    p.$show ? "0 0 3px #0003, inset 0 0 4px #fff6" : "none"};
+  color: ${(p) => (p.$show ? p.badgeColor || "#fffd" : "#0000")};
   display: flex;
-  font-size: ${th('fontSizeBaseSmallest')};
+  font-size: ${th("fontSizeBaseSmallest")};
   font-weight: 700;
   gap: 0.4rem;
-  max-width: ${p => (p.$show ? '900px' : '1px')};
-  opacity: ${p => (p.$show ? (p.$visualfocus ? 1 : 0.7) : 0.7)};
+  max-width: ${(p) => (p.$show ? "900px" : "1px")};
+  opacity: ${(p) => (p.$show ? (p.$visualfocus ? 1 : 0.7) : 0.7)};
 
   overflow: hidden;
-  padding: ${p => (p.$show ? '0.2rem 0.5rem 0.1rem' : '0.2rem 0 0.1rem')};
+  padding: ${(p) => (p.$show ? "0.2rem 0.5rem 0.1rem" : "0.2rem 0 0.1rem")};
   text-align: center;
   text-rendering: optimizeLegibility;
   text-shadow: 0 0 2px #0005;
   transition: all 0.1s ease-in-out;
   white-space: nowrap;
-`
+`;
 
 const CloseBadgeButton = styled(CloseCircleFilled)`
-  color: ${p => p.$color || alpha('colorBackgroundHue', 0.7)};
+  color: ${(p) => p.$color || alpha("colorBackgroundHue", 0.7)};
   cursor: pointer;
-  font-size: ${th('fontSizeBaseSmaller')};
+  font-size: ${th("fontSizeBaseSmaller")};
   font-weight: 900;
   margin: 0 -3px 2px 2px;
-  max-width: ${p => (p.$show ? '12px' : '0')};
+  max-width: ${(p) => (p.$show ? "12px" : "0")};
   transition: max-width 0.2s;
-`
+`;
 
 const FilterPopup = styled.div`
   align-items: center;
   background-color: #fff;
-  border-color: ${p =>
-    p.$visualfocus ? alpha('colorPrimaryBorder', 0.74) : th('colorBorder')};
+  border-color: ${(p) =>
+    p.$visualfocus ? alpha("colorPrimaryBorder", 0.74) : th("colorBorder")};
+  border-radius: 0 0 ${th("borderRadius")};
+  ${th("borderRadius")};
   border-style: solid;
   border-top: none;
-  border-width: ${p => (p.$show ? '1px' : '0')};
-  box-shadow: ${p => (p.$show ? '0 0 10px #0001' : '0 0 0 #0000')},
+  border-width: ${(p) => (p.$show ? "1px" : "0")};
+  box-shadow: ${(p) => (p.$show ? "0 0 10px #0001" : "0 0 0 #0000")},
     inset 0 0 10px #0001;
   display: flex;
   flex-direction: column;
-  font-size: ${th('fontSizeBaseSmaller')};
+  font-size: ${th("fontSizeBaseSmaller")};
   justify-content: space-between;
   /* the 'magic numbers' are:
 4px: the sum of the SearchWraper's outline + outline offset + StyledFilterList's border
 1px: StyledFilterList's border */
-  left: ${p => (p.$visualfocus ? '-4px' : '-1px')};
-  max-height: ${p => (p.$show ? '230px' : '0')};
+  left: ${(p) => (p.$visualfocus ? "-4px" : "-1px")};
+  max-height: ${(p) => (p.$show ? "230px" : "0")};
   min-width: 230px;
   overflow: hidden;
   position: absolute;
-  top: ${p => (p.$visualfocus ? 'calc(100% + 4px)' : 'calc(100% + 1px)')};
+  top: ${(p) => (p.$visualfocus ? "calc(100% + 4px)" : "calc(100% + 1px)")};
   /* i put conditionaly a delay in borderWidth transition to eliminate it when
 finish hiding the dropdown list 'cause if not the border remains there */
   transition: max-height 0.3s ease-in-out,
-    border-width 0s ${p => !p.$show && '0.3s'};
+    border-width 0s ${(p) => !p.$show && "0.3s"};
 
   & > * {
     margin: 0;
@@ -154,18 +163,18 @@ finish hiding the dropdown list 'cause if not the border remains there */
   // 'filter by'
   & > span {
     align-self: center;
-    background-color: ${p =>
+    background-color: ${(p) =>
       p.$visualfocus
-        ? alpha('colorPrimaryBorder', 0.15)
-        : alpha('colorBorder', 0.1)};
+        ? alpha("colorPrimaryBorder", 0.15)
+        : alpha("colorBorder", 0.1)};
     border-bottom: 1px solid
-      ${p =>
+      ${(p) =>
         p.$visualfocus
-          ? alpha('colorPrimary', 0.265)
-          : alpha('colorBorder', 0.265)};
+          ? alpha("colorPrimary", 0.265)
+          : alpha("colorBorder", 0.265)};
     box-shadow: inset 0 0 3px #0001;
-    color: ${p => (p.$visualfocus ? th('colorSecondary') : th('colorText'))};
-    font-size: ${th('fontSizeBaseSmallest')};
+    color: ${(p) => (p.$visualfocus ? th("colorSecondary") : th("colorText"))};
+    font-size: ${th("fontSizeBaseSmallest")};
     padding: 2px 5px;
     text-align: left;
     width: 100%;
@@ -180,21 +189,21 @@ finish hiding the dropdown list 'cause if not the border remains there */
     width: 100%;
 
     ::-webkit-scrollbar-thumb {
-      background-color: ${p =>
+      background-color: ${(p) =>
         p.$show
           ? p.$visualfocus
-            ? alpha('colorPrimaryBorder', 0.5)
-            : '#ccc'
-          : '#fff0'};
-      transition: background-color 0.3s ${p => p.$show && '0.5s'};
+            ? alpha("colorPrimaryBorder", 0.5)
+            : "#ccc"
+          : "#fff0"};
+      transition: background-color 0.3s ${(p) => p.$show && "0.5s"};
     }
   }
 
   & > ul > li {
     /* stylelint-disable-next-line property-no-vendor-prefix */
     align-items: center;
-    color: ${p =>
-      p.$visualfocus ? th('colorPrimary') : alpha('colorBorder', 0.2)};
+    color: ${(p) =>
+      p.$visualfocus ? th("colorPrimary") : alpha("colorBorder", 0.2)};
     cursor: pointer;
     display: flex;
     margin: 0 auto;
@@ -205,11 +214,11 @@ finish hiding the dropdown list 'cause if not the border remains there */
 
     & > span.indicator {
       align-items: center;
-      background-color: ${p =>
+      background-color: ${(p) =>
         !p.$visualfocus
-          ? alpha('colorBorder', 0.4)
-          : lighten('colorPrimaryBorder', 0.66)};
-      border: 1px solid ${alpha('colorSecondary', 0.2)};
+          ? alpha("colorBorder", 0.4)
+          : lighten("colorPrimaryBorder", 0.66)};
+      border: 1px solid ${alpha("colorSecondary", 0.2)};
       border-radius: 100%;
       color: #fff0;
       display: flex;
@@ -229,18 +238,18 @@ finish hiding the dropdown list 'cause if not the border remains there */
 
     &:hover,
     &:focus,
-    &[aria-selected='true'] {
+    &[aria-selected="true"] {
       /* stylelint-disable-next-line property-no-vendor-prefix */
-      background-color: ${alpha('colorBackgroundHue', 0.9)};
+      background-color: ${alpha("colorBackgroundHue", 0.9)};
       border: none;
-      color: ${darken('colorPrimaryBorder', 0.5)};
+      color: ${darken("colorPrimaryBorder", 0.5)};
       outline: none;
 
       & > span.indicator {
         background-color: #0000;
         border-color: #0000;
-        box-shadow: 0 0 10px ${alpha('colorPrimary', 0.24)};
-        color: ${alpha('colorPrimary', 0.8)};
+        box-shadow: 0 0 10px ${alpha("colorPrimary", 0.24)};
+        color: ${alpha("colorPrimary", 0.8)};
         margin-right: 1.2rem;
         transform: scale(1.2);
       }
@@ -248,13 +257,24 @@ finish hiding the dropdown list 'cause if not the border remains there */
   }
 
   & > ul > li:not(:last-child) {
-    border-bottom: 1px solid ${alpha('colorPrimary', 0.2)};
+    border-bottom: 1px solid ${alpha("colorPrimary", 0.2)};
   }
 
   z-index: 9999;
-`
+`;
 
-const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}], show = false, visualfocus = false, setFilterShape = () => {}, undoFilter = () => {}, activeFilters = [], setIndex = () => {}, inputValue = '' }) => {
+const FilterList = ({
+  currentIndex = null,
+  filters = [{}],
+  currentOptions = [{}],
+  show = false,
+  visualfocus = false,
+  setFilterShape = () => {},
+  undoFilter = () => {},
+  activeFilters = [],
+  setIndex = () => {},
+  inputValue = "",
+}) => {
   const setFilterValueFromInput = (e, i) => {
     setFilterShape(
       {
@@ -263,30 +283,30 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
         value: inputValue,
       },
       e,
-    )
-  }
+    );
+  };
 
   const closeBadgeKeyDown = (e, filter) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      undoFilter(filter)
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      undoFilter(filter);
     }
-  }
+  };
 
   const renderBadges = () =>
     filters?.map((_, i) => {
-      const currentFilter = index =>
-        activeFilters[i] && activeFilters.map(([k, v]) => [k, v])[i][index]
+      const currentFilter = (index) =>
+        activeFilters[i] && activeFilters.map(([k, v]) => [k, v])[i][index];
 
-      const k = currentFilter(0) || {}
-      const v = currentFilter(1) || {}
+      const k = currentFilter(0) || {};
+      const v = currentFilter(1) || {};
       return (
         <span
           key={`bagdes${i}`}
           style={{
-            transition: 'all 0.3s',
-            display: 'flex',
-            marginLeft: k?.label ? '7px' : '0',
+            transition: "all 0.3s",
+            display: "flex",
+            marginLeft: k?.label ? "7px" : "0",
           }}
         >
           <FilterBadge
@@ -301,10 +321,10 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
             <CloseBadgeButton
               $show={k?.label && !v?.label}
               aria-label={
-                k?.label && !v?.label ? `Clear filter option: ${k?.label}` : ''
+                k?.label && !v?.label ? `Clear filter option: ${k?.label}` : ""
               }
               onClick={() => undoFilter(k?.label)}
-              onKeyDown={e => closeBadgeKeyDown(e, k?.label)}
+              onKeyDown={(e) => closeBadgeKeyDown(e, k?.label)}
               role="button"
               tabIndex={k?.label && !v?.label ? 0 : -1}
               title="Clear filter option"
@@ -314,7 +334,6 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
           <FilterBadge
             $show={v?.label}
             $visualfocus={visualfocus}
-            aria-label={`${k?.label} ${v?.label}`}
             badgebg={v?.badgeBg}
             badgeColor={v?.badgeColor}
             isvalue
@@ -324,9 +343,9 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
             <CloseBadgeButton
               $color={v?.badgeColor}
               $show={v?.label}
-              aria-label={v?.label ? `Clear filter value: ${v?.label}` : ''}
+              aria-label={v?.label ? `Clear filter value: ${v?.label}` : ""}
               onClick={() => undoFilter(v?.label)}
-              onKeyDown={e => closeBadgeKeyDown(e, v?.label)}
+              onKeyDown={(e) => closeBadgeKeyDown(e, v?.label)}
               pointerEvents="all"
               role="button"
               tabIndex={v?.label ? 0 : -1}
@@ -334,27 +353,27 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
             />
           </FilterBadge>
         </span>
-      )
-    })
+      );
+    });
 
   const renderOptions = () =>
     currentOptions?.map((filter, i) => {
       const key =
-        typeof filter?.label === 'string' ? filter?.label : filter?.key?.label
+        typeof filter?.label === "string" ? filter?.label : filter?.key?.label;
 
-      const isInput = key === '%'
+      const isInput = key === "%";
       return (
         <li
           aria-label={
             isInput
-              ? filter?.ariaLabel || 'type your option'
+              ? filter?.ariaLabel || "type your option"
               : `filter option: ${key}`
           }
           aria-selected={currentIndex === i}
           id={key}
           // key={`${key}-${i}`}
           key={`${i}-${filter?.value}`}
-          onClick={e =>
+          onClick={(e) =>
             !isInput
               ? setFilterShape(currentOptions[i], e)
               : inputValue.length > 0 && setFilterValueFromInput(e, i)
@@ -367,22 +386,22 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
             <PlusCircleFilled />
           </span>
           <p>
-            {key === '%'
-              ? `...${inputValue}` || '...type the filter'
+            {key === "%"
+              ? `...${inputValue}` || "...type the filter"
               : currentOptions[i]?.key?.label || currentOptions[i]?.label}
           </p>
         </li>
-      )
-    })
+      );
+    });
 
   return (
     <>
       <FilterPopup $show={show} $visualfocus={visualfocus}>
         <span id="filterlistlabel">
           {`Filter by:  ${
-            filters.find(f =>
+            filters.find((f) =>
               f.values.find(({ label }) => label === currentOptions[0]?.label),
-            )?.key?.label || ''
+            )?.key?.label || ""
           }`}
         </span>
         <ul
@@ -400,8 +419,8 @@ const FilterList = ({ currentIndex = null, filters = [{}], currentOptions = [{}]
         {renderBadges()}
       </BadgesWrapper>
     </>
-  )
-}
+  );
+};
 
 FilterList.propTypes = {
   currentIndex: PropTypes.oneOfType([
@@ -421,8 +440,6 @@ FilterList.propTypes = {
   undoFilter: PropTypes.func,
   setIndex: PropTypes.func,
   inputValue: PropTypes.string,
-}
+};
 
-
-
-export default FilterList
+export default FilterList;

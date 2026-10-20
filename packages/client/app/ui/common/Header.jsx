@@ -549,12 +549,15 @@ const UserMenuButton = styled(Button)`
     margin-right: 10px;
     position: relative;
     width: 32px;
+    transition: none;
 
     &:hover,
     &:focus-visible,
     &:active {
       background-color: transparent;
-      transform: scale(1.05);
+      border: none !important;
+      outline: var(--ant-btn-border-width) var(--ant-btn-border-style)
+        var(--ant-btn-border-color-hover);
     }
 
     &[aria-expanded="true"] + ${CollapsableMenu} {

@@ -27,19 +27,6 @@ const Wrapper = styled.div`
 const StyledTabs = styled(Tabs)`
   height: 100%;
 
-  .ant-tabs-body-holder {
-    /* border-top: 1px solid ${th("colorBorder")}; */
-
-    .ant-tabs-body {
-      height: 100%;
-
-      [role="tabpanel"] {
-        height: 100%;
-        margin: auto;
-      }
-    }
-  }
-
   div[class^="List__FooterWrapper"] {
     @media screen and (min-width: 600px) {
       flex-direction: row;
