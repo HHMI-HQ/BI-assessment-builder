@@ -60,7 +60,7 @@ const Metadata = React.forwardRef((props, ref) => {
     innerRef,
     editorView = false,
     onAutoSave = null,
-    initialValues = {},
+    initialValues = null,
     readOnly = false,
     resources = [],
     presentationMode = false,
@@ -71,7 +71,7 @@ const Metadata = React.forwardRef((props, ref) => {
     dependencyOptions = [],
   } = props;
 
-  const [formValues] = useState(initialValues);
+  const [formValues, setFormValues] = useState(initialValues);
   const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
 
   if (presentationMode) {
@@ -84,6 +84,10 @@ const Metadata = React.forwardRef((props, ref) => {
       />
     );
   }
+
+  useEffect(() => {
+    setFormValues(initialValues);
+  }, [initialValues]);
 
   const [form] = Form.useForm();
   const [modal, contextHolder] = Modal.useModal();
@@ -326,7 +330,7 @@ const Metadata = React.forwardRef((props, ref) => {
    * RENDER
    */
 
-  return (
+  return formValues ? (
     <ModalContext.Provider value={null}>
       <Wrapper aria-label="Question Metadata" className={className}>
         <VisuallyHiddenElement as="h2">Metadata Form</VisuallyHiddenElement>
@@ -586,7 +590,7 @@ const Metadata = React.forwardRef((props, ref) => {
       </Wrapper>
       {contextHolder}
     </ModalContext.Provider>
-  );
+  ) : null;
 });
 
 Metadata.propTypes = {
