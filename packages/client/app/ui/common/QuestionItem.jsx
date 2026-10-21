@@ -1,38 +1,38 @@
 /* stylelint-disable declaration-no-important */
 /* stylelint-disable string-quotes */
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { uuid, th, grid , DateParser } from '@coko/client'
-import { LinkOutlined } from '@ant-design/icons'
-import Link from './HhmiLink'
-import Status from './Status'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { uuid, th, grid, DateParser } from "@coko/client";
+import { LinkOutlined } from "@ant-design/icons";
+import Link from "./HhmiLink";
+import Status from "./Status";
 
 const Wrapper = styled.article`
   background-color: inherit;
   container: question-item / inline-size;
-  line-height: ${th('lineHeight')};
+  line-height: ${th("lineHeight")};
   padding: ${grid(4)} ${grid(3)};
   position: relative;
   text-align: left;
   width: 100%;
-`
+`;
 
 const FirstRow = styled.div`
   display: flex;
   margin-bottom: ${grid(2)};
-`
+`;
 
 const ItemLink = styled(Link)`
   && {
-    color: ${th('colorText')};
+    color: ${th("colorText")};
   }
   flex-grow: 1;
   overflow: hidden;
 
   /* &:hover, */
   &:focus {
-    outline: 1px solid ${th('colorPrimary')};
+    outline: 1px solid ${th("colorPrimary")};
   }
 
   p {
@@ -42,7 +42,7 @@ const ItemLink = styled(Link)`
   * {
     overflow: hidden;
   }
-`
+`;
 
 const StatusContainer = styled.div`
   align-items: center;
@@ -50,7 +50,7 @@ const StatusContainer = styled.div`
   flex: 1 0 130px;
   justify-content: flex-end;
   padding-block-end: ${grid(3)};
-`
+`;
 
 const InfoRow = styled.div`
   margin-bottom: ${grid(2)};
@@ -63,7 +63,7 @@ const InfoRow = styled.div`
 
       /* &:hover, */
       &:focus {
-        outline: 1px solid ${th('colorPrimary')};
+        outline: 1px solid ${th("colorPrimary")};
       }
 
       > * {
@@ -78,13 +78,13 @@ const InfoRow = styled.div`
         list-style-type: none;
 
         &::before {
-          content: '-';
+          content: "-";
           margin-right: ${grid(2)};
         }
       }
     }
   }
-`
+`;
 
 const MetadataTable = styled.table`
   border: none;
@@ -94,16 +94,16 @@ const MetadataTable = styled.table`
   td {
     border: none;
   }
-`
+`;
 
 const MetadataLabel = styled.div`
   font-weight: bold;
   text-transform: uppercase;
-`
+`;
 
 const MetadataValue = styled.td`
   text-align: right;
-`
+`;
 
 const NewChatsBadge = styled.span`
   align-items: center;
@@ -121,40 +121,40 @@ const NewChatsBadge = styled.span`
   text-rendering: geometricprecision;
   transform: scale(1);
   width: 18px;
-`
+`;
 
 const courseOrder = [
-  'Introductory Biology for Majors',
-  'AP Biology',
-  'Introductory Biology for non-Majors',
-  'IB Biology',
-  'AP Environmental Science',
-  'IB Environmental Science',
-  'Next Generation Science Standards',
-]
+  "Introductory Biology for Majors",
+  "AP Biology",
+  "Introductory Biology for non-Majors",
+  "IB Biology",
+  "AP Environmental Science",
+  "IB Environmental Science",
+  "Next Generation Science Standards",
+];
 
 const sortFunction = (a, b) =>
-  courseOrder.indexOf(a.course?.label) - courseOrder.indexOf(b.course?.label)
+  courseOrder.indexOf(a.course?.label) - courseOrder.indexOf(b.course?.label);
 
 const renderMetadataValue = ({ type, value }) => {
   switch (type) {
-    case 'date':
+    case "date":
       return value ? (
         <DateParser dateFormat="MMMM DD, YYYY" timestamp={value}>
-          {timestamp => timestamp}
+          {(timestamp) => timestamp}
         </DateParser>
       ) : (
-        'Not published yet'
-      )
+        "Not published yet"
+      );
 
-    case 'badge':
-      return value > 0 ? <NewChatsBadge>{value}</NewChatsBadge> : '-'
+    case "badge":
+      return value > 0 ? <NewChatsBadge>{value}</NewChatsBadge> : "-";
     default:
-      return value || '-'
+      return value || "-";
   }
-}
+};
 
-const QuestionItem = props => {
+const QuestionItem = (props) => {
   const {
     className,
     metadata,
@@ -166,7 +166,7 @@ const QuestionItem = props => {
     courses,
     state,
     complexItemSet,
-  } = props
+  } = props;
 
   return (
     <Wrapper className={className} id={id}>
@@ -194,12 +194,7 @@ const QuestionItem = props => {
         `}
       </style>
       <FirstRow>
-        <ItemLink
-          to={{
-            pathname: href,
-            state,
-          }}
-        >
+        <ItemLink to={href} state={state}>
           <p>{content}</p>
         </ItemLink>
         {status ? (
@@ -214,7 +209,7 @@ const QuestionItem = props => {
       </FirstRow>
 
       <InfoRow data-testid="courses">
-        {courses.sort(sortFunction).map(c => {
+        {courses.sort(sortFunction).map((c) => {
           return !c.course ? (
             <span key={uuid()}>Unknown course</span>
           ) : (
@@ -225,10 +220,10 @@ const QuestionItem = props => {
                 </MetadataLabel>
               </summary>
               <ul>
-                {c.objectives?.map(o => o && <li key={uuid()}>{o.label}</li>)}
+                {c.objectives?.map((o) => o && <li key={uuid()}>{o.label}</li>)}
               </ul>
             </details>
-          )
+          );
         })}
       </InfoRow>
 
@@ -244,7 +239,7 @@ const QuestionItem = props => {
         <tbody>
           {metadata &&
             metadata.length &&
-            metadata.map(item => (
+            metadata.map((item) => (
               <tr key={uuid()}>
                 <th>
                   <MetadataLabel>{item.label}</MetadataLabel>
@@ -267,8 +262,8 @@ const QuestionItem = props => {
         </tbody>
       </MetadataTable>
     </Wrapper>
-  )
-}
+  );
+};
 
 QuestionItem.propTypes = {
   metadata: PropTypes.arrayOf(
@@ -305,17 +300,17 @@ QuestionItem.propTypes = {
     href: PropTypes.string,
     title: PropTypes.string,
   }),
-}
+};
 
 QuestionItem.defaultProps = {
   content: null,
   status: null,
   statusLabel: null,
-  href: '#',
+  href: "#",
   id: uuid(),
   courses: [],
   state: null,
   complexItemSet: null,
-}
+};
 
-export default QuestionItem
+export default QuestionItem;

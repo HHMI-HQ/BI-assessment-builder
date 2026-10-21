@@ -580,9 +580,8 @@ const QuestionPage = (props) => {
 
   /* setup Prev/Next question functions */
   // read state from location to get filter values, if any
-  // const location = useLocation()
-
-  // const { state: { relatedQuestionIds } = {} } = location
+  const location = useLocation();
+  const relatedQuestionIds = location.state?.relatedQuestionIds;
 
   // keep a reactive copy of page title have an updated h1
   const [pageTitle, setPageTitle] = useState("");
@@ -1096,26 +1095,26 @@ const QuestionPage = (props) => {
   };
 
   const handleGetQuestionButton = (which) => {
-    // if (relatedQuestionIds) {
-    //   const hasNextQuestion = navigateToNextQuestion(which, relatedQuestionIds)
-    //   return new Promise((resolve, reject) => {
-    //     if (hasNextQuestion) resolve()
-    //     else reject()
-    //   })
-    // }
-    // // if no `relatedQuestionIds` ask server to provide them
-    // return getPublishedQuestionIds().then(
-    //   ({ data: { getPublishedQuestionsIds } = {} }) => {
-    //     const hasNextQuestion = navigateToNextQuestion(
-    //       which,
-    //       getPublishedQuestionsIds,
-    //     )
-    //     return new Promise((resolve, reject) => {
-    //       if (hasNextQuestion) resolve()
-    //       else reject()
-    //     })
-    //   },
-    // )
+    if (relatedQuestionIds) {
+      const hasNextQuestion = navigateToNextQuestion(which, relatedQuestionIds);
+      return new Promise((resolve, reject) => {
+        if (hasNextQuestion) resolve();
+        else reject();
+      });
+    }
+    // if no `relatedQuestionIds` ask server to provide them
+    return getPublishedQuestionIds().then(
+      ({ data: { getPublishedQuestionsIds } = {} }) => {
+        const hasNextQuestion = navigateToNextQuestion(
+          which,
+          getPublishedQuestionsIds,
+        );
+        return new Promise((resolve, reject) => {
+          if (hasNextQuestion) resolve();
+          else reject();
+        });
+      },
+    );
   };
 
   const handleMarkAsRead = async (notificationIds) => {
@@ -1131,41 +1130,34 @@ const QuestionPage = (props) => {
     }
   };
 
-  // const navigateToNextQuestion = (which, idsList) => {
-  //   if (idsList?.length) {
-  //     const currentIndex = relatedQuestionIds.indexOf(id)
-  //     let newQuestionId
+  const navigateToNextQuestion = (which, idsList) => {
+    if (idsList?.length) {
+      const currentIndex = relatedQuestionIds.indexOf(id);
+      let newQuestionId;
 
-  //     if (currentIndex > 0 && which === 'PREV') {
-  //       newQuestionId = relatedQuestionIds[currentIndex - 1]
-  //       navigate(`/question/${newQuestionId}/test`, {
-  //         state: { relatedQuestionIds },
-  //       })
-  //     } else if (
-  //       currentIndex < relatedQuestionIds.length - 1 &&
-  //       which === 'NEXT'
-  //     ) {
-  //       newQuestionId = relatedQuestionIds[currentIndex + 1]
-  //       navigate(`/question/${newQuestionId}/test`, {
-  //         state: { relatedQuestionIds },
-  //       })
-  //     } else {
-  //       // no more questions in this direction
-  //       // return new Promise((_resolve, reject) => {
-  //       //   reject()
-  //       // })
-  //       return false
-  //     }
+      if (currentIndex > 0 && which === "PREV") {
+        newQuestionId = relatedQuestionIds[currentIndex - 1];
+        navigate(`/question/${newQuestionId}/test`, {
+          state: { relatedQuestionIds },
+        });
+      } else if (
+        currentIndex < relatedQuestionIds.length - 1 &&
+        which === "NEXT"
+      ) {
+        newQuestionId = relatedQuestionIds[currentIndex + 1];
+        navigate(`/question/${newQuestionId}/test`, {
+          state: { relatedQuestionIds },
+        });
+      } else {
+        // no more questions in this direction
+        return false;
+      }
 
-  //     return true
+      return true;
+    }
 
-  //     // return new Promise(resolve => {
-  //     //   resolve()
-  //     // })
-  //   }
-
-  //   return false
-  // }
+    return false;
+  };
 
   const handleAcceptQuestion = () => {
     const mutationData = {

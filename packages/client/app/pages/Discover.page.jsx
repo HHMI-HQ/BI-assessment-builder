@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from "react";
 
-import { Discover, VisuallyHiddenElement } from 'ui'
-import { useQuery, useMutation } from '@apollo/client/react'
-import { useNavigate } from 'react-router'
-import { useCurrentUser } from '@coko/client'
+import { Discover, VisuallyHiddenElement } from "ui";
+import { useQuery, useMutation } from "@apollo/client/react";
+import { useNavigate } from "react-router";
+import { useCurrentUser } from "@coko/client";
 
-import { useMetadata, useFilters, dashboardDataMapper } from '../utilities'
+import { useMetadata, useFilters, dashboardDataMapper } from "../utilities";
 
 import {
   GET_PUBLISHED_QUESTIONS,
@@ -17,55 +17,54 @@ import {
   CURRENT_USER,
   GET_COMPLEX_ITEM_SETS_OPTIONS,
   GET_RESOURCES,
-} from '../graphql'
+} from "../graphql";
 
 const sortOptions = [
   {
-    label: 'Date (descending)',
-    value: 'date-desc',
+    label: "Date (descending)",
+    value: "date-desc",
     isDefault: true,
   },
   {
-    label: 'Date (ascending)',
-    value: 'date-asc',
+    label: "Date (ascending)",
+    value: "date-asc",
     isDefault: false,
   },
-]
+];
 
-const sidebarText = 'Explore items by applying one or more of the filters below'
+const sidebarText =
+  "Explore items by applying one or more of the filters below";
 
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 10;
 
 const DiscoverPage = () => {
-  const { filters, setFilters } = useFilters()
+  const { filters, setFilters } = useFilters();
 
   const [searchParams, setSearchParams] = useState({
-    query: filters?.query || '',
+    query: filters?.query || "",
     page: filters?.page || 1,
     pageSize: filters?.pageSize || DEFAULT_PAGE_SIZE,
     filters: filters?.filters || {},
-    orderBy: filters?.orderBy || 'publication_date',
+    orderBy: filters?.orderBy || "publication_date",
     ascending: filters?.ascending || false,
-  })
+  });
 
-  const { currentUser } = useCurrentUser()
+  const { currentUser } = useCurrentUser();
+  const { metadata } = useMetadata();
 
-  const { metadata } = useMetadata()
-  console.log(metadata);
-  
-  const initialRender = useRef(true)
-  const navigate = useNavigate()
+  const initialRender = useRef(true);
+  const navigate = useNavigate();
 
   const { data: { getAvailableSets: complexItemSetOptions } = {} } = useQuery(
     GET_COMPLEX_ITEM_SETS_OPTIONS,
     {
       variables: { publishedOnly: true },
     },
-  )
+  );
 
   const {
     data: { getResources: { result: biointeractiveResources } = {} } = {},
-  } = useQuery(GET_RESOURCES)
+  } = useQuery(GET_RESOURCES);
 
   const { data: questionsData, loading } = useQuery(GET_PUBLISHED_QUESTIONS, {
     variables: {
@@ -80,50 +79,50 @@ const DiscoverPage = () => {
         pageSize: searchParams.pageSize,
       },
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       // run only on update, not on first render
-      if (initialRender.current) initialRender.current = false
+      if (initialRender.current) initialRender.current = false;
       else {
-        const nrOfQuestions = data.getPublishedQuestions.result.length
-        const total = data.getPublishedQuestions.totalCount
-        let announcement = 'Results updated.'
+        const nrOfQuestions = data.getPublishedQuestions.result.length;
+        const total = data.getPublishedQuestions.totalCount;
+        let announcement = "Results updated.";
 
         if (total === 0) {
-          announcement = `${announcement} No results for the selected filters`
+          announcement = `${announcement} No results for the selected filters`;
         } else if (total <= 10) {
-          announcement = `${announcement} ${nrOfQuestions} questions`
+          announcement = `${announcement} ${nrOfQuestions} questions`;
         } else {
           announcement = `${announcement} Page ${
             searchParams.page
           } of ${Math.ceil(
             total / 10,
-          )} with ${nrOfQuestions} questions from a total of ${total}`
+          )} with ${nrOfQuestions} questions from a total of ${total}`;
         }
 
         document
-          .querySelector('#search-results-update')
-          .replaceChildren(announcement)
+          .querySelector("#search-results-update")
+          .replaceChildren(announcement);
       }
     },
-  })
+  });
 
   const [duplicateQuestionMutation, { loading: loadingDuplicateQuestion }] =
     useMutation(DUPLICATE_QUESTION, {
-      refetchQueries: [{ query: CURRENT_USER, fetchPolicy: 'network-only' }],
+      refetchQueries: [{ query: CURRENT_USER, fetchPolicy: "network-only" }],
       onCompleted: ({ duplicateQuestion }) => {
-        navigate(`/question/${duplicateQuestion.id}`)
+        navigate(`/question/${duplicateQuestion.id}`);
       },
-    })
+    });
 
   const { data: { myLists: { result: existingLists } = {} } = {} } = useQuery(
     GET_LISTS_OPTIONS,
     {
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
     },
-  )
+  );
 
   const [addToExistingListMutation, { loading: loadingAddToList }] =
-    useMutation(ADD_TO_LIST)
+    useMutation(ADD_TO_LIST);
 
   const [addToNewListMutation, { loading: loadingCreateList }] = useMutation(
     CREATE_LIST,
@@ -134,8 +133,8 @@ const DiscoverPage = () => {
           variables: {
             page: 0,
             pageSize: 10,
-            searchQuery: '',
-            orderBy: 'created',
+            searchQuery: "",
+            orderBy: "created",
             ascending: true,
           },
         },
@@ -144,60 +143,58 @@ const DiscoverPage = () => {
         },
       ],
     },
-  )
+  );
 
-  const handleSearch = params => {
+  const handleSearch = (params) => {
     const discover = {
       ...params,
-      orderBy: 'publication_date',
-      ascending: params.orderBy !== 'date-desc',
-    }
+      orderBy: "publication_date",
+      ascending: params.orderBy !== "date-desc",
+    };
 
-    setSearchParams(discover)
-    setFilters(discover)
-  }
+    setSearchParams(discover);
+    setFilters(discover);
+  };
 
-  const handleAddToList = (existingList, questions) => {
+  const handleAddToList = async (existingList, questions) => {
     const mutationData = {
       variables: {
         listId: existingList,
         questionIds: questions,
       },
-    }
+    };
 
-    return addToExistingListMutation(mutationData).then(response => {
-      return new Promise((resolve, reject) => {
-        if (response?.data?.addToList) resolve()
-        else reject()
-      })
-    })
-  }
+    const response = await addToExistingListMutation(mutationData);
+    return await new Promise((resolve, reject) => {
+      if (response?.data?.addToList) resolve();
+      else reject();
+    });
+  };
 
-  const handleCreateList = (title, questions) => {
+  const handleCreateList = async (title, questions) => {
     const mutationData = {
       variables: {
         title,
         questions,
       },
-    }
+    };
 
-    return addToNewListMutation(mutationData).then(response => {
-      return new Promise((resolve, reject) => {
-        if (response?.data?.createList?.id) resolve()
-        else reject()
-      })
-    })
-  }
+    const response = await addToNewListMutation(mutationData);
+    return await new Promise((resolve, reject) => {
+      if (response?.data?.createList?.id) resolve();
+      else reject();
+    });
+  };
 
-  const handleDuplicateQuestion = question => {
+  const handleDuplicateQuestion = (question) => {
     const mutationData = {
       variables: {
         questionId: question,
       },
-    }
+    };
 
-    duplicateQuestionMutation(mutationData).catch(err => console.error(err))
-  }
+    duplicateQuestionMutation(mutationData).catch((err) => console.error(err));
+  };
 
   return (
     <>
@@ -244,7 +241,7 @@ const DiscoverPage = () => {
         role="status"
       />
     </>
-  )
-}
+  );
+};
 
-export default DiscoverPage
+export default DiscoverPage;

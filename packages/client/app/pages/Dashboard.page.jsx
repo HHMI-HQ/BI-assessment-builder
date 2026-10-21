@@ -158,30 +158,25 @@ const DashboardPage = () => {
     skip: currentTabKey !== "production",
   });
 
-  const [
-    reviewerQuery,
-    {
-      data: reviewerResponse,
-      loading: reviewerLoading,
-      called: reviewerCalled,
-    },
-  ] = useLazyQuery(GET_REVIEWER_DASHBOARD, {
+  const {
+    data: reviewerResponse,
+    loading: reviewerLoading,
+    called: reviewerCalled,
+    refetch: reviewerQuery,
+  } = useQuery(GET_REVIEWER_DASHBOARD, {
     fetchPolicy: "network-only",
-    variables: {
-      ...defaultSearchOptions,
-      page: 0,
-    },
-    onCompleted: (data) => {
-      updateSearchResultAnnounce(data, "getReviewerDashboard");
+    skip: currentTabKey !== "reviewer",
+    // onCompleted: (data) => {
+    //   updateSearchResultAnnounce(data, "getReviewerDashboard");
 
-      if (currentTabKey === "reviewer") {
-        getUser().then(({ data: { _currentUser } = {} }) => {
-          // eslint-disable-next-line no-console
-          console.log("Refresh reviewer user teams!");
-          // setCurrentUser(currentUser)
-        });
-      }
-    },
+    //   if (currentTabKey === "reviewer") {
+    //     getUser().then(({ data: { _currentUser } = {} }) => {
+    //       // eslint-disable-next-line no-console
+    //       console.log("Refresh reviewer user teams!");
+    //       // setCurrentUser(currentUser)
+    //     });
+    //   }
+    // },
   });
 
   useSubscription(DASHBOARD_SUBSCRIPTION, {
@@ -591,8 +586,6 @@ const DashboardPage = () => {
         onCreateList={handleCreateList}
         onSearch={handleSearch}
         onSearchHE={handleSearchHE}
-        // showSort
-        // sortOptions
         tabsContent={tabs}
         withFilters={[
           "editor",
