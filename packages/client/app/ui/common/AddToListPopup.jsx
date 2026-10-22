@@ -1,30 +1,39 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { CheckOutlined } from '@ant-design/icons'
-import { grid, th , Divider } from '@coko/client'
-import Popup from './Popup'
-import Form from './Form'
-import Select from './Select'
-import Input from './Input'
-import Button from './Button'
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { CheckOutlined } from "@ant-design/icons";
+import { grid, th, Divider } from "@coko/client";
+import Popup from "./Popup";
+import Form from "./Form";
+import Select from "./Select";
+import Input from "./Input";
+import Button from "./Button";
 
 const StyledPopup = styled(Popup)`
   border-radius: 0;
   inline-size: 300px;
   margin-block-end: ${grid(2)};
-`
+`;
 
 const PopupContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`
+`;
 
 const StyledForm = styled(Form)`
   display: grid;
   grid-template-columns: minmax(0, 1fr) ${grid(18)};
   grid-template-rows: 1fr 1fr;
+
+  input,
+  .ant-select {
+    border-radius: ${th("borderRadius")} 0 0 ${th("borderRadius")};
+  }
+
+  button {
+    border-radius: 0 ${th("borderRadius")} ${th("borderRadius")} 0;
+  }
 
   > div {
     align-self: end;
@@ -47,7 +56,7 @@ const StyledForm = styled(Form)`
   }
 
   /* stylelint-disable-next-line string-quotes */
-  > button[type='submit'] {
+  > button[type="submit"] {
     align-self: end;
     grid-area: 2 /2;
     padding-inline: unset;
@@ -56,63 +65,61 @@ const StyledForm = styled(Form)`
 
   > span {
     align-self: end;
-    color: ${th('colorSuccess')};
+    color: ${th("colorSuccess")};
     direction: rtl;
     overflow: visible;
     padding-block-end: ${grid(2)};
     text-align: end;
     white-space: nowrap;
   }
-`
+`;
 
 const StyledDivider = styled(Divider)`
-  border-block-start-color: ${th('colorBorder')};
+  border-block-start-color: ${th("colorBorder")};
   margin-block: ${grid(4)};
-`
+`;
 
-const AddToListPopup = props => {
-  const {
-    selectedRows,
-    onAddToList,
-    onCreateList,
-    loadingAddToList,
-    loadingCreateList,
-    existingListsOptions,
-    position,
-    alignment,
-  } = props
-
-  const [existingListForm] = Form.useForm()
-  const [newListForm] = Form.useForm()
-  const [showListUpdateSuccess, setShowListUpdateSuccess] = useState(false)
-  const [showListCreatedSuccess, setShowListCreatedSuccess] = useState(false)
+const AddToListPopup = ({
+  selectedRows = [],
+  onAddToList = () => {},
+  onCreateList = () => {},
+  loadingAddToList = false,
+  loadingCreateList = false,
+  existingListsOptions = [],
+  position = "block-start",
+  alignment = "start",
+}) => {
+  const [existingListForm] = Form.useForm();
+  const [newListForm] = Form.useForm();
+  const [showListUpdateSuccess, setShowListUpdateSuccess] = useState(false);
+  const [showListCreatedSuccess, setShowListCreatedSuccess] = useState(false);
 
   useEffect(() => {
     if (!loadingAddToList) {
-      setShowListUpdateSuccess(true)
+      setShowListUpdateSuccess(true);
       setTimeout(() => {
-        setShowListUpdateSuccess(false)
-      }, 3000)
+        setShowListUpdateSuccess(false);
+      }, 3000);
     }
-  }, [loadingAddToList])
+  }, [loadingAddToList]);
 
   useEffect(() => {
     if (!loadingCreateList) {
-      setShowListCreatedSuccess(true)
+      setShowListCreatedSuccess(true);
       setTimeout(() => {
-        setShowListCreatedSuccess(false)
-      }, 3000)
+        setShowListCreatedSuccess(false);
+      }, 3000);
     }
-  }, [loadingCreateList])
+  }, [loadingCreateList]);
 
   const handleAddToList = ({ existingList }) => {
     onAddToList(existingList, selectedRows).then(() =>
       existingListForm.resetFields(),
-    )
-  }
+    );
+  };
 
   const handleCreateNewList = ({ newList }) =>
-    onCreateList(newList, selectedRows).then(() => newListForm.resetFields())
+    onCreateList(newList, selectedRows).then(() => newListForm.resetFields());
 
   return (
     <StyledPopup
@@ -135,16 +142,16 @@ const AddToListPopup = props => {
           layout="vertical"
           onFinish={handleAddToList}
           onValuesChange={() =>
-            existingListForm.validateFields(['existingList'])
+            existingListForm.validateFields(["existingList"])
           }
         >
           <Form.Item
-            label="Existing list"
+            label="Existing list 111"
             name="existingList"
             rules={[
               {
                 required: true,
-                message: 'Please select a list',
+                message: "Please select a list",
               },
             ]}
             validateTrigger="onSubmit"
@@ -168,7 +175,7 @@ const AddToListPopup = props => {
             loading={loadingAddToList}
             type="primary"
           >
-            {loadingAddToList ? null : 'Add'}
+            {loadingAddToList ? null : "Add"}
           </Button>
         </StyledForm>
         <StyledDivider />
@@ -176,7 +183,7 @@ const AddToListPopup = props => {
           form={newListForm}
           layout="vertical"
           onFinish={handleCreateNewList}
-          onValuesChange={() => newListForm.validateFields(['newList'])}
+          onValuesChange={() => newListForm.validateFields(["newList"])}
         >
           <Form.Item
             label="New list"
@@ -184,7 +191,7 @@ const AddToListPopup = props => {
             rules={[
               {
                 required: true,
-                message: 'List name is required',
+                message: "List name is required",
               },
             ]}
             validateTrigger="onSubmit"
@@ -202,13 +209,13 @@ const AddToListPopup = props => {
             loading={loadingCreateList}
             type="primary"
           >
-            {loadingCreateList ? null : 'Create'}
+            {loadingCreateList ? null : "Create"}
           </Button>
         </StyledForm>
       </PopupContentWrapper>
     </StyledPopup>
-  )
-}
+  );
+};
 
 AddToListPopup.propTypes = {
   selectedRows: PropTypes.arrayOf(PropTypes.string),
@@ -219,17 +226,8 @@ AddToListPopup.propTypes = {
   existingListsOptions: PropTypes.arrayOf(PropTypes.shape()),
   position: PropTypes.string,
   alignment: PropTypes.string,
-}
+};
 
-AddToListPopup.defaultProps = {
-  selectedRows: [],
-  onAddToList: () => {},
-  onCreateList: () => {},
-  loadingAddToList: false,
-  loadingCreateList: false,
-  existingListsOptions: [],
-  position: 'block-start',
-  alignment: 'start',
-}
+AddToListPopup.defaultProps = {};
 
-export default AddToListPopup
+export default AddToListPopup;

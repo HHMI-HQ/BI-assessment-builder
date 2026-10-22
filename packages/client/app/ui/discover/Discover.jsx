@@ -70,6 +70,15 @@ const StyledForm = styled(Form)`
   grid-template-columns: minmax(0, 1fr) ${grid(18)};
   grid-template-rows: 1fr 1fr;
 
+  input,
+  .ant-select {
+    border-radius: ${th("borderRadius")} 0 0 ${th("borderRadius")};
+  }
+
+  button {
+    border-radius: 0 ${th("borderRadius")} ${th("borderRadius")} 0;
+  }
+
   > div {
     align-self: end;
     grid-row: span 2;

@@ -729,8 +729,9 @@ const createHeaderLinksObject = ({
           onLogout();
         },
         icon: <LogoutOutlined style={{ margin: "0 .5rem" }} />,
-        Component: () => <StyledButton type="link">Logout</StyledButton>,
+        Component: StyledButton,
         "data-testid": "logout-btn",
+        "type": "link",
       },
       {
         Component: UserNotificationsUI,
@@ -744,20 +745,31 @@ const createHeaderLinksObject = ({
   };
 };
 
-const Header = (props) => {
-  const {
-    loggedin,
-    canManageResources,
-    canManageUsers,
-    canManageTeams,
-    currentPath,
-    displayName,
-    links,
-    onLogout,
-    unreadMentionsCount,
-    ...rest
-  } = props;
-
+const Header = ({
+  currentPath,
+  loggedin = false,
+  canManageResources = false,
+  canManageUsers = false,
+  canManageTeams = false,
+  displayName = "User",
+  onLogout = () => {},
+  links = {
+    homepage: "#",
+    questions: "#",
+    dashboard: "#",
+    sets: "#",
+    lists: "#",
+    about: "#",
+    learning: "#",
+    manageUsers: "#",
+    manageTeams: "#",
+    manageMetadata: "#",
+    profile: "#",
+    login: "#",
+  },
+  unreadMentionsCount = 0,
+  ...rest
+}) => {
   const notificationsTotal = unreadMentionsCount;
   const { width: windowWidth } = useWindowSize();
 
@@ -770,7 +782,14 @@ const Header = (props) => {
   };
 
   const linksObject = createHeaderLinksObject({
-    ...props,
+    links,
+    loggedin,
+    canManageUsers,
+    canManageTeams,
+    canManageResources,
+    onLogout,
+    windowWidth,
+    unreadMentionsCount,
     onClick: closeMenus,
   });
 
@@ -898,13 +917,14 @@ const Header = (props) => {
                     aria-label="Toggle user menu"
                     data-testid="usermenu-btn"
                     onClick={() => setUserMenuOpen(!userMenuIsOpen)}
-                  >
-                    <CounterBadge
-                      $pos="auto -4px -4px auto;"
-                      $show={!userMenuIsOpen && notificationsTotal > 0}
-                      counts={notificationsTotal}
-                    />
-                  </UserMenuButton>
+                    icon={
+                      <CounterBadge
+                        $pos="auto -4px -4px auto;"
+                        $show={!userMenuIsOpen && notificationsTotal > 0}
+                        counts={notificationsTotal}
+                      />
+                    }
+                  />
                   <LinksList
                     currentPath={currentPath}
                     ListWrapper={CollapsableMenu}
@@ -946,29 +966,7 @@ Header.propTypes = {
   unreadMentionsCount: PropTypes.number,
 };
 
-Header.defaultProps = {
-  loggedin: false,
-  canManageResources: false,
-  canManageUsers: false,
-  canManageTeams: false,
-  displayName: "User",
-  onLogout: () => {},
-  links: {
-    homepage: "#",
-    questions: "#",
-    dashboard: "#",
-    sets: "#",
-    lists: "#",
-    about: "#",
-    learning: "#",
-    manageUsers: "#",
-    manageTeams: "#",
-    manageMetadata: "#",
-    profile: "#",
-    login: "#",
-  },
-  unreadMentionsCount: 0,
-};
+Header.defaultProps = {};
 
 LinksList.propTypes = {
   sourceLinks: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,

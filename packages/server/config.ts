@@ -1,4 +1,5 @@
 // import path from "path";
+const { env } = require('@coko/server')
 const components = require('./config/components')
 // const permissions = require("./permissions.js");
 // import productionChatActivityNotification from "./services/chatActivityNotifications";
@@ -35,7 +36,17 @@ export default {
   //   email: "admin0@hhmi.org",
   //   password: "Password@123",
   // },
-  mailer: false,
+  mailer: {
+    from: env('MAILER_SENDER'),
+    transport: {
+      host: env('MAILER_HOSTNAME')!,
+      port: env('MAILER_PORT', { type: 'number' })!,
+      auth: {
+        user: env('MAILER_USER')!,
+        pass: env('MAILER_PASSWORD')!,
+      },
+    },
+  },
   sentry: false,
   serverUrl: 'localhost:3000',
   // protocol: 'http',
