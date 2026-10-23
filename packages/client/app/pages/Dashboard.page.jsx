@@ -6,9 +6,7 @@ import {
   useSubscription,
 } from "@apollo/client/react";
 import { useNavigate } from "react-router";
-
 import { Dashboard, VisuallyHiddenElement } from "ui";
-// import { useCurrentUser } from '@coko/client'
 import {
   ASSING_HANDLING_EDITORS,
   GET_AUTHOR_DASHBOARD,
@@ -40,6 +38,7 @@ import {
   authorStatusFilters,
   reviewerStatusFilters,
 } from "../ui/_helpers/searchFilters";
+import { useCurrentUser } from "@coko/client";
 
 const defaultSearchOptions = {
   orderBy: "created",
@@ -51,7 +50,6 @@ const defaultSearchOptions = {
 const DashboardPage = () => {
   // #region hooks
   const navigate = useNavigate();
-  // const { setCurrentUser } = useCurrentUser()
   const { unreadMentions } = useNotifications();
 
   const initialTabKey =
@@ -101,15 +99,12 @@ const DashboardPage = () => {
     }
   };
 
-  const { data: currentUserResponse } = useQuery(CURRENT_USER, {});
-  const [getUser] = useLazyQuery(CURRENT_USER);
-
+  const { currentUser, refetch: refetchUser } = useCurrentUser();
   const { data: { getAvailableSets: complexItemSetOptions } = {} } = useQuery(
     GET_COMPLEX_ITEM_SETS_OPTIONS,
   );
 
   // leave fetch policy to network until pagination is handled in the cache (with a merge function)
-
   const [
     filterGlobalTeamMembers,
     {
@@ -166,17 +161,6 @@ const DashboardPage = () => {
   } = useQuery(GET_REVIEWER_DASHBOARD, {
     fetchPolicy: "network-only",
     skip: currentTabKey !== "reviewer",
-    // onCompleted: (data) => {
-    //   updateSearchResultAnnounce(data, "getReviewerDashboard");
-
-    //   if (currentTabKey === "reviewer") {
-    //     getUser().then(({ data: { _currentUser } = {} }) => {
-    //       // eslint-disable-next-line no-console
-    //       console.log("Refresh reviewer user teams!");
-    //       // setCurrentUser(currentUser)
-    //     });
-    //   }
-    // },
   });
 
   useSubscription(DASHBOARD_SUBSCRIPTION, {
@@ -235,7 +219,7 @@ const DashboardPage = () => {
   const productionData =
     productionResponse && productionResponse.getInProductionDashboard;
 
-  const userId = currentUserResponse?.currentUser.id;
+  const userId = currentUser?.id;
 
   const mappedDataHE =
     handlingEditorData && metadata
@@ -306,7 +290,7 @@ const DashboardPage = () => {
       : [];
 
   useEffect(() => {
-    if (currentUserResponse) {
+    if (currentUser) {
       runQuery(currentSearchQuery);
     }
   }, [
@@ -314,7 +298,7 @@ const DashboardPage = () => {
     currentPage,
     currentShowArchived,
     currentSearchQuery,
-    currentUserResponse,
+    currentUser,
   ]);
 
   useEffect(() => {
@@ -354,6 +338,9 @@ const DashboardPage = () => {
       roleQuery.author,
     )(queryVariables).then(({ data }) => {
       updateSearchResultAnnounce(data);
+      if (currentTabKey === "reviewer") {
+        refetchUser();
+      }
     });
   };
 
@@ -484,22 +471,13 @@ const DashboardPage = () => {
   // #endregion handlers
 
   // #region data
-  const loading = !currentUserResponse?.currentUser; // question list loading is inside the tab
-  const isEditor = hasGlobalRole(currentUserResponse?.currentUser, "editor");
-  const isReviewer = hasGlobalRole(
-    currentUserResponse?.currentUser,
-    "reviewer",
-  );
+  const loading = !currentUser; // question list loading is inside the tab
+  const isEditor = hasGlobalRole(currentUser, "editor");
+  const isReviewer = hasGlobalRole(currentUser, "reviewer");
 
-  const isHandlingEditor = hasGlobalRole(
-    currentUserResponse?.currentUser,
-    "handlingEditor",
-  );
+  const isHandlingEditor = hasGlobalRole(currentUser, "handlingEditor");
 
-  const isProduction = hasGlobalRole(
-    currentUserResponse?.currentUser,
-    "production",
-  );
+  const isProduction = hasGlobalRole(currentUser, "production");
 
   const queryMapper = {
     query: {
