@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined } from "@ant-design/icons";
 
 import {
   Button,
@@ -11,95 +11,93 @@ import {
   Modal,
   VisuallyHiddenElement,
   Paragraph,
-} from '../common'
+} from "../common";
 
-const ModalHeader = Modal.header
-const ModalFooter = Modal.footer
-const ModalContext = React.createContext(null)
+const ModalHeader = Modal.header;
+const ModalFooter = Modal.footer;
+const ModalContext = React.createContext(null);
 
 const HeContainer = styled.span`
   align-items: baseline;
   display: flex;
   justify-content: space-between;
   width: 50%;
-`
+`;
 
 const StyledButton = styled(Button)`
   background-color: transparent;
   border: none;
   cursor: pointer;
-`
+`;
 
 const StyledFormItem = styled(Form.Item)`
   label.ant-form-item-required::before {
     /* stylelint-disable-next-line declaration-no-important */
     display: none !important;
   }
-`
+`;
 
-const AssignHEButton = props => {
-  const {
-    className,
-    loading,
-    onAssign,
-    onSearchHE,
-    onUnassign,
-    handlingEditors,
-    searchLoading,
-    loadAssignedHEs,
-    currentHandlingEditors,
-    updateSelectedQuestions,
-  } = props
-
-  const [showModal, setShowModal] = useState(false)
-  const [modal, contextHolder] = Modal.useModal()
-  const [assingHeForm] = Form.useForm()
-
-  useEffect(async () => {
-    if (showModal) {
-      loadAssignedHEs()
-    }
-  }, [showModal])
+const AssignHEButton = ({
+  className,
+  loading = false,
+  onAssign = () => {},
+  onUnassign = () => {},
+  onSearchHE = () => {},
+  searchLoading = false,
+  handlingEditors = [],
+  loadAssignedHEs = () => {},
+  currentHandlingEditors = [],
+  updateSelectedQuestions = () => {},
+}) => {
+  const [showModal, setShowModal] = useState(false);
+  const [modal, contextHolder] = Modal.useModal();
+  const [assingHeForm] = Form.useForm();
 
   useEffect(() => {
-    onSearchHE()
-  }, [])
+    if (showModal) {
+      loadAssignedHEs();
+    }
+  }, [showModal]);
+
+  useEffect(() => {
+    onSearchHE();
+  }, []);
 
   const handleAssign = ({ newHandlingEditor }) => {
     onAssign(newHandlingEditor)
       .then(({ data: { assignHandlingEditors } }) => {
-        assingHeForm.resetFields()
+        assingHeForm.resetFields();
 
         document
-          .getElementById('he-update')
-          .replaceChildren(' selected users assigned as handling editors')
+          .getElementById("he-update")
+          .replaceChildren(" selected users assigned as handling editors");
 
         const hasAssignedAuthor = assignHandlingEditors.some(
-          assignHandlingEditor =>
+          (assignHandlingEditor) =>
             assignHandlingEditor.hasAuthorshipConflict === true,
-        )
+        );
 
         const infoModalContent = hasAssignedAuthor
           ? `${
               newHandlingEditor.length > 1
-                ? 'Some Handling Editors'
-                : 'Selected Handling Editor'
+                ? "Some Handling Editors"
+                : "Selected Handling Editor"
             } couldn't be assigned for ${
-              assignHandlingEditors.length > 1 ? 'selected items' : 'this item'
+              assignHandlingEditors.length > 1 ? "selected items" : "this item"
             }, because Handling editors cannot handle the items they authored.`
           : `Handling editor${
-              newHandlingEditor.length > 1 ? 's' : ''
+              newHandlingEditor.length > 1 ? "s" : ""
             } assigned to the item${
-              assignHandlingEditors.length > 1 ? 's' : ''
-            } successfully`
+              assignHandlingEditors.length > 1 ? "s" : ""
+            } successfully`;
 
-        const assignmentInfoModal = modal.info()
+        const assignmentInfoModal = modal.info();
 
         const onInfoModalClose = () => {
-          updateSelectedQuestions(assignHandlingEditors)
-          assignmentInfoModal.destroy()
-          setShowModal(false)
-        }
+          updateSelectedQuestions(assignHandlingEditors);
+          assignmentInfoModal.destroy();
+          setShowModal(false);
+        };
 
         assignmentInfoModal.update({
           title: <ModalHeader>Assignment Info</ModalHeader>,
@@ -115,14 +113,14 @@ const AssignHEButton = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
+        });
       })
       .catch(() => {
-        const conversionErrorModal = modal.error()
+        const conversionErrorModal = modal.error();
         conversionErrorModal.update({
           title: <ModalHeader>Assignment error</ModalHeader>,
           content:
-            'Something went wrong while assigning the handling editor! Please try again or contact your system administrator.',
+            "Something went wrong while assigning the handling editor! Please try again or contact your system administrator.",
           footer: [
             <ModalFooter key="footer">
               <Button onClick={conversionErrorModal.destroy} type="primary">
@@ -130,19 +128,19 @@ const AssignHEButton = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
-  }
+        });
+      });
+  };
 
-  const handleUnassignHE = user => {
+  const handleUnassignHE = (user) => {
     onUnassign(user.id).then(() => {
       document
-        .getElementById('he-update')
+        .getElementById("he-update")
         .replaceChildren(
           `${user.displayName} removed from this item's handling editors`,
-        )
-    })
-  }
+        );
+    });
+  };
 
   return (
     <ModalContext.Provider value={null}>
@@ -157,7 +155,7 @@ const AssignHEButton = props => {
       </Button>
 
       <Modal
-        afterClose={() => document.body.querySelector('#assignHE').focus()}
+        afterClose={() => document.body.querySelector("#assignHE").focus()}
         destroyOnHidden
         footer={[
           <ModalFooter key="footer">
@@ -180,7 +178,7 @@ const AssignHEButton = props => {
           <>
             <h3>Current assigned handling editors:</h3>
             <ol data-testid="current-handling-editors">
-              {currentHandlingEditors.map(he => (
+              {currentHandlingEditors.map((he) => (
                 <li key={he.id}>
                   <HeContainer>
                     {he.displayName}
@@ -202,7 +200,7 @@ const AssignHEButton = props => {
           layout="vertical"
           onFinish={handleAssign}
           onValuesChange={() =>
-            assingHeForm.validateFields(['newHandlingEditor'])
+            assingHeForm.validateFields(["newHandlingEditor"])
           }
         >
           <StyledFormItem
@@ -211,25 +209,25 @@ const AssignHEButton = props => {
             rules={[
               {
                 required: true,
-                message: 'Please select a user to assign',
+                message: "Please select a user to assign",
               },
               {
                 validator(_, value) {
                   if (
                     (value &&
                       currentHandlingEditors
-                        .map(e => e.id)
+                        .map((e) => e.id)
                         .indexOf(value.value) === -1) ||
                     !value
                   ) {
-                    return Promise.resolve()
+                    return Promise.resolve();
                   }
 
                   return Promise.reject(
                     new Error(
-                      'This user is already a handling editor for this item.',
+                      "This user is already a handling editor for this item.",
                     ),
-                  )
+                  );
                 },
               },
             ]}
@@ -252,8 +250,8 @@ const AssignHEButton = props => {
       </Modal>
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 AssignHEButton.propTypes = {
   loading: PropTypes.bool,
@@ -275,18 +273,6 @@ AssignHEButton.propTypes = {
   searchLoading: PropTypes.bool,
   loadAssignedHEs: PropTypes.func,
   updateSelectedQuestions: PropTypes.func,
-}
+};
 
-AssignHEButton.defaultProps = {
-  loading: false,
-  onAssign: () => {},
-  onUnassign: () => {},
-  onSearchHE: () => {},
-  searchLoading: false,
-  handlingEditors: [],
-  loadAssignedHEs: () => {},
-  currentHandlingEditors: [],
-  updateSelectedQuestions: () => {},
-}
-
-export default AssignHEButton
+export default AssignHEButton;

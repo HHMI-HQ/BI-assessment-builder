@@ -394,14 +394,11 @@ const QuestionPage = (props) => {
     },
   ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS);
 
-  const [
-    getQuestionsHandlingEditors,
-    { data: { getQuestionsHandlingEditors: currentHandlingEditors } = {} },
-  ] = useLazyQuery(GET_QUESTION_HANDLING_EDITORS, {
-    variables: {
-      questionId: id,
-    },
-    fetchPolicy: "network-only",
+  const {
+    data: { getQuestionsHandlingEditors: currentHandlingEditors } = {},
+    refetch: refetchHEs,
+  } = useQuery(GET_QUESTION_HANDLING_EDITORS, {
+    skip: true,
   });
 
   const [searchForReviewers] = useLazyQuery(SEARCH_FOR_REVIEWERS);
@@ -1836,7 +1833,11 @@ const QuestionPage = (props) => {
             ? JSON.parse(version.leadingContent)
             : null
         }
-        loadAssignedHEs={getQuestionsHandlingEditors}
+        loadAssignedHEs={() =>
+          refetchHEs({
+            questionId: id,
+          })
+        }
         loadAuthors={getUsers}
         loading={
           loading ||

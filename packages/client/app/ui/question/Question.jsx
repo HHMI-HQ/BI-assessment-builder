@@ -16,7 +16,7 @@ import QuestionEditor from "./QuestionEditor";
 import { ChatThread } from "../chat";
 
 import ExportToWordButton from "./ExportToWordButton";
-// import AssignHEButton from "./AssignHEButton";
+import AssignHEButton from "./AssignHEButton";
 import ExportToScormButton from "./ExportToScormButton";
 import AutoSaving from "./AutoSaveIndicator";
 import {
@@ -152,10 +152,10 @@ const StyledScormExportButton = styled(ExportToScormButton)`
   width: 100%;
 `;
 
-// const StyledAssignHEButton = styled(AssignHEButton)`
-//   margin-right: ${grid(2)};
-//   width: 100%;
-// `;
+const StyledAssignHEButton = styled(AssignHEButton)`
+  margin-right: ${grid(2)};
+  width: 100%;
+`;
 
 const StyledReviewerRejectInviteButton = styled(ReviewerRejectButton)`
   margin-right: ${grid(2)};
@@ -1424,17 +1424,16 @@ const Question = ({
           </>
         )}
       {showAssignHEButton && (
-        <span>Assign HE Button</span>
-        // <StyledAssignHEButton
-        //   currentHandlingEditors={currentHandlingEditors}
-        //   handlingEditors={handlingEditors}
-        //   loadAssignedHEs={loadAssignedHEs}
-        //   loading={assignHELoading}
-        //   onAssign={onClickAssignHE}
-        //   onSearchHE={onSearchHE}
-        //   onUnassign={onUnassignHandlingEditor}
-        //   searchLoading={searchHELoading}
-        // />
+        <StyledAssignHEButton
+          currentHandlingEditors={currentHandlingEditors}
+          handlingEditors={handlingEditors}
+          loadAssignedHEs={loadAssignedHEs}
+          loading={assignHELoading}
+          onAssign={onClickAssignHE}
+          onSearchHE={onSearchHE}
+          onUnassign={onUnassignHandlingEditor}
+          searchLoading={searchHELoading}
+        />
       )}
       {isInProduction &&
         showProductionChatTab &&
@@ -1564,17 +1563,16 @@ const Question = ({
             </>
           )}
         {showAssignHEButton && (
-          <span>Assign HE Button</span>
-          // <StyledAssignHEButton
-          //   currentHandlingEditors={currentHandlingEditors}
-          //   handlingEditors={handlingEditors}
-          //   loadAssignedHEs={loadAssignedHEs}
-          //   loading={assignHELoading}
-          //   onAssign={onClickAssignHE}
-          //   onSearchHE={onSearchHE}
-          //   onUnassign={onUnassignHandlingEditor}
-          //   searchLoading={searchHELoading}
-          // />
+          <StyledAssignHEButton
+            currentHandlingEditors={currentHandlingEditors}
+            handlingEditors={handlingEditors}
+            loadAssignedHEs={loadAssignedHEs}
+            loading={assignHELoading}
+            onAssign={onClickAssignHE}
+            onSearchHE={onSearchHE}
+            onUnassign={onUnassignHandlingEditor}
+            searchLoading={searchHELoading}
+          />
         )}
         {isInProduction &&
           showProductionChatTab &&
