@@ -1,6 +1,6 @@
 const config = require('config')
 const { logger, useTransaction, createFile } = require('@coko/server')
-const { ChatChannel, ChatMessage, File } = require('@coko/server/src/models')
+const { ChatChannel, ChatMessage, File } = require('@coko/server/dist/models')
 const { User, TeamMember } = require('../models')
 const { getFileUrl } = require('./file.controllers')
 const CokoNotifier = require('../services/notify')

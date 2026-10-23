@@ -1,12 +1,12 @@
 module.exports = [
   // models from coko server
-  '@coko/server/src/models/user',
-  '@coko/server/src/models/identity',
-  '@coko/server/src/models/team',
-  '@coko/server/src/models/teamMember',
-  '@coko/server/src/models/chatChannel',
-  '@coko/server/src/models/chatMessage',
-  '@coko/server/src/models/file',
+  '@coko/server/dist/models/user',
+  '@coko/server/dist/models/identity',
+  '@coko/server/dist/models/team',
+  '@coko/server/dist/models/teamMember',
+  '@coko/server/dist/models/chatChannel',
+  '@coko/server/dist/models/chatMessage',
+  '@coko/server/dist/models/file',
 
   // local models
   './models/question',

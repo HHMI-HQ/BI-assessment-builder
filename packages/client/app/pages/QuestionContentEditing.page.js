@@ -1,6 +1,6 @@
 import React from 'react'
 import { useCurrentUser } from '@coko/client'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { UPDATE_QUESTION } from '../graphql'
 import { hasGlobalRole } from '../utilities'
 import { Form, Button, Input, TextArea, Result, Link, Layout } from '../ui'

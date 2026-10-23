@@ -19,7 +19,7 @@ const { labels } = require('./constants')
 const WaxToDocxConverter = require('../services/docx/hhmiDocx.service')
 const WaxToQTIConverter = require('../services/qti/qti.service')
 
-const AUTHOR_TEAM = config.teams.nonGlobal.find(t => t.role === 'author')
+const AUTHOR_TEAM = config.get('teams').nonGlobal.find(t => t.role === 'author')
 const BASE_MESSAGE = `${labels.LIST_CONTROLLERS}:`
 
 const getList = async (_user, listId) => {
@@ -136,9 +136,7 @@ const addToList = async (listId, questionIds) => {
             },
             { trx },
           )
-            .then(result => {
-              resolve(result)
-            })
+            .then(result => resolve(result))
             .catch(error => {
               reject(error)
             })
@@ -489,7 +487,7 @@ const exportQuestionsToQti = async (
     // handle complex item set questions
     // fetch all sets
     const complexItemSets = await Promise.all(
-      versions.map(async (version, i) => {
+      versions.map(async version => {
         const { complexItemSetId } = version
 
         if (complexItemSetId) {
@@ -567,7 +565,7 @@ const copyList = async (id, title, userId, options = {}) => {
 
   try {
     return useTransaction(
-      async trx => {
+      async () => {
         const newList = await createList(userId, title)
         const listQuestions = await List.findListQuestions(id)
 

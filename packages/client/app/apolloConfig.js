@@ -1,5 +1,5 @@
 // import cloneDeep from 'lodash/cloneDeep'
-// import { InMemoryCache } from '@apollo/client'
+// import { InMemoryCache } from '@apollo/client/react'
 
 // const makeApolloConfig = apolloConfig => {
 //   const config = cloneDeep(apolloConfig)

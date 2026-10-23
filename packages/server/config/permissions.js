@@ -1,10 +1,7 @@
 /* eslint-disable global-require */
-const {
-  rule,
-  isAuthenticated,
-  deny,
-  allow,
-} = require('@coko/server/authorization')
+const { authorization } = require('@coko/server')
+
+const { rule, isAuthenticated, deny, allow } = authorization
 
 const isActive = rule()(async (_, __, ctx) => {
   if (!ctx.userId) return false

@@ -39,11 +39,17 @@ const {
 const { inviteMaxReviewers } = require('./review.controller')
 const { actions } = require('./constants')
 
-const AUTHOR_TEAM = config.teams.nonGlobal.find(t => t.role === 'author')
-const HE_TEAM = config.teams.nonGlobal.find(t => t.role === 'handlingEditor')
-const EDITOR_TEAM = config.teams.nonGlobal.find(t => t.role === 'editor')
-const REVIEWER_TEAM = config.teams.nonGlobal.find(t => t.role === 'reviewer')
-const PRODUCTION_TEAM = config.teams.global.find(t => t.role === 'production')
+const AUTHOR_TEAM = config.get('teams').nonGlobal.find(t => t.role === 'author')
+const HE_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'handlingEditor')
+const EDITOR_TEAM = config.get('teams').nonGlobal.find(t => t.role === 'editor')
+const REVIEWER_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'reviewer')
+const PRODUCTION_TEAM = config
+  .get('teams')
+  .global.find(t => t.role === 'production')
 const BASE_MESSAGE = `${labels.QUESTION_CONTROLLERS}:`
 
 const getQuestion = async (questionId, options = {}) => {
@@ -124,7 +130,7 @@ const getPublishedQuestions = async (params = {}, options = {}) => {
 const getPublishedQuestionsIds = async (options = {}) => {
   try {
     return useTransaction(
-      async tr => {
+      async () => {
         return Question.getPublishedQuestionsIds(options)
       },
       { trx: options.trx, passedTrxOnly: true },
@@ -1344,7 +1350,6 @@ const questionVersionReviews = async (
       return results
     })
   } catch (e) {
-    console.error(e)
     throw new Error(e)
   }
 }
@@ -1446,7 +1451,7 @@ const upgradeEditor = async questionVersionId => {
   )
 
   try {
-    return useTransaction(async trx => {
+    return useTransaction(async () => {
       return QuestionVersion.upgradeContent(questionVersionId)
     })
   } catch (e) {

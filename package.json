@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "packageManager": "yarn@4.9.2",
-  "author": "Yannis Barlas",
+  "author": "Grigor Malo <grigormalo@pm.me>",
   "main": "index.js",
   "scripts": {
     "clean": "sh clean.sh",
@@ -24,7 +24,7 @@
     }
   },
   "devDependencies": {
-    "@coko/lint": "^2.1.0",
+    "@coko/lint": "^3.0.0",
     "any-text": "^1.2.0",
     "cypress": "^13.15.0",
     "lodash": "^4.17.21"
