@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useImperativeHandle, useRef } from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import Spin from "./Spin";
 
 const StyledIframe = styled.iframe`
@@ -22,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const Iframe = React.forwardRef((props, ref) => {
-  const { src, onLoad, ...otherProps } = props;
+  const { src, onLoad = () => {}, ...otherProps } = props;
   const [loading, setLoading] = useState(true);
 
   const iframeRef = useRef(null);
@@ -41,18 +40,9 @@ const Iframe = React.forwardRef((props, ref) => {
   return (
     <Wrapper>
       <StyledIframe ref={iframeRef} src={src} {...otherProps} />
-      <Spin renderBackground spinning={loading} size="large"></Spin>
+      <Spin spinning={loading} size="large"></Spin>
     </Wrapper>
   );
 });
-
-Iframe.propTypes = {
-  src: PropTypes.string.isRequired,
-  onLoad: PropTypes.func,
-};
-
-Iframe.defaultProps = {
-  onLoad: () => {},
-};
 
 export default Iframe;

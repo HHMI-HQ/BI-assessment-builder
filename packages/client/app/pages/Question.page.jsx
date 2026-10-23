@@ -231,9 +231,7 @@ const clearPublishedQuestionsCache = (cache) => {
   });
 };
 
-const QuestionPage = (props) => {
-  const { testMode } = props;
-
+const QuestionPage = ({ testMode = false }) => {
   // #region hooks
   // check if url fragment has been included in id param; if so, remove it
   const { id: rawId } = useParams();
@@ -248,6 +246,7 @@ const QuestionPage = (props) => {
   const requestedTab = window.location.hash.substring(1);
   const [selectedReviewerId, setSelectedReviewerId] = useState(uuid());
   const [reviewerChatThread, setReviewerChatThread] = useState();
+  const [currentHandlingEditors, setCurrentHandlingEditors] = useState([]);
   const isMobile = useBreakpoint("(max-width: 992px)");
 
   const {
@@ -394,10 +393,7 @@ const QuestionPage = (props) => {
     },
   ] = useLazyQuery(FILTER_GLOBAL_TEAM_MEMBERS);
 
-  const {
-    data: { getQuestionsHandlingEditors: currentHandlingEditors } = {},
-    refetch: refetchHEs,
-  } = useQuery(GET_QUESTION_HANDLING_EDITORS, {
+  const { refetch: refetchHEs } = useQuery(GET_QUESTION_HANDLING_EDITORS, {
     skip: true,
   });
 
@@ -791,6 +787,9 @@ const QuestionPage = (props) => {
         },
       },
     ],
+    onCompleted() {
+      handleLoadAssignedHEs();
+    },
   });
 
   const [sendMessage] = useMutation(SEND_MESSAGE);
@@ -1745,6 +1744,14 @@ const QuestionPage = (props) => {
     return JSON.parse(content);
   };
 
+  const handleLoadAssignedHEs = async () => {
+    const response = await refetchHEs({
+      questionId: id,
+    });
+    const { data: { getQuestionsHandlingEditors } = {} } = response;
+    setCurrentHandlingEditors(getQuestionsHandlingEditors);
+  };
+
   if (
     question &&
     (!question.versions[0]?.submitted || question.versions[0]?.editing) &&
@@ -1833,11 +1840,7 @@ const QuestionPage = (props) => {
             ? JSON.parse(version.leadingContent)
             : null
         }
-        loadAssignedHEs={() =>
-          refetchHEs({
-            questionId: id,
-          })
-        }
+        loadAssignedHEs={handleLoadAssignedHEs}
         loadAuthors={getUsers}
         loading={
           loading ||
@@ -1938,10 +1941,6 @@ const QuestionPage = (props) => {
 
 QuestionPage.propTypes = {
   testMode: PropTypes.bool,
-};
-
-QuestionPage.defaultProps = {
-  testMode: false,
 };
 
 export default QuestionPage;
