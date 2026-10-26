@@ -39,11 +39,11 @@ export default {
   mailer: {
     from: env('MAILER_SENDER'),
     transport: {
-      host: env('MAILER_HOSTNAME')!,
-      port: env('MAILER_PORT', { type: 'number' })!,
+      host: env('MAILER_HOSTNAME'),
+      port: env('MAILER_PORT', { type: 'number' }),
       auth: {
-        user: env('MAILER_USER')!,
-        pass: env('MAILER_PASSWORD')!,
+        user: env('MAILER_USER'),
+        pass: env('MAILER_PASSWORD'),
       },
     },
   },

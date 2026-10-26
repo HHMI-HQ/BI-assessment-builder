@@ -37,7 +37,7 @@ const submitQuestionnaireResolver = async (_, { input }, ctx) => {
   return submitQuestionnaire(ctx.userId, input)
 }
 
-const filterUsersResolver = async (_, { params, options }, _ctx) => {
+const filterUsersResolver = async (_, { params, options }) => {
   try {
     return filterUsers(params, options)
   } catch (e) {
@@ -68,7 +68,7 @@ const displayNameResolver = async user => {
   return getDisplayName(user)
 }
 
-const bioInteractiveLoginResolver = async (_, { authCode }, ctx) => {
+const bioInteractiveLoginResolver = async (_, { authCode }) => {
   try {
     return bioInteractiveLogin(authCode)
   } catch (e) {
