@@ -1,20 +1,20 @@
 /* stylelint-disable string-quotes */
-import React, { useState, useRef } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { MentionsInput, Mention } from 'react-mentions'
-import { grid, th, useCurrentUser } from '@coko/client'
+import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { MentionsInput, Mention } from "react-mentions";
+import { grid, th, useCurrentUser } from "@coko/client";
 
-import { SendOutlined } from '@ant-design/icons'
+import { SendOutlined } from "@ant-design/icons";
 
-import { Button, Upload } from '../common'
-import { inputShadow } from '../common/_reusableStyles'
+import { Button, Upload } from "../common";
+import { inputShadow } from "../common/_reusableStyles";
 
-const MainContainer = styled('div')`
+const MainContainer = styled("div")`
   display: flex;
   flex-direction: row;
   position: relative;
-`
+`;
 
 const StyledMentionsInput = styled(MentionsInput)`
   flex-grow: 1;
@@ -23,32 +23,32 @@ const StyledMentionsInput = styled(MentionsInput)`
   position: relative;
 
   textarea {
-    border: 1px solid ${th('colorBorder')};
+    border: 1px solid ${th("colorBorder")};
     max-height: 70px;
     ${inputShadow};
     overflow: auto;
     padding: ${grid(1)} ${grid(10)} ${grid(1)} ${grid(2)};
   }
 
-  [role='listbox'] {
-    border: 1px solid ${th('colorBorder')};
-    box-shadow: ${th('boxShadow')};
+  [role="listbox"] {
+    border: 1px solid ${th("colorBorder")};
+    box-shadow: ${th("boxShadow")};
   }
 
-  [role='option'] {
-    color: ${th('colorText')};
+  [role="option"] {
+    color: ${th("colorText")};
     padding: ${grid(1)} ${grid(3)};
   }
 
-  [role='option']:hover,
-  [role='option'][aria-selected='true'] {
-    background: ${th('colorPrimary')};
-    color: ${th('colorTextReverse')};
+  [role="option"]:hover,
+  [role="option"][aria-selected="true"] {
+    background: ${th("colorPrimary")};
+    color: ${th("colorTextReverse")};
   }
-`
+`;
 
 const StyledUpload = styled(Upload)`
-  color: ${th('colorPrimary')};
+  color: ${th("colorPrimary")};
   display: flex;
   flex-direction: row-reverse;
   position: absolute;
@@ -56,7 +56,7 @@ const StyledUpload = styled(Upload)`
   top: 10px;
   transition: outline-offset 0s, outline 0s;
 
-  [role='button'] {
+  [role="button"] {
     display: inline-flex;
     height: 16px;
 
@@ -67,16 +67,16 @@ const StyledUpload = styled(Upload)`
   }
 
   .ant-upload-list {
-    background-color: ${th('colorBackground')};
+    background-color: ${th("colorBackground")};
     border: none;
     bottom: calc(100% + 20px);
-    box-shadow: ${th('boxShadow')};
+    box-shadow: ${th("boxShadow")};
     inset-inline-end: ${grid(-3)};
     max-inline-size: 250px;
     position: absolute;
 
     &:has(.ant-upload-list-item) {
-      border: 1px solid ${th('colorBorder')};
+      border: 1px solid ${th("colorBorder")};
     }
   }
 
@@ -84,13 +84,13 @@ const StyledUpload = styled(Upload)`
     margin-block: ${grid(1)};
     padding: ${grid(2)};
   }
-`
+`;
 
 const SendButton = styled(Button)`
   border: none;
   height: 32px;
   margin: ${grid(1)};
-  ${props =>
+  ${(props) =>
     props.$inactive &&
     `color:rgba(63, 63, 63, 0.25); 
      cursor: default;
@@ -100,60 +100,60 @@ const SendButton = styled(Button)`
       background: rgba(63, 63, 63, 0.04)!important;
      }
     `}
-`
+`;
 
 // TODO -- this needs to be a wax editor with two plugins (mention & task)
 
-const ChatInput = props => {
-  const { className, onSend, participants, ...rest } = props
-  const { currentUser } = useCurrentUser()
-  const [inputValue, setInputValue] = useState('')
-  const [mentions, setMentions] = useState([])
-  const [attachments, setAttachments] = useState([])
+const ChatInput = ({ className, onSend, participants = [], ...rest }) => {
+  console.log(rest);
+  const { currentUser } = useCurrentUser();
+  const [inputValue, setInputValue] = useState("");
+  const [mentions, setMentions] = useState([]);
+  const [attachments, setAttachments] = useState([]);
 
-  const inputRef = useRef(null)
+  const inputRef = useRef(null);
 
   const handleTextChange = (_, newValue, __, mentioned) => {
-    setInputValue(newValue)
-    const mentionIDs = mentioned.map(({ id }) => id)
-    setMentions(mentionIDs)
-  }
+    setInputValue(newValue);
+    const mentionIDs = mentioned.map(({ id }) => id);
+    setMentions(mentionIDs);
+  };
 
-  const handleKeyDown = e => {
+  const handleKeyDown = (e) => {
     if (
-      e.key === 'Enter' &&
+      e.key === "Enter" &&
       !e.shiftKey &&
       inputRef.current.selectionStart === inputRef.current.value.length
     ) {
-      e.preventDefault()
-      handleSend()
+      e.preventDefault();
+      handleSend();
     }
-  }
+  };
 
   const handleAttachmentChange = ({ fileList }) => {
-    setAttachments(fileList)
-  }
+    setAttachments(fileList);
+  };
 
-  const handleRemoveAttachment = file => {
-    setAttachments(selectedFiles =>
-      selectedFiles.filter(item => item.uid !== file.uid),
-    )
-  }
+  const handleRemoveAttachment = (file) => {
+    setAttachments((selectedFiles) =>
+      selectedFiles.filter((item) => item.uid !== file.uid),
+    );
+  };
 
   const handleSend = async () => {
     if (inputValue.trim().length !== 0 || attachments.length > 0) {
       const content =
         inputRef.current.value.trim().length === 0
-          ? ' '
-          : inputRef.current.value.replace(/\r?\n/g, '<br />')
+          ? " "
+          : inputRef.current.value?.replace(/\r?\n/g, "<br />");
 
-      onSend(content, mentions, attachments)
-      setInputValue('')
-      setAttachments([])
-      setMentions([])
-      inputRef.current.focus()
+      onSend(content, mentions, attachments);
+      setInputValue("");
+      setAttachments([]);
+      setMentions([]);
+      inputRef.current.focus();
     }
-  }
+  };
 
   return (
     <MainContainer>
@@ -168,32 +168,35 @@ const ChatInput = props => {
       >
         <Mention
           appendSpaceOnAdd
-          data={[...new Set(participants.filter(p => p.id !== currentUser.id))]}
+          data={[
+            ...new Set(participants.filter((p) => p.id !== currentUser.id)),
+          ]}
           displayTransform={(_, display) => `@${display}`}
-          renderSuggestion={entry => {
-            if (entry.role === 'author') {
-              return <span>{`${entry.display} (Author)`}</span>
+          renderSuggestion={(entry) => {
+            if (entry.role === "author") {
+              return <span>{`${entry.display} (Author)`}</span>;
             }
 
-            if (entry.role === 'editor') {
-              return <span>{`${entry.display} (ME)`}</span>
+            if (entry.role === "editor") {
+              return <span>{`${entry.display} (ME)`}</span>;
             }
 
-            if (entry.role === 'handlingEditor') {
-              return <span>{`${entry.display} (HE)`}</span>
+            if (entry.role === "handlingEditor") {
+              return <span>{`${entry.display} (HE)`}</span>;
             }
 
-            if (entry.role === 'production') {
-              return <span>{`${entry.display} (Production)`}</span>
+            if (entry.role === "production") {
+              return <span>{`${entry.display} (Production)`}</span>;
             }
 
-            if (entry.role === 'reviewer') {
-              return <span>{`${entry.display} (Reviewer)`}</span>
+            if (entry.role === "reviewer") {
+              return <span>{`${entry.display} (Reviewer)`}</span>;
             }
 
-            return <span>{entry.display}</span>
+            return <span>{entry.display}</span>;
           }}
           trigger="@"
+          markup="@[__display__](__id__)"
         />
       </StyledMentionsInput>
       <StyledUpload
@@ -213,8 +216,8 @@ const ChatInput = props => {
         <SendOutlined />
       </SendButton>
     </MainContainer>
-  )
-}
+  );
+};
 
 ChatInput.propTypes = {
   onSend: PropTypes.func.isRequired,
@@ -225,10 +228,6 @@ ChatInput.propTypes = {
       role: PropTypes.string,
     }),
   ),
-}
+};
 
-ChatInput.defaultProps = {
-  participants: [],
-}
-
-export default ChatInput
+export default ChatInput;
