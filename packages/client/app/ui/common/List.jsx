@@ -524,14 +524,14 @@ const List = ({
     <StyledScrollWrapper {...infiniteScroll?.props}>
       <StyledList
         items={dataSource}
-        rowKey={"id"}
+        itemRender={listItemToRender}
         loading={
           loading
             ? { spinning: true, indicator: <StyledLoader /> }
             : { spinning: false, indicator: <StyledLoader /> }
         }
         locale={mergedLocale}
-        itemRender={listItemToRender}
+        rowKey={"id"}
         {...rest}
       />
     </StyledScrollWrapper>

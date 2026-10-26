@@ -107,7 +107,6 @@ const TeamManagerPage = () => {
         id: teamId,
         term: searchValue,
       });
-      console.log(results);
 
       setNonTeamMembersUsersData(results.data.getNonTeamMemberUsers);
     }

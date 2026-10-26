@@ -105,7 +105,6 @@ const SendButton = styled(Button)`
 // TODO -- this needs to be a wax editor with two plugins (mention & task)
 
 const ChatInput = ({ className, onSend, participants = [], ...rest }) => {
-  console.log(rest);
   const { currentUser } = useCurrentUser();
   const [inputValue, setInputValue] = useState("");
   const [mentions, setMentions] = useState([]);

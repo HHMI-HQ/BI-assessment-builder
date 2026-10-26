@@ -15,8 +15,6 @@ const PAGE_SIZE = 10;
 
 // if we pass a single item it will return the shaped item if we pass an array it will return the array of shaped items
 const mentionsShape = (arr = []) => {
-  console.log(arr);
-
   const shapedMention = (item) => {
     const parsedContent = JSON.parse(item.content);
 
@@ -93,7 +91,7 @@ const NotificationPage = () => {
 
   useEffect(() => {
     if (userMentions) {
-      setUpdatedMentions(mentionsShape(userMentions.userMentions?.results));
+      setUpdatedMentions(mentionsShape(userMentions.userNotifications?.result));
     }
   }, [userMentions]);
 
