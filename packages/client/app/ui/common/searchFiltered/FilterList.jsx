@@ -336,7 +336,6 @@ const FilterList = ({
             $visualfocus={visualfocus}
             badgebg={v?.badgeBg}
             badgeColor={v?.badgeColor}
-            isvalue
             tabIndex={-1}
           >
             {v?.label}

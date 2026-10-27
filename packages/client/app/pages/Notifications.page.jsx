@@ -103,7 +103,7 @@ const NotificationPage = () => {
         query: GET_UNREAD_NOTIFICATIONS_COUNT,
       },
     ],
-    onCompleted: () => refetch({ variables: mentionsQueryVariables(pageSize) }),
+    onCompleted: () => refetch(mentionsQueryVariables(pageSize)),
   });
 
   const markAs = async (variables) => {
@@ -138,9 +138,7 @@ const NotificationPage = () => {
 
   useEffect(() => {
     setUpdatedMentions([]);
-    refetch({
-      variables: mentionsQueryVariables(PAGE_SIZE),
-    }).then(() => {
+    refetch(mentionsQueryVariables(PAGE_SIZE)).then(() => {
       setPageSize(PAGE_SIZE);
     });
   }, [readState]);
@@ -151,9 +149,7 @@ const NotificationPage = () => {
     const newSize =
       pageSize + PAGE_SIZE <= totalCount ? pageSize + PAGE_SIZE : totalCount;
 
-    refetch({
-      variables: mentionsQueryVariables(newSize),
-    }).then(() => {
+    refetch(mentionsQueryVariables(newSize)).then(() => {
       setPageSize(newSize);
     });
   };

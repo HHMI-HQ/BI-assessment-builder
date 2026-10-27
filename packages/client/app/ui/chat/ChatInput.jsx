@@ -24,6 +24,7 @@ const StyledMentionsInput = styled(MentionsInput)`
 
   textarea {
     border: 1px solid ${th("colorBorder")};
+    border-radius: ${th("borderRadius")};
     max-height: 70px;
     ${inputShadow};
     overflow: auto;
@@ -90,6 +91,7 @@ const SendButton = styled(Button)`
   border: none;
   height: 32px;
   margin: ${grid(1)};
+  transition: none;
   ${(props) =>
     props.$inactive &&
     `color:rgba(63, 63, 63, 0.25); 

@@ -258,6 +258,10 @@ const QuestionWrapper = styled.div`
 `;
 
 const StyledTabs = styled(Tabs)`
+  .ant-tabs-tab.ant-tabs-tab-active {
+    background-color: ${th("colorBackground")}!important;
+    border-bottom: ${th("colorBackground")}!important;
+  }
   .ant-tabs-tabpane {
     flex: 1;
     overflow: auto;

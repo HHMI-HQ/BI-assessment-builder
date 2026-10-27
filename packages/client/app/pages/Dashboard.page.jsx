@@ -324,12 +324,10 @@ const DashboardPage = () => {
     }
 
     const queryVariables = {
-      variables: {
-        ...defaultSearchOptions,
-        page: currentPage - 1,
-        filters: query || {},
-        archived: currentShowArchived,
-      },
+      ...defaultSearchOptions,
+      page: currentPage - 1,
+      filters: query || {},
+      archived: currentShowArchived,
     };
 
     callOn(

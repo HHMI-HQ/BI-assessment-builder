@@ -1,13 +1,13 @@
-import React from 'react'
-import styled from 'styled-components'
-import { th, grid } from '@coko/client'
-import { PropTypes } from 'prop-types'
-import { Link } from 'react-router'
-import userIcon from '../../../static/user.svg'
-import { alpha } from '../_helpers/themeUtils'
-import { ellipsis } from '../../utilities'
-import useWindowSize from '../_helpers/useWindowSize'
-import { ChatBox } from '../common'
+import React from "react";
+import styled from "styled-components";
+import { th, grid, darken } from "@coko/client";
+import { PropTypes } from "prop-types";
+import { Link } from "react-router";
+import userIcon from "../../../static/user.svg";
+import { alpha } from "../_helpers/themeUtils";
+import { ellipsis } from "../../utilities";
+import useWindowSize from "../_helpers/useWindowSize";
+import { ChatBox } from "../common";
 
 const ListItemContent = styled.span`
   cursor: pointer;
@@ -20,14 +20,18 @@ const ListItemContent = styled.span`
   width: 95%;
 
   &::before {
-    background-color: ${alpha('#dddddd', 0.6)};
+    background-color: ${alpha("#dddddd", 0.6)};
     /* stylelint-disable-next-line string-quotes */
-    content: '';
-    inset: ${p => (p.$unread ? '0' : '100%')};
+    content: "";
+    inset: ${(p) => (p.$unread ? "0" : "100%")};
     position: absolute;
     z-index: -1;
   }
-`
+
+  &[data-unread="false"] [data-message-header] {
+    background-color: ${darken("colorPrimary", 0.15)};
+  }
+`;
 
 const Chatbox = styled(ChatBox)`
   --border: #0002;
@@ -46,13 +50,13 @@ const Chatbox = styled(ChatBox)`
   }
 
   &:hover {
-    --border: ${th('colorPrimary')};
+    --border: ${th("colorPrimary")};
   }
-`
+`;
 
 const MessageFromHeader = styled.span`
   align-items: center;
-  background-color: ${th('colorPrimary')};
+  background-color: ${th("colorPrimary")};
   box-shadow: inset 0 0 12px #fff4, 0 0 5px #0004;
   display: flex;
   justify-content: space-between;
@@ -66,7 +70,7 @@ const MessageFromHeader = styled.span`
     gap: 0.5rem;
     padding: 0.3rem 0.2rem;
   }
-`
+`;
 
 const MessageSender = styled.span`
   color: #fff;
@@ -79,9 +83,9 @@ const MessageSender = styled.span`
   width: 100%;
 
   > small {
-    font-size: ${th('fontSizeBaseSmallest')};
+    font-size: ${th("fontSizeBaseSmallest")};
   }
-`
+`;
 
 const UserIcon = styled.img`
   aspect-ratio: 1 / 1;
@@ -91,7 +95,7 @@ const UserIcon = styled.img`
   box-shadow: inset 0 0 5px #0003, 0 0 3px #fff;
   margin: 0;
   width: 40px;
-`
+`;
 
 const MessageContent = styled.div`
   align-items: center;
@@ -125,7 +129,7 @@ const MessageContent = styled.div`
   @media screen and (max-width: 800px) {
     min-height: 80px;
   }
-`
+`;
 
 const ListItemContentDate = styled.span`
   > * {
@@ -139,17 +143,17 @@ const ListItemContentDate = styled.span`
   padding: ${grid(0.6)} ${grid(2)};
 
   > p {
-    font-size: ${th('fontSizeBaseSmaller')};
+    font-size: ${th("fontSizeBaseSmaller")};
     font-weight: 700;
   }
-`
+`;
 
 const ActionsWrapper = styled.span`
-  border-left: 1px solid ${alpha('colorPrimary', 0.2)};
+  border-left: 1px solid ${alpha("colorPrimary", 0.2)};
   /* background-color: #e3e8e8; */
   display: flex;
   flex-direction: column;
-  font-size: ${th('fontSizeBaseSmall')};
+  font-size: ${th("fontSizeBaseSmall")};
   font-weight: lighter;
   padding: 0 0.8rem;
   white-space: nowrap;
@@ -158,7 +162,7 @@ const ActionsWrapper = styled.span`
     align-items: center;
     background-color: unset;
     border: none;
-    color: ${th('colorSecondary')};
+    color: ${th("colorSecondary")};
     cursor: pointer;
     display: flex;
     justify-content: flex-end;
@@ -173,9 +177,9 @@ const ActionsWrapper = styled.span`
 
     &::after {
       aspect-ratio: 1 / 1;
-      background-color: ${th('colorPrimary')};
+      background-color: ${th("colorPrimary")};
       /* stylelint-disable-next-line string-quotes */
-      content: '';
+      content: "";
       display: flex;
       margin-left: 0.4rem;
       width: 8px;
@@ -189,42 +193,45 @@ const ActionsWrapper = styled.span`
   @media screen and (max-width: 800px) {
     padding: 0.4rem 0.3rem;
   }
-`
+`;
 
-const formatDate = dateString => {
-  const date = new Date(dateString)
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
 
   const options = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: true,
-  }
+  };
 
   return date
-    .toLocaleString('en-US', options)
-    .replace(/,/g, '')
-    .replace(/\//g, '-')
-    .replace(/-/g, '/')
-}
+    .toLocaleString("en-US", options)
+    .replace(/,/g, "")
+    .replace(/\//g, "-")
+    .replace(/-/g, "/");
+};
 
-const MentionsItem = ({ item = {
-    from: '',
-    content: '',
-    date: '',
-    id: '',
+const MentionsItem = ({
+  item = {
+    from: "",
+    content: "",
+    date: "",
+    id: "",
     unread: false,
-    links: ['', ''],
-  }, markAs = () => {} }) => {
-  const { from, content, date, id, unread, links } = item
-  const [chatLink, itemLink] = links
-  const [day, hours] = formatDate(date).split(' ')
-  const { width } = useWindowSize()
+    links: ["", ""],
+  },
+  markAs = () => {},
+}) => {
+  const { from, content, date, id, unread, links } = item;
+  const [chatLink, itemLink] = links;
+  const [day, hours] = formatDate(date).split(" ");
+  const { width } = useWindowSize();
 
   return (
-    <ListItemContent $unread={unread}>
+    <ListItemContent data-unread={unread}>
       <Chatbox
         content={
           <MessageContent data-testid="message-content">
@@ -241,15 +248,15 @@ const MentionsItem = ({ item = {
                   <Link
                     onClick={() => markAs(true, [id])}
                     to={
-                      chatLink.indexOf('#reviewerChat') > -1
+                      chatLink.indexOf("#reviewerChat") > -1
                         ? {
                             pathname: chatLink.substring(
                               0,
-                              chatLink.indexOf('#reviewerChat') + 13,
+                              chatLink.indexOf("#reviewerChat") + 13,
                             ),
                             state: {
                               reviewerId: chatLink.substring(
-                                chatLink.indexOf('#reviewerChat') + 14,
+                                chatLink.indexOf("#reviewerChat") + 14,
                               ),
                             },
                           }
@@ -263,18 +270,18 @@ const MentionsItem = ({ item = {
                 <span>Item has been deleted</span>
               )}
               <button onClick={() => markAs(unread, [id])} type="button">
-                Mark as {unread ? 'read' : 'unread'}
+                Mark as {unread ? "read" : "unread"}
               </button>
             </ActionsWrapper>
           </MessageContent>
         }
         data-testid="chatbox"
         header={
-          <MessageFromHeader>
+          <MessageFromHeader data-message-header>
             <span>
               <UserIcon alt={`user-${from}`} src={userIcon} />
               <MessageSender data-testid="sender-name">
-                <small>from:</small>@{from || 'unknown user'}
+                <small>from:</small>@{from || "unknown user"}
               </MessageSender>
             </span>
             <ListItemContentDate>
@@ -285,8 +292,8 @@ const MentionsItem = ({ item = {
         }
       />
     </ListItemContent>
-  )
-}
+  );
+};
 
 MentionsItem.propTypes = {
   item: PropTypes.shape({
@@ -298,8 +305,6 @@ MentionsItem.propTypes = {
     links: PropTypes.arrayOf(PropTypes.string),
   }),
   markAs: PropTypes.func,
-}
+};
 
-
-
-export default MentionsItem
+export default MentionsItem;

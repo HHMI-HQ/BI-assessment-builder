@@ -53,7 +53,7 @@ const TabsStyled = styled(AntTabs)`
   --bg-active: ${(p) => p.activebg || th("colorBackgroundHue")};
   --bg-inactive: ${(p) =>
     p.inactiveBgColor || darken(p.activeBg || "colorBackgroundHue", 0.5)};
-  --color-active: ${(p) => p.activecolor || "#666"};
+  --color-active: ${(p) => p.activecolor || th("colorPrimary")};
   --color-inactive: ${(p) => p.inactivecolor || p.activecolor || "#999"};
   /* --border: ${(p) => p.border || `1px solid ${th("colorBorder")}}`}; */
   --border: ${(p) => p.border || `1px solid #999`};
@@ -123,8 +123,8 @@ const TabsStyled = styled(AntTabs)`
       /* opacity: 0.8; */
     }
 
-    &:hover {
-      color: var(--color-active);
+    &:hover:not([role="tab"]):not(.ant-tabs-tab-active) {
+      background-color: ${th("colorBackgroundHue")};
     }
   }
 

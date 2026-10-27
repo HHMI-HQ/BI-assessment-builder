@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { grid, th, lighten } from "@coko/client";
 import { safeCall } from "../../utilities";
 
-const variantColor = ({ variant }) => {
+const variantColor = ({ $variant }) => {
   const colors = {
     "Not Submitted": () => lighten("colorBorder", 0.5),
     Submitted: () => th("colorText"),
@@ -18,7 +18,7 @@ const variantColor = ({ variant }) => {
     default: () => th("colorBackground"),
   };
 
-  return safeCall(colors[variant], colors.default);
+  return safeCall(colors[$variant], colors.default);
 };
 
 const Container = styled.span`
@@ -28,8 +28,7 @@ const Container = styled.span`
 `;
 
 const Title = styled.span`
-  color: ${(p) =>
-    p.variant === "Not Submitted" ? th("colorTextDark") : variantColor(p)};
+  color: ${th("colorTextDark")};
   font-size: ${th("fontSizeBaseSmallest")};
   padding: ${grid(0.5)} 0;
   text-transform: uppercase;
@@ -45,8 +44,10 @@ const BadgesWrapper = styled.span`
 const StatusBadge = styled.span`
   background-color: ${variantColor};
   border-radius: ${th("borderRadius")};
-  color: ${({ variant }) =>
-    variant === "Not Submitted" ? th("colorTextDark") : th("colorTextReverse")};
+  color: ${({ $variant }) =>
+    $variant === "Not Submitted"
+      ? th("colorTextDark")
+      : th("colorTextReverse")};
   font-size: ${th("fontSizeBaseSmall")};
   /* font-weight: bold; */
   padding: ${grid(1)} ${grid(3)};
@@ -73,12 +74,12 @@ const Status = (props) => {
 
   return (
     <Container>
-      <Title variant={status}>status:</Title>
+      <Title>status:</Title>
       <BadgesWrapper data-testid="status-wrapper">
-        <StatusBadge className={className} variant={status} {...rest}>
+        <StatusBadge className={className} $variant={status} {...rest}>
           {status}
         </StatusBadge>
-        {label && <LabelBadge variant={status}>{label}</LabelBadge>}
+        {label && <LabelBadge $variant={status}>{label}</LabelBadge>}
       </BadgesWrapper>
     </Container>
   );

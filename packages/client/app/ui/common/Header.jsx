@@ -330,6 +330,7 @@ const StyledLogin = styled(Link)`
   align-items: center;
   background-color: ${th("colorPrimary")};
   border-color: ${th("colorPrimary")};
+  border-radius: ${th("borderRadius")};
   color: ${th("colorTextReverse")};
   display: flex;
   font-size: ${th("fontSizeBase")};
@@ -932,7 +933,6 @@ const Header = ({
                     wrapperProps={{
                       "aria-label": "User menu",
                       id: "user-menu",
-                      isOpen: userMenuIsOpen,
                     }}
                   />
                 </UserMenuWrapper>

@@ -1,31 +1,35 @@
-import React, { forwardRef } from 'react'
-import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
-import DOMPurify from 'dompurify'
-import { PaperClipOutlined } from '@ant-design/icons'
+import React, { forwardRef } from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import DOMPurify from "dompurify";
+import { PaperClipOutlined } from "@ant-design/icons";
 
-import { grid, th } from '@coko/client'
+import { grid, th } from "@coko/client";
 
-import { DateParser, VisuallyHiddenElement } from '../common'
+import { DateParser, VisuallyHiddenElement } from "../common";
 
 const pullRight = css`
   margin-left: auto;
-`
+`;
 
 const Message = styled.div`
   align-self: baseline;
-  background: ${props =>
-    props.own ? th('colorBackgroundHue') : th('colorPrimary')};
-  border-radius: ${props =>
-    props.own ? '15px 0 15px 15px' : '0 15px 15px 15px'};
+  --borderRadius: ${th("borderRadius")};
+  --radiusOwn: var(--borderRadius) 0 var(--borderRadius) var(--borderRadius);
+  --radiusOther: 0 var(--borderRadius) var(--borderRadius) var(--borderRadius);
+  background: ${(props) =>
+    props.own ? th("colorBackgroundHue") : th("colorPrimary")};
+  border-radius: ${(props) =>
+    props.own ? `var(--radiusOwn)}` : `var(--radiusOther)`};
   box-shadow: rgb(50 50 93 / 25%) 0 2px 4px -2px,
     rgb(0 0 0 / 30%) 0 1px 2px -3px;
-  color: ${props => (props.own ? th('colorTextDark') : th('colorTextReverse'))};
+  color: ${(props) =>
+    props.own ? th("colorTextDark") : th("colorTextReverse")};
   display: inline-block;
   margin-block: 10px;
   max-inline-size: 50%;
   min-inline-size: 30%;
-  ${props =>
+  ${(props) =>
     props.own &&
     css`
       ${pullRight}
@@ -37,8 +41,8 @@ const Message = styled.div`
   padding: ${grid(2)};
 
   &:focus {
-    outline: ${props => `${props.theme.lineWidth * 4}px`} solid
-      ${th('colorPrimaryBorder')};
+    outline: ${(props) => `${props.theme.lineWidth * 4}px`} solid
+      ${th("colorPrimaryBorder")};
     outline-offset: 1px;
   }
 
@@ -50,21 +54,21 @@ const Message = styled.div`
   > * + * {
     margin-block-start: ${grid(3)};
   }
-`
+`;
 
 const Name = styled.div`
-  font-size: ${th('fontSizeBaseSmall')};
+  font-size: ${th("fontSizeBaseSmall")};
   font-weight: bold;
-`
+`;
 
-const Content = styled.div``
+const Content = styled.div``;
 
 const Date = styled.div`
   display: flex;
-  font-size: ${th('fontSizeBaseSmall')};
+  font-size: ${th("fontSizeBaseSmall")};
   font-style: italic;
   justify-content: flex-end;
-`
+`;
 
 const Attachments = styled.div`
   background-color: rgb(0 0 0 / 10%);
@@ -75,7 +79,7 @@ const Attachments = styled.div`
   grid-template-columns: repeat(2, 0.2fr);
   margin-block: ${grid(2)};
   padding: ${grid(3)};
-`
+`;
 
 const AttachmentItem = styled.a`
   border: 1px solid white;
@@ -90,10 +94,10 @@ const AttachmentItem = styled.a`
   width: 130px;
 
   &:focus {
-    outline: 2px solid ${th('colorPrimaryBorder')};
+    outline: 2px solid ${th("colorPrimaryBorder")};
     outline-offset: 1px;
   }
-`
+`;
 
 const ChatMessage = forwardRef((props, ref) => {
   const {
@@ -105,25 +109,25 @@ const ChatMessage = forwardRef((props, ref) => {
     user,
     participants,
     ...rest
-  } = props
+  } = props;
 
-  const parts = content.split(/(@\w+)/g)
-  let output = ''
-  parts.forEach(part => {
+  const parts = content.split(/(@\w+)/g);
+  let output = "";
+  parts.forEach((part) => {
     // checking if the mentioned user is a part of participants in the cat
-    if (part.startsWith('@') && participants.includes(part.slice(1))) {
-      output += `<span class="mention" data-testid="user-mention">${part}</span>`
-      return
+    if (part.startsWith("@") && participants.includes(part.slice(1))) {
+      output += `<span class="mention" data-testid="user-mention">${part}</span>`;
+      return;
     }
 
-    output += part
-  })
-  const sanitizedHTML = DOMPurify.sanitize(output)
+    output += part;
+  });
+  const sanitizedHTML = DOMPurify.sanitize(output);
 
   return (
     <Message
       className={className}
-      data-testid={own ? 'author-message' : 'participant-message'}
+      data-testid={own ? "author-message" : "participant-message"}
       own={own}
       ref={ref}
       tabIndex={0}
@@ -131,7 +135,7 @@ const ChatMessage = forwardRef((props, ref) => {
     >
       {!own && <Name>{user}</Name>}
       <VisuallyHiddenElement as="p">
-        {own ? 'you said' : 'said'}
+        {own ? "you said" : "said"}
       </VisuallyHiddenElement>
 
       <Content>
@@ -142,7 +146,7 @@ const ChatMessage = forwardRef((props, ref) => {
       </Content>
       {attachments.length > 0 && (
         <Attachments>
-          {attachments.map(attachment => (
+          {attachments.map((attachment) => (
             <AttachmentItem
               data-testid="message-attachment"
               href={attachment.url}
@@ -161,8 +165,8 @@ const ChatMessage = forwardRef((props, ref) => {
         </DateParser>
       </Date>
     </Message>
-  )
-})
+  );
+});
 
 ChatMessage.propTypes = {
   attachments: PropTypes.arrayOf(PropTypes.shape()),
@@ -171,13 +175,13 @@ ChatMessage.propTypes = {
   own: PropTypes.bool,
   user: PropTypes.string,
   participants: PropTypes.arrayOf(PropTypes.string),
-}
+};
 
 ChatMessage.defaultProps = {
   attachments: [],
   own: false,
   user: null,
   participants: [],
-}
+};
 
-export default ChatMessage
+export default ChatMessage;

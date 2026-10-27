@@ -146,6 +146,10 @@ const CheckBox = styled(Checkbox)`
 const StyledList = styled(List)`
   background-color: ${th("colorBackground")};
   margin-top: ${(p) => p.$marginTop};
+
+  .ant-listy-item:has([data-unread="false"]) {
+    background-color: ${th("colorBackgroundHue")};
+  }
 `;
 
 const ListItemWrapper = styled.li`

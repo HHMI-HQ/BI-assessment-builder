@@ -81,7 +81,7 @@ export const CounterWrapper = ({
   return (
     <Component id="COUNTER">
       {children}
-      <CounterBadge {...rest} />
+      <CounterBadge counts={counts} {...rest} />
     </Component>
   );
 };
