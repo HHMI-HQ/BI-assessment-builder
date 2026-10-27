@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { Tooltip } from 'antd'
-import { InfoCircleOutlined } from '@ant-design/icons'
-import { uuid, grid, th } from '@coko/client'
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { uuid, grid, th } from "@coko/client";
 import {
   Button,
   ButtonGroup,
@@ -16,29 +16,29 @@ import {
   Empty,
   VisuallyHiddenElement,
   Link,
-} from '../common'
+} from "../common";
 import {
   conditionalWord,
   setSafeHTML,
   capitalize,
   safeCall,
-} from '../../utilities'
+} from "../../utilities";
 
 const Wrapper = styled.div`
   height: 100%;
-`
+`;
 
 const PageHeader = styled(H1)`
   margin: 0 auto;
   text-align: center;
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     margin: ${grid(2)} auto;
   }
-`
+`;
 
 const StyledSection = styled.section`
-  background: ${th('colorBackground')};
+  background: ${th("colorBackground")};
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -47,7 +47,7 @@ const StyledSection = styled.section`
   > div:nth-child(2) {
     flex-grow: 1;
   }
-`
+`;
 
 const StyledTable = styled(Table)`
   .ant-table-content {
@@ -58,11 +58,11 @@ const StyledTable = styled(Table)`
     display: flex;
 
     .ant-pagination-total-text {
-      color: ${th('colorPrimary')};
+      color: ${th("colorPrimary")};
       margin-inline-end: auto;
     }
   }
-`
+`;
 
 const StyledCheckbox = styled(Checkbox)`
   align-items: center;
@@ -77,7 +77,13 @@ const StyledCheckbox = styled(Checkbox)`
   &::after {
     display: none;
   }
-`
+`;
+
+const ExpertiseTagsWrapper = styled.div`
+  display: flex;
+  gap: ${grid(2)};
+  flex-wrap: wrap;
+`;
 
 const FooterActionsWrapper = styled.div`
   display: flex;
@@ -85,133 +91,157 @@ const FooterActionsWrapper = styled.div`
   justify-content: space-between;
   padding-bottom: 10px;
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     flex-direction: row;
   }
-`
+`;
 
 const selectAllCheckbox = (setRows, rowsData, rows) => {
   const toggle = () =>
-    setRows(keys =>
-      keys.length === rowsData.length ? [] : rowsData.map(r => r.key),
-    )
+    setRows((keys) =>
+      keys.length === rowsData.length ? [] : rowsData.map((r) => r.key),
+    );
 
   // posible reusable util
   const isChecked = ({ length: rowslgth = [] }, { length: datalgth = [] }) =>
-    rowslgth < datalgth && rowslgth !== 0 ? 'mixed' : rowslgth > 0
+    rowslgth < datalgth && rowslgth !== 0 ? "mixed" : rowslgth > 0;
 
   return (
     <StyledCheckbox
       aria-checked={isChecked(rows, rowsData)}
       checked={rowsData.length > 0 && rows.length === rowsData.length}
-      indeterminate={isChecked(rows, rowsData) === 'mixed'}
+      indeterminate={isChecked(rows, rowsData) === "mixed"}
       onChange={toggle}
     >
       Select all
     </StyledCheckbox>
-  )
-}
+  );
+};
 
-const ModalContext = React.createContext(null)
-const { footer: ModalFooter, header: ModalHeader } = Modal
+const ModalContext = React.createContext(null);
+const { footer: ModalFooter, header: ModalHeader } = Modal;
 
 // QUESTION results placement seems a bit odd here
-const UserList = ({ className, currentPage, currentUserId, data = [], loading = false, locale = null, onBulkActivate, onBulkDeactivate, onBulkDelete, onBulkDownload, onChangePageSize = () => {}, onPageChange, onSearch, pageSize = 10, searchLoading = false, totalUserCount = 0, selectedRows, setSelectedRows, showDeactivated, onClickShowDeactivated, filters = [], withFilters = false, expertiseOptions = [], onSortChange = () => {} }) => {
-  const [modal, contextHolder] = Modal.useModal()
-  const { confirm, error } = modal
+const UserList = ({
+  className,
+  currentPage,
+  currentUserId,
+  data = [],
+  loading = false,
+  locale = null,
+  onBulkActivate,
+  onBulkDeactivate,
+  onBulkDelete,
+  onBulkDownload,
+  onChangePageSize = () => {},
+  onPageChange,
+  onSearch,
+  pageSize = 10,
+  searchLoading = false,
+  totalUserCount = 0,
+  selectedRows,
+  setSelectedRows,
+  showDeactivated,
+  onClickShowDeactivated,
+  filters = [],
+  withFilters = false,
+  expertiseOptions = [],
+  onSortChange = () => {},
+}) => {
+  const [modal, contextHolder] = Modal.useModal();
+  const { confirm, error } = modal;
 
   // General use UTILS
-  const userOrUsers = cased =>
+  const userOrUsers = (cased) =>
     conditionalWord(cased, {
       condition: () => selectedRows.length === 1,
-      wordOnTrue: 'user',
-      wordOnFalse: 'users',
-    })
+      wordOnTrue: "user",
+      wordOnFalse: "users",
+    });
 
-  const isActivated = () => (showDeactivated ? 'activate' : 'deactivate')
+  const isActivated = () => (showDeactivated ? "activate" : "deactivate");
 
   const updateActionStatus = (content, delay = 3000) => {
-    setSafeHTML('#action-status', content)
-    setSafeHTML('#action-status', '', delay)
-  }
+    setSafeHTML("#action-status", content);
+    setSafeHTML("#action-status", "", delay);
+  };
 
   // HANDLERS for TABLE
 
-  const handleSelectionChange = selectedRowKeys => {
-    setSelectedRows(selectedRowKeys)
-  }
+  const handleSelectionChange = (selectedRowKeys) => {
+    setSelectedRows(selectedRowKeys);
+  };
 
-  const handlePageChange = page => {
-    setSelectedRows([])
-    onPageChange(page)
-  }
+  const handlePageChange = (page) => {
+    setSelectedRows([]);
+    onPageChange(page);
+  };
 
   // TABLE
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'displayName',
-      key: 'displayName',
+      title: "Name",
+      dataIndex: "displayName",
+      key: "displayName",
       showSorterTooltip: true,
       render: (displayName, user) => (
         <Link to={`/profile/${user.key}`}>{displayName}</Link>
       ),
       sorter: (a, b) => a - b,
     },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { title: "Email", dataIndex: "email", key: "email" },
     {
-      title: 'Expertise',
-      dataIndex: 'expertise',
-      key: 'expertise',
-      render: arrayOfStrings => (
-        <>
-          {/* eslint-disable-next-line react/destructuring-assignment */}
+      title: "Expertise",
+      dataIndex: "expertise",
+      key: "expertise",
+      render: (arrayOfStrings) => (
+        <ExpertiseTagsWrapper>
           {arrayOfStrings &&
-            arrayOfStrings.map(course => (
-              <Tag key={uuid()}>
-                {expertiseOptions.find(c => c.value === course)?.label}
+            arrayOfStrings.map((course) => (
+              <Tag key={uuid()} variant="filled">
+                {expertiseOptions.find((c) => c.value === course)?.label}
               </Tag>
             ))}
-        </>
+        </ExpertiseTagsWrapper>
       ),
     },
     {
-      title: 'Reviewer',
-      dataIndex: 'isReviewer',
-      key: 'isReviewer',
-      render: isReviewer => (isReviewer ? 'Yes' : 'No'),
+      title: "Reviewer",
+      dataIndex: "isReviewer",
+      key: "isReviewer",
+      render: (isReviewer) => (isReviewer ? "Yes" : "No"),
     },
     {
       title: (
-        <span style={{ whiteSpace: 'nowrap' }}>
-          Reviewer record{' '}
+        <span style={{ whiteSpace: "nowrap" }}>
+          Reviewer record{" "}
           <Tooltip title="Whether the reviewer has submitted a review or hasn't been invited at all">
             <InfoCircleOutlined />
           </Tooltip>
         </span>
       ),
-      dataIndex: 'isReviewer',
-      key: 'isReviewer',
-      render: (isReviewer, user) => (isReviewer ? user.reviewerStats : 'N/A'),
+      dataIndex: "isReviewer",
+      key: "isReviewer",
+      render: (isReviewer, user) => (isReviewer ? user.reviewerStats : "N/A"),
     },
     {
-      title: 'Sign up Date',
-      dataIndex: 'signUpDate',
-      key: 'created',
+      title: "Sign up Date",
+      dataIndex: "signUpDate",
+      key: "created",
       showSorterTooltip: true,
-      render: date => (
+      render: (date) => (
         <DateParser dateFormat="MMMM DD, YYYY" timestamp={date}>
-          {timestamp => timestamp}
+          {(timestamp) => timestamp}
         </DateParser>
       ),
       sorter: (a, b) => a - b,
     },
-  ]
+  ];
 
-  const dataSource = data.map(i => {
-    const { id, ...rest } = i
-    return { key: id, ...rest }
-  })
+  const dataSource = data.map((i) => {
+    const { id, ...rest } = i;
+    return { key: id, ...rest };
+  });
 
   const mergedLocale = {
     emptyText: !loading ? (
@@ -224,7 +254,7 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
       <div role="status">Loading</div>
     ),
     ...locale,
-  }
+  };
 
   const rowSelection = {
     onChange: handleSelectionChange,
@@ -232,25 +262,25 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
     columnTitle: selectAllCheckbox(setSelectedRows, dataSource, selectedRows),
     renderCell: (_checked, record, _index, originNode) =>
       React.cloneElement(originNode, {
-        'aria-label': `Select user ${record.displayName}`,
+        "aria-label": `Select user ${record.displayName}`,
       }),
-  }
+  };
 
   const calculateSizeOptions = () => {
-    const defaultSizes = [10, 20, 50]
+    const defaultSizes = [10, 20, 50];
 
     const options = defaultSizes.filter(
-      threshold => totalUserCount >= threshold,
-    )
+      (threshold) => totalUserCount >= threshold,
+    );
 
     if (totalUserCount > 10 && !options.includes(totalUserCount)) {
-      options.push(totalUserCount)
+      options.push(totalUserCount);
     }
 
-    return options
-  }
+    return options;
+  };
 
-  const pageSizeOptions = calculateSizeOptions()
+  const pageSizeOptions = calculateSizeOptions();
 
   const pagination = {
     current: currentPage,
@@ -260,30 +290,30 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
     pageSizeOptions,
     showSizeChanger: pageSizeOptions.length > 0,
     total: totalUserCount,
-    showTotal: t => `Showing ${dataSource.length} users out of ${t}`,
-  }
+    showTotal: (t) => `Showing ${dataSource.length} users out of ${t}`,
+  };
 
   // MODALS
   const actionModalTemplate = ({ dialog, action, status, type, onBulk }) => {
     const performBulkAction = async () => {
       try {
-        await onBulk({ variables: { ids: selectedRows } })
-        updateActionStatus(`${`${userOrUsers('capital')} ${action}`}d`)
-        setSelectedRows([])
+        await onBulk({ variables: { ids: selectedRows } });
+        updateActionStatus(`${`${userOrUsers("capital")} ${action}`}d`);
+        setSelectedRows([]);
       } catch {
         modals.error(
           `${capitalize(action)} error`,
           `There was an error trying to ${action} the user(s)`,
-        )
+        );
       } finally {
-        dialog.destroy()
+        dialog.destroy();
       }
-    }
+    };
 
     return dialog.update({
       title: (
         <ModalHeader>
-          {capitalize(action)} {userOrUsers('capital')}
+          {capitalize(action)} {userOrUsers("capital")}
         </ModalHeader>
       ),
       content: (
@@ -291,7 +321,7 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
           <p>
             Are you sure you want to {action} the selected {userOrUsers()}?
           </p>
-          {action === 'delete' && (
+          {action === "delete" && (
             <p>
               Deleting the selected {userOrUsers()} will delete all their items
               that are still in editorial flow. Published items will not be
@@ -316,11 +346,11 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const handleBulkDownload = async () => {
-    const dialog = modal.info()
+    const dialog = modal.info();
     dialog.update({
       title: <ModalHeader>Download CSV</ModalHeader>,
       content: <p>Download data for selected users.</p>,
@@ -333,14 +363,14 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
             autoFocus
             onClick={async () => {
               try {
-                await onBulkDownload({ variables: { userIds: selectedRows } })
+                await onBulkDownload({ variables: { userIds: selectedRows } });
               } catch {
                 modals.error(
-                  `${capitalize('download')} error`,
+                  `${capitalize("download")} error`,
                   `There was an error trying to download the user(s)`,
-                )
+                );
               } finally {
-                dialog.destroy()
+                dialog.destroy();
               }
             }}
             type="primary"
@@ -349,29 +379,29 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
           </Button>
         </ModalFooter>,
       ],
-    })
-  }
+    });
+  };
 
   const modals = {
     activate: () =>
       actionModalTemplate({
         dialog: confirm(),
-        action: 'activate',
-        type: 'primary',
+        action: "activate",
+        type: "primary",
         onBulk: onBulkActivate,
       }),
     deactivate: () =>
       actionModalTemplate({
         dialog: confirm(),
-        action: 'deactivate',
-        status: 'danger',
+        action: "deactivate",
+        status: "danger",
         onBulk: onBulkDeactivate,
       }),
     delete: () =>
       actionModalTemplate({
         dialog: confirm(),
-        action: 'delete',
-        status: 'danger',
+        action: "delete",
+        status: "danger",
         onBulk: onBulkDelete,
       }),
     error: (title, content, dialog = error()) => {
@@ -385,25 +415,25 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
             </Button>
           </ModalFooter>,
         ],
-      })
+      });
     },
     download: () => handleBulkDownload(),
-  }
+  };
 
-  const bulkAction = action =>
-    action !== 'download' && selectedRows.indexOf(currentUserId) !== -1
+  const bulkAction = (action) =>
+    action !== "download" && selectedRows.indexOf(currentUserId) !== -1
       ? modals.error(
-          'Cannot delete or deactivate current user',
-          'You cannot delete or deactivate the user you are currently logged in as. Please deselect your current user and try again',
+          "Cannot delete or deactivate current user",
+          "You cannot delete or deactivate the user you are currently logged in as. Please deselect your current user and try again",
         )
-      : safeCall(modals[action])
+      : safeCall(modals[action]);
 
   useEffect(() => {
     dataSource.length &&
       updateActionStatus(
-        `Loaded ${showDeactivated ? 'inactive' : 'active'} users`,
-      )
-  }, [showDeactivated])
+        `Loaded ${showDeactivated ? "inactive" : "active"} users`,
+      );
+  }, [showDeactivated]);
 
   return (
     <ModalContext.Provider value={null}>
@@ -444,7 +474,7 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
               <Button
                 data-testid={`${isActivated()}-btn`}
                 disabled={selectedRows.length === 0}
-                onClick={() => bulkAction('download')}
+                onClick={() => bulkAction("download")}
               >
                 Download csv
               </Button>
@@ -459,7 +489,7 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
               <Button
                 data-testid="delete-btn"
                 disabled={selectedRows.length === 0}
-                onClick={() => bulkAction('delete')}
+                onClick={() => bulkAction("delete")}
                 status="error"
                 type="primary"
               >
@@ -472,8 +502,8 @@ const UserList = ({ className, currentPage, currentUserId, data = [], loading = 
       </Wrapper>
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 UserList.propTypes = {
   currentPage: PropTypes.number.isRequired,
@@ -507,7 +537,6 @@ UserList.propTypes = {
   filters: PropTypes.arrayOf(PropTypes.shape()),
   withFilters: PropTypes.bool,
   expertiseOptions: PropTypes.arrayOf(PropTypes.shape()),
-}
+};
 
-
-export default UserList
+export default UserList;
