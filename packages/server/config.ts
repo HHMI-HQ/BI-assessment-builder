@@ -1,7 +1,6 @@
-// import path from "path";
 const { env } = require('@coko/server')
 const components = require('./config/components')
-// const permissions = require("./permissions.js");
+// import permissions from './permissions'
 // import productionChatActivityNotification from "./services/chatActivityNotifications";
 // import emptyTempFolder from "./services/emptyTemp";
 // import { password } from "@coko/server/dist/models/_helpers/types";
