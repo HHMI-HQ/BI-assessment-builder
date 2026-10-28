@@ -25,17 +25,20 @@ const EditorScrollContainer = styled.div`
 `;
 
 const MissingQuestionTypeAlert = styled.div`
-  background-color: rgba(200 200 200 / 25%);
   inset: 0;
   position: absolute;
+  z-index: 2;
 
   > span {
-    background-color: ${th("colorBackground")};
+    background-color: ${th("colorBackgroundHue")};
     border: 1px solid ${th("colorBorder")};
-    inset-block-start: 40%;
+    border-radius: ${th("borderRadius")};
+    inset-block-start: 33%;
     inset-inline-start: 50%;
     padding: ${grid(4)};
     position: absolute;
+    text-align: center;
+    text-wrap: balance;
     transform: translate(-50%, -50%);
   }
 `;
