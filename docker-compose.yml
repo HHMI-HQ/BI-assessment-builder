@@ -5,16 +5,17 @@ services:
     build:
       context: ./packages/client
       dockerfile: ./Dockerfile-development
-    command: ['node_modules/.bin/coko-client-dev-js']
+    command: ['node_modules/.bin/coko-client-dev']
     ports:
       - ${CLIENT_PORT:-4000}:${CLIENT_PORT:-4000}
     environment:
       - NODE_ENV=development
       - CLIENT_PORT=${CLIENT_PORT:-4000}
+      - CLIENT_ENTRY_FILE_PATH=/start.js
       - CLIENT_FAST_REFRESH=1
       - CLIENT_FAVICON_PATH=../static/favicon.ico
       - CLIENT_PAGE_TITLE=${CLIENT_PAGE_TITLE:-"HHMI Assessment Builder"}
-      - CLIENT_LANGUAGE=${CLIENT_LANGUAGE:-"en-US"}
+      - CLIENT_LANGUAGE=${CLIENT_LANGUAGE:-en-US}
       - SERVER_URL=${SERVER_URL:-http://localhost:3000}
     volumes:
       - ./packages/client/app:/home/node/app/app
@@ -65,13 +66,15 @@ services:
       - CLIENT_BIOINTERACTIVE_OAUTH_CLIENT_ID=${CLIENT_BIOINTERACTIVE_OAUTH_CLIENT_ID:-"hhmi_assessment_builder"}
       - CLIENT_BIOINTERACTIVE_OAUTH_REDIRECT_URI=${CLIENT_BIOINTERACTIVE_OAUTH_REDIRECT_URI:-""}
     volumes:
+      # - ./packages/server/config:/home/node/hhmi/config
       - ./packages/server/api:/home/node/hhmi/api
-      - ./packages/server/config:/home/node/hhmi/config
       - ./packages/server/controllers:/home/node/hhmi/controllers
       - ./packages/server/models:/home/node/hhmi/models
       - ./packages/server/rest:/home/node/hhmi/rest
       - ./packages/server/scripts:/home/node/hhmi/scripts
       - ./packages/server/services:/home/node/hhmi/services
+      - ./packages/server/permissions.js:/home/node/hhmi/permissions.js
+      - ./packages/server/components.js:/home/node/hhmi/components.js
     tty: true
 
   db:

@@ -1,0 +1,35 @@
+import React from 'react'
+import styled from 'styled-components'
+import { th } from '@coko/client'
+import { Link } from 'react-router'
+
+const StyledLink = styled(Link)`
+  && {
+    color: ${th('colorPrimary')};
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: ${th('colorPrimary')};
+      text-decoration: none;
+    }
+
+    &:focus {
+      color: ${th('colorPrimary')};
+      outline: 1px solid ${th('colorPrimary')};
+      text-decoration: none;
+    }
+  }
+`
+
+const HhmiLink = props => {
+  // const { href, ...restProps } = props
+  // if (href) {
+  //   return (
+  //     <StyledLink {...restProps} />
+  //   )
+  // }
+  return <StyledLink {...props} />
+}
+
+export default HhmiLink

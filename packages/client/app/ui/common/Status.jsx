@@ -1,0 +1,98 @@
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+
+import { grid, th, lighten } from "@coko/client";
+import { safeCall } from "../../utilities";
+
+const variantColor = ({ $variant }) => {
+  const colors = {
+    "Not Submitted": () => lighten("colorBorder", 0.5),
+    Submitted: () => th("colorText"),
+    Rejected: () => th("colorError"),
+    Accepted: () => th("colorTertiary"),
+    "Under Review": () => th("colorWarning"),
+    "In Production": () => th("colorPrimary"),
+    Published: () => th("colorSuccess"),
+    Unpublished: () => th("colorErrorAlt"),
+    default: () => th("colorBackground"),
+  };
+
+  return safeCall(colors[$variant], colors.default);
+};
+
+const Container = styled.span`
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Title = styled.span`
+  color: ${th("colorTextDark")};
+  font-size: ${th("fontSizeBaseSmallest")};
+  padding: ${grid(0.5)} 0;
+  text-transform: uppercase;
+`;
+
+const BadgesWrapper = styled.span`
+  align-self: flex-end;
+  display: flex;
+  justify-content: center;
+  position: relative;
+`;
+
+const StatusBadge = styled.span`
+  background-color: ${variantColor};
+  border-radius: ${th("borderRadius")};
+  color: ${({ $variant }) =>
+    $variant === "Not Submitted"
+      ? th("colorTextDark")
+      : th("colorTextReverse")};
+  font-size: ${th("fontSizeBaseSmall")};
+  /* font-weight: bold; */
+  padding: ${grid(1)} ${grid(3)};
+  text-align: center;
+`;
+
+const LabelBadge = styled.span`
+  background-color: #fff;
+  border: 2px solid ${variantColor};
+  border-radius: 0.5rem;
+  bottom: ${grid(-4)};
+  color: ${variantColor};
+  font-size: ${th("fontSizeBaseSmallest")};
+  font-weight: 700;
+  outline: 2px solid #fff;
+  padding: ${grid(0.1)} ${grid(1.5)};
+  position: absolute;
+  right: ${grid(-1.5)};
+  text-rendering: optimizeLegibility;
+`;
+
+const Status = (props) => {
+  const { className, status, label, ...rest } = props;
+
+  return (
+    <Container>
+      <Title>status:</Title>
+      <BadgesWrapper data-testid="status-wrapper">
+        <StatusBadge className={className} $variant={status} {...rest}>
+          {status}
+        </StatusBadge>
+        {label && <LabelBadge $variant={status}>{label}</LabelBadge>}
+      </BadgesWrapper>
+    </Container>
+  );
+};
+
+Status.propTypes = {
+  label: PropTypes.string,
+  status: PropTypes.string,
+};
+
+Status.defaultProps = {
+  label: null,
+  status: null,
+};
+
+export default Status;
