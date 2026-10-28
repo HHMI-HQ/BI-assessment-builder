@@ -5,6 +5,7 @@ const {
   createJWT,
   ChatChannel,
   ChatMessage,
+  Identity,
 } = require('@coko/server')
 
 const axios = require('axios').default
@@ -21,7 +22,6 @@ const {
   Team,
   TeamMember,
   User,
-  Identity,
   Question,
   QuestionVersion,
   Review,

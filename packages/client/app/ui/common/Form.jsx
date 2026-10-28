@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { debounce } from "lodash";
-
 import { Form as AntForm } from "antd";
-import { grid, th, Ribbon as UIRibbon } from "@coko/client";
+import { grid, th } from "@coko/client";
+import UIRibbon from "./Ribbon";
 
 const FormWrapper = styled.div`
   .ant-form-item-explain-error {

@@ -1,19 +1,31 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { grid } from "@coko/client";
+import { grid, th } from "@coko/client";
 import { TabsStyled as Tabs } from "../common";
 import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import theme from "../../theme";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  background-color: ${th("colorBackgroundHue")};
+  min-block-size: 100%;
+`;
 
 const StyledTabs = styled(Tabs)`
-  .ant-tabs-tabpane {
-    margin: ${grid(4)} auto 0;
-    max-width: 100%;
-    width: 900px;
+  max-inline-size: 1000px;
+  margin-inline: auto;
+
+  .ant-tabs-nav {
+    background-color: ${th("colorBackgroundHue")};
+  }
+
+  .ant-tabs-body-holder {
+    background-color: ${th("colorBackground")};
+    border: 1px solid ${th("colorBorder")};
+    border-radius: 0 0 4px 4px;
+    border-top: none;
+    padding: ${grid(4)};
   }
 `;
 
@@ -120,8 +132,7 @@ const Profile = ({
   return (
     <Wrapper className={className}>
       <StyledTabs
-        activebg={theme.colorSuccess} // prop to set active tab background-color
-        activecolor="#fff" // prop to set active tab color
+        activebg={theme.colorBackground} // prop to set active tab background-color
         activeKey={activeKey}
         items={items}
         onTabClick={checkForUnsavedChanges}

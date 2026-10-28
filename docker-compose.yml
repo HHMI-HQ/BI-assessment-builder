@@ -66,14 +66,15 @@ services:
       - CLIENT_BIOINTERACTIVE_OAUTH_CLIENT_ID=${CLIENT_BIOINTERACTIVE_OAUTH_CLIENT_ID:-"hhmi_assessment_builder"}
       - CLIENT_BIOINTERACTIVE_OAUTH_REDIRECT_URI=${CLIENT_BIOINTERACTIVE_OAUTH_REDIRECT_URI:-""}
     volumes:
+      # - ./packages/server/config:/home/node/hhmi/config
       - ./packages/server/api:/home/node/hhmi/api
-      - ./packages/server/config:/home/node/hhmi/config
       - ./packages/server/controllers:/home/node/hhmi/controllers
       - ./packages/server/models:/home/node/hhmi/models
       - ./packages/server/rest:/home/node/hhmi/rest
       - ./packages/server/scripts:/home/node/hhmi/scripts
       - ./packages/server/services:/home/node/hhmi/services
       - ./packages/server/permissions.js:/home/node/hhmi/permissions.js
+      - ./packages/server/components.js:/home/node/hhmi/components.js
     tty: true
 
   db:

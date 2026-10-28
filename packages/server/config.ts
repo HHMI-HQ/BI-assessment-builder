@@ -1,19 +1,7 @@
 const { env } = require('@coko/server')
-const components = require('./config/components')
-// import permissions from './permissions'
-// import productionChatActivityNotification from "./services/chatActivityNotifications";
-// import emptyTempFolder from "./services/emptyTemp";
-// import { password } from "@coko/server/dist/models/_helpers/types";
+const components = require('./components')
 
 export default {
-  // passwordReset: {
-  //   path: 'password-reset',
-  // },
-  // mailer: {
-  //   from: 'info@hhmi.com',
-  //   path: path.join(__dirname, 'mailer'),
-  // },
-  // permissions,
   components,
   db: {},
   subscriptionsDb: {},
@@ -30,11 +18,6 @@ export default {
   // useFileStorage: true,
   useGraphQLServer: true,
   adminUser: false,
-  // adminUser: {
-  //   username: "admin",
-  //   email: "admin0@hhmi.org",
-  //   password: "Password@123",
-  // },
   mailer: {
     from: env('MAILER_SENDER'),
     transport: {
@@ -50,16 +33,6 @@ export default {
   serverUrl: 'localhost:3000',
   // protocol: 'http',
   // externalServerURL: undefined,
-  // onStartup: [
-  //   {
-  //     label: 'Seed admin',
-  //     execute: async () => {
-  //       /* eslint-disable-next-line global-require */
-  //       const seedAdmin = require('../scripts/seedAdmin0')
-  //       await seedAdmin()
-  //     },
-  //   },
-  // ],
   teams: {
     global: [
       {
@@ -102,22 +75,6 @@ export default {
       },
     ],
   },
-  // jobQueues: [
-  //   {
-  //     name: 'notify-production-chat-activity',
-  //     handler: productionChatActivityNotification,
-  //     teamSize: 1,
-  //     teamConcurrency: 1,
-  //     schedule: '0 8 * * *', // a valid cron pattern
-  //     scheduleTimezone: 'America/New_York', // optional, what timezone should be followed
-  //   },
-  //   {
-  //     name: 'empty-tmp-folder',
-  //     handler: emptyTempFolder,
-  //     schedule: '0 3 * * *', // a valid cron pattern
-  //     scheduleTimezone: 'America/New_York', // optional, what timezone should be followed
-  //   },
-  // ],
   // schema: {},
   // validations: path.join(__dirname, 'modules', 'validations'),
 }

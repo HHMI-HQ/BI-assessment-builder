@@ -1,70 +1,68 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid } from '@coko/client'
-import { Row as AntRow, Col } from 'antd'
-import ProfileForm from './ProfileForm'
-import { FormSection, Form, Input, Select, Radio } from '../common'
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid } from "@coko/client";
+import { Row as AntRow, Col } from "antd";
+import ProfileForm from "./ProfileForm";
+import { FormSection, Form, Input, Select, Radio } from "../common";
 
 const Wrapper = styled.div`
-  margin-bottom: ${grid(8)};
-`
+  padding-bottom: ${grid(8)};
+`;
 
 const Row = ({ children }) => (
   <AntRow align="bottom" gutter={8}>
     {children}
   </AntRow>
-)
+);
 
 const yesOrNoOptions = [
   {
-    label: 'Yes',
+    label: "Yes",
     value: true,
   },
   {
-    label: 'No',
+    label: "No",
     value: false,
   },
-]
+];
 
-const ProfileInfo = props => {
+const ProfileInfo = (props) => {
   const {
-    autoSave,
     className,
-    form,
-    initialValues,
-    loading,
-    message,
-    onAutoSave,
-    onCountryChange,
-    onSubmit,
-    secondaryButtonAction,
-    secondaryButtonLabel,
-    showSecondaryButton,
-    submitButtonLabel,
-    submissionStatus,
-    institutionalSetting,
-    institutionLevels,
-
-    courses,
-    topics,
-
-    countries,
-    states,
-    userId,
+    onCountryChange = () => {},
+    autoSave = true,
+    message = "",
+    form = null,
+    initialValues = {},
+    loading = false,
+    onAutoSave = () => {},
+    onSubmit = () => {},
+    secondaryButtonAction = () => {},
+    secondaryButtonLabel = "Clear",
+    showSecondaryButton = true,
+    submitButtonLabel = "Submit",
+    submissionStatus = null,
+    institutionalSetting = [],
+    institutionLevels = [],
+    courses = [],
+    topics = [],
+    countries = [],
+    states = [],
+    userId = null,
     ...rest
-  } = props
+  } = props;
 
-  const [showStates, setShowStates] = useState(false)
+  const [showStates, setShowStates] = useState(false);
 
   useEffect(() => {
     if (states?.length > 0) {
-      setShowStates(true)
+      setShowStates(true);
     } else {
-      setShowStates(false)
+      setShowStates(false);
     }
-  }, [states])
+  }, [states]);
 
   return (
     <Wrapper className={className}>
@@ -94,7 +92,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Last name is required',
+                    message: "Last name is required",
                   },
                 ]}
               >
@@ -112,7 +110,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'First name is required',
+                    message: "First name is required",
                   },
                 ]}
               >
@@ -133,7 +131,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Display name is required',
+                    message: "Display name is required",
                   },
                 ]}
               >
@@ -148,12 +146,12 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Phone number is required',
+                    message: "Phone number is required",
                   },
                   {
                     pattern: /^(\+?\d\s*)+$/,
                     message:
-                      'Please enter a valid format (optional + in front, followed by digits or spaces only) ',
+                      "Please enter a valid format (optional + in front, followed by digits or spaces only) ",
                   },
                 ]}
               >
@@ -173,11 +171,11 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Email address is required',
+                    message: "Email address is required",
                   },
                   {
-                    type: 'email',
-                    message: 'This is not a valid email',
+                    type: "email",
+                    message: "This is not a valid email",
                   },
                 ]}
               >
@@ -200,7 +198,7 @@ const ProfileInfo = props => {
                   {
                     required: true,
                     message:
-                      'Please select the country where your institution is located',
+                      "Please select the country where your institution is located",
                   },
                 ]}
               >
@@ -212,7 +210,7 @@ const ProfileInfo = props => {
                       option.label
                         .toLowerCase()
                         .indexOf(inputValue.toLowerCase()) === 0
-                    )
+                    );
                   }}
                   onChange={onCountryChange}
                   optionFilterProp="label"
@@ -226,14 +224,14 @@ const ProfileInfo = props => {
             <Col sm={12} xs={24}>
               {showStates && (
                 <Form.Item
-                  dependencies={['country']}
+                  dependencies={["country"]}
                   label="State/Province"
                   name="state"
                   rules={[
                     {
                       required: true,
                       message:
-                        'Please select the state where your institution is located',
+                        "Please select the state where your institution is located",
                     },
                   ]}
                 >
@@ -245,7 +243,7 @@ const ProfileInfo = props => {
                         option.label
                           .toLowerCase()
                           .indexOf(inputValue.toLowerCase()) === 0
-                      )
+                      );
                     }}
                     optionFilterProp="label"
                     options={states}
@@ -266,13 +264,13 @@ const ProfileInfo = props => {
                   {
                     required: true,
                     message:
-                      'City where your Institution is located is required',
+                      "City where your Institution is located is required",
                   },
                 ]}
               >
                 <Input
                   autoComplete={
-                    showStates ? 'address-level2' : 'address-level1'
+                    showStates ? "address-level2" : "address-level1"
                   }
                   placeholder="Enter the City where your Institution is located"
                 />
@@ -310,7 +308,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'You have to fill in you position',
+                    message: "You have to fill in you position",
                   },
                 ]}
               >
@@ -326,7 +324,7 @@ const ProfileInfo = props => {
                   {
                     required: true,
                     message:
-                      'You have to fill in your Institution/Organization',
+                      "You have to fill in your Institution/Organization",
                   },
                 ]}
               >
@@ -348,15 +346,15 @@ const ProfileInfo = props => {
                   {
                     required: true,
                     message:
-                      'You have to select your years of teaching experience',
+                      "You have to select your years of teaching experience",
                   },
                 ]}
               >
                 <Select
                   data-testid="teaching-experience-select"
                   options={[
-                    { label: '< 5', value: 'lessThan5' },
-                    { label: '> 5', value: 'moreThan5' },
+                    { label: "< 5", value: "lessThan5" },
+                    { label: "> 5", value: "moreThan5" },
                   ]}
                   placeholder="Select your years of teaching experience"
                 />
@@ -379,9 +377,9 @@ const ProfileInfo = props => {
 
           <Row>
             <Col sm={12} xs={24}>
-              <Form.Item dependencies={['typeOfInstitution']} noStyle>
+              <Form.Item dependencies={["typeOfInstitution"]} noStyle>
                 {({ getFieldValue }) => {
-                  if (getFieldValue('typeOfInstitution') === 'highSchool') {
+                  if (getFieldValue("typeOfInstitution") === "highSchool") {
                     return (
                       <Form.Item
                         label="Do you teach AP/IB courses?"
@@ -393,12 +391,12 @@ const ProfileInfo = props => {
                           options={yesOrNoOptions}
                         />
                       </Form.Item>
-                    )
+                    );
                   }
 
                   if (
-                    getFieldValue('typeOfInstitution') === '2-year-college' ||
-                    getFieldValue('typeOfInstitution') === '4-year-college'
+                    getFieldValue("typeOfInstitution") === "2-year-college" ||
+                    getFieldValue("typeOfInstitution") === "4-year-college"
                   ) {
                     return (
                       <Form.Item
@@ -410,20 +408,20 @@ const ProfileInfo = props => {
                           name="employmentStatus"
                           options={[
                             {
-                              label: 'Full time faculty',
-                              value: 'fullTimeFaculty',
+                              label: "Full time faculty",
+                              value: "fullTimeFaculty",
                             },
                             {
-                              label: 'Part-time/adjunct faculty',
-                              value: 'partTimeAdjunctFaculty',
+                              label: "Part-time/adjunct faculty",
+                              value: "partTimeAdjunctFaculty",
                             },
                           ]}
                         />
                       </Form.Item>
-                    )
+                    );
                   }
 
-                  if (getFieldValue('typeOfInstitution') === 'other') {
+                  if (getFieldValue("typeOfInstitution") === "other") {
                     return (
                       <Form.Item
                         label="Please specify the level you primarily teach:"
@@ -431,10 +429,10 @@ const ProfileInfo = props => {
                       >
                         <Input placeholder="What level do you primarily teach?" />
                       </Form.Item>
-                    )
+                    );
                   }
 
-                  return null
+                  return null;
                 }}
               </Form.Item>
             </Col>
@@ -460,7 +458,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please select an option',
+                    message: "Please select an option",
                   },
                 ]}
               >
@@ -473,10 +471,10 @@ const ProfileInfo = props => {
             </Col>
 
             <Col sm={12} xs={24}>
-              <Form.Item dependencies={['reviewerInterest']} noStyle>
+              <Form.Item dependencies={["reviewerInterest"]} noStyle>
                 {({ getFieldValue }) => {
-                  if (getFieldValue('reviewerInterest') === false) {
-                    return null
+                  if (getFieldValue("reviewerInterest") === false) {
+                    return null;
                   }
 
                   return (
@@ -486,7 +484,7 @@ const ProfileInfo = props => {
                       rules={[
                         {
                           required: true,
-                          message: 'Please select three topics',
+                          message: "Please select three topics",
                         },
                         () => ({
                           validator(_, value) {
@@ -496,20 +494,20 @@ const ProfileInfo = props => {
                               value?.length === 0
                               // if length is 0 or value is undefined, the error is captured by the first rule, added to avoid duplication of error
                             ) {
-                              return Promise.resolve()
+                              return Promise.resolve();
                             }
 
                             if (value.length < 3) {
                               return Promise.reject(
-                                new Error('Please select three topics.'),
-                              )
+                                new Error("Please select three topics."),
+                              );
                             }
 
                             return Promise.reject(
                               new Error(
-                                'Please select no more than three topics.',
+                                "Please select no more than three topics.",
                               ),
-                            )
+                            );
                           },
                         }),
                       ]}
@@ -521,7 +519,7 @@ const ProfileInfo = props => {
                         placeholder="Select three topics"
                       />
                     </Form.Item>
-                  )
+                  );
                 }}
               </Form.Item>
             </Col>
@@ -535,7 +533,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please select an option',
+                    message: "Please select an option",
                   },
                 ]}
               >
@@ -554,7 +552,7 @@ const ProfileInfo = props => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please select an option',
+                    message: "Please select an option",
                   },
                 ]}
               >
@@ -577,8 +575,8 @@ const ProfileInfo = props => {
         </FormSection>
       </ProfileForm>
     </Wrapper>
-  )
-}
+  );
+};
 
 ProfileInfo.propTypes = {
   autoSave: PropTypes.bool,
@@ -601,28 +599,6 @@ ProfileInfo.propTypes = {
   states: PropTypes.arrayOf(PropTypes.shape()),
   onCountryChange: PropTypes.func.isRequired,
   userId: PropTypes.string,
-}
+};
 
-ProfileInfo.defaultProps = {
-  autoSave: true,
-  message: '',
-  form: null,
-  initialValues: {},
-  loading: false,
-  onAutoSave: () => {},
-  onSubmit: () => {},
-  secondaryButtonAction: () => {},
-  secondaryButtonLabel: 'Clear',
-  showSecondaryButton: true,
-  submitButtonLabel: 'Submit',
-  submissionStatus: null,
-  institutionalSetting: [],
-  institutionLevels: [],
-  courses: [],
-  topics: [],
-  countries: [],
-  states: [],
-  userId: null,
-}
-
-export default ProfileInfo
+export default ProfileInfo;
