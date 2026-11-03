@@ -1,4 +1,5 @@
 const {
+  config,
   logger,
   useTransaction,
   uuid,
@@ -13,7 +14,6 @@ const crypto = require('node:crypto')
 const qs = require('node:querystring')
 const path = require('path')
 const { writeFile } = require('fs').promises
-const config = require('config')
 
 const { roles } = require('../constants')
 const { getProfileOptions } = require('./courseMetadata.controller')

@@ -3,7 +3,7 @@ const { logger, useTransaction, uuid } = require('@coko/server')
 const UNIT_LABEL = 'Science as a process'
 const UNIT_VALUE = 'scienceAsAProcess'
 
-export const up = knex => {
+exports.up = knex => {
   try {
     return useTransaction(async trx => {
       const introBioForMajorsCourse = await knex('course')
@@ -29,7 +29,7 @@ export const up = knex => {
   }
 }
 
-export const down = knex => {
+exports.down = knex => {
   try {
     return knex('unit').where('value', UNIT_VALUE).del()
   } catch (error) {

@@ -1,9 +1,7 @@
 const path = require('path')
 const { uniq } = require('lodash')
 const sanitizeHtml = require('sanitize-html')
-const { logger, useTransaction } = require('@coko/server')
-
-const config = require('config')
+const { config, logger, useTransaction } = require('@coko/server')
 
 const {
   List,

@@ -21,4 +21,6 @@ RUN yarn install --immutable && yarn cache clean && rm -rf ~/.npm
 
 COPY --chown=node:node . .
 
-CMD ["yarn", "coko-server", "start"]
+RUN yarn coko-server build
+
+# CMD ["yarn", "coko-server", "start"]

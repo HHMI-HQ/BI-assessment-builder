@@ -1,5 +1,4 @@
 # IMAGE FOR BUILDING
-# FROM node:18.20.2-bullseye-slim
 FROM cokoapps/base:24
 
 WORKDIR /home/node/app
@@ -34,12 +33,12 @@ RUN yarn coko-client-build
 ######################################################################
 
 # IMAGE FOR RUNNING
-FROM cokoapps/base:20 AS client-serve
+#FROM cokoapps/base:24 AS client-serve
 
-RUN apt-get update && apt-get install -y
-RUN npm install --global serve
+#RUN apt-get update && apt-get install -y
+#RUN npm install --global serve
 
-USER node
-
-RUN mkdir client
-RUN cp -rf . client
+# USER node
+#USER root
+#RUN mkdir client
+#RUN cp -rf . client

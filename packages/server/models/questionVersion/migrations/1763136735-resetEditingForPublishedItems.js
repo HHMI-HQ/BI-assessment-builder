@@ -1,6 +1,6 @@
 const { logger, useTransaction } = require('@coko/server')
 
-export const up = knex => {
+exports.up = knex => {
   try {
     return useTransaction(async trx => {
       const problematicQuestionVersions = await knex('question_versions')
@@ -26,4 +26,4 @@ export const up = knex => {
   }
 }
 
-export const down = () => {}
+exports.down = () => {}

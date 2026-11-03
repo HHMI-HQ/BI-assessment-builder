@@ -1,4 +1,4 @@
-export const up = knex => {
+exports.up = knex => {
   try {
     return knex.schema.table('users', table => {
       table.string('middleName').nullable()
@@ -40,4 +40,4 @@ export const up = knex => {
   }
 }
 
-export const down = knex => knex.schema.dropTable('question_versions')
+exports.down = knex => knex.schema.dropTable('question_versions')

@@ -1,6 +1,6 @@
 const { logger } = require('@coko/server')
 
-export const up = knex => {
+exports.up = knex => {
   try {
     return knex.schema.alterTable('question_versions', table => {
       table.text('dependsOn').alter()
@@ -13,7 +13,7 @@ export const up = knex => {
   }
 }
 
-export const down = knex =>
+exports.down = knex =>
   knex.schema.table('question_versions', table => {
     table.string('dependsOn').alter()
   })

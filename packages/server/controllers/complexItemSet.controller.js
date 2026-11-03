@@ -1,6 +1,5 @@
-const { logger, useTransaction } = require('@coko/server')
+const { logger, useTransaction, config } = require('@coko/server')
 const path = require('path')
-const config = require('config')
 const sanitizeHtml = require('sanitize-html')
 
 const {

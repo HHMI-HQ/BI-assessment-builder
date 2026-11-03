@@ -186,7 +186,7 @@ const ngss = {
   ],
 }
 
-export const up = knex => {
+exports.up = knex => {
   try {
     return useTransaction(async trx => {
       const courseId = uuid()
@@ -258,4 +258,4 @@ export const up = knex => {
   }
 }
 
-export const down = () => {}
+exports.down = () => {}

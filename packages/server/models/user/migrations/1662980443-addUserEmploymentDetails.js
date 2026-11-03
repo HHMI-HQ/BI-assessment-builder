@@ -1,6 +1,6 @@
 const { logger } = require('@coko/server')
 
-export const up = knex => {
+exports.up = knex => {
   try {
     return knex.schema.table('users', table => {
       table.boolean('ap_ib_courses').nullable()
@@ -15,7 +15,7 @@ export const up = knex => {
   }
 }
 
-export const down = knex =>
+exports.down = knex =>
   knex.schema.table('users', table => {
     table.dropColumn('ap_ib_courses')
     table.dropColumn('employment_status')

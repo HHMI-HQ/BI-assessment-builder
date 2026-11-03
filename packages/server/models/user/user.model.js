@@ -9,9 +9,9 @@ const {
   useTransaction,
   User: UserModel,
   db,
+  config,
 } = require('@coko/server')
 
-const config = require('config')
 const { applyListQueryOptions } = require('../helpers')
 
 const REVIEWER_TEAM = config

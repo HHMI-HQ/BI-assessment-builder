@@ -1,6 +1,4 @@
-const config = require('config')
-
-const { logger } = require('@coko/server')
+const { config, logger } = require('@coko/server')
 
 const { Team } = require('../models')
 

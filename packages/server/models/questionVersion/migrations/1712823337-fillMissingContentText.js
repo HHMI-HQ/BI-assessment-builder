@@ -19,7 +19,7 @@ const extractDocumentText = data => {
   return allContent
 }
 
-export const up = knex => {
+exports.up = knex => {
   try {
     return useTransaction(async trx => {
       const problematicQuestionVersions = await knex('question_versions')
@@ -46,7 +46,7 @@ export const up = knex => {
   }
 }
 
-export const down = knex =>
+exports.down = knex =>
   knex.schema.table('question_versions', table => {
     table.dropColumn('unpublished')
   })

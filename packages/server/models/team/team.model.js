@@ -1,5 +1,4 @@
-const { logger, Team: TeamModel } = require('@coko/server')
-const config = require('config')
+const { config, logger, Team: TeamModel } = require('@coko/server')
 const { applyListQueryOptions } = require('../helpers')
 
 const User = require('../user/user.model')

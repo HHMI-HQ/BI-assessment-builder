@@ -1,6 +1,6 @@
 const { logger } = require('@coko/server')
 
-export const up = async knex => {
+exports.up = async knex => {
   try {
     const newField = await knex.schema.table('complexItemSets', table => {
       table.boolean('isPublished').defaultTo(false)
@@ -9,7 +9,6 @@ export const up = async knex => {
     // update isPublished to true for sets that already contain published questions
     await knex('complexItemSets')
       .update('isPublished', true)
-      // eslint-disable-next-line func-names
       .whereExists(function () {
         this.select('*')
           .from('question_versions')
@@ -25,7 +24,7 @@ export const up = async knex => {
   }
 }
 
-export const down = knex =>
+exports.down = knex =>
   knex.schema.table('complexItemSets', table => {
     table.dropColumn('isPublished')
   })

@@ -1,15 +1,7 @@
 FROM cokoapps/base:24 as server
 
-RUN apt-get update \ 
-    && apt-get upgrade -y \
-    && apt-get install -y \
-    git \
-    make \
-    g++ \
-    python3
-
+RUN corepack enable
 WORKDIR /home/node/hhmi
-ENV NODE_ENV=production
 
 COPY .yarnrc.yml .
 COPY package.json .
@@ -22,4 +14,6 @@ RUN yarn workspaces focus --production && yarn cache clean && rm -rf ~/.npm
 
 COPY --chown=node:node . .
 
-CMD ["yarn", "coko-server", "start"]
+RUN yarn coko-server build
+
+# CMD ["yarn", "coko-server", "start"]
