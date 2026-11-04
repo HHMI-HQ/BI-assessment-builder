@@ -44,7 +44,7 @@ export default {
   //   unit: 'hours',
   // },
   // pool: { min: 0, max: 20, idleTimeoutMillis: 1000 },
-  port: 3000,
+  port: env('SERVER_PORT', { type: 'number' }) || 3000,
   // useFileStorage: true,
   useGraphQLServer: true,
   adminUser: false,

@@ -23,4 +23,4 @@ COPY --chown=node:node . .
 
 RUN yarn coko-server build
 
-# CMD ["yarn", "coko-server", "start"]
+CMD ["yarn", "coko-server", "start"]
