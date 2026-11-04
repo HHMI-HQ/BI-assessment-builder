@@ -1,5 +1,4 @@
-const { createFile, logger, useTransaction } = require('@coko/server')
-const config = require('config')
+const { config, createFile, logger, useTransaction } = require('@coko/server')
 
 const CokoNotifier = require('../services/notify')
 const { labels } = require('./constants')

@@ -1,7 +1,7 @@
 const crypto = require('crypto')
-const { logger } = require('@coko/server')
+const { logger, Identity } = require('@coko/server')
 
-const { Identity, User, Team } = require('../../models')
+const { User, Team } = require('../../models')
 
 /**
  *

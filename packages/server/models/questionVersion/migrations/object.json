@@ -1,0 +1,136 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "attrs": { "class": "paragraph" },
+      "content": [
+        {
+          "text": "Most drugs in clinical use are broken down by a dozen enzymes belonging to the same p450 superfamily of genes, including some very common drugs such as antidepressants and cough syrups that contain codeine. Match the type of concern you might have if you discovered through genetic testing that at one chromosomal loci you had a common allele, and at the other, you had one of the alleles listed below.",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "matching_container",
+      "attrs": {
+        "id": "a3b95066-6651-4c28-b8a7-1391b3ac233b",
+        "class": "matching-container",
+        "options": [
+          {
+            "label": "Lower drug concentrations in your blood resulting in decreased drug effect.",
+            "value": "fe505a3f-dee4-4e0c-b952-0e62743d53e5"
+          },
+          {
+            "label": "Potential drug-related toxicity due to overdosing.",
+            "value": "355866b6-b88b-4ff0-99c4-6c6cdab66050"
+          },
+          {
+            "label": "No concern about adequate biodegradation of the drug.",
+            "value": "953e6167-2817-45e7-8f6f-90d1d9c25ed9"
+          }
+        ],
+        "feedback": "Duplicated allele - Extra copies of genes encoding p450 enzymes are found in ultrarapid metabolizers. The presence of an extra functional copy of the gene would produce more than usual mRNA and enzyme products. There would be concern that the enzyme would break down the drug substrate more quickly, thus lowering drug concentrations in your blood faster than intended and reducing its effectiveness.\n\nAllele with a substitution - This allele could potentially result in poor metabolism due to reduced or no production of mRNA, and thus reduced active enzymes, so there is concern that the drug would persist at higher concentrations and for longer times in your bloodstream than intended.\n\nMost commonly found allele - Since your metabolic activity should be similar to that found in an average person, there’s no need for concern."
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "class": "paragraph" },
+          "content": [
+            {
+              "type": "matching_option",
+              "attrs": {
+                "id": "faa9a035-7b55-4478-83e0-fffaeb0af9fd",
+                "class": "matching-option",
+                "answer": "",
+                "correct": "fe505a3f-dee4-4e0c-b952-0e62743d53e5",
+                "isfirst": true,
+                "options": [
+                  {
+                    "label": "Lower drug concentrations in your blood resulting in decreased drug effect.",
+                    "value": "fe505a3f-dee4-4e0c-b952-0e62743d53e5"
+                  },
+                  {
+                    "label": "Potential drug-related toxicity due to overdosing.",
+                    "value": "355866b6-b88b-4ff0-99c4-6c6cdab66050"
+                  },
+                  {
+                    "label": "No concern about adequate biodegradation of the drug.",
+                    "value": "953e6167-2817-45e7-8f6f-90d1d9c25ed9"
+                  }
+                ]
+              },
+              "content": [
+                {
+                  "text": "Duplicated allele so that two functional copies of the gene are present on one chromosomal locus",
+                  "type": "text"
+                }
+              ]
+            },
+            {
+              "type": "matching_option",
+              "attrs": {
+                "id": "fc539045-2c90-4e95-b88f-7456de57b5d7",
+                "class": "matching-option",
+                "answer": "",
+                "correct": "355866b6-b88b-4ff0-99c4-6c6cdab66050",
+                "isfirst": false,
+                "options": [
+                  {
+                    "label": "Lower drug concentrations in your blood resulting in decreased drug effect.",
+                    "value": "fe505a3f-dee4-4e0c-b952-0e62743d53e5"
+                  },
+                  {
+                    "label": "Potential drug-related toxicity due to overdosing.",
+                    "value": "355866b6-b88b-4ff0-99c4-6c6cdab66050"
+                  },
+                  {
+                    "label": "No concern about adequate biodegradation of the drug.",
+                    "value": "953e6167-2817-45e7-8f6f-90d1d9c25ed9"
+                  }
+                ]
+              },
+              "content": [
+                {
+                  "text": "Allele with a substitution mutation in the promoter. ",
+                  "type": "text"
+                }
+              ]
+            },
+            {
+              "type": "matching_option",
+              "attrs": {
+                "id": "1c29a587-6f7f-40e3-a64c-9a1a3dd44750",
+                "class": "matching-option",
+                "answer": "",
+                "correct": "953e6167-2817-45e7-8f6f-90d1d9c25ed9",
+                "isfirst": false,
+                "options": [
+                  {
+                    "label": "Lower drug concentrations in your blood resulting in decreased drug effect.",
+                    "value": "fe505a3f-dee4-4e0c-b952-0e62743d53e5"
+                  },
+                  {
+                    "label": "Potential drug-related toxicity due to overdosing.",
+                    "value": "355866b6-b88b-4ff0-99c4-6c6cdab66050"
+                  },
+                  {
+                    "label": "No concern about adequate biodegradation of the drug.",
+                    "value": "953e6167-2817-45e7-8f6f-90d1d9c25ed9"
+                  }
+                ]
+              },
+              "content": [
+                {
+                  "text": "Allele found most commonly in the general population",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    { "type": "paragraph", "attrs": { "class": "paragraph" } }
+  ]
+}

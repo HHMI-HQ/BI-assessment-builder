@@ -1,6 +1,4 @@
-const config = require('config')
-
-const { logger } = require('@coko/server')
+const { config, logger } = require('@coko/server')
 
 const { Team } = require('../models')
 
@@ -11,7 +9,7 @@ const seedGlobalTeams = async () => {
   //   logger.info('No global teams declared in config')
   // }
 
-  const configGlobalTeams = config.get('teams.global')
+  const configGlobalTeams = config.get('teams').global
 
   await Promise.all(
     Object.keys(configGlobalTeams).map(async k => {
@@ -42,7 +40,8 @@ const seedGlobalTeams = async () => {
     }),
   )
 
-  process.exit(0)
+  throw new Error('Something bad happened!')
+  // process.exit(0)
 }
 
 seedGlobalTeams()

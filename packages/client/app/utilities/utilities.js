@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import { isEmpty, uniqBy } from 'lodash'
 
 const apDictionary = [
@@ -12,7 +13,6 @@ const visionAndChangeDictionary = ['coreConcept', 'subDiscipline', 'statement']
 const objectCleaner = obj =>
   Object.entries(obj)
     .map(([k, v]) => [k, v && typeof v === 'object' ? objectCleaner(v) : v])
-    /* eslint-disable-next-line no-param-reassign */
     .reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {})
 
 const questionDataTransformer = ({
@@ -43,7 +43,7 @@ const questionDataTransformer = ({
 
   if (supplementaryFields?.length > 0) {
     const transformedSupplementaryFields = []
-    supplementaryFields.forEach((item, index) => {
+    supplementaryFields.forEach(item => {
       const temp = {
         topic: item.topic || null,
         subtopic: item?.subtopic || null,
@@ -129,7 +129,7 @@ const questionDataMapper = ({
 
   if (supplementaryFields.length > 0) {
     const transformedSupplementaryFields = []
-    supplementaryFields.forEach((item, index) => {
+    supplementaryFields.forEach(item => {
       const temp = { topic: item.topic, subtopic: item.subtopic }
 
       if (
@@ -240,7 +240,7 @@ const extractDocumentText = data => {
   // }
 }
 
-const extractTopicsAndSubtopics = (topics, topicsMetadata) =>
+const extractTopicsAndSubtopics = (topics = [], topicsMetadata = []) =>
   topics
     .map(topic => {
       const topicObject = topicsMetadata.find(t => t.value === topic?.topic)
@@ -270,7 +270,7 @@ const extractTopicsAndSubtopics = (topics, topicsMetadata) =>
       { topics: '', subtopics: '' },
     )
 
-const extractCourseAndObjectives = (courses, frameworksMetadata) =>
+const extractCourseAndObjectives = (courses = [], frameworksMetadata = []) =>
   courses.map(c => {
     const courseInValues = frameworksMetadata.find(f => f.value === c.course)
 
@@ -2322,9 +2322,8 @@ const setSafeHTML = (selector, html, timeout) => {
       ? element.replaceChildren(html)
       : element.replaceChildren('')
 
-  typeof timeout !== 'number'
-    ? writeOnElement()
-    : setTimeout(writeOnElement, timeout)
+  if (typeof timeout !== 'number') writeOnElement()
+  else setTimeout(writeOnElement, timeout)
 }
 
 const safeIndex = (index, direction, list, min = 0) => {

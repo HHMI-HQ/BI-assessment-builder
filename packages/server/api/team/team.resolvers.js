@@ -9,31 +9,19 @@ const {
   reviewSubmitted,
 } = require('../../controllers/team.controllers')
 
-const getNonTeamMemberUsersResolver = async (_, { teamId, term }, ctx) => {
+const getNonTeamMemberUsersResolver = async (_, { teamId, term }) => {
   return getNonTeamMemberUsers(teamId, term)
 }
 
-const filterGlobalTeamMembersResolver = async (
-  _,
-  { role, query, options },
-  ctx,
-) => {
+const filterGlobalTeamMembersResolver = async (_, { role, query, options }) => {
   return filterGlobalTeamMembers(role, query, options)
 }
 
-const addExternalReviewerResolver = async (
-  _,
-  { questionVersionId, input },
-  ctx,
-) => {
+const addExternalReviewerResolver = async (_, { questionVersionId, input }) => {
   return addExternalReviewer(questionVersionId, input)
 }
 
-const inviteReviewerResolver = async (
-  _,
-  { questionVersionId, reviewerId },
-  ctx,
-) => {
+const inviteReviewerResolver = async (_, { questionVersionId, reviewerId }) => {
   return inviteReviewer(questionVersionId, reviewerId)
 }
 

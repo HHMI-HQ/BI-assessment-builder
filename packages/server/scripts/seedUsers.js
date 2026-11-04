@@ -1,6 +1,6 @@
-const { logger, useTransaction } = require('@coko/server')
+const { logger, useTransaction, Identity } = require('@coko/server')
 const crypto = require('crypto')
-const { Identity, User } = require('../models')
+const { User } = require('../models')
 const { addToTeams } = require('./utils/user')
 
 const seedUser = async (email, username, givenNames, surname, role) => {

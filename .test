@@ -1,0 +1,5 @@
+export CLIENT_PAGE_TITLE=HHMI Assessment Builder
+export CLIENT_URL=http://localhost:4000
+export CUSTOM_VAR=custom
+export CLIENT_SHOW_EMAIL_LOGIN_OPTION=true
+export POSTGRES_DB=hhmi_test

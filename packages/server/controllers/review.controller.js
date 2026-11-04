@@ -1,14 +1,15 @@
-const { useTransaction, logger } = require('@coko/server')
-const { File, Identity } = require('@coko/server/src/models')
-const config = require('config')
+const { config, useTransaction, logger } = require('@coko/server')
+const { File, Identity } = require('@coko/server/dist/models')
 
 const { Review, TeamMember, Team, QuestionVersion } = require('../models')
 const { REVIEWER_STATUSES } = require('./constants')
 const { getFileUrl } = require('./file.controllers')
 const CokoNotifier = require('../services/notify')
 
-const HE_TEAM = config.teams.nonGlobal.find(t => t.role === 'handlingEditor')
-const EDITOR_TEAM = config.teams.global.find(t => t.role === 'editor')
+const HE_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'handlingEditor')
+const EDITOR_TEAM = config.get('teams').global.find(t => t.role === 'editor')
 
 const reviewSubmittedStatus = {
   pending: false,
@@ -174,7 +175,7 @@ const submitReview = async (questionVersionId, userId) => {
   }
 }
 
-const inviteMaxReviewers = async (questionVersion, options = {}) => {
+const inviteMaxReviewers = async questionVersion => {
   const { amountOfReviewers: MAX_REVIEWERS, reviewerPool } = questionVersion
 
   try {

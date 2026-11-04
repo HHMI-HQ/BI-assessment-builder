@@ -90,10 +90,10 @@ function toPropertyKey(t) {
 function _defineProperties(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t]
-    ;(o.enumerable = o.enumerable || !1),
+    ;((o.enumerable = o.enumerable || !1),
       (o.configurable = !0),
       'value' in o && (o.writable = !0),
-      Object.defineProperty(e, toPropertyKey(o.key), o)
+      Object.defineProperty(e, toPropertyKey(o.key), o))
   }
 }
 function _createClass(e, r, t) {
@@ -168,7 +168,7 @@ function _setPrototypeOf(t, e) {
     (_setPrototypeOf = Object.setPrototypeOf
       ? Object.setPrototypeOf.bind()
       : function (t, e) {
-          return (t.__proto__ = e), t
+          return ((t.__proto__ = e), t)
         }),
     _setPrototypeOf(t, e)
   )
@@ -177,7 +177,7 @@ function _setPrototypeOf(t, e) {
 function _inherits(t, e) {
   if ('function' != typeof e && null !== e)
     throw new TypeError('Super expression must either be null or a function')
-  ;(t.prototype = Object.create(e && e.prototype, {
+  ;((t.prototype = Object.create(e && e.prototype, {
     constructor: {
       value: t,
       writable: !0,
@@ -187,7 +187,7 @@ function _inherits(t, e) {
     Object.defineProperty(t, 'prototype', {
       writable: !1,
     }),
-    e && _setPrototypeOf(t, e)
+    e && _setPrototypeOf(t, e))
 }
 
 var createEmptyParagraph$1 = function createEmptyParagraph(
@@ -695,9 +695,9 @@ function _unsupportedIterableToArray(r, a) {
       'Map' === t || 'Set' === t
         ? Array.from(r)
         : 'Arguments' === t ||
-          /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t)
-        ? _arrayLikeToArray(r, a)
-        : void 0
+            /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t)
+          ? _arrayLikeToArray(r, a)
+          : void 0
     )
   }
 }
@@ -878,8 +878,8 @@ var QuestionEditorComponent = function QuestionEditorComponent(_ref) {
     node === null || node === void 0
       ? void 0
       : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-      ? void 0
-      : _node$attrs.id
+        ? void 0
+        : _node$attrs.id
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -1842,7 +1842,7 @@ function _iterableToArrayLimit(r, l) {
           f = !0
         );
     } catch (r) {
-      ;(o = !0), (n = r)
+      ;((o = !0), (n = r))
     } finally {
       try {
         if (!f && null != t['return'] && ((u = t['return']()), Object(u) !== u))
@@ -1906,8 +1906,8 @@ var ContainerEditor$2 = function ContainerEditor(_ref) {
     node === null || node === void 0
       ? void 0
       : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-      ? void 0
-      : _node$attrs.id
+        ? void 0
+        : _node$attrs.id
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -2093,11 +2093,11 @@ var FillTheGapContainerComponent = function (_ref) {
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
       var containerId =
-        (_singleNode$node$cont = singleNode.node.content.content.find(function (
-          n,
-        ) {
-          return n.type.name === 'fill_the_gap_container'
-        })) === null || _singleNode$node$cont === void 0
+        (_singleNode$node$cont = singleNode.node.content.content.find(
+          function (n) {
+            return n.type.name === 'fill_the_gap_container'
+          },
+        )) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
       if (containerId === node.attrs.id) {
@@ -2192,11 +2192,11 @@ function ownKeys(e, r) {
   var t = Object.keys(e)
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e)
-    r &&
+    ;(r &&
       (o = o.filter(function (r) {
         return Object.getOwnPropertyDescriptor(e, r).enumerable
       })),
-      t.push.apply(t, o)
+      t.push.apply(t, o))
   }
   return t
 }
@@ -2208,10 +2208,10 @@ function _objectSpread2(e) {
           _defineProperty(e, r, t[r])
         })
       : Object.getOwnPropertyDescriptors
-      ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t))
-      : ownKeys(Object(t)).forEach(function (r) {
-          Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r))
-        })
+        ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t))
+        : ownKeys(Object(t)).forEach(function (r) {
+            Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r))
+          })
   }
   return e
 }
@@ -2978,7 +2978,7 @@ var mathcingWrapperNode$1 = {
 }
 
 function _superPropBase(t, o) {
-  for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t)); );
+  for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t)););
   return t
 }
 
@@ -3153,8 +3153,8 @@ var ContainerEditor$1 = function ContainerEditor(_ref) {
     node === null || node === void 0
       ? void 0
       : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-      ? void 0
-      : _node$attrs.id
+        ? void 0
+        : _node$attrs.id
   var filteredplugins = app.PmPlugins.getAll().filter(function (plugin) {
     return (
       !plugin.key.includes('y-sync') &&
@@ -3420,12 +3420,10 @@ var MatchingContainerComponent = function (_ref) {
               //
               // });
 
-              /* eslint-disable-next-line no-param-reassign */
               optionNode.attrs.options = options.filter(function (option) {
                 return option.value !== value
               })
               if (optionNode.attrs.correct === value) {
-                // eslint-disable-next-line no-param-reassign
                 optionNode.attrs.correct = null
               }
             }
@@ -3440,7 +3438,6 @@ var MatchingContainerComponent = function (_ref) {
         singleNode.node.content.content.forEach(function (parentNodes) {
           parentNodes.forEach(function (optionNode) {
             if (optionNode.type.name === 'matching_option')
-              /* eslint-disable-next-line no-param-reassign */
               optionNode.attrs.options = options
           })
         })
@@ -3481,11 +3478,11 @@ var MatchingContainerComponent = function (_ref) {
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
       var containerId =
-        (_singleNode$node$cont = singleNode.node.content.content.find(function (
-          n,
-        ) {
-          return n.type.name === 'matching_container'
-        })) === null || _singleNode$node$cont === void 0
+        (_singleNode$node$cont = singleNode.node.content.content.find(
+          function (n) {
+            return n.type.name === 'matching_container'
+          },
+        )) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
       if (containerId === node.attrs.id) {
@@ -3878,17 +3875,17 @@ var DropComponent$1 = function DropComponent(_ref) {
         theNode === null || theNode === void 0
           ? void 0
           : (_theNode$attrs = theNode.attrs) === null ||
-            _theNode$attrs === void 0
-          ? void 0
-          : _theNode$attrs.options,
+              _theNode$attrs === void 0
+            ? void 0
+            : _theNode$attrs.options,
       )
       setSelectedOption(
         theNode === null || theNode === void 0
           ? void 0
           : (_theNode$attrs2 = theNode.attrs) === null ||
-            _theNode$attrs2 === void 0
-          ? void 0
-          : _theNode$attrs2.correct,
+              _theNode$attrs2 === void 0
+            ? void 0
+            : _theNode$attrs2.correct,
       )
     },
     [
@@ -3896,9 +3893,9 @@ var DropComponent$1 = function DropComponent(_ref) {
       _getMatchingNode === void 0
         ? void 0
         : (_getMatchingNode$attr = _getMatchingNode.attrs) === null ||
-          _getMatchingNode$attr === void 0
-        ? void 0
-        : _getMatchingNode$attr.options,
+            _getMatchingNode$attr === void 0
+          ? void 0
+          : _getMatchingNode$attr.options,
     ],
   )
   useEffect(
@@ -3988,9 +3985,9 @@ var DropComponent$1 = function DropComponent(_ref) {
           selectedOption === null || !selectedOption
             ? 'Select Option'
             : (_selectedValue$ = selectedValue[0]) === null ||
-              _selectedValue$ === void 0
-            ? void 0
-            : _selectedValue$.label,
+                _selectedValue$ === void 0
+              ? void 0
+              : _selectedValue$.label,
           /*#__PURE__*/ React.createElement(StyledIcon$4, {
             name: 'expand',
           }),
@@ -5642,8 +5639,8 @@ var ContainerEditor = function ContainerEditor(_ref) {
     node === null || node === void 0
       ? void 0
       : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-      ? void 0
-      : _node$attrs.id
+        ? void 0
+        : _node$attrs.id
   var isEditable = main.props.editable(function (editable) {
     return editable
   })
@@ -5843,11 +5840,11 @@ var MultipleDropDownContainerComponent = function (_ref) {
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
       var containerId =
-        (_singleNode$node$cont = singleNode.node.content.content.find(function (
-          n,
-        ) {
-          return n.type.name === 'multiple_drop_down_container'
-        })) === null || _singleNode$node$cont === void 0
+        (_singleNode$node$cont = singleNode.node.content.content.find(
+          function (n) {
+            return n.type.name === 'multiple_drop_down_container'
+          },
+        )) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
       if (containerId === node.attrs.id) {
@@ -6532,11 +6529,11 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-        ? void 0
-        : (_node$attrs$answersEx = _node$attrs.answersExact) === null ||
-          _node$attrs$answersEx === void 0
-        ? void 0
-        : _node$attrs$answersEx.exactAnswer) || '',
+          ? void 0
+          : (_node$attrs$answersEx = _node$attrs.answersExact) === null ||
+              _node$attrs$answersEx === void 0
+            ? void 0
+            : _node$attrs$answersEx.exactAnswer) || '',
     ),
     _useState2 = _slicedToArray(_useState, 2),
     exact = _useState2[0],
@@ -6545,11 +6542,11 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
-        ? void 0
-        : (_node$attrs2$answersE = _node$attrs2.answersExact) === null ||
-          _node$attrs2$answersE === void 0
-        ? void 0
-        : _node$attrs2$answersE.marginError) || '',
+          ? void 0
+          : (_node$attrs2$answersE = _node$attrs2.answersExact) === null ||
+              _node$attrs2$answersE === void 0
+            ? void 0
+            : _node$attrs2$answersE.marginError) || '',
     ),
     _useState4 = _slicedToArray(_useState3, 2),
     marginError = _useState4[0],
@@ -6558,8 +6555,8 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs3 = node.attrs) === null || _node$attrs3 === void 0
-        ? void 0
-        : _node$attrs3.answerExact) || '',
+          ? void 0
+          : _node$attrs3.answerExact) || '',
     ),
     _useState6 = _slicedToArray(_useState5, 2),
     exactStudent = _useState6[0],
@@ -6668,12 +6665,12 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
                   (node === null || node === void 0
                     ? void 0
                     : (_node$attrs4 = node.attrs) === null ||
-                      _node$attrs4 === void 0
-                    ? void 0
-                    : (_node$attrs4$answersE = _node$attrs4.answersExact) ===
-                        null || _node$attrs4$answersE === void 0
-                    ? void 0
-                    : _node$attrs4$answersE.exactAnswer) || exact,
+                        _node$attrs4 === void 0
+                      ? void 0
+                      : (_node$attrs4$answersE = _node$attrs4.answersExact) ===
+                            null || _node$attrs4$answersE === void 0
+                        ? void 0
+                        : _node$attrs4$answersE.exactAnswer) || exact,
               }),
             ),
           ),
@@ -6704,12 +6701,12 @@ var ExactAnswerComponent = function ExactAnswerComponent(_ref) {
                   (node === null || node === void 0
                     ? void 0
                     : (_node$attrs5 = node.attrs) === null ||
-                      _node$attrs5 === void 0
-                    ? void 0
-                    : (_node$attrs5$answersE = _node$attrs5.answersExact) ===
-                        null || _node$attrs5$answersE === void 0
-                    ? void 0
-                    : _node$attrs5$answersE.marginError) || marginError,
+                        _node$attrs5 === void 0
+                      ? void 0
+                      : (_node$attrs5$answersE = _node$attrs5.answersExact) ===
+                            null || _node$attrs5$answersE === void 0
+                        ? void 0
+                        : _node$attrs5$answersE.marginError) || marginError,
               }),
             ),
           ),
@@ -6855,11 +6852,11 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-        ? void 0
-        : (_node$attrs$answersPr = _node$attrs.answersPrecise) === null ||
-          _node$attrs$answersPr === void 0
-        ? void 0
-        : _node$attrs$answersPr.preciseAnswer) || '',
+          ? void 0
+          : (_node$attrs$answersPr = _node$attrs.answersPrecise) === null ||
+              _node$attrs$answersPr === void 0
+            ? void 0
+            : _node$attrs$answersPr.preciseAnswer) || '',
     ),
     _useState2 = _slicedToArray(_useState, 2),
     precise = _useState2[0],
@@ -6868,8 +6865,8 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
-        ? void 0
-        : _node$attrs2.answerPrecise) || '',
+          ? void 0
+          : _node$attrs2.answerPrecise) || '',
     ),
     _useState4 = _slicedToArray(_useState3, 2),
     preciseStudent = _useState4[0],
@@ -6960,12 +6957,12 @@ var PreciseAnswerComponent = function PreciseAnswerComponent(_ref) {
                 (node === null || node === void 0
                   ? void 0
                   : (_node$attrs3 = node.attrs) === null ||
-                    _node$attrs3 === void 0
-                  ? void 0
-                  : (_node$attrs3$answersP = _node$attrs3.answersPrecise) ===
-                      null || _node$attrs3$answersP === void 0
-                  ? void 0
-                  : _node$attrs3$answersP.preciseAnswer) || precise,
+                      _node$attrs3 === void 0
+                    ? void 0
+                    : (_node$attrs3$answersP = _node$attrs3.answersPrecise) ===
+                          null || _node$attrs3$answersP === void 0
+                      ? void 0
+                      : _node$attrs3$answersP.preciseAnswer) || precise,
             }),
           ),
         ),
@@ -7111,11 +7108,11 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs = node.attrs) === null || _node$attrs === void 0
-        ? void 0
-        : (_node$attrs$answersRa = _node$attrs.answersRange) === null ||
-          _node$attrs$answersRa === void 0
-        ? void 0
-        : _node$attrs$answersRa.minAnswer) || '',
+          ? void 0
+          : (_node$attrs$answersRa = _node$attrs.answersRange) === null ||
+              _node$attrs$answersRa === void 0
+            ? void 0
+            : _node$attrs$answersRa.minAnswer) || '',
     ),
     _useState2 = _slicedToArray(_useState, 2),
     minValue = _useState2[0],
@@ -7124,11 +7121,11 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs2 = node.attrs) === null || _node$attrs2 === void 0
-        ? void 0
-        : (_node$attrs2$answersR = _node$attrs2.answersRange) === null ||
-          _node$attrs2$answersR === void 0
-        ? void 0
-        : _node$attrs2$answersR.maxAnswer) || '',
+          ? void 0
+          : (_node$attrs2$answersR = _node$attrs2.answersRange) === null ||
+              _node$attrs2$answersR === void 0
+            ? void 0
+            : _node$attrs2$answersR.maxAnswer) || '',
     ),
     _useState4 = _slicedToArray(_useState3, 2),
     maxValue = _useState4[0],
@@ -7137,8 +7134,8 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
       (node === null || node === void 0
         ? void 0
         : (_node$attrs3 = node.attrs) === null || _node$attrs3 === void 0
-        ? void 0
-        : _node$attrs3.answerRange) || '',
+          ? void 0
+          : _node$attrs3.answerRange) || '',
     ),
     _useState6 = _slicedToArray(_useState5, 2),
     rangeStudentValue = _useState6[0],
@@ -7244,12 +7241,12 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
                   (node === null || node === void 0
                     ? void 0
                     : (_node$attrs4 = node.attrs) === null ||
-                      _node$attrs4 === void 0
-                    ? void 0
-                    : (_node$attrs4$answersR = _node$attrs4.answersRange) ===
-                        null || _node$attrs4$answersR === void 0
-                    ? void 0
-                    : _node$attrs4$answersR.minAnswer) || minValue,
+                        _node$attrs4 === void 0
+                      ? void 0
+                      : (_node$attrs4$answersR = _node$attrs4.answersRange) ===
+                            null || _node$attrs4$answersR === void 0
+                        ? void 0
+                        : _node$attrs4$answersR.minAnswer) || minValue,
               }),
             ),
           ),
@@ -7276,12 +7273,12 @@ var RangeAnswerComponent = function RangeAnswerComponent(_ref) {
                   (node === null || node === void 0
                     ? void 0
                     : (_node$attrs5 = node.attrs) === null ||
-                      _node$attrs5 === void 0
-                    ? void 0
-                    : (_node$attrs5$answersR = _node$attrs5.answersRange) ===
-                        null || _node$attrs5$answersR === void 0
-                    ? void 0
-                    : _node$attrs5$answersR.maxAnswer) || maxValue,
+                        _node$attrs5 === void 0
+                      ? void 0
+                      : (_node$attrs5$answersR = _node$attrs5.answersRange) ===
+                            null || _node$attrs5$answersR === void 0
+                        ? void 0
+                        : _node$attrs5$answersR.maxAnswer) || maxValue,
               }),
             ),
           ),
@@ -7457,11 +7454,11 @@ var NumericalAnswerContainerComponent = function (_ref) {
     allNodes.forEach(function (singleNode) {
       var _singleNode$node$cont
       var containerId =
-        (_singleNode$node$cont = singleNode.node.content.content.find(function (
-          n,
-        ) {
-          return n.type.name === 'numerical_answer_container'
-        })) === null || _singleNode$node$cont === void 0
+        (_singleNode$node$cont = singleNode.node.content.content.find(
+          function (n) {
+            return n.type.name === 'numerical_answer_container'
+          },
+        )) === null || _singleNode$node$cont === void 0
           ? void 0
           : _singleNode$node$cont.attrs.id
       if (containerId === node.attrs.id) {
@@ -7529,12 +7526,12 @@ var NumericalAnswerContainerComponent = function (_ref) {
           _getUpdatedNode === void 0
             ? void 0
             : (_getUpdatedNode$node = _getUpdatedNode.node) === null ||
-              _getUpdatedNode$node === void 0
-            ? void 0
-            : (_getUpdatedNode$node$ = _getUpdatedNode$node.attrs) === null ||
-              _getUpdatedNode$node$ === void 0
-            ? void 0
-            : _getUpdatedNode$node$.answerType) === 'preciseAnswer' &&
+                _getUpdatedNode$node === void 0
+              ? void 0
+              : (_getUpdatedNode$node$ = _getUpdatedNode$node.attrs) === null ||
+                  _getUpdatedNode$node$ === void 0
+                ? void 0
+                : _getUpdatedNode$node$.answerType) === 'preciseAnswer' &&
             /*#__PURE__*/ React.createElement(
               StyledIconContainer,
               {
@@ -7582,12 +7579,12 @@ var NumericalAnswerContainerComponent = function (_ref) {
         _getUpdatedNode3 === void 0
           ? void 0
           : (_getUpdatedNode3$node = _getUpdatedNode3.node) === null ||
-            _getUpdatedNode3$node === void 0
-          ? void 0
-          : (_getUpdatedNode3$node2 = _getUpdatedNode3$node.attrs) === null ||
-            _getUpdatedNode3$node2 === void 0
-          ? void 0
-          : _getUpdatedNode3$node2.answerType) === '' &&
+              _getUpdatedNode3$node === void 0
+            ? void 0
+            : (_getUpdatedNode3$node2 = _getUpdatedNode3$node.attrs) === null ||
+                _getUpdatedNode3$node2 === void 0
+              ? void 0
+              : _getUpdatedNode3$node2.answerType) === '' &&
           /*#__PURE__*/ React.createElement(
             React.Fragment,
             null,
@@ -7597,12 +7594,12 @@ var NumericalAnswerContainerComponent = function (_ref) {
         _getUpdatedNode4 === void 0
           ? void 0
           : (_getUpdatedNode4$node = _getUpdatedNode4.node) === null ||
-            _getUpdatedNode4$node === void 0
-          ? void 0
-          : (_getUpdatedNode4$node2 = _getUpdatedNode4$node.attrs) === null ||
-            _getUpdatedNode4$node2 === void 0
-          ? void 0
-          : _getUpdatedNode4$node2.answerType) === 'exactAnswer' &&
+              _getUpdatedNode4$node === void 0
+            ? void 0
+            : (_getUpdatedNode4$node2 = _getUpdatedNode4$node.attrs) === null ||
+                _getUpdatedNode4$node2 === void 0
+              ? void 0
+              : _getUpdatedNode4$node2.answerType) === 'exactAnswer' &&
           /*#__PURE__*/ React.createElement(ExactAnswerComponent, {
             node:
               (_getUpdatedNode5 = getUpdatedNode()) === null ||
@@ -7617,12 +7614,12 @@ var NumericalAnswerContainerComponent = function (_ref) {
         _getUpdatedNode6 === void 0
           ? void 0
           : (_getUpdatedNode6$node = _getUpdatedNode6.node) === null ||
-            _getUpdatedNode6$node === void 0
-          ? void 0
-          : (_getUpdatedNode6$node2 = _getUpdatedNode6$node.attrs) === null ||
-            _getUpdatedNode6$node2 === void 0
-          ? void 0
-          : _getUpdatedNode6$node2.answerType) === 'rangeAnswer' &&
+              _getUpdatedNode6$node === void 0
+            ? void 0
+            : (_getUpdatedNode6$node2 = _getUpdatedNode6$node.attrs) === null ||
+                _getUpdatedNode6$node2 === void 0
+              ? void 0
+              : _getUpdatedNode6$node2.answerType) === 'rangeAnswer' &&
           /*#__PURE__*/ React.createElement(RangeAnswerComponent, {
             node:
               (_getUpdatedNode7 = getUpdatedNode()) === null ||
@@ -7637,12 +7634,12 @@ var NumericalAnswerContainerComponent = function (_ref) {
         _getUpdatedNode8 === void 0
           ? void 0
           : (_getUpdatedNode8$node = _getUpdatedNode8.node) === null ||
-            _getUpdatedNode8$node === void 0
-          ? void 0
-          : (_getUpdatedNode8$node2 = _getUpdatedNode8$node.attrs) === null ||
-            _getUpdatedNode8$node2 === void 0
-          ? void 0
-          : _getUpdatedNode8$node2.answerType) === 'preciseAnswer' &&
+              _getUpdatedNode8$node === void 0
+            ? void 0
+            : (_getUpdatedNode8$node2 = _getUpdatedNode8$node.attrs) === null ||
+                _getUpdatedNode8$node2 === void 0
+              ? void 0
+              : _getUpdatedNode8$node2.answerType) === 'preciseAnswer' &&
           /*#__PURE__*/ React.createElement(PreciseAnswerComponent, {
             node:
               (_getUpdatedNode9 = getUpdatedNode()) === null ||
@@ -8317,10 +8314,10 @@ function _objectWithoutProperties(e, t) {
   if (Object.getOwnPropertySymbols) {
     var n = Object.getOwnPropertySymbols(e)
     for (r = 0; r < n.length; r++)
-      (o = n[r]),
+      ((o = n[r]),
         -1 === t.indexOf(o) &&
           {}.propertyIsEnumerable.call(e, o) &&
-          (i[o] = e[o])
+          (i[o] = e[o]))
   }
   return i
 }

@@ -46,7 +46,7 @@ exports.up = knex => {
   }
 }
 
-// exports.down = knex =>
-//   knex.schema.table('question_versions', table => {
-//     table.dropColumn('unpublished')
-//   })
+exports.down = knex =>
+  knex.schema.table('question_versions', table => {
+    table.dropColumn('unpublished')
+  })
