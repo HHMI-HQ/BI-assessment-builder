@@ -1,4 +1,4 @@
-const Identity = require('@coko/server/src/models/identity/identity.model')
+const Identity = require('@coko/server/dist/models/identity/identity.model')
 
 const Question = require('./question/question.model')
 const QuestionVersion = require('./questionVersion/questionVersion.model')

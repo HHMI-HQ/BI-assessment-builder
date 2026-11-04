@@ -1,7 +1,13 @@
-const { logger, User, db, useTransaction } = require('@coko/server')
+const {
+  logger,
+  User,
+  db,
+  useTransaction,
+  Identity,
+  Team,
+  TeamMember,
+} = require('@coko/server')
 const crypto = require('crypto')
-const { Identity } = require('../models')
-const { addToTeams } = require('./utils/user')
 
 // eslint-disable-next-line import/newline-after-import
 module.exports = async () => {
@@ -45,7 +51,16 @@ module.exports = async () => {
         verificationToken,
       })
 
-      await addToTeams('admin0@hhmi.org', 'admin')
+      const adminTeam = await Team.findOne({
+        role: 'admin',
+        global: true,
+      })
+
+      await TeamMember.insert({
+        teamId: adminTeam.id,
+        userId: newAdmin.id,
+      })
+      // await addToTeams('admin0@hhmi.org', 'admin')
 
       logger.info(
         '[seedAdmin0]: User `admin0` has been created with admin privelages',

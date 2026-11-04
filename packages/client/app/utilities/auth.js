@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 // import { useHistory } from 'react-router-dom'
-// import { useApolloClient } from '@apollo/client'
+// import { useApolloClient } from '@apollo/client/react'
 
 // import { useCurrentUser } from '@coko/client'
 

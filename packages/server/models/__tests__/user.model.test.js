@@ -1,4 +1,4 @@
-const Identity = require('@coko/server/src/models/identity/identity.model')
+const Identity = require('@coko/server/dist/models/identity/identity.model')
 const User = require('../user/user.model')
 const Team = require('../team/team.model')
 const TeamMember = require('../teamMember/teamMember.model')

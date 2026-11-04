@@ -77,10 +77,10 @@ const productionChatActivityNotification = async () => {
         logger.info(`${question.id} does not have a production chat!`)
       }
     })
-  } catch (e) {
+  } catch (error) {
     logger.error('daily email notification failed')
-    throw new Error(e)
+    throw new Error(error)
   }
 }
 
-module.exports = productionChatActivityNotification
+export default productionChatActivityNotification

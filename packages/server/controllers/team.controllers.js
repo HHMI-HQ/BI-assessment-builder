@@ -1,6 +1,10 @@
-const { logger, useTransaction, subscriptionManager } = require('@coko/server')
-const { ChatChannel } = require('@coko/server/src/models')
-const config = require('config')
+const {
+  config,
+  logger,
+  useTransaction,
+  subscriptionManager,
+} = require('@coko/server')
+const { ChatChannel } = require('@coko/server/dist/models')
 const { uniq } = require('lodash')
 
 const {
@@ -21,9 +25,13 @@ const metadataValues = require('./metadataValues')
 const CokoNotifier = require('../services/notify')
 const { actions } = require('./constants')
 
-const HE_TEAM = config.teams.nonGlobal.find(t => t.role === 'handlingEditor')
-const REVIEWER_TEAM = config.teams.nonGlobal.find(t => t.role === 'reviewer')
-const EDITOR_TEAM = config.teams.global.find(t => t.role === 'editor')
+const HE_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'handlingEditor')
+const REVIEWER_TEAM = config
+  .get('teams')
+  .nonGlobal.find(t => t.role === 'reviewer')
+const EDITOR_TEAM = config.get('teams').global.find(t => t.role === 'editor')
 
 const BASE_MESSAGE = 'Team controllers:'
 

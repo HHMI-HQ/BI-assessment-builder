@@ -9,7 +9,6 @@ exports.up = async knex => {
     // update isPublished to true for sets that already contain published questions
     await knex('complexItemSets')
       .update('isPublished', true)
-      // eslint-disable-next-line func-names
       .whereExists(function () {
         this.select('*')
           .from('question_versions')

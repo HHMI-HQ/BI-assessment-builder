@@ -1,0 +1,247 @@
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { CloseOutlined } from '@ant-design/icons'
+import { AssignReviewers as UIAssignReviewers , grid, th } from '@coko/client'
+import { profileOptions } from '../../utilities'
+import { ReviewSummary } from '../review'
+import { Modal, Button } from '../common'
+
+const SubmittedReview = styled.section`
+  background-color: white;
+  border-left: 1px solid ${th('colorBorder')};
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
+  padding: ${grid(4)};
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  z-index: 5;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`
+
+const CloseBtn = styled(Button)`
+  border: none;
+  position: absolute;
+  right: ${grid(4)};
+`
+
+const StyledAssignReviewers = styled(UIAssignReviewers)`
+  div:nth-child(3) {
+    overflow-x: auto;
+  }
+
+  > div:nth-child(2) {
+    > div:first-child {
+      display: none;
+    }
+
+    > div:nth-child(2) {
+      > div:not(:nth-child(3)) {
+        display: none;
+      }
+    }
+  }
+
+  tr td:nth-child(2) span {
+    max-width: unset;
+    white-space: nowrap;
+  }
+`
+
+const additionalSearchFields = [
+  {
+    label: 'Assessment Training',
+    value: 'assessmentTraining',
+  },
+  {
+    label: 'Language Training',
+    value: 'languageTraining',
+  },
+  {
+    label: 'Topics',
+    value: 'topics',
+    items: profileOptions.topics.map(t => t.label),
+  },
+]
+
+const ModalContext = React.createContext(null)
+const ModalHeader = Modal.header
+const ModalFooter = Modal.footer
+
+const AssignReviewers = props => {
+  const {
+    amountOfReviewers,
+    automate,
+    canInviteMore,
+    onAddReviewers,
+    onAmountOfReviewersChange,
+    onAutomationChange,
+    onClickInvite,
+    onClickRemoveRow,
+    onClickRevokeInvitation,
+    onSearch,
+    onTableChange,
+    reviewerPool,
+    searchPlaceholder,
+  } = props
+
+  const [modal, contextHolder] = Modal.useModal()
+  const [showReview, setShowReview] = useState(null)
+
+  const handleClickRemoveRow = id => {
+    const reviewerToRemove = reviewerPool.find(r => r.id === id)
+
+    if (reviewerToRemove.acceptedInvitation) {
+      const warningModal = modal.warning()
+      warningModal.update({
+        title: <ModalHeader>Remove reviewer?</ModalHeader>,
+        content: (
+          <p>
+            This reviewer has already accepted the invitation. Are you sure you
+            want to delete them from the pool?
+          </p>
+        ),
+        footer: [
+          <ModalFooter key="footer">
+            <Button key="cancel" onClick={() => warningModal.destroy()}>
+              Cancel
+            </Button>
+            <Button
+              autoFocus
+              onClick={() => {
+                onClickRemoveRow(id)
+                warningModal.destroy()
+              }}
+              type="primary"
+            >
+              Remove
+            </Button>
+          </ModalFooter>,
+        ],
+      })
+    } else {
+      onClickRemoveRow(id)
+    }
+  }
+
+  const onShowReview = (val, record) => {
+    if (!showReview || showReview?.reviewerEmail !== record.email) {
+      setShowReview({
+        ...JSON.parse(val),
+        reviewerName: record.displayName,
+        reviewerEmail: record.email,
+      })
+    } else {
+      setShowReview(null)
+    }
+  }
+
+  const additionalReviewerColumns = [
+    {
+      title: 'Submitted reviews',
+      dataIndex: 'submitted',
+      render: (val, record) => {
+        if (val)
+          return (
+            <Button onClick={() => onShowReview(val, record)}>
+              {showReview && showReview.reviewerEmail === record.email
+                ? 'Close'
+                : 'Show'}{' '}
+              review
+            </Button>
+          )
+        if (record.acceptedInvitation) return <span>Not submitted</span>
+        return <span>—</span>
+      },
+    },
+    {
+      title: 'Topics',
+      dataIndex: 'topics',
+    },
+    {
+      title: 'Assessment Training',
+      dataIndex: 'assessmentTraining',
+      render: val => (val ? 'Yes' : ''),
+      sorter: (a, b) =>
+        Number(a.assessmentTraining) - Number(b.assessmentTraining),
+    },
+    {
+      title: 'Language Training',
+      dataIndex: 'languageTraining',
+      render: val => (val ? 'Yes' : ''),
+      sorter: (a, b) => Number(a.languageTraining) - Number(b.languageTraining),
+    },
+  ]
+
+  return (
+    <ModalContext.Provider value={null}>
+      <StyledAssignReviewers
+        additionalReviewerColumns={additionalReviewerColumns}
+        additionalSearchFields={additionalSearchFields}
+        amountOfReviewers={amountOfReviewers}
+        automate={automate}
+        canDismissReviewer
+        canInviteMore={canInviteMore}
+        onAddReviewers={onAddReviewers}
+        onAmountOfReviewersChange={onAmountOfReviewersChange}
+        onAutomationChange={onAutomationChange}
+        onClickInvite={onClickInvite}
+        onClickRemoveRow={handleClickRemoveRow}
+        onClickRevokeInvitation={onClickRevokeInvitation}
+        onSearch={onSearch}
+        onTableChange={onTableChange}
+        reviewerPool={reviewerPool}
+        searchPlaceholder={searchPlaceholder}
+        useShowEmail
+      />
+      {showReview && (
+        <SubmittedReview>
+          <CloseBtn
+            icon={<CloseOutlined />}
+            onClick={() => setShowReview(null)}
+          />
+          <ReviewSummary responses={showReview} reviewSubmitted />
+        </SubmittedReview>
+      )}
+      {contextHolder}
+    </ModalContext.Provider>
+  )
+}
+
+AssignReviewers.propTypes = {
+  amountOfReviewers: PropTypes.number.isRequired,
+  automate: PropTypes.bool.isRequired,
+  canInviteMore: PropTypes.bool.isRequired,
+  onAddReviewers: PropTypes.func.isRequired,
+  onAmountOfReviewersChange: PropTypes.func.isRequired,
+  onAutomationChange: PropTypes.func.isRequired,
+  onClickInvite: PropTypes.func.isRequired,
+  onClickRemoveRow: PropTypes.func.isRequired,
+  onClickRevokeInvitation: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  onTableChange: PropTypes.func.isRequired,
+  reviewerPool: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      displayName: PropTypes.string.isRequired,
+      invited: PropTypes.bool,
+      acceptedInvitation: PropTypes.bool,
+      rejectedInvitation: PropTypes.bool,
+      invitationRevoked: PropTypes.bool,
+      reviewSubmitted: PropTypes.bool,
+    }),
+  ).isRequired,
+  searchPlaceholder: PropTypes.string,
+}
+
+AssignReviewers.defaultProps = {
+  searchPlaceholder: '',
+}
+
+export default AssignReviewers

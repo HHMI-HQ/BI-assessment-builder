@@ -2,7 +2,7 @@ const {
   modelJsonSchemaTypes: { stringNullable },
 } = require('@coko/server')
 
-const TeamMemberModel = require('@coko/server/src/models/teamMember/teamMember.model')
+const { TeamMember: TeamMemberModel } = require('@coko/server')
 const { REVIEWER_STATUSES } = require('../../controllers/constants')
 
 class TeamMember extends TeamMemberModel {

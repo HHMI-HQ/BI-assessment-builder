@@ -1,6 +1,5 @@
-const { logger, useTransaction } = require('@coko/server')
+const { logger, useTransaction, config } = require('@coko/server')
 const path = require('path')
-const config = require('config')
 const sanitizeHtml = require('sanitize-html')
 
 const {
@@ -19,7 +18,7 @@ const WaxToDocxConverter = require('../services/docx/hhmiDocx.service')
 const WaxToQTIConverter = require('../services/qti/qti.service')
 // const { applyListQueryOptions } = require('../models/helpers')
 
-const AUTHOR_TEAM = config.teams.nonGlobal.find(t => t.role === 'author')
+const AUTHOR_TEAM = config.get('teams').nonGlobal.find(t => t.role === 'author')
 const BASE_MESSAGE = `${labels.SETS_CONTROLLERS}:`
 
 const getComplexItemSets = async (user, params = {}, options = {}) => {
@@ -462,7 +461,7 @@ const exportSetQuestionsQTI = async (setIds, questionIds) => {
       }),
     )
 
-    versions.forEach((version, i) => {
+    versions.forEach(version => {
       version.content.content.unshift(
         // ...[...complexItemSets[i].leadingContent.content],
         ...[

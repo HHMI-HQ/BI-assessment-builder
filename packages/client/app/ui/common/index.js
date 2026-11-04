@@ -21,7 +21,7 @@ export { default as QuestionItem } from './QuestionItem'
 export { default as QuestionList } from './QuestionList'
 export { default as Radio } from './Radio'
 export { default as Result } from './Result'
-// export { default as Ribbon } from './Ribbon'
+export { default as Ribbon } from './Ribbon'
 export { default as Search } from './Search'
 export { default as SearchFiltered } from './searchFiltered/SearchFiltered'
 export { default as Select } from './Select'
@@ -48,7 +48,6 @@ export {
   DateParser,
   TextArea,
   Page,
-  Ribbon,
   Switch,
   VisuallyHiddenElement,
-} from '@coko/client/dist/ui'
+} from '@coko/client'

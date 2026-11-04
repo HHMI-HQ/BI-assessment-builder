@@ -1,5 +1,10 @@
-const { logger, clientUrl, ChatChannel, sendEmail } = require('@coko/server')
-const config = require('config')
+const {
+  logger,
+  config,
+  clientUrl,
+  ChatChannel,
+  sendEmail,
+} = require('@coko/server')
 const { Question, Identity, User, QuestionVersion } = require('../../../models')
 const flatten = require('../../../controllers/flattenMetadataValues')
 const parseReview = require('../../../controllers/parseReview')
@@ -24,7 +29,9 @@ const chatMention = async context => {
   try {
     const { mention, newMessage: { userId, chatChannelId } = {} } = context
 
-    const mentionedUserIdentity = await Identity.findOne({ userId: mention })
+    const mentionedUserIdentity = await Identity.findOne({
+      userId: mention,
+    })
     const sender = await User.findById(userId)
     const senderDisplayName = await User.getDisplayName(sender)
     const chatThread = await ChatChannel.findById(chatChannelId)
@@ -66,7 +73,9 @@ const questionRejected = async context => {
     // notify author
     const author = await Question.getAuthor(questionId)
 
-    const authorIdentity = await Identity.findOne({ userId: author[0].id })
+    const authorIdentity = await Identity.findOne({
+      userId: author[0].id,
+    })
 
     const content = `
     <p>  
@@ -207,7 +216,9 @@ const inviteReviewer = async context => {
 
     const questionVersion = await QuestionVersion.findById(questionVersionId)
     const link = `${clientUrl}/question/${questionVersion.questionId}`
-    const reviewerIdentity = await Identity.findOne({ userId: reviewerId })
+    const reviewerIdentity = await Identity.findOne({
+      userId: reviewerId,
+    })
 
     const content = `
 	<p>
@@ -242,7 +253,9 @@ const inviteReviewer = async context => {
 const revokeInvitation = async context => {
   const { reviewerId } = context
 
-  const reviewerIdentity = await Identity.findOne({ userId: reviewerId })
+  const reviewerIdentity = await Identity.findOne({
+    userId: reviewerId,
+  })
 
   const content = `
     <p>
