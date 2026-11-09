@@ -2474,6 +2474,23 @@ const waitForTextareaAndSetValue = (
   }, intervalMs)
 }
 
+function allFieldsNull(obj) {
+  if (obj === null || obj === undefined) return true
+
+  // Arrays: every element must be all-null
+  if (Array.isArray(obj)) {
+    return obj.every(allFieldsNull)
+  }
+
+  // Plain objects: every value must be all-null
+  if (typeof obj === 'object') {
+    return Object.values(obj).every(allFieldsNull)
+  }
+
+  // Primitive: it's "null-like" only if it actually is null/undefined
+  return false
+}
+
 export {
   extractDocumentText,
   extractTopicsAndSubtopics,
@@ -2514,4 +2531,5 @@ export {
   extractNode,
   applyNodeFeedback,
   emptyEditorContent,
+  allFieldsNull,
 }

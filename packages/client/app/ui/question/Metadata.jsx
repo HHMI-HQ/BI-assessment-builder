@@ -1,9 +1,9 @@
-import React, { useState, useImperativeHandle, useEffect } from "react";
+import React, { useState, useImperativeHandle, useEffect, useRef } from "react";
 import { dropRight } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { grid, th } from "@coko/client";
-import { mapMetadataToSelectOptions } from "../../utilities";
+import { mapMetadataToSelectOptions, allFieldsNull } from "../../utilities";
 import {
   Select,
   Form,
@@ -60,7 +60,7 @@ const Metadata = React.forwardRef((props, ref) => {
     innerRef,
     editorView = false,
     onAutoSave = null,
-    initialValues = null,
+    initialValues = {},
     readOnly = false,
     resources = [],
     presentationMode = false,
@@ -73,6 +73,7 @@ const Metadata = React.forwardRef((props, ref) => {
 
   const [formValues, setFormValues] = useState(initialValues);
   const metadataMapper = (data) => mapMetadataToSelectOptions(data, readOnly);
+  const hasRunRef = useRef(false);
 
   if (presentationMode) {
     return (
@@ -86,7 +87,10 @@ const Metadata = React.forwardRef((props, ref) => {
   }
 
   useEffect(() => {
-    setFormValues(initialValues);
+    if (initialValues && !hasRunRef.current && !allFieldsNull(initialValues)) {
+      hasRunRef.current = true;
+      setFormValues(initialValues);
+    }
   }, [initialValues]);
 
   const [form] = Form.useForm();
@@ -314,17 +318,19 @@ const Metadata = React.forwardRef((props, ref) => {
     return null;
   };
 
-  useEffect(() => {
-    // only fire when new question type comes from editor content
-    if (
-      selectedQuestionType &&
-      selectedQuestionType !== form.getFieldValue("questionType") &&
-      !readOnly
-    ) {
-      form.setFieldsValue({ questionType: selectedQuestionType });
-      onAutoSave(form.getFieldsValue());
-    }
-  }, [selectedQuestionType]);
+  // useEffect(() => {
+  //   // only fire when new question type comes from editor content
+  //   if (
+  //     selectedQuestionType &&
+  //     selectedQuestionType !== form.getFieldValue("questionType") &&
+  //     !readOnly
+  //   ) {
+  //     form.setFieldsValue({
+  //       questionType: selectedQuestionType,
+  //     });
+  //     onAutoSave(form.getFieldsValue());
+  //   }
+  // }, [selectedQuestionType]);
 
   /**
    * RENDER
@@ -415,7 +421,7 @@ const Metadata = React.forwardRef((props, ref) => {
             rules={[{ required: true, message: "Item type is required" }]}
           >
             <Select
-              // allowClear
+              allowClear
               data-testid="questionType-select"
               disabled={readOnly}
               options={metadata.questionTypes}
