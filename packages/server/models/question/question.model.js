@@ -97,6 +97,7 @@ class Question extends BaseModel {
       readingLevel,
       literatureAttribution,
       questionType,
+      enhancedEditor,
     } = originalQuestionVersions.result[0]
 
     const questionVersion = await QuestionVersion.query(
@@ -121,7 +122,10 @@ class Question extends BaseModel {
       options,
     )
 
-    await QuestionVersion.upgradeContent(questionVersion.id, options)
+    if (!enhancedEditor) {
+      await QuestionVersion.upgradeContent(questionVersion.id, options)
+    }
+
     return question
   }
 

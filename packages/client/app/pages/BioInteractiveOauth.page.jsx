@@ -17,12 +17,30 @@ const BioInteractiveLoginPage = () => {
   const state = params.get("state");
   const oauthError = params.get("error");
 
-  const [bioInteractiveLoginMutation, { error: loginError }] =
-    useMutation(BIOINTERACTIVE_LOGIN);
+  const [bioInteractiveLoginMutation, { error: loginError }] = useMutation(
+    BIOINTERACTIVE_LOGIN,
+    {
+      onCompleted: (data) => {
+        const { token } = data.bioInteractiveLogin;
+
+        if (token) {
+          localStorage.removeItem("oauthState");
+          localStorage.setItem("token", token);
+          navigate(pathname + search, { replace: true });
+        } else {
+          console.error("No token returned from mutation!");
+        }
+      },
+    },
+  );
 
   const err = loginError || oauthError;
 
-  if (currentUser) return <Redirect to="/dashboard" />;
+  useEffect(() => {
+    bioInteractiveLoginMutation({ variables: { authCode } });
+  }, []);
+
+  if (currentUser) return <Navigate to="/dashboard" />;
 
   if (state !== localStorage.getItem("oauthState")) {
     // after logging in redirect to stored redirect url, or to /discover
@@ -34,27 +52,6 @@ const BioInteractiveLoginPage = () => {
 
     return <Navigate replace to="/discover" />;
   }
-
-  const login = () => {
-    bioInteractiveLoginMutation({
-      variables: { authCode },
-      onCompleted: (data) => {
-        const { token } = data.bioInteractiveLogin;
-
-        if (token) {
-          localStorage.removeItem("oauthState");
-          localStorage.setItem("token", token);
-          navigate(pathname + search, { replace: true });
-        }
-
-        console.error("No token returned from mutation!");
-      },
-    }).catch((e) => console.error(e));
-  };
-
-  useEffect(() => {
-    login();
-  }, []);
 
   return <BioInteractiveOauth hasError={!!err} />;
 };
