@@ -42,7 +42,7 @@ const SearchWrapper = styled.div`
 `;
 
 const InternalHeader = styled.div`
-  /* border-bottom: 1px solid ${th("colorBorder")}; */
+  align-items: center;
   display: flex;
   outline: 1px solid #0005;
   padding: ${grid(1)} ${grid(2)};
@@ -126,7 +126,7 @@ const StyledList = styled(AntList)`
 const FooterWrapper = styled.div`
   align-items: start;
   background-color: ${th("colorBackground")};
-  border: 1px solid ${th("colorBorder")};
+  border-block: 1px solid ${th("colorBorder")};
   display: flex;
   flex-direction: column;
   gap: ${grid(2)};

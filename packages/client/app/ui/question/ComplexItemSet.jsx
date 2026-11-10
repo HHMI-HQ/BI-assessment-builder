@@ -28,6 +28,11 @@ const ModalContext = React.createContext(null);
 const StyledTabs = styled(Tabs)`
   height: 100%;
 
+  .ant-tabs-tab.ant-tabs-tab-active {
+    background-color: ${th("colorBackground")}!important;
+    border-bottom: ${th("colorBackground")}!important;
+  }
+
   .ant-tabs-content {
     height: 100%;
 
@@ -60,7 +65,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   height: 100%;
-  overflow: hidden;
 
   > * {
     /* ↓ Switch the layout at the --threshold */
@@ -70,11 +74,17 @@ const Wrapper = styled.div`
 `;
 
 const InfoWrapper = styled.div`
+  border-inline-end: 1px solid ${th("colorBorder")};
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   padding-inline: ${grid(3)};
+
+  @media (max-width: ${th("mediaQueries.medium")}) {
+    border-block-end: 1px solid ${th("colorBorder")};
+    border-inline-end: none;
+  }
 
   .ProseMirror {
     padding: 0;
@@ -91,8 +101,10 @@ const SetTitle = styled.h2`
 `;
 
 const StyledWaxLayout = styled(LeadingContentLayout)`
-  height: 100%;
-  overflow: auto;
+  @media (min-width: ${th("mediaQueries.medium")}) {
+    height: 100%;
+    overflow: auto;
+  }
 `;
 
 const StyledButton = styled(Button)`
