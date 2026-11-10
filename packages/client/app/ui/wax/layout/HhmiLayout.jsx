@@ -73,12 +73,20 @@ const TopMenu = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  padding-inline: ${grid(5)};
+  display: block;
+  padding: ${grid(3)};
 `;
 
 const StyledCollapse = styled(Collapse)`
   border: none;
   width: 100%;
+  .ant-collapse-item > .ant-collapse-header {
+    border-radius: ${th("borderRadius")} !important;
+  }
+
+  .ant-collapse-panel.ant-collapse-panel-active {
+    border-top: none;
+  }
 `;
 
 const EditorWrapper = styled.div`
