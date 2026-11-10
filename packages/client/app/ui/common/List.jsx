@@ -15,7 +15,7 @@ import UICheckBox, { SelectAllCheckbox } from "./Checkbox";
 // import Search from './Search'
 import UISelect from "./Select";
 import Pagination from "./Pagination";
-import { Indicator } from "./Spin";
+import Spin from "./Spin";
 import Empty from "./Empty";
 import Search from "./Search";
 
@@ -57,6 +57,13 @@ const SortWrapper = styled.div`
   margin-left: auto;
 `;
 
+const StyleSpin = styled(Spin)`
+  display: grid;
+  inset: 0;
+  place-content: center;
+  position: absolute;
+`;
+
 const Select = styled(UISelect)`
   display: inline-block;
   margin-left: ${grid(2)};
@@ -68,6 +75,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   overflow-y: scroll;
+  position: relative;
   width: 100%;
 
   @media screen and (min-width: 1200px) {
@@ -113,10 +121,6 @@ const StyledList = styled(AntList)`
       place-content: center;
     }
   }
-`;
-
-const StyledLoader = styled(Indicator)`
-  transform: translateY(-100%);
 `;
 
 const FooterWrapper = styled.div`
@@ -487,11 +491,6 @@ const List = ({
                 <StyledScrollWrapper {...infiniteScroll?.props}>
                   <AntList
                     items={splitDataSource}
-                    loading={
-                      loading
-                        ? { spinning: true, indicator: <StyledLoader /> }
-                        : { spinning: false, indicator: <StyledLoader /> }
-                    }
                     locale={mergedLocale}
                     ref={listRef}
                     rowKey={"id"}
@@ -503,11 +502,6 @@ const List = ({
               ) : (
                 <AntList
                   items={splitDataSource}
-                  loading={
-                    loading
-                      ? { spinning: true, indicator: <StyledLoader /> }
-                      : { spinning: false, indicator: <StyledLoader /> }
-                  }
                   locale={mergedLocale}
                   itemRender={listItemToRender}
                   rowKey={"id"}
@@ -525,11 +519,6 @@ const List = ({
       <StyledList
         items={dataSource}
         itemRender={listItemToRender}
-        loading={
-          loading
-            ? { spinning: true, indicator: <StyledLoader /> }
-            : { spinning: false, indicator: <StyledLoader /> }
-        }
         locale={mergedLocale}
         rowKey={"id"}
         {...rest}
@@ -539,11 +528,6 @@ const List = ({
     <StyledList
       items={splitDataSource}
       rowKey={"id"}
-      loading={
-        loading
-          ? { spinning: true, indicator: <StyledLoader /> }
-          : { spinning: false, indicator: <StyledLoader /> }
-      }
       locale={mergedLocale}
       itemRender={listItemToRender}
       {...rest}
@@ -615,6 +599,13 @@ const List = ({
       {/* id="list-content-wrapper" why? */}
       <customComponents.ContentWrapper>
         {ListToRender}
+        {loading && (
+          <StyleSpin
+            fullscreen={false}
+            spinning={loading}
+            size="large"
+          ></StyleSpin>
+        )}
       </customComponents.ContentWrapper>
 
       {(footerContent || showPagination) && (
@@ -623,6 +614,7 @@ const List = ({
 
           {showPagination && (
             <Pagination
+              disabled={loading}
               onChange={onPaginationChange}
               pagination={passedPagination}
             />
