@@ -1,19 +1,17 @@
-import React from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useMutation } from '@apollo/client/react'
+import React from "react";
+import { useNavigate, useParams } from "react-router";
+import { useMutation } from "@apollo/client/react";
 
-import { VerifyEmail } from 'ui'
-import { RESEND_VERIFICATION_EMAIL, VERIFY_EMAIL } from '../graphql'
+import { VerifyEmail } from "ui";
+import { RESEND_VERIFICATION_EMAIL, VERIFY_EMAIL } from "../graphql";
 
-const VerifyEmailPage = props => {
-  const { token } = useParams()
-  const navigate = useNavigate()
-  const redirectToLogin = () => navigate('/login')
-  const loaderDelay = 2000
+const VerifyEmailPage = () => {
+  const { token } = useParams();
+  const navigate = useNavigate();
+  const redirectToLogin = () => navigate("/login");
 
-  // add a small delay on purpose to keep ui transitions smooth
-  const [verifyingLoader, setVerifyingLoader] = React.useState(false)
-  const [resendingLoader, setResendingLoader] = React.useState(false)
+  const [verifyingLoader, setVerifyingLoader] = React.useState(false);
+  const [resendingLoader, setResendingLoader] = React.useState(false);
 
   const [
     verifyEmailMutation,
@@ -23,33 +21,33 @@ const VerifyEmailPage = props => {
       error: verifyError,
       called: verifyCalled,
     },
-  ] = useMutation(VERIFY_EMAIL, { variables: { token } })
+  ] = useMutation(VERIFY_EMAIL, { variables: { token } });
 
   const [
     resendVerificationEmailMutation,
     { data: resendData, loading: resending },
-  ] = useMutation(RESEND_VERIFICATION_EMAIL, { variables: { token } })
+  ] = useMutation(RESEND_VERIFICATION_EMAIL, { variables: { token } });
 
   if (!verifyCalled) {
-    verifyEmailMutation().catch(e => {})
-    setVerifyingLoader(true)
-    setTimeout(() => setVerifyingLoader(false), loaderDelay)
+    setVerifyingLoader(true);
+    verifyEmailMutation().then(() => {
+      setVerifyingLoader(false);
+    });
   }
 
   const resendVerificationEmail = () => {
-    resendVerificationEmailMutation().catch(e => {
-      console.error(e)
-    })
-    setResendingLoader(true)
-    setTimeout(() => setResendingLoader(false), loaderDelay)
-  }
+    setResendingLoader(true);
+    resendVerificationEmailMutation().then(() => {
+      setResendingLoader(false);
+    });
+  };
 
-  let alreadyVerified = false
-  if (verifyError && verifyError.message.includes('already been confirmed'))
-    alreadyVerified = true
+  let alreadyVerified = false;
+  if (verifyError && verifyError.message.includes("already been confirmed"))
+    alreadyVerified = true;
 
-  let expired = false
-  if (verifyError && verifyError.message.includes('expired')) expired = true
+  let expired = false;
+  if (verifyError && verifyError.message.includes("expired")) expired = true;
 
   return (
     <VerifyEmail
@@ -62,11 +60,9 @@ const VerifyEmailPage = props => {
       successfullyVerified={!!verifyData}
       verifying={verifying || verifyingLoader}
     />
-  )
-}
+  );
+};
 
-VerifyEmailPage.propTypes = {}
+VerifyEmailPage.propTypes = {};
 
-VerifyEmailPage.defaultProps = {}
-
-export default VerifyEmailPage
+export default VerifyEmailPage;

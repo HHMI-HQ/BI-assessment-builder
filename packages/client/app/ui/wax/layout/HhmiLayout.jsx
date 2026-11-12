@@ -18,7 +18,6 @@ import "wax-prosemirror-services/dist/index.css";
 import "wax-questions-service/dist/index.css";
 import "wax-table-service/dist/index.css";
 import "../services/wax-question-service.css";
-// import EditorElements from './EditorElements'
 
 const fullScreenStyles = css`
   background-color: ${th("colorBackground")};
@@ -214,6 +213,23 @@ const HhmiLayout = (props) => {
     ComplexItemSetContext,
   );
 
+  const items = [
+    {
+      key: "leading-content",
+      label: "Leading content",
+      "data-testid": "leading-content-collapse",
+      children: (
+        <WaxWrapper
+          config={config}
+          content={leadingContent}
+          key={complexItemSetId}
+          layout={LeadingContentLayout}
+          readOnly
+        />
+      ),
+    },
+  ];
+
   return (
     <ThemeProvider theme={theme}>
       <Wrapper $fullScreen={fullScreen}>
@@ -231,27 +247,14 @@ const HhmiLayout = (props) => {
         <EditorWrapper tabIndex={0}>
           {leadingContent && (
             <>
-              <StyledCollapse defaultActiveKey={["leading-content"]}>
-                <Collapse.Panel
-                  data-testid="leading-content-collapse"
-                  header="Leading content"
-                  key="leading-content"
-                >
-                  <WaxWrapper
-                    config={config}
-                    content={leadingContent}
-                    key={complexItemSetId}
-                    layout={LeadingContentLayout}
-                    readOnly
-                  />
-                </Collapse.Panel>
-              </StyledCollapse>
+              <StyledCollapse
+                items={items}
+                defaultActiveKey={["leading-content"]}
+              />
               {complexSetEditLink && (
                 <StyledLink
-                  to={{
-                    pathname: complexSetEditLink,
-                    state: { activeTab: "edit" },
-                  }}
+                  to={complexSetEditLink}
+                  state={{ activeTab: "edit" }}
                 >
                   <LinkOutlined /> Edit the leading content for this set
                 </StyledLink>
@@ -264,7 +267,6 @@ const HhmiLayout = (props) => {
             <WaxView {...props} />
           </EditorArea>
         </EditorWrapper>
-
         {/* <WaxOverlays /> */}
       </Wrapper>
     </ThemeProvider>

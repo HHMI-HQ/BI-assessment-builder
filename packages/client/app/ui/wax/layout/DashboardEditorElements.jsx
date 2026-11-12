@@ -1,17 +1,15 @@
 /* stylelint-disable */
-import { css } from 'styled-components'
-
-import { th } from '@coko/client'
+import { css } from "styled-components";
+import { th } from "@coko/client";
 
 /* All styles regarding ProseMirror surface and elements */
-
 export default css`
   .ProseMirror .wax-selection-marker {
-    background-color: ${th('colorSelection')};
+    background-color: ${th("colorSelection")};
     opacity: 0.8;
   }
 
-  div[contenteditable='false'] {
+  div[contenteditable="false"] {
     .math-src {
       pointer-events: none;
       user-select: none;
@@ -66,15 +64,15 @@ export default css`
   }
 
   .invisible--space:before {
-    content: '·';
+    content: "·";
   }
 
   .invisible--break:before {
-    content: '¬';
+    content: "¬";
   }
 
   .invisible--par:after {
-    content: '¶';
+    content: "¶";
   }
 
   /* == Math Nodes ======================================== */
@@ -83,7 +81,7 @@ export default css`
     min-width: 1em;
     min-height: 1em;
     font-size: 0.95em;
-    font-family: 'Consolas', 'Ubuntu Mono', monospace;
+    font-family: "Consolas", "Ubuntu Mono", monospace;
     cursor: auto;
     .ProseMirror {
       box-shadow: none;
@@ -95,12 +93,12 @@ export default css`
   }
 
   .math-node.empty-math .math-render::before {
-    content: '(empty)';
+    content: "(empty)";
     color: red;
   }
 
   .math-node .math-render.parse-error::before {
-    content: '(math error)';
+    content: "(math error)";
     color: red;
     cursor: help;
   }
@@ -141,7 +139,7 @@ export default css`
 
   math-inline .math-src::after,
   math-inline .math-src::before {
-    content: '$';
+    content: "$";
     color: #b0b0b0;
   }
 
@@ -166,7 +164,7 @@ export default css`
 
   math-display .math-src::after,
   math-display .math-src::before {
-    content: '$$';
+    content: "$$";
     text-align: left;
     color: #b0b0b0;
   }
@@ -213,4 +211,4 @@ export default css`
   .fill-the-gap {
     display: none;
   }
-`
+`;

@@ -126,143 +126,7 @@ const regexPaths = [
   },
 ];
 
-const Wrapper = (props) => {
-  const { children } = props;
-
-  const { currentUser } = useCurrentUser();
-  const location = useLocation();
-
-  useEffect(() => {
-    const path = location.pathname;
-    const title = regexPaths.find((p) => p.path.test(path));
-
-    if (title) {
-      document.title = `${title?.name} - HHMI Assessment Builder`;
-      document.getElementById("page-announcement").replaceChildren(title?.name);
-    }
-  }, [location]);
-
-  // useEffect(() => {
-  //   const path = history.location.pathname
-  //   const title = regexPaths.find(p => p.path.test(path))
-
-  //   if (title) {
-  //     document.title = `${title?.name} - HHMI Assessment Builder`
-
-  //   }
-
-  //   const unlisten = history.listen(val => {
-  //     const pathName = val.pathname
-  //     const pathTitle = regexPaths.find(p => p.path.test(pathName))
-
-  //     if (pathTitle) {
-  //       document
-  //         .getElementById('page-announcement')
-  //         .replaceChildren(pathTitle?.name)
-
-  //       document.title = `${pathTitle?.name} - HHMI Assessment Builder`
-  //     }
-  //   })
-
-  //   return unlisten
-  // }, [])
-
-  useEffect(() => {
-    const keyDownListener = (e) => {
-      if (e.key === "Tab") {
-        // select only visible antd modal dialog
-        const dialog = document.querySelector(
-          ':not([style="display: none;"]) > .ant-modal[role="dialog"]',
-        );
-
-        if (dialog) {
-          const focusableElements = dialog.querySelectorAll(
-            [
-              "a[href]",
-              "area[href]",
-              "input:not([disabled]):not([type=hidden])",
-              "select:not([disabled])",
-              "textarea:not([disabled])",
-              "button:not([disabled])",
-              "object",
-              "embed",
-              '[tabindex]:not([tabindex="-1"]):not([aria-hidden="true"])',
-              "audio[controls]",
-              "video[controls]",
-              '[contenteditable]:not([contenteditable="false"])',
-            ].join(", "),
-          );
-
-          const firstFocusableElement = focusableElements[0];
-
-          const lastFocusableElement =
-            focusableElements[focusableElements.length - 1];
-
-          if (e.shiftKey) {
-            if (document.activeElement === firstFocusableElement) {
-              lastFocusableElement.focus();
-              e.preventDefault();
-            }
-          } else if (document.activeElement === lastFocusableElement) {
-            firstFocusableElement.focus();
-            e.preventDefault();
-          }
-        }
-      }
-    };
-
-    document.addEventListener("keydown", keyDownListener);
-
-    return document.removeEventListener("kaydown", keyDownListener);
-  }, []);
-
-  useEffect(() => {
-    if (
-      // temporary, create a wrapper hook that extends the User type
-      currentUser?.profileSubmitted &&
-      !localStorage.getItem("profileSubmitted")
-    ) {
-      localStorage.setItem("profileSubmitted", "true");
-    }
-
-    // if (
-    //   currentUser &&
-    //   !Object.prototype.hasOwnProperty.call(currentUser, 'profileSubmitted')
-    // ) {
-    //   refetchCurrentUser().then(({ data }) => {
-    //     setCurrentUser(data.currentUser)
-    //   })
-    // }
-  }, [currentUser]);
-
-  // interface DeletedSubscriptionResult {
-  //   userDeleted: string;
-  // }
-
-  useSubscription(DELETED_SUBSCRIPTION, {
-    onData: ({
-      data: {
-        data: { userDeleted },
-      },
-    }) => {
-      if (userDeleted === currentUser.id) window.location.href = "/";
-    },
-  });
-
-  return (
-    <LayoutWrapper>
-      {children}
-      <VisuallyHiddenElement
-        aria-live="polite"
-        as="div"
-        id="page-announcement"
-        role="status"
-      />
-    </LayoutWrapper>
-  );
-};
-
-const SiteHeader = () => {
+const SiteHeader = ({ currentUser }) => {
   const headerLinks = {
     homepage: "/",
     questions: "/discover",
@@ -274,13 +138,10 @@ const SiteHeader = () => {
     manageUsers: "/manage-users",
     manageTeams: "/manage-teams",
     manageMetadata: "/manage-metadata",
-    // tasks: '/notifications/tasks',
     messages: "/notifications/messages",
     profile: "/profile",
     login: "/login",
   };
-
-  const { currentUser } = useCurrentUser();
 
   const { unreadMentionsCount } = useNotifications();
   const client = useApolloClient();
@@ -364,31 +225,154 @@ const ToastNotifications = () => {
   return <ToastNotification notification={newNotification} />;
 };
 
-const routes = (
-  <Wrapper>
-    <GlobalStyles />
-    <NotificationsProvider>
-      <SiteHeader />
-      <MetadataProvider>
-        <FiltersProvider>
-          <StyledPage fadeInPages={false} padPages={false}>
-            <StyledMain id="main-content" tabIndex={-1}>
-              <Router />
-              <ToastNotifications />
-            </StyledMain>
-          </StyledPage>
-        </FiltersProvider>
-      </MetadataProvider>
-    </NotificationsProvider>
+const Wrapper = () => {
+  const { currentUser } = useCurrentUser();
+  const location = useLocation();
 
-    <Footer
-      links={{
-        termsOfUse: "https://www.hhmi.org/terms-of-use",
-        privacyPolicy: "https://www.hhmi.org/privacy-policy",
-        homepage: "/",
-      }}
-    />
-  </Wrapper>
-);
+  useEffect(() => {
+    const keyDownListener = (e) => {
+      if (e.key === "Tab") {
+        // select only visible antd modal dialog
+        const dialog = document.querySelector(
+          ':not([style="display: none;"]) > .ant-modal[role="dialog"]',
+        );
 
-export default routes;
+        if (dialog) {
+          const focusableElements = dialog.querySelectorAll(
+            [
+              "a[href]",
+              "area[href]",
+              "input:not([disabled]):not([type=hidden])",
+              "select:not([disabled])",
+              "textarea:not([disabled])",
+              "button:not([disabled])",
+              "object",
+              "embed",
+              '[tabindex]:not([tabindex="-1"]):not([aria-hidden="true"])',
+              "audio[controls]",
+              "video[controls]",
+              '[contenteditable]:not([contenteditable="false"])',
+            ].join(", "),
+          );
+
+          const firstFocusableElement = focusableElements[0];
+
+          const lastFocusableElement =
+            focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstFocusableElement) {
+              lastFocusableElement.focus();
+              e.preventDefault();
+            }
+          } else if (document.activeElement === lastFocusableElement) {
+            firstFocusableElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("keydown", keyDownListener);
+
+    return document.removeEventListener("kaydown", keyDownListener);
+  }, []);
+
+  useEffect(() => {
+    const path = location.pathname;
+    const title = regexPaths.find((p) => p.path.test(path));
+
+    if (title) {
+      document.title = `${title?.name} - HHMI Assessment Builder`;
+      document.getElementById("page-announcement").replaceChildren(title?.name);
+    }
+  }, [location]);
+
+  // useEffect(() => {
+  //   const path = history.location.pathname
+  //   const title = regexPaths.find(p => p.path.test(path))
+
+  //   if (title) {
+  //     document.title = `${title?.name} - HHMI Assessment Builder`
+
+  //   }
+
+  //   const unlisten = history.listen(val => {
+  //     const pathName = val.pathname
+  //     const pathTitle = regexPaths.find(p => p.path.test(pathName))
+
+  //     if (pathTitle) {
+  //       document
+  //         .getElementById('page-announcement')
+  //         .replaceChildren(pathTitle?.name)
+
+  //       document.title = `${pathTitle?.name} - HHMI Assessment Builder`
+  //     }
+  //   })
+
+  //   return unlisten
+  // }, [])
+
+  useEffect(() => {
+    if (
+      // temporary, create a wrapper hook that extends the User type
+      currentUser?.profileSubmitted &&
+      !localStorage.getItem("profileSubmitted")
+    ) {
+      localStorage.setItem("profileSubmitted", "true");
+    }
+
+    // if (
+    //   currentUser &&
+    //   !Object.prototype.hasOwnProperty.call(currentUser, 'profileSubmitted')
+    // ) {
+    //   refetchCurrentUser().then(({ data }) => {
+    //     setCurrentUser(data.currentUser)
+    //   })
+    // }
+  }, [currentUser]);
+
+  useSubscription(DELETED_SUBSCRIPTION, {
+    onData: ({
+      data: {
+        data: { userDeleted },
+      },
+    }) => {
+      if (userDeleted === currentUser.id) window.location.href = "/";
+    },
+  });
+
+  return (
+    <LayoutWrapper>
+      <GlobalStyles />
+      <NotificationsProvider currentUser={currentUser}>
+        <SiteHeader currentUser={currentUser} />
+        <MetadataProvider>
+          <FiltersProvider>
+            <StyledPage fadeInPages={false} padPages={false}>
+              <StyledMain id="main-content" tabIndex={-1}>
+                <Router />
+                <ToastNotifications />
+              </StyledMain>
+            </StyledPage>
+          </FiltersProvider>
+        </MetadataProvider>
+        <VisuallyHiddenElement
+          aria-live="polite"
+          as="div"
+          id="page-announcement"
+          role="status"
+        />
+      </NotificationsProvider>
+      <Footer
+        links={{
+          termsOfUse: "https://www.hhmi.org/terms-of-use",
+          privacyPolicy: "https://www.hhmi.org/privacy-policy",
+          homepage: "/",
+        }}
+      />
+    </LayoutWrapper>
+  );
+};
+
+export default <Wrapper />;

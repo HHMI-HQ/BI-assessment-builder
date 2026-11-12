@@ -233,12 +233,12 @@ const QuestionWrapper = styled.div`
   background-color: ${th("colorBackground")};
   display: grid;
   grid-template-rows: 1fr auto;
-  height: ${({ hasRibbon }) => (hasRibbon ? `calc(100% - 26px)` : `100%`)};
+  height: ${({ $hasRibbon }) => ($hasRibbon ? `calc(100% - 26px)` : `100%`)};
   ${(props) => {
-    const { showMetadata, showReviewForm } = props;
+    const { $showMetadata, $showReviewForm } = props;
 
-    if (!showMetadata) {
-      return showReviewForm
+    if (!$showMetadata) {
+      return $showReviewForm
         ? css`
             grid-template-columns: 3fr 2fr;
           `
@@ -247,7 +247,7 @@ const QuestionWrapper = styled.div`
           `;
     }
 
-    return showReviewForm
+    return $showReviewForm
       ? css`
           grid-template-columns: 3fr 1fr 2fr;
         `
@@ -393,9 +393,9 @@ const PanelWrapper = ({
   if (!isMobile || (!showMetadata && !showReviewForm)) {
     return (
       <QuestionWrapper
-        hasRibbon={hasRibbon}
-        showMetadata={showMetadata}
-        showReviewForm={showReviewForm}
+        $hasRibbon={hasRibbon}
+        $showMetadata={showMetadata}
+        $showReviewForm={showReviewForm}
       >
         {editor}
         {showMetadata && metadata}
@@ -586,7 +586,6 @@ const Question = ({
 }) => {
   const [modal, contextHolder] = Modal.useModal();
   const { confirm, success, error } = modal;
-
   const formRef = useRef();
   const waxRef = useRef();
 
@@ -1085,7 +1084,7 @@ const Question = ({
           </Button>
         </ModalFooter>,
       ],
-      maskClosable: true,
+      mask: { closable: true },
     });
   };
 
