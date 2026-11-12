@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
-
 import React, { useContext } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { WaxContext, ComponentPlugin, WaxView } from "wax-prosemirror-core";
-import { grid } from "@coko/client";
+import { grid, th } from "@coko/client";
 import theme from "../../../theme";
-// import EditorElements from "./DashboardEditorElements";
 import commonStyles from "./commonWaxStyles";
 /* Katex css */
 // import '~../../katex/dist/katex.min.css'
@@ -42,10 +40,6 @@ const WaxSurfaceScroll = styled.div`
   box-sizing: border-box;
   display: flex;
   width: 100%;
-
-  /* PM styles  for main content */
-  /* stylelint-disable-next-line order/properties-alphabetical-order */
-  /* ${EditorElements} */
 
   .ProseMirror .wax-selection-marker {
     background-color: ${th("colorSelection")};

@@ -1,11 +1,11 @@
+const { logger, config, clientUrl, sendEmail } = require('@coko/server')
 const {
-  logger,
-  config,
-  clientUrl,
   ChatChannel,
-  sendEmail,
-} = require('@coko/server')
-const { Question, Identity, User, QuestionVersion } = require('../../../models')
+  Question,
+  Identity,
+  User,
+  QuestionVersion,
+} = require('../../../models')
 const flatten = require('../../../controllers/flattenMetadataValues')
 const parseReview = require('../../../controllers/parseReview')
 
@@ -48,7 +48,7 @@ const chatMention = async context => {
         `
 
     const text = `
-    User ${sender.getDisplayName()} mentioned you in a conversation.
+    User ${senderDisplayName} mentioned you in a conversation.
     \nCopy and paste the following link into your browser to visit the chat.
     \n${link} 
     `
