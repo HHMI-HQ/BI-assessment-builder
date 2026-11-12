@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { notification as antNotification } from 'antd'
-import { th, grid } from '@coko/client'
-import notificationIcon from '../../../static/notificationIcon.svg'
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { notification as antNotification } from "antd";
+import { th, grid } from "@coko/client";
+import notificationIcon from "../../../static/notificationIcon.svg";
 
 const NotificationHeader = styled.div`
   align-items: center;
@@ -17,14 +17,14 @@ const NotificationHeader = styled.div`
   }
 
   > h4 {
-    color: ${th('colorPrimary')};
+    color: ${th("colorPrimary")};
     font-weight: 700;
     margin: 0;
     padding: 0;
   }
-`
+`;
 
-const AntContext = React.createContext()
+const AntContext = React.createContext();
 
 const Message = (title, icon) => {
   return (
@@ -32,13 +32,28 @@ const Message = (title, icon) => {
       <img alt="notifications" aria-hidden="true" src={icon} />
       <h4>{title}</h4>
     </NotificationHeader>
-  )
-}
+  );
+};
 
-const ToastNotification = props => {
-  const { notification = {} } = props
-
-  const [api, contextHolder] = antNotification.useNotification()
+const ToastNotification = ({
+  notification = {
+    title: "Notification",
+    icon: notificationIcon,
+    description: "New notification",
+    onClick: null,
+    duration: 5,
+    placement: "bottomRight",
+    role: "status",
+    style: {
+      display: "flex",
+      border: "1px solid #0004",
+      backgroundColor: th.colorBackgroundHue,
+      boxShadow: "0 0 12px #0002",
+      bottom: "20px",
+    },
+  },
+}) => {
+  const [api, contextHolder] = antNotification.useNotification();
 
   useEffect(() => {
     if (notification) {
@@ -52,22 +67,24 @@ const ToastNotification = props => {
         role,
         style,
         message,
-      } = notification
+      } = notification;
 
       api.open({
-        message: message || Message(title, icon ?? notificationIcon),
+        title: message || Message(title, icon ?? notificationIcon),
         description,
         onClick,
         style,
         duration,
         placement,
         role,
-      })
+      });
     }
-  }, [notification])
+  }, [notification]);
 
-  return <AntContext.Provider value={null}>{contextHolder}</AntContext.Provider>
-}
+  return (
+    <AntContext.Provider value={null}>{contextHolder}</AntContext.Provider>
+  );
+};
 
 ToastNotification.propTypes = {
   notification: PropTypes.shape({
@@ -80,24 +97,6 @@ ToastNotification.propTypes = {
     role: PropTypes.string,
     style: PropTypes.shape(),
   }),
-}
-ToastNotification.defaultProps = {
-  notification: {
-    title: 'Notification',
-    icon: notificationIcon,
-    description: 'New notification',
-    onClick: null,
-    duration: 5,
-    placement: 'bottomRight',
-    role: 'status',
-    style: {
-      display: 'flex',
-      border: '1px solid #0004',
-      backgroundColor: th.colorBackgroundHue,
-      boxShadow: '0 0 12px #0002',
-      bottom: '20px',
-    },
-  },
-}
+};
 
-export default ToastNotification
+export default ToastNotification;

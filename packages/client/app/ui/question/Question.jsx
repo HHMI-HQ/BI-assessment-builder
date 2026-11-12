@@ -459,6 +459,8 @@ PanelWrapper.propTypes = {
 // QUESTION submit button here seems to be outside the form
 // submit also refers to wax
 // does all this pose an accessibility problem?
+const EMPTY_ARRAY = [];
+const EMPTY_OBJECT = {};
 
 const Question = ({
   loading,
@@ -533,7 +535,7 @@ const Question = ({
   resources = [],
   reviewInviteStatus = null,
   reviewSubmitted = false,
-  reviewerPool = [],
+  reviewerPool = EMPTY_ARRAY,
   reviewerView = false,
   updated = "",
   isUserLoggedIn = true,
@@ -579,7 +581,7 @@ const Question = ({
   isMobile = false,
   preview = false,
   setPreview = null,
-  reviewResponses = {},
+  reviewResponses = EMPTY_OBJECT,
   saveReview = null,
   enhancedEditor = null,
   upgradeEditor = null,
@@ -1613,6 +1615,7 @@ const Question = ({
       <Popup
         alignment="end"
         data-testid="editor-actions-popup"
+        id="editor-actions"
         position="block-end"
         toggle={
           <PopupToggle
@@ -1678,6 +1681,7 @@ const Question = ({
       <ActionsWrapper>{reviewerInviteActions}</ActionsWrapper>
       <Popup
         alignment="end"
+        id="reviewer-actions"
         position="block-end"
         toggle={
           <PopupToggle
@@ -1839,6 +1843,7 @@ const Question = ({
 
         <Popup
           alignment="end"
+          id="more-actions"
           position="block-end"
           toggle={
             <PopupToggle
