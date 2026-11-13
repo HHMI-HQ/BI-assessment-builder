@@ -1,66 +1,86 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { UserOutlined } from "@ant-design/icons";
+import { th } from "@coko/client";
+import { Button, Form, Modal, Select } from "../common";
 
-import { Button, Form, Modal, Select } from '../common'
-
-const ModalHeader = Modal.header
-const ModalFooter = Modal.footer
-const ModalContext = React.createContext(null)
+const ModalHeader = Modal.header;
+const ModalFooter = Modal.footer;
+const ModalContext = React.createContext(null);
 
 const StyledForm = styled(Form)`
-  display: ${props => (props.hidden ? 'none' : 'block')};
-`
+  display: ${(props) => (props.hidden ? "none" : "block")};
+`;
 
-const AssignAuthorButton = props => {
-  const {
-    className,
-    onAssignAuthor,
-    authors,
-    loadAuthors,
-    refetchUser,
-    usecase,
-    currentAuthor,
-  } = props
+const StyledButton = styled(Button)`
+  > span:not(.ant-btn-icon) {
+    display: none;
+  }
 
-  const [showModal, setShowModal] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [modal, contextHolder] = Modal.useModal()
-  const [assignAuthorForm] = Form.useForm()
+  > span.ant-btn-icon {
+    margin-inline-end: 0 !important;
+  }
+
+  @media (min-width: ${th("mediaQueries.small")}) {
+    > span:not(.ant-btn-icon) {
+      display: inline-block;
+      margin-inline-start: 0;
+    }
+
+    > span.ant-btn-icon {
+      display: none;
+    }
+  }
+`;
+
+const AssignAuthorButton = ({
+  className,
+  authors = [],
+  currentAuthor = null,
+  onAssignAuthor = () => {},
+  loadAuthors = () => {},
+  refetchUser = () => {},
+  usecase = "item",
+}) => {
+  const [showModal, setShowModal] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [modal, contextHolder] = Modal.useModal();
+  const [assignAuthorForm] = Form.useForm();
 
   useEffect(() => {
     if (showModal && !authors.length) {
       // load all users when opening modal
-      loadAuthors()
+      loadAuthors();
     } else {
-      setShowConfirm(false)
+      setShowConfirm(false);
     }
-  }, [showModal])
+  }, [showModal]);
 
   useEffect(() => {
     if (currentAuthor?.length) {
       assignAuthorForm.setFieldValue(
-        'author',
-        currentAuthor?.filter(a => a?.id).map(a => a.id),
-      )
+        "author",
+        currentAuthor?.filter((a) => a?.id).map((a) => a.id),
+      );
     }
-  }, [currentAuthor])
+  }, [currentAuthor]);
 
   const handleAssign = ({ author }) => {
-    setShowModal(false)
+    setShowModal(false);
     onAssignAuthor(author)
       .then(() => {
-        const successModal = modal.success()
+        const successModal = modal.success();
         successModal.update({
           afterClose: refetchUser,
-          title: 'Author assigned',
-          content: `User${author.length > 1 ? 's' : ''} ${authors
-            .filter(auth => author.findIndex(a => auth.value === a) > -1)
-            .map(auth => auth.label)
-            .join(', ')} ${
-            author.length > 1 ? 'have' : 'has'
+          title: "Author assigned",
+          content: `User${author.length > 1 ? "s" : ""} ${authors
+            .filter((auth) => author.findIndex((a) => auth.value === a) > -1)
+            .map((auth) => auth.label)
+            .join(", ")} ${
+            author.length > 1 ? "have" : "has"
           } been assigned author of this ${
-            usecase === 'item' ? 'item' : 'leader text'
+            usecase === "item" ? "item" : "leader text"
           }.`,
           footer: [
             <ModalFooter key="footer">
@@ -69,14 +89,14 @@ const AssignAuthorButton = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
+        });
       })
       .catch(() => {
-        const errorModal = modal.error()
+        const errorModal = modal.error();
         errorModal.update({
-          title: 'Assignment Error',
+          title: "Assignment Error",
           content:
-            'Something went wrong while assigning the Author! Please try again or contact your system administrator.',
+            "Something went wrong while assigning the Author! Please try again or contact your system administrator.",
 
           footer: [
             <ModalFooter key="footer">
@@ -85,23 +105,26 @@ const AssignAuthorButton = props => {
               </Button>
             </ModalFooter>,
           ],
-        })
-      })
-  }
+        });
+      });
+  };
 
   return (
     <ModalContext.Provider value={null}>
-      <Button
+      <StyledButton
         className={className}
+        icon={<UserOutlined />}
         id="assignAuthor"
         onClick={() => setShowModal(true)}
+        title="Assign author"
         type="primary"
       >
         Assign author
-      </Button>
+      </StyledButton>
       <Modal
-        afterClose={() => document.querySelector('#assignAuthor').focus()}
+        afterClose={() => document.querySelector("#assignAuthor").focus()}
         destroyOnHidden
+        forceRender
         footer={
           <ModalFooter>
             <Button onClick={assignAuthorForm.submit} type="primary">
@@ -116,10 +139,10 @@ const AssignAuthorButton = props => {
             {showConfirm
               ? `Assign ${
                   authors.find(
-                    a => a.value === assignAuthorForm.getFieldValue('author'),
+                    (a) => a.value === assignAuthorForm.getFieldValue("author"),
                   )?.label
                 } as author?`
-              : 'Assign author'}
+              : "Assign author"}
           </ModalHeader>
         }
       >
@@ -127,25 +150,25 @@ const AssignAuthorButton = props => {
           form={assignAuthorForm}
           layout="vertical"
           onFinish={handleAssign}
-          onValuesChange={() => assignAuthorForm.validateFields(['author'])}
+          onValuesChange={() => assignAuthorForm.validateFields(["author"])}
         >
           <Form.Item
             label={`Select one or more authors for this ${
-              usecase === 'item' ? 'item' : 'set'
+              usecase === "item" ? "item" : "set"
             }`}
             name="author"
             rules={[
               {
                 required: true,
-                message: 'Please select a user to assign',
+                message: "Please select a user to assign",
               },
               {
                 validator(_, value) {
                   if (value && value.length > 0) {
-                    return Promise.resolve()
+                    return Promise.resolve();
                   }
 
-                  return Promise.reject()
+                  return Promise.reject();
                 },
               },
             ]}
@@ -163,14 +186,14 @@ const AssignAuthorButton = props => {
           </Form.Item>
         </StyledForm>
         <p
-          style={{ padding: '1em', display: showConfirm ? 'block' : 'none' }}
+          style={{ padding: "1em", display: showConfirm ? "block" : "none" }}
         />
       </Modal>
 
       {contextHolder}
     </ModalContext.Provider>
-  )
-}
+  );
+};
 
 AssignAuthorButton.propTypes = {
   authors: PropTypes.arrayOf(
@@ -184,15 +207,6 @@ AssignAuthorButton.propTypes = {
   loadAuthors: PropTypes.func,
   refetchUser: PropTypes.func,
   usecase: PropTypes.string,
-}
+};
 
-AssignAuthorButton.defaultProps = {
-  authors: [],
-  currentAuthor: null,
-  onAssignAuthor: () => {},
-  loadAuthors: () => {},
-  refetchUser: () => {},
-  usecase: 'item',
-}
-
-export default AssignAuthorButton
+export default AssignAuthorButton;

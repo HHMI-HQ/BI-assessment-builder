@@ -320,7 +320,6 @@ export const Discover = (props) => {
     <ActionWrapper>
       <StyledPopup
         id="list-popup"
-        popupPlacement="top"
         toggle={
           <Button
             data-testid="add-to-list-btn"

@@ -1,27 +1,26 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useContext } from 'react'
-import styled, { css, ThemeProvider } from 'styled-components'
-import { WaxContext, ComponentPlugin, WaxView } from 'wax-prosemirror-core'
-import { LinkOutlined } from '@ant-design/icons'
-import { grid, th , VisuallyHiddenElement } from '@coko/client'
-import theme from '../../../theme'
-import commonStyles from './commonWaxStyles'
-import Collapse from '../../common/Collapse'
-import Link from '../../common/HhmiLink'
-import { ComplexItemSetContext } from '../../question/QuestionEditor'
-import WaxWrapper from '../Wax'
-import LeadingContentLayout from './LeadingContentLayout'
-import { config } from '../config'
+import React, { useContext } from "react";
+import styled, { css, ThemeProvider } from "styled-components";
+import { WaxContext, ComponentPlugin, WaxView } from "wax-prosemirror-core";
+import { LinkOutlined } from "@ant-design/icons";
+import { grid, th, VisuallyHiddenElement } from "@coko/client";
+import theme from "../../../theme";
+import commonStyles from "./commonWaxStyles";
+import Collapse from "../../common/Collapse";
+import Link from "../../common/HhmiLink";
+import { ComplexItemSetContext } from "../../question/QuestionEditor";
+import WaxWrapper from "../Wax";
+import LeadingContentLayout from "./LeadingContentLayout";
+import { config } from "../config";
 
-import 'wax-prosemirror-core/dist/index.css'
-import 'wax-prosemirror-services/dist/index.css'
-import 'wax-questions-service/dist/index.css'
-import 'wax-table-service/dist/index.css'
-import '../services/wax-question-service.css'
-// import EditorElements from './EditorElements'
+import "wax-prosemirror-core/dist/index.css";
+import "wax-prosemirror-services/dist/index.css";
+import "wax-questions-service/dist/index.css";
+import "wax-table-service/dist/index.css";
+import "../services/wax-question-service.css";
 
 const fullScreenStyles = css`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   height: 100%;
   left: 0;
   margin: 0;
@@ -30,23 +29,23 @@ const fullScreenStyles = css`
   top: 0;
   width: 100%;
   z-index: 99999;
-`
+`;
 
 const Wrapper = styled.div`
-  /* border: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')}; */
+  /* border: ${th("borderWidth")} ${th("borderStyle")} ${th("colorBorder")}; */
   display: flex;
   flex-direction: column;
   height: 100%;
 
   ${commonStyles};
 
-  ${props => props.fullScreen && fullScreenStyles}
-`
+  ${(props) => props.$fullScreen && fullScreenStyles}
+`;
 
 const TopMenu = styled.div`
   align-items: center;
-  background: ${th('colorBackground')};
-  border-bottom: ${th('borderWidth')} ${th('borderStyle')} ${th('colorBorder')};
+  background: ${th("colorBackground")};
+  border-bottom: ${th("borderWidth")} ${th("borderStyle")} ${th("colorBorder")};
   display: flex;
   flex-wrap: wrap;
   height: auto;
@@ -55,14 +54,14 @@ const TopMenu = styled.div`
   user-select: none;
 
   /* stylelint-disable-next-line string-quotes */
-  > div[data-name='MultipleChoice'] {
+  > div[data-name="MultipleChoice"] {
     span {
       display: none;
     }
   }
 
   /* stylelint-disable-next-line string-quotes */
-  [title='Special Characters'] ~ div {
+  [title="Special Characters"] ~ div {
     min-width: 200px;
     right: 0;
 
@@ -70,27 +69,35 @@ const TopMenu = styled.div`
       width: auto;
     }
   }
-`
+`;
 
 const StyledLink = styled(Link)`
-  padding-inline: ${grid(5)};
-`
+  display: block;
+  padding: ${grid(3)};
+`;
 
 const StyledCollapse = styled(Collapse)`
   border: none;
   width: 100%;
-`
+  .ant-collapse-item > .ant-collapse-header {
+    border-radius: ${th("borderRadius")} !important;
+  }
+
+  .ant-collapse-panel.ant-collapse-panel-active {
+    border-top: none;
+  }
+`;
 
 const EditorWrapper = styled.div`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   display: block;
   flex-grow: 1;
   overflow-y: auto;
   padding: ${grid(2)};
-`
+`;
 
 const EditorArea = styled.div`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   flex-grow: 1;
   margin: 0 auto;
   max-width: 100ch;
@@ -99,7 +106,7 @@ const EditorArea = styled.div`
   .ProseMirror {
     /* padding: 0 ${grid(5)} ${grid(12)};
 
-    @media (min-width: ${th('mediaQueries.small')}) {
+    @media (min-width: ${th("mediaQueries.small")}) {
       padding: ${grid(5)};
     } */
 
@@ -110,23 +117,23 @@ const EditorArea = styled.div`
     } */
 
     /* .wax-selection-marker {
-      background: ${th('colorPrimary')};
+      background: ${th("colorPrimary")};
     } */
 
     .true-false,
     .true-false-single-correct {
       .rc-switch {
-        background-color: ${th('colorSuccess')};
+        background-color: ${th("colorSuccess")};
       }
     }
 
     .multiple-choice,
     .multiple-choice-single-correct {
       .rc-switch {
-        background-color: ${th('colorError')};
+        background-color: ${th("colorError")};
 
         &.rc-switch-checked {
-          background-color: ${th('colorSuccess')};
+          background-color: ${th("colorSuccess")};
         }
       }
     }
@@ -139,7 +146,7 @@ const EditorArea = styled.div`
       width: 280px;
 
       /* stylelint-disable-next-line string-quotes */
-      [role='menuitem'] {
+      [role="menuitem"] {
         font-size: 14px;
       }
     }
@@ -192,23 +199,40 @@ const EditorArea = styled.div`
 .ProseMirror-focused .ProseMirror-gapcursor {
   display: block;
 } */
-`
+`;
 
-const MainMenuToolBar = ComponentPlugin('mainMenuToolBar')
+const MainMenuToolBar = ComponentPlugin("mainMenuToolBar");
 // const WaxOverlays = ComponentPlugin('waxOverlays')
 
 /* eslint-disable-next-line react/prop-types */
-const HhmiLayout = props => {
-  const { options } = useContext(WaxContext)
-  const { fullScreen } = options
+const HhmiLayout = (props) => {
+  const { options } = useContext(WaxContext);
+  const { fullScreen } = options;
 
   const { leadingContent, complexSetEditLink, complexItemSetId } = useContext(
     ComplexItemSetContext,
-  )
+  );
+
+  const items = [
+    {
+      key: "leading-content",
+      label: "Leading content",
+      "data-testid": "leading-content-collapse",
+      children: (
+        <WaxWrapper
+          config={config}
+          content={leadingContent}
+          key={complexItemSetId}
+          layout={LeadingContentLayout}
+          readOnly
+        />
+      ),
+    },
+  ];
 
   return (
     <ThemeProvider theme={theme}>
-      <Wrapper fullScreen={fullScreen}>
+      <Wrapper $fullScreen={fullScreen}>
         <TopMenu
           aria-controls="wax-editor"
           aria-label="Editor toolbar"
@@ -223,27 +247,14 @@ const HhmiLayout = props => {
         <EditorWrapper tabIndex={0}>
           {leadingContent && (
             <>
-              <StyledCollapse defaultActiveKey={['leading-content']}>
-                <Collapse.Panel
-                  data-testid="leading-content-collapse"
-                  header="Leading content"
-                  key="leading-content"
-                >
-                  <WaxWrapper
-                    config={config}
-                    content={leadingContent}
-                    key={complexItemSetId}
-                    layout={LeadingContentLayout}
-                    readOnly
-                  />
-                </Collapse.Panel>
-              </StyledCollapse>
+              <StyledCollapse
+                items={items}
+                defaultActiveKey={["leading-content"]}
+              />
               {complexSetEditLink && (
                 <StyledLink
-                  to={{
-                    pathname: complexSetEditLink,
-                    state: { activeTab: 'edit' },
-                  }}
+                  to={complexSetEditLink}
+                  state={{ activeTab: "edit" }}
                 >
                   <LinkOutlined /> Edit the leading content for this set
                 </StyledLink>
@@ -256,11 +267,10 @@ const HhmiLayout = props => {
             <WaxView {...props} />
           </EditorArea>
         </EditorWrapper>
-
         {/* <WaxOverlays /> */}
       </Wrapper>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default HhmiLayout
+export default HhmiLayout;

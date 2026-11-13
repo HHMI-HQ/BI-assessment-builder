@@ -233,12 +233,12 @@ const QuestionWrapper = styled.div`
   background-color: ${th("colorBackground")};
   display: grid;
   grid-template-rows: 1fr auto;
-  height: ${({ hasRibbon }) => (hasRibbon ? `calc(100% - 26px)` : `100%`)};
+  height: ${({ $hasRibbon }) => ($hasRibbon ? `calc(100% - 26px)` : `100%`)};
   ${(props) => {
-    const { showMetadata, showReviewForm } = props;
+    const { $showMetadata, $showReviewForm } = props;
 
-    if (!showMetadata) {
-      return showReviewForm
+    if (!$showMetadata) {
+      return $showReviewForm
         ? css`
             grid-template-columns: 3fr 2fr;
           `
@@ -247,7 +247,7 @@ const QuestionWrapper = styled.div`
           `;
     }
 
-    return showReviewForm
+    return $showReviewForm
       ? css`
           grid-template-columns: 3fr 1fr 2fr;
         `
@@ -393,9 +393,9 @@ const PanelWrapper = ({
   if (!isMobile || (!showMetadata && !showReviewForm)) {
     return (
       <QuestionWrapper
-        hasRibbon={hasRibbon}
-        showMetadata={showMetadata}
-        showReviewForm={showReviewForm}
+        $hasRibbon={hasRibbon}
+        $showMetadata={showMetadata}
+        $showReviewForm={showReviewForm}
       >
         {editor}
         {showMetadata && metadata}
@@ -459,6 +459,8 @@ PanelWrapper.propTypes = {
 // QUESTION submit button here seems to be outside the form
 // submit also refers to wax
 // does all this pose an accessibility problem?
+const EMPTY_ARRAY = [];
+const EMPTY_OBJECT = {};
 
 const Question = ({
   loading,
@@ -533,7 +535,7 @@ const Question = ({
   resources = [],
   reviewInviteStatus = null,
   reviewSubmitted = false,
-  reviewerPool = [],
+  reviewerPool = EMPTY_ARRAY,
   reviewerView = false,
   updated = "",
   isUserLoggedIn = true,
@@ -579,14 +581,13 @@ const Question = ({
   isMobile = false,
   preview = false,
   setPreview = null,
-  reviewResponses = {},
+  reviewResponses = EMPTY_OBJECT,
   saveReview = null,
   enhancedEditor = null,
   upgradeEditor = null,
 }) => {
   const [modal, contextHolder] = Modal.useModal();
   const { confirm, success, error } = modal;
-
   const formRef = useRef();
   const waxRef = useRef();
 
@@ -1085,7 +1086,7 @@ const Question = ({
           </Button>
         </ModalFooter>,
       ],
-      maskClosable: true,
+      mask: { closable: true },
     });
   };
 
@@ -1614,6 +1615,7 @@ const Question = ({
       <Popup
         alignment="end"
         data-testid="editor-actions-popup"
+        id="editor-actions"
         position="block-end"
         toggle={
           <PopupToggle
@@ -1679,6 +1681,7 @@ const Question = ({
       <ActionsWrapper>{reviewerInviteActions}</ActionsWrapper>
       <Popup
         alignment="end"
+        id="reviewer-actions"
         position="block-end"
         toggle={
           <PopupToggle
@@ -1840,6 +1843,7 @@ const Question = ({
 
         <Popup
           alignment="end"
+          id="more-actions"
           position="block-end"
           toggle={
             <PopupToggle

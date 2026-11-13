@@ -323,7 +323,6 @@ const ListContent = ({
     <BulkActionWrapper>
       <Popup
         id="export-popup"
-        popupPlacement="top"
         toggle={
           <Button
             data-testid="export-btn"

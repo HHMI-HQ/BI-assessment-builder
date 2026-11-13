@@ -1,60 +1,54 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-
-import { grid } from '@coko/client'
-
-import { Form, Button, Link } from '../common'
-
-const Wrapper = styled.div``
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid } from "@coko/client";
+import { Form, Button, Link } from "../common";
 
 const SubmitButton = styled(Button)`
   width: 100%;
-`
+`;
 
 const Footer = styled.div`
   display: flex;
-  justify-content: ${props =>
-    props.showForgotPassword ? 'space-between' : 'flex-end'};
+  justify-content: ${(props) =>
+    props.$showForgotPassword ? "space-between" : "flex-end"};
   margin-top: ${grid(4)};
-`
+`;
 
 const ForgotPassword = styled.div`
   > a {
-    color: ${props => props.theme.colorText};
+    color: ${(props) => props.theme.colorText};
   }
-`
+`;
 
 const AlternativeAction = styled.div`
   font-weight: bold;
 
   > a {
-    color: ${props => props.theme.colorText};
+    color: ${(props) => props.theme.colorText};
   }
-`
+`;
 
-const AuthenticationForm = props => {
-  const {
-    alternativeActionLabel,
-    alternativeActionLink,
-    className,
-    children,
-    errorMessage,
-    forgotPasswordUrl,
-    hasError,
-    loading,
-    onSubmit,
-    showForgotPassword,
-    submitButtonLabel,
-  } = props
-
+const AuthenticationForm = ({
+  className,
+  children,
+  onSubmit,
+  alternativeActionLabel = null,
+  alternativeActionLink = null,
+  errorMessage = null,
+  forgotPasswordUrl = "/request-password-reset",
+  hasError = false,
+  loading = false,
+  showForgotPassword = false,
+  submitButtonLabel = "Submit",
+}) => {
   return (
-    <Wrapper className={className}>
+    <div className={className}>
       <Form
         layout="vertical"
         onFinish={onSubmit}
         ribbonMessage={errorMessage}
-        submissionStatus={hasError ? 'error' : null}
+        submissionStatus={hasError ? "error" : null}
       >
         {children}
 
@@ -64,7 +58,7 @@ const AuthenticationForm = props => {
       </Form>
 
       {!!alternativeActionLabel && (
-        <Footer showForgotPassword={showForgotPassword}>
+        <Footer $showForgotPassword={showForgotPassword}>
           {showForgotPassword && (
             <ForgotPassword>
               <Link to={forgotPasswordUrl}>Forgot your password?</Link>
@@ -76,9 +70,9 @@ const AuthenticationForm = props => {
           </AlternativeAction>
         </Footer>
       )}
-    </Wrapper>
-  )
-}
+    </div>
+  );
+};
 
 AuthenticationForm.propTypes = {
   /** Function to run on form submit */
@@ -100,17 +94,6 @@ AuthenticationForm.propTypes = {
   showForgotPassword: PropTypes.bool,
   /** Text displayed inside submit button */
   submitButtonLabel: PropTypes.string,
-}
+};
 
-AuthenticationForm.defaultProps = {
-  alternativeActionLabel: null,
-  alternativeActionLink: null,
-  errorMessage: null,
-  forgotPasswordUrl: '/request-password-reset',
-  hasError: false,
-  loading: false,
-  showForgotPassword: false,
-  submitButtonLabel: 'Submit',
-}
-
-export default AuthenticationForm
+export default AuthenticationForm;

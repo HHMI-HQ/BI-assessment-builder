@@ -1,16 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { grid, th, uuid } from '@coko/client'
-import { Link, DateParser } from '../common'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { grid, th, uuid } from "@coko/client";
+import { Link, DateParser } from "../common";
 
 const Wrapper = styled.article`
   padding: ${grid(4)} ${grid(3)};
-`
+`;
 
 const LinkWrapper = styled(Link)`
   && {
-    color: ${th('colorText')};
+    color: ${th("colorText")};
   }
   display: block;
   margin-block-end: ${grid(2)};
@@ -20,14 +20,14 @@ const LinkWrapper = styled(Link)`
   width: 100%;
 
   h2 {
-    font-size: ${th('fontSizeBase')};
+    font-size: ${th("fontSizeBase")};
     margin-block: ${grid(2)};
   }
 
   p {
     margin-block: 0;
   }
-`
+`;
 
 const MetadataTable = styled.table`
   border: none;
@@ -38,7 +38,7 @@ const MetadataTable = styled.table`
     border: none;
   }
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     tbody {
       display: flex;
       flex-direction: row;
@@ -51,24 +51,29 @@ const MetadataTable = styled.table`
       }
     }
   }
-`
+`;
 
 const MetadataLabel = styled.div`
   font-weight: bold;
+  text-align: start;
   text-transform: uppercase;
-`
+`;
 
 const MetadataValue = styled.td`
   text-align: right;
 
-  @media (min-width: ${th('mediaQueries.small')}) {
+  @media (min-width: ${th("mediaQueries.small")}) {
     text-align: left;
   }
-`
+`;
 
-const ComplexItemSetListItem = props => {
-  const { title, leadingContent, href, metadata, id } = props
-
+const ComplexItemSetListItem = ({
+  title = "",
+  leadingContent = null,
+  href = "#",
+  id = uuid(),
+  metadata = [],
+}) => {
   return (
     <Wrapper id={id}>
       <LinkWrapper to={href}>
@@ -79,21 +84,21 @@ const ComplexItemSetListItem = props => {
         <tbody>
           {metadata &&
             metadata.length &&
-            metadata.map(item => (
+            metadata.map((item) => (
               <tr key={uuid()}>
                 <th>
                   <MetadataLabel>{item.label}</MetadataLabel>
                 </th>
                 <MetadataValue data-testid={`${item.label}-value`}>
-                  {item.value && item.type === 'date' ? (
+                  {item.value && item.type === "date" ? (
                     <DateParser
                       dateFormat="MMMM DD, YYYY"
                       timestamp={item.value}
                     >
-                      {timestamp => timestamp}
+                      {(timestamp) => timestamp}
                     </DateParser>
                   ) : (
-                    item.value || '-'
+                    item.value || "-"
                   )}
                 </MetadataValue>
               </tr>
@@ -101,8 +106,8 @@ const ComplexItemSetListItem = props => {
         </tbody>
       </MetadataTable>
     </Wrapper>
-  )
-}
+  );
+};
 
 ComplexItemSetListItem.propTypes = {
   title: PropTypes.string,
@@ -116,14 +121,6 @@ ComplexItemSetListItem.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
     }),
   ),
-}
+};
 
-ComplexItemSetListItem.defaultProps = {
-  title: '',
-  leadingContent: null,
-  href: '#',
-  id: uuid(),
-  metadata: [],
-}
-
-export default ComplexItemSetListItem
+export default ComplexItemSetListItem;

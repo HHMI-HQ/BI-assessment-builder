@@ -17,20 +17,19 @@ const Message = styled.div`
   --borderRadius: ${th("borderRadius")};
   --radiusOwn: var(--borderRadius) 0 var(--borderRadius) var(--borderRadius);
   --radiusOther: 0 var(--borderRadius) var(--borderRadius) var(--borderRadius);
-  background: ${(props) =>
-    props.own ? th("colorBackgroundHue") : th("colorPrimary")};
-  border-radius: ${(props) =>
-    props.own ? `var(--radiusOwn)}` : `var(--radiusOther)`};
+  background: ${({ $own }) =>
+    $own ? th("colorBackgroundHue") : th("colorPrimary")};
+  border-radius: ${({ $own }) =>
+    $own ? `var(--radiusOwn)` : `var(--radiusOther)`};
   box-shadow: rgb(50 50 93 / 25%) 0 2px 4px -2px,
     rgb(0 0 0 / 30%) 0 1px 2px -3px;
-  color: ${(props) =>
-    props.own ? th("colorTextDark") : th("colorTextReverse")};
+  color: ${({ $own }) => ($own ? th("colorTextDark") : th("colorTextReverse"))};
   display: inline-block;
   margin-block: 10px;
   max-inline-size: 50%;
   min-inline-size: 30%;
-  ${(props) =>
-    props.own &&
+  ${({ $own }) =>
+    $own &&
     css`
       ${pullRight}
 
@@ -128,7 +127,7 @@ const ChatMessage = forwardRef((props, ref) => {
     <Message
       className={className}
       data-testid={own ? "author-message" : "participant-message"}
-      own={own}
+      $own={own}
       ref={ref}
       tabIndex={0}
       {...rest}
