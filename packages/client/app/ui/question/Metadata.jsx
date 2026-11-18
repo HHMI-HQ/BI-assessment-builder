@@ -292,7 +292,7 @@ const Metadata = React.forwardRef((props, ref) => {
       });
     }
 
-    if (Object.keys(formValuesClone).length) {
+    if (Object.keys(formValuesClone).length && resources.length) {
       // filter out non-existent resources
       formValuesClone.biointeractiveResources =
         formValuesClone.biointeractiveResources
@@ -304,7 +304,7 @@ const Metadata = React.forwardRef((props, ref) => {
     formValuesClone.dependsOn = formValuesClone.dependsOn || [];
 
     form.setFieldsValue(formValuesClone);
-  }, [formValues]);
+  }, [formValues, resources]);
 
   // TODO: find a better solution (assigning the initialValue directly confilcts with form.setFieldsValues)
   // initialValue for 2nd course metadata for author
