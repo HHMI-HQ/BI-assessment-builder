@@ -5,7 +5,6 @@ import {
   useQuery,
   useSubscription,
 } from "@apollo/client/react";
-import { useCurrentUser } from "@coko/client";
 import { Link } from "react-router";
 import styled from "styled-components";
 import {
@@ -53,7 +52,7 @@ export const NotificationsContext = React.createContext();
 
 export const useNotifications = () => useContext(NotificationsContext);
 
-export const NotificationsProvider = ({ children }) => {
+export const NotificationsProvider = ({ currentUser, children }) => {
   const [tabKey, setTabKey] = useState("messages");
   const client = useApolloClient();
   const [unreadMentionsCount, setUnreadMentionsCount] = useState(0);
@@ -62,7 +61,6 @@ export const NotificationsProvider = ({ children }) => {
   const [messageToPreview, setMessageToPreview] = useState({});
   const [updatedMentions, setUpdatedMentions] = useState([]);
   const [newNotification, setNewNotification] = useState(null);
-  const { currentUser } = useCurrentUser();
 
   const variables = {
     type: "mention",

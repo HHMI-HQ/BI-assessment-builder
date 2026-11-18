@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import { Form, Select, Link } from '../common'
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Form, Select, Link } from "../common";
 
 const StyledFormItem = styled(Form.Item)`
   .ant-col.ant-form-item-label label {
     width: 100%;
   }
-`
+`;
 
 const LabelWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-`
+`;
 
-const Resources = props => {
-  const { readOnly, resources, getFieldValue, name } = props
-
-  const [selectedResourses, setSelectedResources] = useState([])
+const Resources = ({
+  getFieldValue,
+  name = "biointeractiveResources",
+  readOnly = false,
+  resources = [],
+}) => {
+  const [selectedResourses, setSelectedResources] = useState([]);
 
   useEffect(() => {
     // if (selectedTopics.length) {
@@ -31,16 +34,16 @@ const Resources = props => {
     //   setAvailableResources(resources)
     // }
 
-    const preselectedResources = getFieldValue('biointeractiveResources')
+    const preselectedResources = getFieldValue("biointeractiveResources");
 
     if (preselectedResources) {
-      setSelectedResources(preselectedResources)
+      setSelectedResources(preselectedResources);
     }
-  }, [])
+  }, []);
 
   const renderSelectedResourseLink = () => {
-    return selectedResourses.map(resource => {
-      const resourceObject = resources.find(r => r.value === resource)
+    return selectedResourses.map((resource) => {
+      const resourceObject = resources.find((r) => r.value === resource);
 
       return resourceObject ? (
         <li key={resourceObject.value}>
@@ -53,9 +56,9 @@ const Resources = props => {
             {resourceObject.label}
           </Link>
         </li>
-      ) : null
-    })
-  }
+      ) : null;
+    });
+  };
 
   return (
     <>
@@ -89,20 +92,14 @@ const Resources = props => {
       </StyledFormItem>
       <ul>{renderSelectedResourseLink()}</ul>
     </>
-  )
-}
+  );
+};
 
 Resources.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   name: PropTypes.string,
   readOnly: PropTypes.bool,
   resources: PropTypes.arrayOf(PropTypes.shape()),
-}
+};
 
-Resources.defaultProps = {
-  name: 'biointeractiveResources',
-  readOnly: false,
-  resources: [],
-}
-
-export default Resources
+export default Resources;

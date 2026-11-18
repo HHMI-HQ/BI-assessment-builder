@@ -139,7 +139,7 @@ const NavWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   margin: 0;
-  overflow: hidden ${(p) => (p.show ? "auto" : "hidden")};
+  overflow: hidden ${(p) => (p.$show ? "auto" : "hidden")};
   padding: 1rem 0.5rem;
   width: 100%;
 
@@ -895,7 +895,7 @@ const Header = ({
           />
         </MobileMenuToggle>
         <MainNav id="main-nav">
-          <NavWrapper data-testid="nav-wrapper" show={mainMenuIsOpen}>
+          <NavWrapper data-testid="nav-wrapper" $show={mainMenuIsOpen}>
             <LinksList
               currentPath={currentPath}
               renderCondition

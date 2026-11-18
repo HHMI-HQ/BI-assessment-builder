@@ -1,5 +1,4 @@
-const Identity = require('@coko/server/dist/models/identity/identity.model')
-
+const { Identity, File, ChatChannel, ChatMessage } = require('@coko/server')
 const Question = require('./question/question.model')
 const QuestionVersion = require('./questionVersion/questionVersion.model')
 const Team = require('./team/team.model')
@@ -16,14 +15,6 @@ const Resource = require('./resources/resources.model')
 const CourseMetadata = require('./courseMetadata/courseMetadata.model')
 // new models
 const Course = require('./courseMetadata/Course.model')
-// const Unit = require('./courseMetadata/Unit.model')
-// const Topic = require('./courseMetadata/Topic.model')
-// const LearningObjective = require('./courseMetadata/LearningObjective.model')
-// const EssentialKnowledge = require('./courseMetadata/EssentialKnowledge.model')
-// const Application = require('./courseMetadata/Application.model')
-// const Skill = require('./courseMetadata/Skill.model')
-// const Understanding = require('./courseMetadata/Understanding.model')
-// const MetaFramework = require('./courseMetadata/Metaframework.model')
 const MetaFramework = require('./courseMetadata/Metaframework.model')
 
 module.exports = {
@@ -43,12 +34,8 @@ module.exports = {
   Resource,
   CourseMetadata,
   Course,
-  // Unit,
-  // Topic,
-  // LearningObjective,
-  // EssentialKnowledge,
-  // Application,
-  // Skill,
-  // Understanding,
   MetaFramework,
+  File,
+  ChatChannel,
+  ChatMessage,
 }

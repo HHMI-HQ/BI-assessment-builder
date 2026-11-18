@@ -1,10 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import AuthenticationForm from './AuthenticationForm'
-import AuthenticationHeader from './AuthenticationHeader'
-import AuthenticationWrapper from './AuthenticationWrapper'
-// import SuccessSubTitle from './SuccessSubTitle'
+import React from "react";
+import PropTypes from "prop-types";
+import AuthenticationForm from "./AuthenticationForm";
+import AuthenticationHeader from "./AuthenticationHeader";
+import AuthenticationWrapper from "./AuthenticationWrapper";
 import {
   Button,
   Form,
@@ -15,33 +13,31 @@ import {
   Checkbox,
   Paragraph,
   Page,
-} from '../common'
+} from "../common";
 
-const ModalContext = React.createContext(null)
-const ModalHeader = Modal.header
-const ModalFooter = Modal.footer
+const ModalContext = React.createContext(null);
+const ModalHeader = Modal.header;
+const ModalFooter = Modal.footer;
 
-const Signup = props => {
-  const {
-    className,
-    errorMessage,
-    hasError,
-    hasSuccess,
-    loading,
-    onSubmit,
-    // userEmail,
-  } = props
+const Signup = ({
+  className,
+  onSubmit,
+  errorMessage = null,
+  hasError = false,
+  hasSuccess = false,
+  loading = false,
+  // userEmail = null,
+}) => {
+  const [modal, contextHolder] = Modal.useModal();
 
-  const [modal, contextHolder] = Modal.useModal()
-
-  const showTermsAndConditions = e => {
-    e.preventDefault()
-    const termsAndConditionsModal = modal.info()
+  const showTermsAndConditions = (e) => {
+    e.preventDefault();
+    const termsAndConditionsModal = modal.info();
     termsAndConditionsModal.update({
       title: <ModalHeader>Agreeing to Terms and Conditions</ModalHeader>,
       content: (
         <Paragraph>
-          By checking “I agree” and selecting “Sign up” below, I accept the{' '}
+          By checking “I agree” and selecting “Sign up” below, I accept the{" "}
           <Link
             as="a"
             href="https://www.biointeractive.org/hhmi-biointeractive-online-community-terms-use"
@@ -50,7 +46,7 @@ const Signup = props => {
           >
             HHMI BioInteractive Online Community Terms of Use
           </Link>
-          ,{' '}
+          ,{" "}
           <Link
             as="a"
             href="https://www.hhmi.org/terms-of-use"
@@ -59,7 +55,7 @@ const Signup = props => {
           >
             HHMI Terms of Use
           </Link>
-          , and{' '}
+          , and{" "}
           <Link
             as="a"
             href="https://www.hhmi.org/privacy-policy"
@@ -82,14 +78,14 @@ const Signup = props => {
           </Button>
         </ModalFooter>,
       ],
-      maskClosable: true,
+      mask: { closable: true },
       width: 570,
       bodyStyle: {
         marginRight: 38,
-        textAlign: 'justify',
+        textAlign: "justify",
       },
-    })
-  }
+    });
+  };
 
   return (
     <Page maxWidth={600}>
@@ -127,7 +123,7 @@ const Signup = props => {
             <Form.Item
               label="First Name"
               name="firstName"
-              rules={[{ required: true, message: 'First name is required' }]}
+              rules={[{ required: true, message: "First name is required" }]}
             >
               <Input
                 autoComplete="given-name"
@@ -138,7 +134,7 @@ const Signup = props => {
             <Form.Item
               label="Last Name"
               name="lastName"
-              rules={[{ required: true, message: 'Last name is required' }]}
+              rules={[{ required: true, message: "Last name is required" }]}
             >
               <Input
                 autoComplete="family-name"
@@ -152,11 +148,11 @@ const Signup = props => {
               rules={[
                 {
                   required: true,
-                  message: 'Email is required',
+                  message: "Email is required",
                 },
                 {
-                  type: 'email',
-                  message: 'This is not a valid email address',
+                  type: "email",
+                  message: "This is not a valid email address",
                 },
               ]}
             >
@@ -170,7 +166,7 @@ const Signup = props => {
             <Form.Item
               label="Password"
               name="password"
-              rules={[{ required: true, message: 'Password is required' }]}
+              rules={[{ required: true, message: "Password is required" }]}
             >
               <Input
                 autoComplete="new-password"
@@ -180,25 +176,25 @@ const Signup = props => {
             </Form.Item>
 
             <Form.Item
-              dependencies={['password']}
+              dependencies={["password"]}
               label="Confirm Password"
               name="confirmPassword"
               rules={[
                 {
                   required: true,
-                  message: 'Please confirm your password!',
+                  message: "Please confirm your password!",
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve()
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
                     }
 
                     return Promise.reject(
                       new Error(
-                        'The two passwords that you entered do not match!',
+                        "The two passwords that you entered do not match!",
                       ),
-                    )
+                    );
                   },
                 }),
               ]}
@@ -219,7 +215,7 @@ const Signup = props => {
                         ? Promise.resolve()
                         : Promise.reject(
                             new Error(
-                              'You need to agree to the terms and conditions',
+                              "You need to agree to the terms and conditions",
                             ),
                           ),
                   },
@@ -227,7 +223,7 @@ const Signup = props => {
                 valuePropName="checked"
               >
                 <Checkbox aria-label="I agree to the terms and conditions">
-                  I agree to the{' '}
+                  I agree to the{" "}
                   <Link
                     as="a"
                     href="#termsAndCondition"
@@ -244,8 +240,8 @@ const Signup = props => {
         )}
       </AuthenticationWrapper>
     </Page>
-  )
-}
+  );
+};
 
 Signup.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -255,14 +251,6 @@ Signup.propTypes = {
   hasSuccess: PropTypes.bool,
   loading: PropTypes.bool,
   // userEmail: PropTypes.string,
-}
+};
 
-Signup.defaultProps = {
-  errorMessage: null,
-  hasError: false,
-  hasSuccess: false,
-  loading: false,
-  // userEmail: null,
-}
-
-export default Signup
+export default Signup;
