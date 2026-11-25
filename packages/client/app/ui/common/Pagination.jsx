@@ -41,6 +41,7 @@ const Pagination = React.forwardRef((props, forwardRef) => {
     pagination,
     onChange,
     onShowSizeChange,
+    disabled = false,
     align = "end",
     ...rest
   } = props;
@@ -77,7 +78,7 @@ const Pagination = React.forwardRef((props, forwardRef) => {
         .forEach((item) => {
           item.removeAttribute("tabindex");
 
-          if (item.getAttribute("aria-disabled") === "true") {
+          if (item.getAttribute("aria-disabled") === "true" || disabled) {
             item.querySelector(":scope > *")?.removeAttribute("disabled");
             item
               .querySelector(":scope > *")
@@ -152,6 +153,7 @@ const Pagination = React.forwardRef((props, forwardRef) => {
     >
       <AntPagination
         {...pagination}
+        disabled={disabled}
         itemRender={itemRender}
         onChange={onChange}
         onShowSizeChange={onShowSizeChange}

@@ -1,22 +1,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useContext } from 'react'
-import styled, { css, ThemeProvider } from 'styled-components'
-import { WaxContext, WaxView } from 'wax-prosemirror-core'
-import { grid, th , VisuallyHiddenElement } from '@coko/client'
-import theme from '../../../theme'
-import commonStyles from './commonWaxStyles'
-import { ComplexItemSetContext } from '../../question/QuestionEditor'
-import WaxWrapper from '../Wax'
-import LeadingContentLayout from './LeadingContentLayout'
-import { config } from '../config'
+import React, { useContext } from "react";
+import styled, { css, ThemeProvider } from "styled-components";
+import { WaxContext, WaxView } from "wax-prosemirror-core";
+import { grid, th, VisuallyHiddenElement } from "@coko/client";
+import theme from "../../../theme";
+import commonStyles from "./commonWaxStyles";
+import { ComplexItemSetContext } from "../../question/QuestionEditor";
+import WaxWrapper from "../Wax";
+import LeadingContentLayout from "./LeadingContentLayout";
+import { config } from "../config";
 
-import 'wax-prosemirror-core/dist/index.css'
-import 'wax-prosemirror-services/dist/index.css'
-import 'wax-questions-service/dist/index.css'
-import 'wax-table-service/dist/index.css'
+import "wax-prosemirror-core/dist/index.css";
+import "wax-prosemirror-services/dist/index.css";
+import "wax-questions-service/dist/index.css";
+import "wax-table-service/dist/index.css";
+import "../services/wax-question-service.css";
 
 const fullScreenStyles = css`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   height: 100%;
   left: 0;
   margin: 0;
@@ -25,7 +26,7 @@ const fullScreenStyles = css`
   top: 0;
   width: 100%;
   z-index: 99999;
-`
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,27 +35,27 @@ const Wrapper = styled.div`
 
   ${commonStyles};
 
-  ${props => props.fullScreen && fullScreenStyles}
-`
+  ${({ $fullScreen }) => $fullScreen && fullScreenStyles}
+`;
 
 const LeadingContentWrapper = styled.div`
-  border-bottom: 1px solid ${th('colorBorder')};
+  border-bottom: 1px solid ${th("colorBorder")};
   margin-inline: auto;
   max-width: 100ch;
   padding-block: ${grid(5)};
   width: 100%;
-`
+`;
 
 const EditorWrapper = styled.div`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   display: block;
   flex-grow: 1;
   overflow-y: auto;
   padding: ${grid(2)};
-`
+`;
 
 const EditorArea = styled.div`
-  background-color: ${th('colorBackground')};
+  background-color: ${th("colorBackground")};
   flex-grow: 1;
   margin: 0 auto;
   max-width: 100ch;
@@ -62,27 +63,21 @@ const EditorArea = styled.div`
 
   .ProseMirror {
     background-color: inherit;
-    /* height: 100%; */
-    /* padding: 0 ${grid(5)} ${grid(12)}; */
-
-    /* @media (min-width: ${th('mediaQueries.small')}) {
-      padding: ${grid(12)} ${grid(5)};
-    } */
 
     .true-false,
     .true-false-single-correct {
       .rc-switch {
-        background-color: ${th('colorSuccess')};
+        background-color: ${th("colorSuccess")};
       }
     }
 
     .multiple-choice,
     .multiple-choice-single-correct {
       .rc-switch {
-        background-color: ${th('colorError')};
+        background-color: ${th("colorError")};
 
         &.rc-switch-checked {
-          background-color: ${th('colorSuccess')};
+          background-color: ${th("colorSuccess")};
         }
       }
     }
@@ -94,8 +89,7 @@ const EditorArea = styled.div`
     #numerical-list {
       width: 280px;
 
-      /* stylelint-disable-next-line string-quotes */
-      [role='menuitem'] {
+      [role="menuitem"] {
         font-size: 14px;
       }
     }
@@ -119,17 +113,17 @@ const EditorArea = styled.div`
   .essay > *:not(:last-child) {
     border-bottom: 1px solid #f5f5f7;
   }
-`
+`;
 
 // eslint-disable-next-line react/prop-types
-const TestModeLayout = props => {
-  const { options } = useContext(WaxContext)
-  const { fullScreen } = options
-  const { leadingContent } = useContext(ComplexItemSetContext)
+const TestModeLayout = (props) => {
+  const { options } = useContext(WaxContext);
+  const { fullScreen } = options;
+  const { leadingContent } = useContext(ComplexItemSetContext);
 
   return (
     <ThemeProvider theme={theme}>
-      <Wrapper fullScreen={fullScreen}>
+      <Wrapper $fullScreen={fullScreen}>
         <EditorWrapper tabIndex={0}>
           {leadingContent && (
             <LeadingContentWrapper data-testid="leading-content-wrapper">
@@ -152,7 +146,7 @@ const TestModeLayout = props => {
         </EditorWrapper>
       </Wrapper>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default TestModeLayout
+export default TestModeLayout;

@@ -146,7 +146,7 @@ const AddToListPopup = ({
           }
         >
           <Form.Item
-            label="Existing list 111"
+            label="Existing list"
             name="existingList"
             rules={[
               {

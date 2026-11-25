@@ -70,7 +70,7 @@ const LoginPage = () => {
   if (error?.message.includes("username or password"))
     errorMessage = "Invalid credentials";
 
-  if (data) {
+  if (data && !error) {
     const token = data.login?.token;
 
     if (token) {
