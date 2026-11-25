@@ -286,13 +286,15 @@ var createOptions = function createOptions(
   tr.replaceWith(from, to, container)
   dispatch(tr)
   setTimeout(function () {
-    context.pmViews[question.attrs.id].focus()
     createEmptyParagraph(context, firstOption.attrs.id)
     createEmptyParagraph(context, firstFeedback.attrs.id)
     createEmptyParagraph(context, secondOption.attrs.id)
     createEmptyParagraph(context, secondFeedback.attrs.id)
     createEmptyParagraph(context, question.attrs.id)
   }, 50)
+  setTimeout(function () {
+    context.pmViews[question.attrs.id].focus()
+  }, 100)
   return true
 }
 
@@ -873,7 +875,7 @@ function _templateObject4() {
 
 function _templateObject3() {
   var data = _taggedTemplateLiteral([
-    '\n  background: transparent;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  float: right;\n  margin-top: 16px;\n  position: relative;\n',
+    '\n  background: transparent;\n  border: none;\n  bottom: 14px;\n  cursor: pointer;\n  float: right;\n  margin-top: 16px;\n  position: relative;\n  pointer-events: all;\n',
   ])
 
   _templateObject3 = function _templateObject3() {
@@ -899,7 +901,7 @@ function _templateObject2$1() {
 function _templateObject$1() {
   var data = _taggedTemplateLiteral([
     '\n  border-bottom: 1px solid ',
-    ';\n  height: 30px;\n',
+    ';\n  height: 30px;\n  pointer-events: none;\n  position: relative;\n  z-index: 999;\n',
   ])
 
   _templateObject$1 = function _templateObject() {
@@ -9527,6 +9529,7 @@ var multipleChoiceContainerNode = {
   },
   group: 'block questions',
   atom: true,
+  isolating: true,
   content: 'block+',
   parseDOM: [
     {
@@ -10435,7 +10438,11 @@ var MultipleChoiceNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           }
 
           var innerView = this.context.pmViews[this.node.attrs.id]
-          return innerView && innerView.dom.contains(event.target)
+          return (
+            innerView &&
+            event.target !== undefined &&
+            innerView.dom.contains(event.target)
+          )
         },
       },
     ],
@@ -10605,11 +10612,6 @@ var MultipleChoiceSingleCorrectQuestion =
                 if (
                   Commands.isParentOfType(
                     state,
-                    state.config.schema.nodes
-                      .multiple_choice_single_correct_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
                     state.config.schema.nodes.multiple_choice_single_correct,
                   ) ||
                   Commands.isParentOfType(
@@ -10681,9 +10683,8 @@ var multipleChoiceSingleCorrectContainerNode = {
   },
   group: 'block questions',
   atom: true,
-  selectable: true,
-  draggable: true,
-  content: 'block*',
+  isolating: true,
+  content: 'block+',
   parseDOM: [
     {
       tag: 'div.multiple-choice-single-correct',
@@ -11310,7 +11311,11 @@ var MultipleChoiceSingleCorrectNodeView = /*#__PURE__*/ (function (
           }
 
           var innerView = this.context.pmViews[this.node.attrs.id]
-          return innerView && innerView.dom.contains(event.target)
+          return (
+            innerView &&
+            event.target !== undefined &&
+            innerView.dom.contains(event.target)
+          )
         },
       },
     ],
@@ -11379,8 +11384,7 @@ var QuestionMultipleSingleNodeView = /*#__PURE__*/ (function (
             return true
           }
 
-          var innerView = this.context.pmViews[this.node.attrs.id]
-          return innerView && innerView.dom.contains(event.target)
+          return false
         },
       },
     ],
@@ -11540,10 +11544,6 @@ var TrueFalseQuestion =
                 if (
                   Commands.isParentOfType(
                     state,
-                    state.config.schema.nodes.true_false_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
                     state.config.schema.nodes.true_false,
                   ) ||
                   Commands.isParentOfType(
@@ -11642,9 +11642,8 @@ var trueFalseContainerNode = {
   },
   group: 'block questions',
   atom: true,
-  selectable: true,
-  draggable: true,
-  content: 'block*',
+  isolating: true,
+  content: 'block+',
   parseDOM: [
     {
       tag: 'div.true-false',
@@ -12334,7 +12333,11 @@ var TrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           }
 
           var innerView = this.context.pmViews[this.node.attrs.id]
-          return innerView && innerView.dom.contains(event.target)
+          return (
+            innerView &&
+            event.target !== undefined &&
+            innerView.dom.contains(event.target)
+          )
         },
       },
     ],
@@ -12402,7 +12405,11 @@ var QuestionTrueFalseNodeView = /*#__PURE__*/ (function (_QuestionsNodeView) {
           }
 
           var innerView = this.context.pmViews[this.node.attrs.id]
-          return innerView && innerView.dom.contains(event.target)
+          return (
+            innerView &&
+            event.target !== undefined &&
+            innerView.dom.contains(event.target)
+          )
         },
       },
     ],
@@ -12559,11 +12566,6 @@ var TrueFalseSingleCorrectQuestion =
                 if (
                   Commands.isParentOfType(
                     state,
-                    state.config.schema.nodes
-                      .true_false_single_correct_container,
-                  ) ||
-                  Commands.isParentOfType(
-                    state,
                     state.config.schema.nodes.true_false_single_correct,
                   ) ||
                   Commands.isParentOfType(
@@ -12632,9 +12634,8 @@ var trueFalseSingleCorrectContainerNode = {
   },
   group: 'block questions',
   atom: true,
-  selectable: true,
-  draggable: true,
-  content: 'block*',
+  isolating: true,
+  content: 'block+',
   parseDOM: [
     {
       tag: 'div.true-false-single-correct',
