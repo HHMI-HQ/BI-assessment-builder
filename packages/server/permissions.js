@@ -554,7 +554,7 @@ const permissions = {
     myLists: isActive,
     list: isActive,
     // Users
-    currentUser: isActive,
+    currentUser: allow,
     filterUsers: isAdminOrEditor,
     user: isAdmin,
     getCountriesForUserProfile: isActive,
