@@ -4,9 +4,7 @@ const {
   useTransaction,
   subscriptionManager,
 } = require('@coko/server')
-const { ChatChannel } = require('@coko/server/dist/models')
 const { uniq } = require('lodash')
-
 const {
   Team,
   TeamMember,
@@ -15,6 +13,7 @@ const {
   Question,
   QuestionVersion,
   Review,
+  ChatChannel,
 } = require('../models')
 
 const { REVIEWER_STATUSES } = require('./constants')

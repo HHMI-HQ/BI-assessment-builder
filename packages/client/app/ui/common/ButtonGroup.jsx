@@ -1,29 +1,27 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
-
-import { grid } from '@coko/client'
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import { grid } from "@coko/client";
 
 const Wrapper = styled.div`
-  display: ${props => (props.inline ? 'inline-block' : 'flex')};
-  /* display: inline-block; */
+  display: ${(props) => (props.$inline ? "inline-block" : "flex")};
 
-  ${props => {
-    const { inline, justify } = props
-    let justifyValue
+  ${(props) => {
+    const { $inline, $justify } = props;
+    let justifyValue;
 
-    if (inline) return null
+    if ($inline) return null;
 
-    if (justify === 'left') justifyValue = 'flex-start'
-    if (justify === 'right') justifyValue = 'flex-end'
-    if (justify === 'center') justifyValue = 'center'
+    if ($justify === "left") justifyValue = "flex-start";
+    if ($justify === "right") justifyValue = "flex-end";
+    if ($justify === "center") justifyValue = "center";
 
     if (justifyValue)
       return css`
         justify-content: ${justifyValue};
-      `
+      `;
 
-    return null
+    return null;
   }}
 
   > button {
@@ -37,30 +35,30 @@ const Wrapper = styled.div`
   > button:last-child {
     margin-right: 0;
   }
-`
+`;
 
-const ButtonGroup = props => {
-  const { className, children, inline, justify } = props
+const ButtonGroup = (props) => {
+  const { className, children, inline = false, justify = "left" } = props;
 
   return (
-    <Wrapper className={className} inline={inline} justify={justify}>
+    <Wrapper className={className} $inline={inline} $justify={justify}>
       {children}
     </Wrapper>
-  )
-}
+  );
+};
 
 ButtonGroup.propTypes = {
   /** Must be multiple Button components */
   children: PropTypes.arrayOf(
     (propValue, key, componentName, location, propFullName) => {
       const notButton = propValue
-        .filter(el => !!el)
-        .find(el => el.type.target.name !== 'Button')
+        .filter((el) => !!el)
+        .find((el) => el.type.target.name !== "Button");
 
       if (notButton)
-        return new Error('ButtonGroup children should be instances of Button!')
+        return new Error("ButtonGroup children should be instances of Button!");
 
-      return null
+      return null;
     },
   ).isRequired,
 
@@ -68,12 +66,7 @@ ButtonGroup.propTypes = {
   inline: PropTypes.bool,
 
   /** Sets position of buttons in the row. Only applies when `inline` is `false` */
-  justify: PropTypes.oneOf(['left', 'right', 'center']),
-}
+  justify: PropTypes.oneOf(["left", "right", "center"]),
+};
 
-ButtonGroup.defaultProps = {
-  inline: false,
-  justify: 'left',
-}
-
-export default ButtonGroup
+export default ButtonGroup;

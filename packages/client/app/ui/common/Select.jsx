@@ -2,79 +2,79 @@
 /* stylelint-disable selector-combinator-space-before */
 /* stylelint-disable selector-descendant-combinator-no-non-space */
 /* stylelint-disable string-quotes */
-import React, { useEffect, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components'
-import { debounce as lodashDebounceFunc } from 'lodash'
+import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import { debounce as lodashDebounceFunc } from "lodash";
 
-import { Select as AntSelect } from 'antd'
-import { th } from '@coko/client'
-import { DownOutlined } from '@ant-design/icons'
-import Empty from './Empty'
+import { Select as AntSelect } from "antd";
+import { th } from "@coko/client";
+import { DownOutlined } from "@ant-design/icons";
+import Empty from "./Empty";
 
-const SelectWrapper = styled.span``
+const SelectWrapper = styled.span``;
 
 const StyledSelect = styled(AntSelect)`
   width: 100%;
 
   &.ant-select-focused {
-    outline: ${props => `${props.theme.lineWidth * 4}`}px solid
-      ${th('colorPrimaryBorder')};
+    outline: ${(props) => `${props.theme.lineWidth * 4}`}px solid
+      ${th("colorPrimaryBorder")};
     outline-offset: 1px;
   }
 
   .ant-select-arrow {
-    color: ${th('colorBorder')};
+    color: ${th("colorBorder")};
   }
 
   &.ant-select.ant-select-disabled > .ant-select-selector,
   &.ant-select-multiple.ant-select-disabled
     > .ant-select-selector
     .ant-select-selection-item-content {
-    background-color: ${th('colorBackgroundHue')};
-    color: ${props => `${props.theme.colorText}cc`};
+    background-color: ${th("colorBackgroundHue")};
+    color: ${(props) => `${props.theme.colorText}cc`};
   }
 
   &:focus-within .ant-select-clear {
     opacity: 1;
   }
 
-  .ant-select-clear > [role='button']:focus-visible {
-    outline: 2px solid ${th('colorPrimary')};
+  .ant-select-clear > [role="button"]:focus-visible {
+    outline: 2px solid ${th("colorPrimary")};
   }
-`
+`;
 
 const StyledDropdown = styled.div`
   .ant-select-item-option-active {
-    background-color: ${th('colorBackgroundHue')};
-    outline: 2px solid ${th('colorPrimary')};
+    background-color: ${th("colorBackgroundHue")};
+    outline: 2px solid ${th("colorPrimary")};
     outline-offset: -2px;
 
-    &.ant-select-item-option-selected[role='option'][aria-selected='true'] {
+    &.ant-select-item-option-selected[role="option"][aria-selected="true"] {
       text-decoration: underline;
     }
   }
 
-  .ant-select-item-option-selected[role='option'][aria-selected='true'] {
-    background-color: ${th('colorPrimary')};
-    color: ${th('colorTextReverse')};
+  .ant-select-item-option-selected[role="option"][aria-selected="true"] {
+    background-color: ${th("colorPrimary")};
+    color: ${th("colorTextReverse")};
 
     .ant-select-item-option-state {
-      color: ${th('colorTextReverse')};
+      color: ${th("colorTextReverse")};
     }
   }
 
   .ant-select-item-option-content {
-    /* outline: 2px solid ${th('colorPrimary')}; */
-    ${props =>
-      props.wrapOptionText &&
+    /* outline: 2px solid ${th("colorPrimary")}; */
+    ${(props) =>
+      props.$wrapOptionText &&
       css`
         white-space: normal;
       `}
   }
-`
+`;
 
-const Select = props => {
+const Select = (props) => {
   const {
     async,
     className,
@@ -94,99 +94,99 @@ const Select = props => {
     virtual,
     wrapOptionText,
     ...rest
-  } = props
+  } = props;
 
-  const selectRef = useRef(null)
-  const [open, setOpen] = useState(isOpen)
-  const [ariaAttributes, setAriaAttributes] = useState({})
+  const selectRef = useRef(null);
+  const [open, setOpen] = useState(isOpen);
+  const [ariaAttributes, setAriaAttributes] = useState({});
 
   const cleanUpInvalidAttrs = () => {
     // store invalid attrs in local state
     setAriaAttributes({
-      'aria-controls': selectRef?.current
+      "aria-controls": selectRef?.current
         ?.querySelector('input[role="combobox"]')
-        .getAttribute('aria-controls'),
-      'aria-owns': selectRef?.current
+        .getAttribute("aria-controls"),
+      "aria-owns": selectRef?.current
         ?.querySelector('input[role="combobox"]')
-        .getAttribute('aria-owns'),
-      'aria-activedescendant': selectRef?.current
+        .getAttribute("aria-owns"),
+      "aria-activedescendant": selectRef?.current
         ?.querySelector('input[role="combobox"]')
-        .getAttribute('aria-activedescendant'),
-    })
+        .getAttribute("aria-activedescendant"),
+    });
     // remove them from the DOM node
     selectRef?.current
       ?.querySelector('input[role="combobox"]')
-      .removeAttribute('aria-controls')
+      .removeAttribute("aria-controls");
     selectRef?.current
       ?.querySelector('input[role="combobox"]')
-      .removeAttribute('aria-owns')
+      .removeAttribute("aria-owns");
     selectRef?.current
       ?.querySelector('input[role="combobox"]')
-      .removeAttribute('aria-activedescendant')
-  }
+      .removeAttribute("aria-activedescendant");
+  };
 
   useEffect(() => {
-    const innerWrapper = selectRef?.current.querySelector('.ant-select')
-    innerWrapper.removeAttribute('aria-required')
+    const innerWrapper = selectRef?.current.querySelector(".ant-select");
+    innerWrapper.removeAttribute("aria-required");
 
     // hack to fix accessibility errors
     // apply with delay to make sure attrs are already there
     setTimeout(() => {
-      cleanUpInvalidAttrs()
-    }, 500)
-  }, [])
+      cleanUpInvalidAttrs();
+    }, 500);
+  }, []);
 
   useEffect(() => {
     // look for a clear button, and if found apply actual button semantics and interaction
     const clearButton = selectRef.current.querySelector(
-      '.ant-select-clear > span',
-    )
+      ".ant-select-clear > span",
+    );
 
     if (rest.allowClear && clearButton) {
-      clearButton.setAttribute('role', 'button')
-      clearButton.setAttribute('tabIndex', '0')
-      clearButton.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          rest.value = undefined
-          rest.onChange()
-          selectRef.current.querySelector('input')?.focus()
+      clearButton.setAttribute("role", "button");
+      clearButton.setAttribute("tabIndex", "0");
+      clearButton.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          rest.value = undefined;
+          rest.onChange();
+          selectRef.current.querySelector("input")?.focus();
         }
-      })
+      });
     }
-  }, [rest.value])
+  }, [rest.value]);
 
   useEffect(() => {
     if (open && !!ariaAttributes) {
       // reapply the stored aria attributes after opening input for the first time
-      Object.keys(ariaAttributes).forEach(attr => {
+      Object.keys(ariaAttributes).forEach((attr) => {
         selectRef?.current
           .querySelector('input[role="combobox"]')
-          .setAttribute(attr, ariaAttributes[attr])
-      })
+          .setAttribute(attr, ariaAttributes[attr]);
+      });
 
-      setAriaAttributes(null)
+      setAriaAttributes(null);
     }
-  }, [open])
+  }, [open]);
 
-  const handleSearch = searchValue => {
-    onSearch(searchValue)
-  }
+  const handleSearch = (searchValue) => {
+    onSearch(searchValue);
+  };
 
   // const useDebounce = async ? true : debounce
 
   const searchFunc = async
     ? lodashDebounceFunc(handleSearch, debounceTimeout)
-    : handleSearch
+    : handleSearch;
 
-  const customDropdownRender = menu => (
+  const customDropdownRender = (menu) => (
     <StyledDropdown
       data-testid="select-dropdown"
-      wrapOptionText={wrapOptionText}
+      $wrapOptionText={wrapOptionText}
     >
       {menu}
     </StyledDropdown>
-  )
+  );
 
   return (
     <SelectWrapper className={className} ref={selectRef}>
@@ -195,7 +195,7 @@ const Select = props => {
         filterOption={async && !filterOption ? false : filterOption}
         id={id}
         notFoundContent={!notFoundContent && async ? null : notFoundContent}
-        onOpenChange={o => setOpen(o)}
+        onOpenChange={(o) => setOpen(o)}
         onSearch={onSearch && searchFunc}
         open={open}
         options={options}
@@ -207,8 +207,8 @@ const Select = props => {
         {...rest}
       />
     </SelectWrapper>
-  )
-}
+  );
+};
 
 Select.propTypes = {
   async: PropTypes.bool,
@@ -218,7 +218,7 @@ Select.propTypes = {
   isOpen: PropTypes.bool,
   virtual: PropTypes.bool,
   wrapOptionText: PropTypes.bool,
-}
+};
 
 Select.defaultProps = {
   async: false,
@@ -234,6 +234,6 @@ Select.defaultProps = {
   isOpen: false,
   virtual: false,
   wrapOptionText: false,
-}
+};
 
-export default Select
+export default Select;
